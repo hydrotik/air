@@ -56,17 +56,17 @@ pnpm build --filter @hydrotik/design-system
 ## Running Storybook
 
 ```bash
-pnpm storybook
+# Recommended — builds workspace deps first, then starts Storybook
+pnpm turbo run dev --filter=@hydrotik/storybook
 ```
 
 Opens at `http://localhost:6006`. Storybook uses `@storybook/react-vite` and loads
 `ThemeProvider` automatically via the preview decorator. Use the toolbar to toggle dark/light.
 
-To run only within the Storybook app:
+Turbo's `dev` task has `"dependsOn": ["^build"]` so tokens, theme-provider, and design-system
+are always built before Storybook starts.
 
-```bash
-pnpm --filter @hydrotik/storybook storybook
-```
+See [STORYBOOK.md](./STORYBOOK.md) for full setup details and troubleshooting.
 
 ---
 

@@ -1,4 +1,4 @@
-import { style } from '@vanilla-extract/css';
+import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
 export const tableWrapper = style({
@@ -28,23 +28,20 @@ export const tableHeader = style({
   borderBottom: `1px solid ${vars.color.border}`,
 });
 
-export const tableBody = style({
-  selectors: {
-    '& tr:last-child': {
-      borderBottom: 'none',
-    },
-  },
+export const tableBody = style({});
+
+globalStyle(`${tableBody} tr:last-child`, {
+  borderBottom: 'none',
 });
 
 export const tableFooter = style({
   borderTop: `1px solid ${vars.color.border}`,
   backgroundColor: `color-mix(in srgb, ${vars.color.surface} 50%, transparent)`,
   fontWeight: vars.font.weight.medium,
-  selectors: {
-    '& tr:last-child': {
-      borderBottom: 'none',
-    },
-  },
+});
+
+globalStyle(`${tableFooter} tr:last-child`, {
+  borderBottom: 'none',
 });
 
 export const tableRow = style({

@@ -15,6 +15,11 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": [".storybook", "../../../packages/hy-design-system/src"],
+  "include": [
+    ".storybook",
+    "../../packages/hy-design-system/src",
+    "../../packages/hy-tokens/src",
+    "../../packages/hy-theme-provider/src"
+  ],
   "exclude": ["node_modules", "storybook-static"]
 }

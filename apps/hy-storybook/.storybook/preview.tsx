@@ -1,6 +1,8 @@
 import type { Preview } from '@storybook/react';
 import React from 'react';
 import { ThemeProvider } from '@hydrotik/theme-provider';
+// global baseline styles (vanilla-extract) — processed by Vite plugin
+import '@hydrotik/design-system/global.css.ts';
 
 const preview: Preview = {
   parameters: {
