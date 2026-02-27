@@ -11,8 +11,14 @@ const contentShow = keyframes({
   to: { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
 });
 
+/**
+ * Dialog — shadcn v4 aligned.
+ * - Overlay: black/50
+ * - Content: bg-background (not surfaceOverlay)
+ * - gap-4, p-6, rounded-lg
+ */
 export const dialogOverlay = style({
-  backgroundColor: vars.color.overlay,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
   position: 'fixed',
   inset: 0,
   zIndex: vars.zIndex.overlay,
@@ -25,50 +31,49 @@ export const dialogOverlay = style({
 });
 
 export const dialogContent = style({
-  backgroundColor: vars.color.surfaceOverlay,
+  backgroundColor: vars.color.background,
   border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radii.xl,
-  boxShadow: vars.shadow.xl,
+  borderRadius: vars.radii.lg,
+  boxShadow: vars.shadow.lg,
   position: 'fixed',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '90vw',
-  maxWidth: '560px',
+  maxWidth: '32rem',
   maxHeight: '85vh',
   overflowY: 'auto',
-  padding: vars.space['5'],
+  padding: vars.space['6'],
   zIndex: vars.zIndex.modal,
+  display: 'grid',
+  gap: vars.space['4'],
   animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
-  selectors: {
-    '&:focus-visible': {
-      outline: 'none',
-    },
-  },
+  outline: 'none',
 });
 
 export const dialogHeader = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: vars.space['1_5'],
-  marginBottom: vars.space['4'],
+  gap: vars.space['2'],
 });
 
 export const dialogFooter = style({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+  flexDirection: 'column-reverse',
   gap: vars.space['2'],
-  marginTop: vars.space['4'],
-  paddingTop: vars.space['3'],
-  borderTop: `1px solid ${vars.color.borderSubtle}`,
+  '@media': {
+    'screen and (min-width: 640px)': {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
+  },
 });
 
 export const dialogTitle = style({
   fontSize: vars.font.size.lg,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.text,
-  lineHeight: vars.font.lineHeight.tight,
+  lineHeight: '1',
   margin: 0,
 });
 
@@ -86,18 +91,18 @@ export const dialogClose = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: vars.space['8'],
-  height: vars.space['8'],
+  width: vars.space['6'],
+  height: vars.space['6'],
   borderRadius: vars.radii.sm,
   color: vars.color.textMuted,
   backgroundColor: 'transparent',
   border: 'none',
   cursor: 'pointer',
-  transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+  opacity: '0.7',
+  transition: `opacity ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&:hover': {
-      color: vars.color.text,
-      backgroundColor: vars.color.ghostHover,
+      opacity: '1',
     },
     '&:focus-visible': {
       outline: `2px solid ${vars.color.focusRing}`,

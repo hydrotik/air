@@ -1,5 +1,6 @@
 import React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { Check, ChevronRight, Circle } from 'lucide-react';
 import {
   dropdownContent,
   dropdownItem,
@@ -30,9 +31,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden style={{ marginLeft: 'auto' }}>
-      <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <ChevronRight size={16} style={{ marginLeft: 'auto' }} aria-hidden />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = 'DropdownMenuSubTrigger';
@@ -54,7 +53,7 @@ DropdownMenuSubContent.displayName = 'DropdownMenuSubContent';
 export const DropdownMenuContent = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 6, ...props }, ref) => (
+>(({ className, sideOffset = 4, ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
@@ -92,9 +91,7 @@ export const DropdownMenuCheckboxItem = React.forwardRef<
   >
     <span className={dropdownItemIndicator}>
       <DropdownMenuPrimitive.ItemIndicator>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-          <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <Check size={16} />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -113,9 +110,7 @@ export const DropdownMenuRadioItem = React.forwardRef<
   >
     <span className={dropdownItemIndicator}>
       <DropdownMenuPrimitive.ItemIndicator>
-        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden>
-          <circle cx="4" cy="4" r="4" />
-        </svg>
+        <Circle size={8} fill="currentColor" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}

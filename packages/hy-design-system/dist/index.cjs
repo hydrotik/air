@@ -30,6 +30,8 @@ let react = require("react");
 react = __toESM(react);
 let _radix_ui_react_accordion = require("@radix-ui/react-accordion");
 _radix_ui_react_accordion = __toESM(_radix_ui_react_accordion);
+let lucide_react = require("lucide-react");
+lucide_react = __toESM(lucide_react);
 let _vanilla_extract_css = require("@vanilla-extract/css");
 let _hydrotik_tokens = require("@hydrotik/tokens");
 let react_jsx_runtime = require("react/jsx-runtime");
@@ -85,8 +87,6 @@ let _radix_ui_react_toggle_group = require("@radix-ui/react-toggle-group");
 _radix_ui_react_toggle_group = __toESM(_radix_ui_react_toggle_group);
 let _radix_ui_react_tooltip = require("@radix-ui/react-tooltip");
 _radix_ui_react_tooltip = __toESM(_radix_ui_react_tooltip);
-let lucide_react = require("lucide-react");
-lucide_react = __toESM(lucide_react);
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = (0, _vanilla_extract_css.keyframes)({
@@ -97,54 +97,70 @@ const slideUp = (0, _vanilla_extract_css.keyframes)({
 	from: { height: "var(--radix-accordion-content-height)" },
 	to: { height: "0" }
 });
-const accordionRoot = (0, _vanilla_extract_css.style)({
-	borderRadius: _hydrotik_tokens.vars.radii.lg,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	overflow: "hidden"
-});
+/**
+* Accordion — shadcn v4 aligned.
+* No wrapping border container — items separated by bottom border.
+*/
+const accordionRoot = (0, _vanilla_extract_css.style)({});
 const accordionItem = (0, _vanilla_extract_css.style)({
-	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
+	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	selectors: { "&:last-child": { borderBottom: "none" } }
 });
 const accordionTrigger = (0, _vanilla_extract_css.style)({
 	display: "flex",
-	alignItems: "center",
+	flex: 1,
+	alignItems: "flex-start",
 	justifyContent: "space-between",
+	gap: _hydrotik_tokens.vars.space["4"],
 	width: "100%",
-	padding: `${_hydrotik_tokens.vars.space["2_5"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	padding: `${_hydrotik_tokens.vars.space["4"]} 0`,
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 	color: _hydrotik_tokens.vars.color.text,
 	backgroundColor: "transparent",
 	border: "none",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
 	cursor: "pointer",
 	textAlign: "left",
-	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	outline: "none",
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+		"&:hover": { textDecoration: "underline" },
 		"&:focus-visible": {
 			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "-2px"
+			outlineOffset: "2px",
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+		},
+		"&:disabled": {
+			opacity: "0.5",
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		}
 	}
 });
 const accordionChevron = (0, _vanilla_extract_css.style)({
 	transition: `transform ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	flexShrink: 0,
-	color: _hydrotik_tokens.vars.color.textMuted
+	color: _hydrotik_tokens.vars.color.textMuted,
+	marginTop: "2px",
+	width: "16px",
+	height: "16px",
+	pointerEvents: "none"
 });
 (0, _vanilla_extract_css.globalStyle)(`${accordionTrigger}[data-state="open"] ${accordionChevron}`, { transform: "rotate(180deg)" });
 const accordionContent = (0, _vanilla_extract_css.style)({
 	overflow: "hidden",
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	color: _hydrotik_tokens.vars.color.textMuted,
 	selectors: {
 		"&[data-state=\"open\"]": { animation: `${slideDown} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}` },
 		"&[data-state=\"closed\"]": { animation: `${slideUp} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}` }
 	}
 });
-const accordionContentInner = (0, _vanilla_extract_css.style)({ padding: `0 ${_hydrotik_tokens.vars.space["3"]} ${_hydrotik_tokens.vars.space["3"]}` });
+const accordionContentInner = (0, _vanilla_extract_css.style)({
+	paddingTop: 0,
+	paddingBottom: _hydrotik_tokens.vars.space["4"]
+});
 
 //#endregion
 //#region src/components/Accordion/Accordion.tsx
@@ -161,24 +177,16 @@ const AccordionItem = react.default.forwardRef(({ className, ...props }, ref) =>
 }));
 AccordionItem.displayName = "AccordionItem";
 const AccordionTrigger = react.default.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_accordion.Header, {
-	asChild: true,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_accordion.Trigger, {
+	style: { display: "flex" },
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_accordion.Trigger, {
 		ref,
 		className: [accordionTrigger, className].filter(Boolean).join(" "),
 		...props,
-		children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+		children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, {
 			className: accordionChevron,
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z",
-				fill: "currentColor"
-			})
+			"aria-hidden": true
 		})]
-	}) })
+	})
 }));
 AccordionTrigger.displayName = "AccordionTrigger";
 const AccordionContent = react.default.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_accordion.Content, {
@@ -194,17 +202,25 @@ AccordionContent.displayName = "AccordionContent";
 
 //#endregion
 //#region src/components/Alert/Alert.css.ts
+/**
+* Alert — shadcn v4 aligned.
+* Grid layout: when an SVG icon is present as direct child, the icon gets
+* column 1 (16px wide) and the text gets column 2. Without an icon, column 1
+* collapses to 0.
+*/
 const alertRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		position: "relative",
-		display: "flex",
-		gap: _hydrotik_tokens.vars.space["3"],
 		width: "100%",
 		borderRadius: _hydrotik_tokens.vars.radii.lg,
 		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-		padding: _hydrotik_tokens.vars.space["3"],
+		padding: `${_hydrotik_tokens.vars.space["3"]} ${_hydrotik_tokens.vars.space["4"]}`,
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
-		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal
+		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal,
+		display: "grid",
+		gridTemplateColumns: "0 1fr",
+		gap: `${_hydrotik_tokens.vars.space["0_5"]} 0`,
+		alignItems: "start"
 	},
 	variants: { variant: {
 		default: {
@@ -212,58 +228,71 @@ const alertRecipe = (0, _vanilla_extract_recipes.recipe)({
 			color: _hydrotik_tokens.vars.color.text
 		},
 		destructive: {
-			borderColor: _hydrotik_tokens.vars.color.destructive,
+			backgroundColor: _hydrotik_tokens.vars.color.surface,
 			color: _hydrotik_tokens.vars.color.destructive
-		},
-		success: {
-			borderColor: _hydrotik_tokens.vars.color.success,
-			color: _hydrotik_tokens.vars.color.success
-		},
-		warning: {
-			borderColor: _hydrotik_tokens.vars.color.warning,
-			color: _hydrotik_tokens.vars.color.warning
 		}
 	} },
 	defaultVariants: { variant: "default" }
 });
+/**
+* When the alert has a direct SVG child (icon), expand the grid to fit it.
+* We use a CSS class that the Alert component applies conditionally when
+* an icon prop is provided.
+*/
+const alertWithIcon = (0, _vanilla_extract_css.style)({
+	gridTemplateColumns: `${_hydrotik_tokens.vars.space["4"]} 1fr`,
+	columnGap: _hydrotik_tokens.vars.space["3"]
+});
 const alertIcon = (0, _vanilla_extract_css.style)({
+	gridColumn: "1",
+	gridRow: "1 / -1",
+	width: _hydrotik_tokens.vars.space["4"],
+	height: _hydrotik_tokens.vars.space["4"],
+	marginTop: "2px",
 	flexShrink: 0,
-	marginTop: "1px"
+	color: "currentColor"
 });
 const alertTitle = (0, _vanilla_extract_css.style)({
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
+	gridColumn: "2",
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight,
 	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.tight,
-	marginBottom: _hydrotik_tokens.vars.space["1"]
+	minHeight: _hydrotik_tokens.vars.space["4"]
 });
 const alertDescription = (0, _vanilla_extract_css.style)({
+	gridColumn: "2",
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.textMuted,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed,
+	selectors: { [`${alertRecipe.classNames.variants.variant.destructive} &`]: { color: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 90%, transparent)` } }
 });
 
 //#endregion
 //#region src/components/Alert/Alert.tsx
-const Alert = react.default.forwardRef(({ variant = "default", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-	ref,
-	role: "alert",
-	className: [alertRecipe({ variant }), className].filter(Boolean).join(" "),
-	...props
-}));
+const Alert = react.default.forwardRef(({ variant = "default", icon, className, children, ...props }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		role: "alert",
+		className: [
+			alertRecipe({ variant }),
+			icon ? alertWithIcon : "",
+			className
+		].filter(Boolean).join(" "),
+		...props,
+		children: [icon && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: alertIcon,
+			children: icon
+		}), children]
+	});
+});
 Alert.displayName = "Alert";
-const AlertIcon = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-	ref,
-	className: [alertIcon, className].filter(Boolean).join(" "),
-	...props
-}));
-AlertIcon.displayName = "AlertIcon";
 const AlertTitle = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("h5", {
 	ref,
 	className: [alertTitle, className].filter(Boolean).join(" "),
 	...props
 }));
 AlertTitle.displayName = "AlertTitle";
-const AlertDescription = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+const AlertDescription = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	className: [alertDescription, className].filter(Boolean).join(" "),
 	...props
@@ -286,42 +315,49 @@ const contentShow$1 = (0, _vanilla_extract_css.keyframes)({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
+/**
+* AlertDialog — shadcn v4 aligned.
+* Same as Dialog but without close button.
+*/
 const alertDialogOverlay = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: _hydrotik_tokens.vars.zIndex.overlay,
 	animation: `${overlayShow$2} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
 });
 const alertDialogContent = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.surfaceOverlay,
+	backgroundColor: _hydrotik_tokens.vars.color.background,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	borderRadius: _hydrotik_tokens.vars.radii.xl,
-	boxShadow: _hydrotik_tokens.vars.shadow.xl,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.lg,
 	position: "fixed",
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
 	width: "90vw",
-	maxWidth: "500px",
+	maxWidth: "32rem",
 	maxHeight: "85vh",
-	padding: _hydrotik_tokens.vars.space["5"],
+	padding: _hydrotik_tokens.vars.space["6"],
 	zIndex: _hydrotik_tokens.vars.zIndex.modal,
+	display: "grid",
+	gap: _hydrotik_tokens.vars.space["4"],
 	animation: `${contentShow$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: { "&:focus-visible": { outline: "none" } }
+	outline: "none"
 });
 const alertDialogHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["1_5"],
-	marginBottom: _hydrotik_tokens.vars.space["3"]
+	gap: _hydrotik_tokens.vars.space["2"]
 });
 const alertDialogFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column-reverse",
 	gap: _hydrotik_tokens.vars.space["2"],
-	marginTop: _hydrotik_tokens.vars.space["4"]
+	"@media": { "screen and (min-width: 640px)": {
+		flexDirection: "row",
+		justifyContent: "flex-end"
+	} }
 });
 const alertDialogTitle = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.lg,
@@ -459,79 +495,69 @@ AvatarFallback.displayName = "AvatarFallback";
 
 //#endregion
 //#region src/components/Badge/Badge.css.ts
+/**
+* Badge recipe — shadcn v4 aligned.
+* - `default` = solid primary bg (was missing)
+* - `secondary` = muted bg
+* - `destructive` = solid destructive bg
+* - `outline` = transparent with border
+* - Kept `success` / `warning` as useful extensions
+* - Rounded full (pill), no size variants (shadcn has single size)
+*/
 const badgeRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-flex",
 		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: _hydrotik_tokens.vars.radii.full,
+		border: "1px solid transparent",
 		fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
+		fontSize: _hydrotik_tokens.vars.font.size.xs,
 		whiteSpace: "nowrap",
 		lineHeight: "1",
-		border: "1px solid transparent"
+		padding: `${_hydrotik_tokens.vars.space["0_5"]} ${_hydrotik_tokens.vars.space["2_5"]}`,
+		gap: _hydrotik_tokens.vars.space["1"],
+		width: "fit-content",
+		flexShrink: 0,
+		overflow: "hidden",
+		transition: `color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
 	},
-	variants: {
-		variant: {
-			default: {
-				backgroundColor: _hydrotik_tokens.vars.color.secondary,
-				color: _hydrotik_tokens.vars.color.secondaryForeground,
-				borderColor: _hydrotik_tokens.vars.color.border
-			},
-			primary: {
-				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 12%, transparent)`,
-				color: _hydrotik_tokens.vars.color.primary,
-				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 25%, transparent)`
-			},
-			destructive: {
-				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 12%, transparent)`,
-				color: _hydrotik_tokens.vars.color.destructive,
-				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 25%, transparent)`
-			},
-			success: {
-				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.success} 12%, transparent)`,
-				color: _hydrotik_tokens.vars.color.success,
-				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.success} 25%, transparent)`
-			},
-			warning: {
-				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.warning} 12%, transparent)`,
-				color: _hydrotik_tokens.vars.color.warning,
-				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.warning} 25%, transparent)`
-			},
-			outline: {
-				backgroundColor: "transparent",
-				color: _hydrotik_tokens.vars.color.text,
-				borderColor: _hydrotik_tokens.vars.color.border
-			}
+	variants: { variant: {
+		default: {
+			backgroundColor: _hydrotik_tokens.vars.color.primary,
+			color: _hydrotik_tokens.vars.color.primaryForeground
 		},
-		size: {
-			sm: {
-				fontSize: _hydrotik_tokens.vars.font.size.xs,
-				padding: `2px ${_hydrotik_tokens.vars.space["2"]}`
-			},
-			md: {
-				fontSize: _hydrotik_tokens.vars.font.size.xs,
-				padding: `${_hydrotik_tokens.vars.space["0_5"]} ${_hydrotik_tokens.vars.space["2_5"]}`
-			},
-			lg: {
-				fontSize: _hydrotik_tokens.vars.font.size.sm,
-				padding: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["3"]}`
-			}
+		secondary: {
+			backgroundColor: _hydrotik_tokens.vars.color.secondary,
+			color: _hydrotik_tokens.vars.color.secondaryForeground
+		},
+		destructive: {
+			backgroundColor: _hydrotik_tokens.vars.color.destructive,
+			color: _hydrotik_tokens.vars.color.destructiveForeground
+		},
+		outline: {
+			backgroundColor: "transparent",
+			color: _hydrotik_tokens.vars.color.text,
+			borderColor: _hydrotik_tokens.vars.color.border
+		},
+		success: {
+			backgroundColor: _hydrotik_tokens.vars.color.success,
+			color: _hydrotik_tokens.vars.color.successForeground
+		},
+		warning: {
+			backgroundColor: _hydrotik_tokens.vars.color.warning,
+			color: _hydrotik_tokens.vars.color.warningForeground
 		}
-	},
-	defaultVariants: {
-		variant: "default",
-		size: "md"
-	}
+	} },
+	defaultVariants: { variant: "default" }
 });
 
 //#endregion
 //#region src/components/Badge/Badge.tsx
-const Badge = react.default.forwardRef(({ variant = "default", size = "md", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+const Badge = react.default.forwardRef(({ variant = "default", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 	ref,
-	className: [badgeRecipe({
-		variant,
-		size
-	}), className].filter(Boolean).join(" "),
+	className: [badgeRecipe({ variant }), className].filter(Boolean).join(" "),
 	...props
 }));
 Badge.displayName = "Badge";
@@ -631,16 +657,7 @@ const BreadcrumbSeparator = ({ className, children, ...props }) => /* @__PURE__ 
 	"aria-hidden": "true",
 	className: [breadcrumbSeparator, className].filter(Boolean).join(" "),
 	...props,
-	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
-	})
+	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, { size: 16 })
 });
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
@@ -648,23 +665,8 @@ const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, reac
 	"aria-hidden": "true",
 	className: [breadcrumbEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M3.625 7.5C3.625 8.12132 3.12132 8.625 2.5 8.625C1.87868 8.625 1.375 8.12132 1.375 7.5C1.375 6.87868 1.87868 6.375 2.5 6.375C3.12132 6.375 3.625 6.87868 3.625 7.5ZM8.625 7.5C8.625 8.12132 8.12132 8.625 7.5 8.625C6.87868 8.625 6.375 8.12132 6.375 7.5C6.375 6.87868 6.87868 6.375 7.5 6.375C8.12132 6.375 8.625 6.87868 8.625 7.5ZM13.625 7.5C13.625 8.12132 13.1213 8.625 12.5 8.625C11.8787 8.625 11.375 8.12132 11.375 7.5C11.375 6.87868 11.8787 6.375 12.5 6.375C13.1213 6.375 13.625 6.87868 13.625 7.5Z",
-			fill: "currentColor"
-		})
-	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-		style: {
-			position: "absolute",
-			width: "1px",
-			height: "1px",
-			overflow: "hidden",
-			clip: "rect(0,0,0,0)"
-		},
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.MoreHorizontal, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		className: "sr-only",
 		children: "More"
 	})]
 });
@@ -683,6 +685,13 @@ const spinner = (0, _vanilla_extract_css.style)({
 	animation: `${spin$1} 0.6s linear infinite`,
 	flexShrink: 0
 });
+/**
+* Button recipe — shadcn v4 aligned.
+* - `default` = primary CTA (was `primary`)
+* - Added `link` variant
+* - Uses `shadow.xs` on applicable variants
+* - High-density sizing (sm=28, md=32, lg=40)
+*/
 const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-flex",
@@ -692,12 +701,14 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
 		fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 		letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.normal,
+		fontSize: _hydrotik_tokens.vars.font.size.sm,
 		borderRadius: _hydrotik_tokens.vars.radii.md,
 		border: "1px solid transparent",
 		cursor: "pointer",
 		textDecoration: "none",
 		whiteSpace: "nowrap",
 		flexShrink: 0,
+		outline: "none",
 		transition: [
 			`background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 			`border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
@@ -707,8 +718,8 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		].join(", "),
 		selectors: {
 			"&:focus-visible": {
-				outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-				outlineOffset: "2px"
+				borderColor: _hydrotik_tokens.vars.color.focusRing,
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
 				opacity: "0.5",
@@ -719,27 +730,29 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 	},
 	variants: {
 		variant: {
-			primary: {
+			default: {
 				backgroundColor: _hydrotik_tokens.vars.color.primary,
 				color: _hydrotik_tokens.vars.color.primaryForeground,
 				borderColor: _hydrotik_tokens.vars.color.primary,
-				boxShadow: `0 1px 2px rgba(0,0,0,0.3)`,
-				selectors: {
-					"&:hover:not(:disabled)": { filter: "brightness(1.1)" },
-					"&:active:not(:disabled)": { filter: "brightness(0.95)" }
-				}
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.9)" } }
 			},
-			secondary: {
-				backgroundColor: _hydrotik_tokens.vars.color.secondary,
-				color: _hydrotik_tokens.vars.color.secondaryForeground,
-				borderColor: _hydrotik_tokens.vars.color.border,
-				selectors: { "&:hover:not(:disabled)": { backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated } }
+			destructive: {
+				backgroundColor: _hydrotik_tokens.vars.color.destructive,
+				color: _hydrotik_tokens.vars.color.destructiveForeground,
+				borderColor: _hydrotik_tokens.vars.color.destructive,
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.9)" } }
 			},
 			outline: {
 				backgroundColor: "transparent",
 				color: _hydrotik_tokens.vars.color.text,
 				borderColor: _hydrotik_tokens.vars.color.border,
+				boxShadow: _hydrotik_tokens.vars.shadow.xs,
 				selectors: { "&:hover:not(:disabled)": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } }
+			},
+			secondary: {
+				backgroundColor: _hydrotik_tokens.vars.color.secondary,
+				color: _hydrotik_tokens.vars.color.secondaryForeground,
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.8)" } }
 			},
 			ghost: {
 				backgroundColor: "transparent",
@@ -747,19 +760,24 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 				borderColor: "transparent",
 				selectors: { "&:hover:not(:disabled)": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } }
 			},
-			destructive: {
-				backgroundColor: _hydrotik_tokens.vars.color.destructive,
-				color: _hydrotik_tokens.vars.color.destructiveForeground,
-				borderColor: _hydrotik_tokens.vars.color.destructive,
-				selectors: { "&:hover:not(:disabled)": { filter: "brightness(1.1)" } }
+			link: {
+				backgroundColor: "transparent",
+				color: _hydrotik_tokens.vars.color.primary,
+				borderColor: "transparent",
+				textDecoration: "none",
+				selectors: { "&:hover:not(:disabled)": {
+					textDecoration: "underline",
+					textUnderlineOffset: "4px"
+				} }
 			}
 		},
 		size: {
 			sm: {
 				height: _hydrotik_tokens.vars.space["7"],
-				paddingLeft: _hydrotik_tokens.vars.space["2_5"],
-				paddingRight: _hydrotik_tokens.vars.space["2_5"],
-				fontSize: _hydrotik_tokens.vars.font.size.xs
+				paddingLeft: _hydrotik_tokens.vars.space["3"],
+				paddingRight: _hydrotik_tokens.vars.space["3"],
+				fontSize: _hydrotik_tokens.vars.font.size.xs,
+				gap: _hydrotik_tokens.vars.space["1_5"]
 			},
 			md: {
 				height: _hydrotik_tokens.vars.space["8"],
@@ -772,6 +790,21 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 				paddingLeft: _hydrotik_tokens.vars.space["5"],
 				paddingRight: _hydrotik_tokens.vars.space["5"],
 				fontSize: _hydrotik_tokens.vars.font.size.sm
+			},
+			icon: {
+				width: _hydrotik_tokens.vars.space["8"],
+				height: _hydrotik_tokens.vars.space["8"],
+				padding: 0
+			},
+			"icon-sm": {
+				width: _hydrotik_tokens.vars.space["7"],
+				height: _hydrotik_tokens.vars.space["7"],
+				padding: 0
+			},
+			"icon-lg": {
+				width: _hydrotik_tokens.vars.space["10"],
+				height: _hydrotik_tokens.vars.space["10"],
+				padding: 0
 			}
 		},
 		loading: {
@@ -788,7 +821,7 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		}
 	},
 	defaultVariants: {
-		variant: "primary",
+		variant: "default",
 		size: "md",
 		loading: false,
 		fullWidth: false
@@ -798,16 +831,16 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 //#endregion
 //#region src/components/Button/Button.tsx
 /**
-* Button — primary interactive element.
+* Button — primary interactive element (shadcn v4 aligned).
 *
 * @example
 * ```tsx
-* <Button variant="primary" size="md">Save changes</Button>
+* <Button variant="default" size="md">Save changes</Button>
 * <Button variant="outline" loading>Submitting...</Button>
 * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
 * ```
 */
-const Button = (0, react.forwardRef)(({ variant = "primary", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
+const Button = (0, react.forwardRef)(({ variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(asChild ? _radix_ui_react_slot.Slot : "button", {
 		ref,
 		className: [buttonRecipe({
@@ -829,44 +862,29 @@ Button.displayName = "Button";
 
 //#endregion
 //#region src/components/Card/Card.css.ts
-const cardRecipe = (0, _vanilla_extract_recipes.recipe)({
-	base: {
-		backgroundColor: _hydrotik_tokens.vars.color.surface,
-		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-		borderRadius: _hydrotik_tokens.vars.radii.lg,
-		overflow: "hidden"
-	},
-	variants: {
-		elevation: {
-			flat: {},
-			raised: { boxShadow: _hydrotik_tokens.vars.shadow.sm },
-			elevated: {
-				backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
-				boxShadow: _hydrotik_tokens.vars.shadow.md
-			}
-		},
-		padding: {
-			none: {},
-			sm: { padding: _hydrotik_tokens.vars.space["3"] },
-			md: { padding: _hydrotik_tokens.vars.space["4"] },
-			lg: { padding: _hydrotik_tokens.vars.space["6"] }
-		}
-	},
-	defaultVariants: {
-		elevation: "raised",
-		padding: "md"
-	}
-});
-const cardHeader = (0, _vanilla_extract_css.style)({
+/**
+* Card — shadcn v4 aligned.
+* Simple flex column, border + rounded-lg, no internal header/footer borders.
+* Uses bg-surface (like shadcn bg-card).
+*/
+const cardRoot = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["1"],
-	paddingBottom: _hydrotik_tokens.vars.space["3"],
-	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
-	marginBottom: _hydrotik_tokens.vars.space["3"]
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.sm,
+	overflow: "hidden"
+});
+const cardHeader = (0, _vanilla_extract_css.style)({
+	display: "grid",
+	gridAutoRows: "min-content",
+	alignItems: "start",
+	gap: _hydrotik_tokens.vars.space["1_5"],
+	padding: _hydrotik_tokens.vars.space["6"]
 });
 const cardTitle = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.md,
+	fontSize: _hydrotik_tokens.vars.font.size.lg,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.text,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight
@@ -876,23 +894,18 @@ const cardDescription = (0, _vanilla_extract_css.style)({
 	color: _hydrotik_tokens.vars.color.textMuted,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal
 });
+const cardContent = (0, _vanilla_extract_css.style)({ padding: `0 ${_hydrotik_tokens.vars.space["6"]} ${_hydrotik_tokens.vars.space["6"]}` });
 const cardFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space["2"],
-	paddingTop: _hydrotik_tokens.vars.space["3"],
-	borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
-	marginTop: _hydrotik_tokens.vars.space["3"]
+	padding: `0 ${_hydrotik_tokens.vars.space["6"]} ${_hydrotik_tokens.vars.space["6"]}`
 });
 
 //#endregion
 //#region src/components/Card/Card.tsx
-const Card = react.default.forwardRef(({ elevation = "raised", padding = "md", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+const Card = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
-	className: [cardRecipe({
-		elevation,
-		padding
-	}), className].filter(Boolean).join(" "),
+	className: [cardRoot, className].filter(Boolean).join(" "),
 	...props
 }));
 Card.displayName = "Card";
@@ -914,37 +927,43 @@ const CardDescription = react.default.forwardRef(({ className, ...props }, ref) 
 	...props
 }));
 CardDescription.displayName = "CardDescription";
+const CardContent = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	className: [cardContent, className].filter(Boolean).join(" "),
+	...props
+}));
+CardContent.displayName = "CardContent";
 const CardFooter = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	className: [cardFooter, className].filter(Boolean).join(" "),
 	...props
 }));
 CardFooter.displayName = "CardFooter";
-const CardContent = react.default.forwardRef((props, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-	ref,
-	...props
-}));
-CardContent.displayName = "CardContent";
 
 //#endregion
 //#region src/components/Checkbox/Checkbox.css.ts
+/**
+* Checkbox — shadcn v4 aligned.
+* 16px square, rounded-[4px], shadow-xs, primary bg when checked.
+*/
 const checkboxRoot = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
 	width: "16px",
 	height: "16px",
-	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	borderRadius: "4px",
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	backgroundColor: _hydrotik_tokens.vars.color.input,
+	boxShadow: _hydrotik_tokens.vars.shadow.xs,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	outline: "none",
+	transition: `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { borderColor: _hydrotik_tokens.vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: _hydrotik_tokens.vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 		},
 		"&[data-state=\"checked\"], &[data-state=\"indeterminate\"]": {
 			backgroundColor: _hydrotik_tokens.vars.color.primary,
@@ -958,9 +977,8 @@ const checkboxRoot = (0, _vanilla_extract_css.style)({
 	}
 });
 const checkboxIndicator = (0, _vanilla_extract_css.style)({
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
+	display: "grid",
+	placeContent: "center",
 	color: "currentColor"
 });
 
@@ -972,19 +990,7 @@ const Checkbox = react.default.forwardRef(({ className, ...props }, ref) => /* @
 	...props,
 	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_checkbox.Indicator, {
 		className: checkboxIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		})
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 14 })
 	})
 }));
 Checkbox.displayName = "Checkbox";
@@ -1104,19 +1110,7 @@ const CommandInput = react.default.forwardRef(({ className, icon, ...props }, re
 	className: commandInput,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		className: commandInputIcon,
-		children: icon ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		})
+		children: icon ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Search, { size: 15 })
 	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 		ref,
 		className: [commandInputField, className].filter(Boolean).join(" "),
@@ -1183,15 +1177,19 @@ const slideIn$2 = (0, _vanilla_extract_css.keyframes)({
 		transform: "scale(1)"
 	}
 });
+/**
+* ContextMenu — shadcn v4 aligned.
+* bg-popover (surfaceElevated), no text color change on highlight.
+*/
 const contextMenuContent = (0, _vanilla_extract_css.style)({
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
-	minWidth: "160px",
+	minWidth: "8rem",
 	overflow: "hidden",
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
 	padding: _hydrotik_tokens.vars.space["1"],
-	boxShadow: _hydrotik_tokens.vars.shadow.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.md,
 	animation: `${slideIn$2} ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
 });
 const contextMenuItem = (0, _vanilla_extract_css.style)({
@@ -1203,14 +1201,14 @@ const contextMenuItem = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.text,
-	cursor: "pointer",
+	cursor: "default",
 	outline: "none",
 	userSelect: "none",
 	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
 		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
 		"&[data-disabled]": {
-			color: _hydrotik_tokens.vars.color.textDisabled,
+			opacity: "0.5",
 			pointerEvents: "none"
 		}
 	}
@@ -1219,13 +1217,12 @@ const contextMenuCheckboxItem = (0, _vanilla_extract_css.style)([contextMenuItem
 const contextMenuRadioItem = (0, _vanilla_extract_css.style)([contextMenuItem, {}]);
 const contextMenuLabel = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.textMuted
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium
 });
 const contextMenuSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
-	margin: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["0_5"]}`,
+	margin: `${_hydrotik_tokens.vars.space["1"]} -${_hydrotik_tokens.vars.space["1"]}`,
 	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle
 });
 const contextMenuShortcut = (0, _vanilla_extract_css.style)({
@@ -1275,19 +1272,7 @@ const ContextMenuCheckboxItem = react.default.forwardRef(({ className, children,
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		}) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
 	}), children]
 }));
 ContextMenuCheckboxItem.displayName = "ContextMenuCheckboxItem";
@@ -1298,18 +1283,9 @@ const ContextMenuRadioItem = react.default.forwardRef(({ className, children, ..
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
-				cx: "7.5",
-				cy: "7.5",
-				r: "4.5",
-				fill: "currentColor"
-			})
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -1337,17 +1313,10 @@ const ContextMenuSubTrigger = react.default.forwardRef(({ className, inset, chil
 	className: [contextMenuSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
+		"aria-hidden": true
 	})]
 }));
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";
@@ -1374,8 +1343,14 @@ const contentShow = (0, _vanilla_extract_css.keyframes)({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
+/**
+* Dialog — shadcn v4 aligned.
+* - Overlay: black/50
+* - Content: bg-background (not surfaceOverlay)
+* - gap-4, p-6, rounded-lg
+*/
 const dialogOverlay = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: _hydrotik_tokens.vars.zIndex.overlay,
@@ -1383,43 +1358,44 @@ const dialogOverlay = (0, _vanilla_extract_css.style)({
 	selectors: { "&[data-state=\"closed\"]": { animationDirection: "reverse" } }
 });
 const dialogContent = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.surfaceOverlay,
+	backgroundColor: _hydrotik_tokens.vars.color.background,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	borderRadius: _hydrotik_tokens.vars.radii.xl,
-	boxShadow: _hydrotik_tokens.vars.shadow.xl,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.lg,
 	position: "fixed",
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
 	width: "90vw",
-	maxWidth: "560px",
+	maxWidth: "32rem",
 	maxHeight: "85vh",
 	overflowY: "auto",
-	padding: _hydrotik_tokens.vars.space["5"],
+	padding: _hydrotik_tokens.vars.space["6"],
 	zIndex: _hydrotik_tokens.vars.zIndex.modal,
+	display: "grid",
+	gap: _hydrotik_tokens.vars.space["4"],
 	animation: `${contentShow} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: { "&:focus-visible": { outline: "none" } }
+	outline: "none"
 });
 const dialogHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["1_5"],
-	marginBottom: _hydrotik_tokens.vars.space["4"]
+	gap: _hydrotik_tokens.vars.space["2"]
 });
 const dialogFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column-reverse",
 	gap: _hydrotik_tokens.vars.space["2"],
-	marginTop: _hydrotik_tokens.vars.space["4"],
-	paddingTop: _hydrotik_tokens.vars.space["3"],
-	borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`
+	"@media": { "screen and (min-width: 640px)": {
+		flexDirection: "row",
+		justifyContent: "flex-end"
+	} }
 });
 const dialogTitle = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.lg,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.text,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight,
+	lineHeight: "1",
 	margin: 0
 });
 const dialogDescription = (0, _vanilla_extract_css.style)({
@@ -1435,19 +1411,17 @@ const dialogClose = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["8"],
-	height: _hydrotik_tokens.vars.space["8"],
+	width: _hydrotik_tokens.vars.space["6"],
+	height: _hydrotik_tokens.vars.space["6"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	color: _hydrotik_tokens.vars.color.textMuted,
 	backgroundColor: "transparent",
 	border: "none",
 	cursor: "pointer",
-	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	opacity: "0.7",
+	transition: `opacity ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": {
-			color: _hydrotik_tokens.vars.color.text,
-			backgroundColor: _hydrotik_tokens.vars.color.ghostHover
-		},
+		"&:hover": { opacity: "1" },
 		"&:focus-visible": {
 			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -1467,24 +1441,17 @@ const DialogOverlay = react.default.forwardRef(({ className, ...props }, ref) =>
 	...props
 }));
 DialogOverlay.displayName = "DialogOverlay";
-const DialogContent = react.default.forwardRef(({ className, children, showClose = true, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DialogPortal, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogOverlay, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Content, {
+const DialogContent = react.default.forwardRef(({ className, children, showCloseButton = true, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DialogPortal, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogOverlay, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Content, {
 	ref,
 	className: [dialogContent, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, showClose && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dialog.Close, {
+	children: [children, showCloseButton && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Close, {
 		className: dialogClose,
 		"aria-label": "Close dialog",
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-				fill: "currentColor"
-			})
-		})
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: "sr-only",
+			children: "Close"
+		})]
 	})]
 })] }));
 DialogContent.displayName = "DialogContent";
@@ -1553,14 +1520,22 @@ const slideRightAndFade = (0, _vanilla_extract_css.keyframes)({
 		transform: "translateX(0)"
 	}
 });
+/**
+* DropdownMenu — shadcn v4 aligned.
+* - bg-popover (surfaceElevated)
+* - No text color change on highlight (focus:bg-accent only)
+* - Labels: font-medium, no uppercase
+*/
 const dropdownContent = (0, _vanilla_extract_css.style)({
-	minWidth: "180px",
+	minWidth: "8rem",
 	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
+	color: _hydrotik_tokens.vars.color.text,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
-	boxShadow: _hydrotik_tokens.vars.shadow.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.md,
 	padding: _hydrotik_tokens.vars.space["1"],
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
+	overflow: "hidden",
 	animationDuration: _hydrotik_tokens.vars.motion.duration.normal,
 	animationTimingFunction: _hydrotik_tokens.vars.motion.easing.default,
 	selectors: {
@@ -1581,6 +1556,7 @@ const dropdownItem = (0, _vanilla_extract_css.style)({
 	cursor: "default",
 	userSelect: "none",
 	outline: "none",
+	position: "relative",
 	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
 		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
@@ -1590,35 +1566,33 @@ const dropdownItem = (0, _vanilla_extract_css.style)({
 		}
 	}
 });
-const dropdownDestructiveItem = (0, _vanilla_extract_css.style)([dropdownItem, { selectors: { "&[data-highlighted]": {
-	backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-	color: _hydrotik_tokens.vars.color.destructive
-} } }]);
+const dropdownDestructiveItem = (0, _vanilla_extract_css.style)([dropdownItem, {
+	color: _hydrotik_tokens.vars.color.destructive,
+	selectors: { "&[data-highlighted]": {
+		backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 10%, transparent)`,
+		color: _hydrotik_tokens.vars.color.destructive
+	} }
+}]);
 const dropdownLabel = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	textTransform: "uppercase",
-	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium
 });
 const dropdownSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
 	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle,
-	margin: `${_hydrotik_tokens.vars.space["1"]} 0`
+	margin: `${_hydrotik_tokens.vars.space["1"]} -${_hydrotik_tokens.vars.space["1"]}`
 });
 const dropdownItemIndicator = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	left: _hydrotik_tokens.vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["4"],
-	flexShrink: 0,
-	color: _hydrotik_tokens.vars.color.primary
+	width: "14px",
+	height: "14px"
 });
-const dropdownCheckboxItem = (0, _vanilla_extract_css.style)([dropdownItem, {
-	paddingLeft: _hydrotik_tokens.vars.space["8"],
-	position: "relative"
-}]);
+const dropdownCheckboxItem = (0, _vanilla_extract_css.style)([dropdownItem, { paddingLeft: _hydrotik_tokens.vars.space["8"] }]);
 const dropdownRadioItem = (0, _vanilla_extract_css.style)([dropdownCheckboxItem]);
 const dropdownSubTrigger = (0, _vanilla_extract_css.style)([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
 const dropdownSubContent = (0, _vanilla_extract_css.style)([dropdownContent]);
@@ -1640,20 +1614,10 @@ const DropdownMenuSubTrigger = react.default.forwardRef(({ className, inset, chi
 	ref,
 	className: [dropdownSubTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M4.5 2.5L8 6L4.5 9.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
+		"aria-hidden": true
 	})]
 }));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";
@@ -1665,7 +1629,7 @@ const DropdownMenuSubContent = react.default.forwardRef(({ className, ...props }
 	...props
 }));
 DropdownMenuSubContent.displayName = "DropdownMenuSubContent";
-const DropdownMenuContent = react.default.forwardRef(({ className, sideOffset = 6, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.Content, {
+const DropdownMenuContent = react.default.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.Content, {
 	ref,
 	className: [dropdownContent, className].filter(Boolean).join(" "),
 	sideOffset,
@@ -1685,20 +1649,7 @@ const DropdownMenuCheckboxItem = react.default.forwardRef(({ className, children
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "12",
-			height: "12",
-			viewBox: "0 0 12 12",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M2 6L5 9L10 3",
-				stroke: "currentColor",
-				strokeWidth: "1.5",
-				strokeLinecap: "round",
-				strokeLinejoin: "round"
-			})
-		}) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
 	}), children]
 }));
 DropdownMenuCheckboxItem.displayName = "DropdownMenuCheckboxItem";
@@ -1708,17 +1659,9 @@ const DropdownMenuRadioItem = react.default.forwardRef(({ className, children, .
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 8 8",
-			fill: "currentColor",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
-				cx: "4",
-				cy: "4",
-				r: "4"
-			})
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -1822,9 +1765,14 @@ const inputWrapperRecipe = (0, _vanilla_extract_recipes.recipe)({
 	} },
 	defaultVariants: { fullWidth: false }
 });
+/**
+* Input — shadcn v4 aligned.
+* Uses shadow-xs, border-input, dark bg-input/30 pattern.
+*/
 const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		width: "100%",
+		minWidth: 0,
 		backgroundColor: _hydrotik_tokens.vars.color.input,
 		color: _hydrotik_tokens.vars.color.text,
 		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
@@ -1832,23 +1780,23 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
 		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal,
-		transition: [`border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`, `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`].join(", "),
+		boxShadow: _hydrotik_tokens.vars.shadow.xs,
+		outline: "none",
+		transition: [`color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`, `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`].join(", "),
 		selectors: {
 			"&::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
-			"&:hover:not(:disabled):not([aria-invalid=\"true\"])": { borderColor: _hydrotik_tokens.vars.color.textMuted },
 			"&:focus-visible": {
-				outline: "none",
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
 				cursor: "not-allowed",
-				backgroundColor: _hydrotik_tokens.vars.color.surface
+				pointerEvents: "none"
 			},
 			"&[aria-invalid=\"true\"]": {
 				borderColor: _hydrotik_tokens.vars.color.destructive,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 			}
 		}
 	},
@@ -1861,8 +1809,8 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 		},
 		md: {
 			height: _hydrotik_tokens.vars.space["8"],
-			paddingLeft: _hydrotik_tokens.vars.space["2_5"],
-			paddingRight: _hydrotik_tokens.vars.space["2_5"],
+			paddingLeft: _hydrotik_tokens.vars.space["3"],
+			paddingRight: _hydrotik_tokens.vars.space["3"],
 			fontSize: _hydrotik_tokens.vars.font.size.sm
 		},
 		lg: {
@@ -2144,19 +2092,7 @@ const MenubarCheckboxItem = react.default.forwardRef(({ className, children, che
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		}) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
 	}), children]
 }));
 MenubarCheckboxItem.displayName = "MenubarCheckboxItem";
@@ -2167,18 +2103,9 @@ const MenubarRadioItem = react.default.forwardRef(({ className, children, ...pro
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
-				cx: "7.5",
-				cy: "7.5",
-				r: "4.5",
-				fill: "currentColor"
-			})
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -2206,17 +2133,10 @@ const MenubarSubTrigger = react.default.forwardRef(({ className, inset, children
 	className: [menubarSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
+		"aria-hidden": true
 	})]
 }));
 MenubarSubTrigger.displayName = "MenubarSubTrigger";
@@ -2387,20 +2307,10 @@ const NavigationMenuTrigger = react.default.forwardRef(({ className, children, .
 	ref,
 	className: [navigationMenuTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "10",
-		height: "10",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, {
+		size: 12,
 		"aria-hidden": true,
-		style: {
-			transition: "transform 200ms",
-			transform: "var(--radix-navigation-menu-trigger-open, rotate(0deg))"
-		},
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z",
-			fill: "currentColor"
-		})
+		style: { transition: "transform 200ms" }
 	})]
 }));
 NavigationMenuTrigger.displayName = "NavigationMenuTrigger";
@@ -2533,41 +2443,24 @@ const PaginationPrevious = ({ className, ...props }) => /* @__PURE__ */ (0, reac
 	"aria-label": "Go to previous page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z",
-			fill: "currentColor"
-		})
-	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Previous" })]
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronLeft, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Previous" })]
 });
 PaginationPrevious.displayName = "PaginationPrevious";
 const PaginationNext = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(PaginationLink, {
 	"aria-label": "Go to next page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Next" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
-	})]
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Next" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, { size: 16 })]
 });
 PaginationNext.displayName = "PaginationNext";
-const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 	"aria-hidden": true,
 	className: [paginationEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: "···"
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.MoreHorizontal, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		className: "sr-only",
+		children: "More pages"
+	})]
 });
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
@@ -2634,7 +2527,7 @@ const popoverClose = (0, _vanilla_extract_css.style)({
 const Popover = _radix_ui_react_popover.Root;
 const PopoverTrigger = _radix_ui_react_popover.Trigger;
 const PopoverAnchor = _radix_ui_react_popover.Anchor;
-const PopoverContent = react.default.forwardRef(({ className, align = "center", sideOffset = 6, showArrow = false, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_popover.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_popover.Content, {
+const PopoverContent = react.default.forwardRef(({ className, align = "center", sideOffset = 4, showArrow = false, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_popover.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_popover.Content, {
 	ref,
 	align,
 	sideOffset,
@@ -2648,36 +2541,32 @@ const PopoverClose = react.default.forwardRef(({ className, children, ...props }
 	className: [popoverClose, className].filter(Boolean).join(" "),
 	"aria-label": "Close",
 	...props,
-	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "14",
-		height: "14",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-			fill: "currentColor"
-		})
-	})
+	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 14 })
 }));
 PopoverClose.displayName = "PopoverClose";
 
 //#endregion
 //#region src/components/Progress/Progress.css.ts
+/**
+* Progress — shadcn v4 aligned.
+* Track: primary/20 (20% of primary color)
+* Indicator: solid primary
+* Height: 8px (h-2)
+*/
 const progressRoot = (0, _vanilla_extract_css.style)({
 	position: "relative",
 	width: "100%",
 	height: "8px",
 	overflow: "hidden",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
-	backgroundColor: _hydrotik_tokens.vars.color.secondary
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 20%, transparent)`
 });
 const progressIndicator = (0, _vanilla_extract_css.style)({
 	height: "100%",
 	width: "100%",
+	flex: 1,
 	backgroundColor: _hydrotik_tokens.vars.color.primary,
-	borderRadius: "inherit",
-	transition: `transform ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
 });
 
 //#endregion
@@ -2695,9 +2584,14 @@ Progress.displayName = "Progress";
 
 //#endregion
 //#region src/components/RadioGroup/RadioGroup.css.ts
+/**
+* RadioGroup — shadcn v4 aligned.
+* 16px circle, shadow-xs, primary border when checked, inner dot.
+*/
 const radioGroupRoot = (0, _vanilla_extract_css.style)({
 	display: "grid",
-	gap: _hydrotik_tokens.vars.space["2"]
+	gap: _hydrotik_tokens.vars.space["2"],
+	width: "100%"
 });
 const radioGroupItem = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
@@ -2705,17 +2599,18 @@ const radioGroupItem = (0, _vanilla_extract_css.style)({
 	justifyContent: "center",
 	width: "16px",
 	height: "16px",
+	aspectRatio: "1",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	backgroundColor: _hydrotik_tokens.vars.color.input,
+	boxShadow: _hydrotik_tokens.vars.shadow.xs,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	outline: "none",
+	transition: `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { borderColor: _hydrotik_tokens.vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: _hydrotik_tokens.vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 		},
 		"&[data-state=\"checked\"]": { borderColor: _hydrotik_tokens.vars.color.primary },
 		"&:disabled": {
@@ -2841,6 +2736,13 @@ const slideUpAndFade = (0, _vanilla_extract_css.keyframes)({
 		transform: "translateY(0)"
 	}
 });
+/**
+* Select — shadcn v4 aligned.
+* - Trigger: shadow-xs, border-input, dark bg
+* - Content: bg-popover (surfaceElevated)
+* - Labels: no uppercase
+* - Item highlight: ghostHover, no text color change
+*/
 const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-flex",
@@ -2855,14 +2757,15 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
 		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal,
+		boxShadow: _hydrotik_tokens.vars.shadow.xs,
 		cursor: "default",
 		outline: "none",
-		transition: `border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+		whiteSpace: "nowrap",
+		transition: `color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 		selectors: {
-			"&:hover": { borderColor: _hydrotik_tokens.vars.color.textMuted },
-			"&:focus": {
+			"&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 			},
 			"&[data-placeholder]": { color: _hydrotik_tokens.vars.color.placeholder },
 			"&[data-disabled]": {
@@ -2881,7 +2784,7 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 			},
 			md: {
 				height: _hydrotik_tokens.vars.space["8"],
-				padding: `0 ${_hydrotik_tokens.vars.space["2_5"]}`
+				padding: `0 ${_hydrotik_tokens.vars.space["3"]}`
 			},
 			lg: {
 				height: _hydrotik_tokens.vars.space["10"],
@@ -2891,9 +2794,9 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 		},
 		isError: { true: {
 			borderColor: _hydrotik_tokens.vars.color.destructive,
-			selectors: { "&:focus": {
+			selectors: { "&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.destructive,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 			} }
 		} }
 	},
@@ -2907,7 +2810,7 @@ const selectContent = (0, _vanilla_extract_css.style)({
 	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
-	boxShadow: _hydrotik_tokens.vars.shadow.lg,
+	boxShadow: _hydrotik_tokens.vars.shadow.md,
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
 	minWidth: "var(--radix-select-trigger-width)",
 	maxHeight: "var(--radix-select-content-available-height)",
@@ -2924,6 +2827,7 @@ const selectItem = (0, _vanilla_extract_css.style)({
 	alignItems: "center",
 	gap: _hydrotik_tokens.vars.space["2"],
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
+	paddingRight: _hydrotik_tokens.vars.space["8"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.text,
@@ -2937,30 +2841,27 @@ const selectItem = (0, _vanilla_extract_css.style)({
 		"&[data-disabled]": {
 			opacity: "0.5",
 			pointerEvents: "none"
-		},
-		"&[data-state=\"checked\"]": { fontWeight: _hydrotik_tokens.vars.font.weight.medium }
+		}
 	}
 });
 const selectItemIndicator = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	right: _hydrotik_tokens.vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["4"],
-	flexShrink: 0,
-	color: _hydrotik_tokens.vars.color.primary
+	width: "14px",
+	height: "14px"
 });
 const selectLabel = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	textTransform: "uppercase",
-	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide
+	color: _hydrotik_tokens.vars.color.textMuted
 });
 const selectSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
 	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle,
-	margin: `${_hydrotik_tokens.vars.space["1"]} 0`
+	margin: `${_hydrotik_tokens.vars.space["1"]} -${_hydrotik_tokens.vars.space["1"]}`
 });
 const selectScrollButton = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -2972,7 +2873,8 @@ const selectScrollButton = (0, _vanilla_extract_css.style)({
 });
 const selectIcon = (0, _vanilla_extract_css.style)({
 	color: _hydrotik_tokens.vars.color.textMuted,
-	flexShrink: 0
+	flexShrink: 0,
+	opacity: "0.5"
 });
 
 //#endregion
@@ -2989,20 +2891,7 @@ const SelectTrigger = react.default.forwardRef(({ className, children, size = "m
 	...props,
 	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.Icon, {
 		className: selectIcon,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "12",
-			height: "12",
-			viewBox: "0 0 12 12",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M2.5 4.5L6 8L9.5 4.5",
-				stroke: "currentColor",
-				strokeWidth: "1.5",
-				strokeLinecap: "round",
-				strokeLinejoin: "round"
-			})
-		})
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, { size: 16 })
 	})]
 }));
 SelectTrigger.displayName = "SelectTrigger";
@@ -3010,40 +2899,14 @@ const SelectScrollUpButton = react.default.forwardRef(({ className, ...props }, 
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M2.5 7.5L6 4L9.5 7.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronUp, { size: 16 })
 }));
 SelectScrollUpButton.displayName = "SelectScrollUpButton";
 const SelectScrollDownButton = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ScrollDownButton, {
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M2.5 4.5L6 8L9.5 4.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, { size: 16 })
 }));
 SelectScrollDownButton.displayName = "SelectScrollDownButton";
 const SelectContent = react.default.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_select.Content, {
@@ -3072,26 +2935,12 @@ const SelectItem = react.default.forwardRef(({ className, children, ...props }, 
 	ref,
 	className: [selectItem, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectItemIndicator, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemText, { children })]
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		className: selectItemIndicator,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
+	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemText, { children })]
 }));
 SelectItem.displayName = "SelectItem";
-const SelectItemIndicator = () => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemIndicator, {
-	className: selectItemIndicator,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M2 6L5 9L10 3",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
-});
 const SelectSeparator = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.Separator, {
 	ref,
 	className: [selectSeparator, className].filter(Boolean).join(" "),
@@ -3136,8 +2985,14 @@ const overlayShow = (0, _vanilla_extract_css.keyframes)({
 	from: { opacity: "0" },
 	to: { opacity: "1" }
 });
+/**
+* Sheet — shadcn v4 aligned.
+* - Overlay: black/50
+* - Content: bg-background (not surfaceOverlay)
+* - Side-based animations
+*/
 const sheetOverlay = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: _hydrotik_tokens.vars.zIndex.overlay,
@@ -3163,10 +3018,11 @@ const sheetContent = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		position: "fixed",
 		zIndex: _hydrotik_tokens.vars.zIndex.modal,
-		backgroundColor: _hydrotik_tokens.vars.color.surfaceOverlay,
-		boxShadow: _hydrotik_tokens.vars.shadow.xl,
+		backgroundColor: _hydrotik_tokens.vars.color.background,
+		boxShadow: _hydrotik_tokens.vars.shadow.lg,
 		display: "flex",
 		flexDirection: "column",
+		gap: _hydrotik_tokens.vars.space["4"],
 		outline: "none"
 	},
 	variants: { side: {
@@ -3174,37 +3030,35 @@ const sheetContent = (0, _vanilla_extract_recipes.recipe)({
 			top: 0,
 			right: 0,
 			height: "100%",
-			width: "400px",
-			maxWidth: "100vw",
+			width: "75%",
+			maxWidth: "24rem",
 			borderLeft: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-			animation: `${slideInFromRight$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+			animation: `${slideInFromRight$1} 500ms ${_hydrotik_tokens.vars.motion.easing.default}`
 		},
 		left: {
 			top: 0,
 			left: 0,
 			height: "100%",
-			width: "400px",
-			maxWidth: "100vw",
+			width: "75%",
+			maxWidth: "24rem",
 			borderRight: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-			animation: `${slideInFromLeft} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+			animation: `${slideInFromLeft} 500ms ${_hydrotik_tokens.vars.motion.easing.default}`
 		},
 		top: {
 			top: 0,
 			left: 0,
 			right: 0,
 			height: "auto",
-			maxHeight: "80vh",
 			borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-			animation: `${slideInFromTop} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+			animation: `${slideInFromTop} 500ms ${_hydrotik_tokens.vars.motion.easing.default}`
 		},
 		bottom: {
 			bottom: 0,
 			left: 0,
 			right: 0,
 			height: "auto",
-			maxHeight: "80vh",
 			borderTop: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-			animation: `${slideInFromBottom} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+			animation: `${slideInFromBottom} 500ms ${_hydrotik_tokens.vars.motion.easing.default}`
 		}
 	} },
 	defaultVariants: { side: "right" }
@@ -3212,33 +3066,29 @@ const sheetContent = (0, _vanilla_extract_recipes.recipe)({
 const sheetHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["2"],
-	padding: _hydrotik_tokens.vars.space["4"],
-	paddingBottom: 0
+	gap: _hydrotik_tokens.vars.space["1_5"],
+	padding: _hydrotik_tokens.vars.space["4"]
 });
 const sheetFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column",
 	gap: _hydrotik_tokens.vars.space["2"],
 	padding: _hydrotik_tokens.vars.space["4"],
-	paddingTop: 0
+	marginTop: "auto"
 });
 const sheetBody = (0, _vanilla_extract_css.style)({
 	flex: 1,
 	overflow: "auto",
-	padding: _hydrotik_tokens.vars.space["4"]
+	padding: `0 ${_hydrotik_tokens.vars.space["4"]}`
 });
 const sheetTitle = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.lg,
+	fontSize: _hydrotik_tokens.vars.font.size.md,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.text,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight
+	color: _hydrotik_tokens.vars.color.text
 });
 const sheetDescription = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
+	color: _hydrotik_tokens.vars.color.textMuted
 });
 const sheetClose = (0, _vanilla_extract_css.style)({
 	position: "absolute",
@@ -3247,19 +3097,17 @@ const sheetClose = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["8"],
-	height: _hydrotik_tokens.vars.space["8"],
+	width: _hydrotik_tokens.vars.space["6"],
+	height: _hydrotik_tokens.vars.space["6"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	color: _hydrotik_tokens.vars.color.textMuted,
 	backgroundColor: "transparent",
 	border: "none",
 	cursor: "pointer",
-	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	opacity: "0.7",
+	transition: `opacity ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": {
-			color: _hydrotik_tokens.vars.color.text,
-			backgroundColor: _hydrotik_tokens.vars.color.ghostHover
-		},
+		"&:hover": { opacity: "1" },
 		"&:focus-visible": {
 			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -3279,24 +3127,17 @@ const SheetOverlay = react.default.forwardRef(({ className, ...props }, ref) => 
 	...props
 }));
 SheetOverlay.displayName = "SheetOverlay";
-const SheetContent = react.default.forwardRef(({ side = "right", showClose = true, className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(SheetPortal, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SheetOverlay, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Content, {
+const SheetContent = react.default.forwardRef(({ side = "right", showCloseButton = true, className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(SheetPortal, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SheetOverlay, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Content, {
 	ref,
 	className: [sheetContent({ side }), className].filter(Boolean).join(" "),
 	...props,
-	children: [children, showClose && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dialog.Close, {
+	children: [children, showCloseButton && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Close, {
 		className: sheetClose,
 		"aria-label": "Close",
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-				d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-				fill: "currentColor"
-			})
-		})
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: "sr-only",
+			children: "Close"
+		})]
 	})]
 })] }));
 SheetContent.displayName = "SheetContent";
@@ -3351,6 +3192,12 @@ Skeleton.displayName = "Skeleton";
 
 //#endregion
 //#region src/components/Slider/Slider.css.ts
+/**
+* Slider — shadcn v4 aligned.
+* Track: bg-muted (secondary), h-1.5
+* Range: bg-primary
+* Thumb: white bg, primary border, ring on hover/focus
+*/
 const sliderRoot = (0, _vanilla_extract_css.style)({
 	position: "relative",
 	display: "flex",
@@ -3358,7 +3205,6 @@ const sliderRoot = (0, _vanilla_extract_css.style)({
 	touchAction: "none",
 	userSelect: "none",
 	alignItems: "center",
-	cursor: "pointer",
 	selectors: { "&[data-disabled]": {
 		opacity: "0.5",
 		cursor: "not-allowed"
@@ -3375,23 +3221,24 @@ const sliderTrack = (0, _vanilla_extract_css.style)({
 const sliderRange = (0, _vanilla_extract_css.style)({
 	position: "absolute",
 	height: "100%",
-	backgroundColor: _hydrotik_tokens.vars.color.primary,
-	borderRadius: "inherit"
+	backgroundColor: _hydrotik_tokens.vars.color.primary
 });
 const sliderThumb = (0, _vanilla_extract_css.style)({
 	display: "block",
 	width: "16px",
 	height: "16px",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
-	backgroundColor: _hydrotik_tokens.vars.color.primaryForeground,
+	backgroundColor: "#ffffff",
 	border: `2px solid ${_hydrotik_tokens.vars.color.primary}`,
 	boxShadow: _hydrotik_tokens.vars.shadow.sm,
-	transition: `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	transition: `color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	outline: "none",
 	selectors: {
-		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 20%, transparent)` },
-		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
+		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)` },
+		"&:focus-visible": { boxShadow: `0 0 0 4px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)` },
+		"&:disabled": {
+			opacity: "0.5",
+			pointerEvents: "none"
 		}
 	}
 });
@@ -3455,23 +3302,32 @@ Spinner.displayName = "Spinner";
 
 //#endregion
 //#region src/components/Switch/Switch.css.ts
+/**
+* Switch — shadcn v4 aligned.
+* - Unchecked: bg-input (border-ish color)
+* - Checked: bg-primary
+* - Border transparent, shadow-xs, rounded-full
+* - Default: 32x18px, thumb 16px
+*/
 const switchRoot = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
-	width: "36px",
-	height: "20px",
+	width: "32px",
+	height: "18px",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
-	backgroundColor: _hydrotik_tokens.vars.color.secondary,
-	border: "none",
-	padding: "2px",
+	backgroundColor: _hydrotik_tokens.vars.color.border,
+	border: "1px solid transparent",
+	padding: 0,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	boxShadow: _hydrotik_tokens.vars.shadow.xs,
+	outline: "none",
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
 		"&[data-state=\"checked\"]": { backgroundColor: _hydrotik_tokens.vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: _hydrotik_tokens.vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3484,10 +3340,14 @@ const switchThumb = (0, _vanilla_extract_css.style)({
 	width: "16px",
 	height: "16px",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
-	backgroundColor: _hydrotik_tokens.vars.color.primaryForeground,
+	backgroundColor: _hydrotik_tokens.vars.color.background,
 	boxShadow: _hydrotik_tokens.vars.shadow.sm,
+	pointerEvents: "none",
 	transition: `transform ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: { "&[data-state=\"checked\"]": { transform: "translateX(16px)" } }
+	selectors: {
+		"&[data-state=\"checked\"]": { transform: "translateX(calc(100% - 2px))" },
+		"&[data-state=\"unchecked\"]": { transform: "translateX(0)" }
+	}
 });
 
 //#endregion
@@ -3502,12 +3362,17 @@ Switch.displayName = "Switch";
 
 //#endregion
 //#region src/components/Table/Table.css.ts
+/**
+* Table — shadcn v4 aligned.
+* - Simple overflow wrapper, no border on wrapper
+* - th: text-foreground, font-medium, no uppercase, h-10
+* - Hover: bg-muted/50 (ghostHover)
+* - Selected: bg-muted (secondary)
+*/
 const tableWrapper = (0, _vanilla_extract_css.style)({
 	position: "relative",
 	width: "100%",
-	overflowX: "auto",
-	borderRadius: _hydrotik_tokens.vars.radii.md,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`
+	overflowX: "auto"
 });
 const table = (0, _vanilla_extract_css.style)({
 	width: "100%",
@@ -3517,7 +3382,7 @@ const table = (0, _vanilla_extract_css.style)({
 	color: _hydrotik_tokens.vars.color.text
 });
 const tableCaption = (0, _vanilla_extract_css.style)({
-	marginTop: _hydrotik_tokens.vars.space[3],
+	marginTop: _hydrotik_tokens.vars.space["4"],
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.textMuted,
 	textAlign: "center"
@@ -3527,7 +3392,7 @@ const tableBody = (0, _vanilla_extract_css.style)({});
 (0, _vanilla_extract_css.globalStyle)(`${tableBody} tr:last-child`, { borderBottom: "none" });
 const tableFooter = (0, _vanilla_extract_css.style)({
 	borderTop: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.surface} 50%, transparent)`,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.secondary} 50%, transparent)`,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium
 });
 (0, _vanilla_extract_css.globalStyle)(`${tableFooter} tr:last-child`, { borderBottom: "none" });
@@ -3535,34 +3400,26 @@ const tableRow = (0, _vanilla_extract_css.style)({
 	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&[data-state=\"selected\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+		"&[data-state=\"selected\"]": { backgroundColor: _hydrotik_tokens.vars.color.secondary },
 		"&:hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover }
 	}
 });
 const tableHead = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	height: _hydrotik_tokens.vars.space["10"],
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
 	textAlign: "left",
 	verticalAlign: "middle",
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	textTransform: "uppercase",
-	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	whiteSpace: "nowrap",
-	selectors: {
-		"&:has([role=checkbox])": { paddingRight: 0 },
-		"&[data-align=\"right\"]": { textAlign: "right" },
-		"&[data-align=\"center\"]": { textAlign: "center" }
-	}
+	selectors: { "&:has([role=checkbox])": { paddingRight: 0 } }
 });
 const tableCell = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	padding: _hydrotik_tokens.vars.space["2"],
 	verticalAlign: "middle",
-	selectors: {
-		"&:has([role=checkbox])": { paddingRight: 0 },
-		"&[data-align=\"right\"]": { textAlign: "right" },
-		"&[data-align=\"center\"]": { textAlign: "center" }
-	}
+	whiteSpace: "nowrap",
+	selectors: { "&:has([role=checkbox])": { paddingRight: 0 } }
 });
 
 //#endregion
@@ -3623,58 +3480,64 @@ TableCell.displayName = "TableCell";
 
 //#endregion
 //#region src/components/Tabs/Tabs.css.ts
+/**
+* Tabs — shadcn v4 aligned.
+* - List: bg-muted (secondary), rounded-lg, 3px padding, no border
+* - Trigger: data-[state=active] gets bg-background + shadow-sm
+* - h-9 compact
+*/
 const tabsList = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	backgroundColor: _hydrotik_tokens.vars.color.secondary,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	borderRadius: _hydrotik_tokens.vars.radii.md,
-	padding: _hydrotik_tokens.vars.space["1"],
-	gap: _hydrotik_tokens.vars.space["0_5"]
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	padding: "3px",
+	gap: _hydrotik_tokens.vars.space["0_5"],
+	height: _hydrotik_tokens.vars.space["8"],
+	color: _hydrotik_tokens.vars.color.textMuted
 });
 const tabsTrigger = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
+	flex: 1,
+	height: "calc(100% - 1px)",
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"],
 	paddingTop: _hydrotik_tokens.vars.space["1"],
 	paddingBottom: _hydrotik_tokens.vars.space["1"],
-	paddingLeft: _hydrotik_tokens.vars.space["3"],
-	paddingRight: _hydrotik_tokens.vars.space["3"],
-	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	border: "1px solid transparent",
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 	color: _hydrotik_tokens.vars.color.textMuted,
 	cursor: "pointer",
-	border: "none",
 	backgroundColor: "transparent",
+	whiteSpace: "nowrap",
 	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	outline: "none",
+	gap: _hydrotik_tokens.vars.space["1_5"],
 	selectors: {
-		"&:hover": {
-			color: _hydrotik_tokens.vars.color.text,
-			backgroundColor: _hydrotik_tokens.vars.color.ghostHover
-		},
+		"&:hover": { color: _hydrotik_tokens.vars.color.text },
 		"&[data-state=\"active\"]": {
 			color: _hydrotik_tokens.vars.color.text,
-			backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
+			backgroundColor: _hydrotik_tokens.vars.color.background,
 			boxShadow: _hydrotik_tokens.vars.shadow.sm
 		},
 		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: _hydrotik_tokens.vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
-			cursor: "not-allowed"
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		}
 	}
 });
 const tabsContent = (0, _vanilla_extract_css.style)({
-	marginTop: _hydrotik_tokens.vars.space["3"],
-	selectors: { "&:focus-visible": {
-		outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-		outlineOffset: "2px",
-		borderRadius: _hydrotik_tokens.vars.radii.sm
-	} }
+	flex: 1,
+	outline: "none"
 });
 
 //#endregion
@@ -3701,10 +3564,14 @@ TabsContent.displayName = "TabsContent";
 
 //#endregion
 //#region src/components/Textarea/Textarea.css.ts
+/**
+* Textarea — shadcn v4 aligned.
+* border-input, shadow-xs, focus ring pattern.
+*/
 const textarea = (0, _vanilla_extract_css.style)({
 	width: "100%",
-	minHeight: "80px",
-	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["2_5"]}`,
+	minHeight: "4rem",
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
 	backgroundColor: _hydrotik_tokens.vars.color.input,
 	color: _hydrotik_tokens.vars.color.text,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
@@ -3713,22 +3580,23 @@ const textarea = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed,
 	resize: "vertical",
-	transition: `border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	boxShadow: _hydrotik_tokens.vars.shadow.xs,
+	outline: "none",
+	transition: `color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
 		"&::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
-		"&:hover:not(:disabled)": { borderColor: _hydrotik_tokens.vars.color.textMuted },
 		"&:focus-visible": {
-			outline: "none",
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
-			cursor: "not-allowed"
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		},
 		"&[aria-invalid=\"true\"]": {
 			borderColor: _hydrotik_tokens.vars.color.destructive,
-			boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 		}
 	}
 });
@@ -3887,17 +3755,7 @@ const ToastClose = react.default.forwardRef(({ className, ...props }, ref) => /*
 	className: [toastClose, className].filter(Boolean).join(" "),
 	"aria-label": "Dismiss notification",
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
-		width: "14",
-		height: "14",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
-			d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-			fill: "currentColor"
-		})
-	})
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 14 })
 }));
 ToastClose.displayName = "ToastClose";
 const ToastTitle = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_toast.Title, {
@@ -3915,6 +3773,12 @@ ToastDescription.displayName = "ToastDescription";
 
 //#endregion
 //#region src/components/Toggle/Toggle.css.ts
+/**
+* Toggle — shadcn v4 aligned.
+* - hover: bg-muted (secondary) + text-muted
+* - on: bg-accent (ghostHover) + text-foreground
+* - outline: border + shadow-xs
+*/
 const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-flex",
@@ -3929,19 +3793,21 @@ const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 		backgroundColor: "transparent",
 		color: _hydrotik_tokens.vars.color.textMuted,
 		cursor: "pointer",
-		transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+		whiteSpace: "nowrap",
+		outline: "none",
+		transition: `color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 		selectors: {
 			"&:hover": {
-				backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-				color: _hydrotik_tokens.vars.color.text
+				backgroundColor: _hydrotik_tokens.vars.color.secondary,
+				color: _hydrotik_tokens.vars.color.textMuted
 			},
 			"&[data-state=\"on\"]": {
 				backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
 				color: _hydrotik_tokens.vars.color.text
 			},
 			"&:focus-visible": {
-				outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-				outlineOffset: "2px"
+				borderColor: _hydrotik_tokens.vars.color.focusRing,
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -3955,27 +3821,29 @@ const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 			default: {},
 			outline: {
 				border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-				selectors: { "&[data-state=\"on\"]": {
-					backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-					borderColor: _hydrotik_tokens.vars.color.primary
-				} }
+				backgroundColor: "transparent",
+				boxShadow: _hydrotik_tokens.vars.shadow.xs,
+				selectors: { "&:hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } }
 			}
 		},
 		size: {
 			sm: {
 				height: _hydrotik_tokens.vars.space["7"],
 				paddingLeft: _hydrotik_tokens.vars.space["1_5"],
-				paddingRight: _hydrotik_tokens.vars.space["1_5"]
+				paddingRight: _hydrotik_tokens.vars.space["1_5"],
+				minWidth: _hydrotik_tokens.vars.space["7"]
 			},
 			md: {
 				height: _hydrotik_tokens.vars.space["8"],
-				paddingLeft: _hydrotik_tokens.vars.space["2_5"],
-				paddingRight: _hydrotik_tokens.vars.space["2_5"]
+				paddingLeft: _hydrotik_tokens.vars.space["2"],
+				paddingRight: _hydrotik_tokens.vars.space["2"],
+				minWidth: _hydrotik_tokens.vars.space["8"]
 			},
 			lg: {
 				height: _hydrotik_tokens.vars.space["10"],
-				paddingLeft: _hydrotik_tokens.vars.space["3"],
-				paddingRight: _hydrotik_tokens.vars.space["3"]
+				paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+				paddingRight: _hydrotik_tokens.vars.space["2_5"],
+				minWidth: _hydrotik_tokens.vars.space["10"]
 			}
 		}
 	},
@@ -4238,7 +4106,6 @@ exports.AlertDialogOverlay = AlertDialogOverlay;
 exports.AlertDialogPortal = AlertDialogPortal;
 exports.AlertDialogTitle = AlertDialogTitle;
 exports.AlertDialogTrigger = AlertDialogTrigger;
-exports.AlertIcon = AlertIcon;
 exports.AlertTitle = AlertTitle;
 exports.AspectRatio = AspectRatio;
 exports.Avatar = Avatar;
@@ -4369,7 +4236,6 @@ exports.Select = Select;
 exports.SelectContent = SelectContent;
 exports.SelectGroup = SelectGroup;
 exports.SelectItem = SelectItem;
-exports.SelectItemIndicator = SelectItemIndicator;
 exports.SelectLabel = SelectLabel;
 exports.SelectScrollDownButton = SelectScrollDownButton;
 exports.SelectScrollUpButton = SelectScrollUpButton;

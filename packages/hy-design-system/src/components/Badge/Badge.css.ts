@@ -1,64 +1,62 @@
 import { recipe } from '@vanilla-extract/recipes';
 import { vars } from '@hydrotik/tokens';
 
+/**
+ * Badge recipe — shadcn v4 aligned.
+ * - `default` = solid primary bg (was missing)
+ * - `secondary` = muted bg
+ * - `destructive` = solid destructive bg
+ * - `outline` = transparent with border
+ * - Kept `success` / `warning` as useful extensions
+ * - Rounded full (pill), no size variants (shadcn has single size)
+ */
 export const badgeRecipe = recipe({
   base: {
     display: 'inline-flex',
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: vars.radii.full,
+    border: '1px solid transparent',
     fontWeight: vars.font.weight.medium,
     fontFamily: vars.font.family.sans,
+    fontSize: vars.font.size.xs,
     whiteSpace: 'nowrap',
     lineHeight: '1',
-    border: '1px solid transparent',
+    padding: `${vars.space['0_5']} ${vars.space['2_5']}`,
+    gap: vars.space['1'],
+    width: 'fit-content',
+    flexShrink: 0,
+    overflow: 'hidden',
+    transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   },
   variants: {
     variant: {
       default: {
+        backgroundColor: vars.color.primary,
+        color: vars.color.primaryForeground,
+      },
+      secondary: {
         backgroundColor: vars.color.secondary,
         color: vars.color.secondaryForeground,
-        borderColor: vars.color.border,
-      },
-      primary: {
-        backgroundColor: `color-mix(in srgb, ${vars.color.primary} 12%, transparent)`,
-        color: vars.color.primary,
-        borderColor: `color-mix(in srgb, ${vars.color.primary} 25%, transparent)`,
       },
       destructive: {
-        backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 12%, transparent)`,
-        color: vars.color.destructive,
-        borderColor: `color-mix(in srgb, ${vars.color.destructive} 25%, transparent)`,
-      },
-      success: {
-        backgroundColor: `color-mix(in srgb, ${vars.color.success} 12%, transparent)`,
-        color: vars.color.success,
-        borderColor: `color-mix(in srgb, ${vars.color.success} 25%, transparent)`,
-      },
-      warning: {
-        backgroundColor: `color-mix(in srgb, ${vars.color.warning} 12%, transparent)`,
-        color: vars.color.warning,
-        borderColor: `color-mix(in srgb, ${vars.color.warning} 25%, transparent)`,
+        backgroundColor: vars.color.destructive,
+        color: vars.color.destructiveForeground,
       },
       outline: {
         backgroundColor: 'transparent',
         color: vars.color.text,
         borderColor: vars.color.border,
       },
-    },
-    size: {
-      sm: {
-        fontSize: vars.font.size.xs,
-        padding: `2px ${vars.space['2']}`,
+      success: {
+        backgroundColor: vars.color.success,
+        color: vars.color.successForeground,
       },
-      md: {
-        fontSize: vars.font.size.xs,
-        padding: `${vars.space['0_5']} ${vars.space['2_5']}`,
-      },
-      lg: {
-        fontSize: vars.font.size.sm,
-        padding: `${vars.space['1']} ${vars.space['3']}`,
+      warning: {
+        backgroundColor: vars.color.warning,
+        color: vars.color.warningForeground,
       },
     },
   },
-  defaultVariants: { variant: 'default', size: 'md' },
+  defaultVariants: { variant: 'default' },
 });

@@ -68,6 +68,7 @@ const vars = (0, _vanilla_extract_css.createThemeContract)({
 		full: null
 	},
 	shadow: {
+		xs: null,
 		sm: null,
 		md: null,
 		lg: null,
@@ -197,6 +198,7 @@ const darkThemeClass = (0, _vanilla_extract_css.createTheme)(vars, {
 		full: "9999px"
 	},
 	shadow: {
+		xs: "0 1px 1px rgba(0,0,0,0.3)",
 		sm: "0 1px 2px rgba(0,0,0,0.4)",
 		md: "0 4px 8px rgba(0,0,0,0.5)",
 		lg: "0 8px 24px rgba(0,0,0,0.6)",
@@ -326,6 +328,7 @@ const lightThemeClass = (0, _vanilla_extract_css.createTheme)(vars, {
 		full: "9999px"
 	},
 	shadow: {
+		xs: "0 1px 1px rgba(0,0,0,0.04)",
 		sm: "0 1px 2px rgba(0,0,0,0.06)",
 		md: "0 4px 8px rgba(0,0,0,0.08)",
 		lg: "0 8px 24px rgba(0,0,0,0.1)",

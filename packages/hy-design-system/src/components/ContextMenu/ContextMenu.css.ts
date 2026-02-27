@@ -6,15 +6,19 @@ const slideIn = keyframes({
   to: { opacity: '1', transform: 'scale(1)' },
 });
 
+/**
+ * ContextMenu — shadcn v4 aligned.
+ * bg-popover (surfaceElevated), no text color change on highlight.
+ */
 export const contextMenuContent = style({
   zIndex: vars.zIndex.dropdown,
-  minWidth: '160px',
+  minWidth: '8rem',
   overflow: 'hidden',
   borderRadius: vars.radii.md,
   border: `1px solid ${vars.color.border}`,
   backgroundColor: vars.color.surfaceElevated,
   padding: vars.space['1'],
-  boxShadow: vars.shadow.lg,
+  boxShadow: vars.shadow.md,
   animation: `${slideIn} ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 });
 
@@ -27,7 +31,7 @@ export const contextMenuItem = style({
   padding: `${vars.space['1_5']} ${vars.space['2']}`,
   fontSize: vars.font.size.sm,
   color: vars.color.text,
-  cursor: 'pointer',
+  cursor: 'default',
   outline: 'none',
   userSelect: 'none',
   transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
@@ -36,7 +40,7 @@ export const contextMenuItem = style({
       backgroundColor: vars.color.ghostHover,
     },
     '&[data-disabled]': {
-      color: vars.color.textDisabled,
+      opacity: '0.5',
       pointerEvents: 'none',
     },
   },
@@ -47,14 +51,13 @@ export const contextMenuRadioItem = style([contextMenuItem, {}]);
 
 export const contextMenuLabel = style({
   padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.xs,
-  fontWeight: vars.font.weight.semibold,
-  color: vars.color.textMuted,
+  fontSize: vars.font.size.sm,
+  fontWeight: vars.font.weight.medium,
 });
 
 export const contextMenuSeparator = style({
   height: '1px',
-  margin: `${vars.space['1']} ${vars.space['0_5']}`,
+  margin: `${vars.space['1']} -${vars.space['1']}`,
   backgroundColor: vars.color.borderSubtle,
 });
 

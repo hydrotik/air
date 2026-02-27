@@ -7,8 +7,14 @@ const overlayShow = keyframes({
   to: { opacity: '1' },
 });
 
+/**
+ * Sheet — shadcn v4 aligned.
+ * - Overlay: black/50
+ * - Content: bg-background (not surfaceOverlay)
+ * - Side-based animations
+ */
 export const sheetOverlay = style({
-  backgroundColor: vars.color.overlay,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
   position: 'fixed',
   inset: 0,
   zIndex: vars.zIndex.overlay,
@@ -39,10 +45,11 @@ export const sheetContent = recipe({
   base: {
     position: 'fixed',
     zIndex: vars.zIndex.modal,
-    backgroundColor: vars.color.surfaceOverlay,
-    boxShadow: vars.shadow.xl,
+    backgroundColor: vars.color.background,
+    boxShadow: vars.shadow.lg,
     display: 'flex',
     flexDirection: 'column',
+    gap: vars.space['4'],
     outline: 'none',
   },
   variants: {
@@ -51,37 +58,35 @@ export const sheetContent = recipe({
         top: 0,
         right: 0,
         height: '100%',
-        width: '400px',
-        maxWidth: '100vw',
+        width: '75%',
+        maxWidth: '24rem',
         borderLeft: `1px solid ${vars.color.border}`,
-        animation: `${slideInFromRight} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
+        animation: `${slideInFromRight} 500ms ${vars.motion.easing.default}`,
       },
       left: {
         top: 0,
         left: 0,
         height: '100%',
-        width: '400px',
-        maxWidth: '100vw',
+        width: '75%',
+        maxWidth: '24rem',
         borderRight: `1px solid ${vars.color.border}`,
-        animation: `${slideInFromLeft} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
+        animation: `${slideInFromLeft} 500ms ${vars.motion.easing.default}`,
       },
       top: {
         top: 0,
         left: 0,
         right: 0,
         height: 'auto',
-        maxHeight: '80vh',
         borderBottom: `1px solid ${vars.color.border}`,
-        animation: `${slideInFromTop} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
+        animation: `${slideInFromTop} 500ms ${vars.motion.easing.default}`,
       },
       bottom: {
         bottom: 0,
         left: 0,
         right: 0,
         height: 'auto',
-        maxHeight: '80vh',
         borderTop: `1px solid ${vars.color.border}`,
-        animation: `${slideInFromBottom} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
+        animation: `${slideInFromBottom} 500ms ${vars.motion.easing.default}`,
       },
     },
   },
@@ -91,37 +96,33 @@ export const sheetContent = recipe({
 export const sheetHeader = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: vars.space['2'],
+  gap: vars.space['1_5'],
   padding: vars.space['4'],
-  paddingBottom: 0,
 });
 
 export const sheetFooter = style({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+  flexDirection: 'column',
   gap: vars.space['2'],
   padding: vars.space['4'],
-  paddingTop: 0,
+  marginTop: 'auto',
 });
 
 export const sheetBody = style({
   flex: 1,
   overflow: 'auto',
-  padding: vars.space['4'],
+  padding: `0 ${vars.space['4']}`,
 });
 
 export const sheetTitle = style({
-  fontSize: vars.font.size.lg,
+  fontSize: vars.font.size.md,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.text,
-  lineHeight: vars.font.lineHeight.tight,
 });
 
 export const sheetDescription = style({
   fontSize: vars.font.size.sm,
   color: vars.color.textMuted,
-  lineHeight: vars.font.lineHeight.relaxed,
 });
 
 export const sheetClose = style({
@@ -131,18 +132,18 @@ export const sheetClose = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: vars.space['8'],
-  height: vars.space['8'],
+  width: vars.space['6'],
+  height: vars.space['6'],
   borderRadius: vars.radii.sm,
   color: vars.color.textMuted,
   backgroundColor: 'transparent',
   border: 'none',
   cursor: 'pointer',
-  transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+  opacity: '0.7',
+  transition: `opacity ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&:hover': {
-      color: vars.color.text,
-      backgroundColor: vars.color.ghostHover,
+      opacity: '1',
     },
     '&:focus-visible': {
       outline: `2px solid ${vars.color.focusRing}`,

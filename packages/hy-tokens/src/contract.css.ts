@@ -91,6 +91,7 @@ export const vars = createThemeContract({
     full: null,
   },
   shadow: {
+    xs: null,
     sm: null,
     md: null,
     lg: null,

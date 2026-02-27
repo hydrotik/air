@@ -4,9 +4,9 @@ import { buttonRecipe, spinner } from './Button.css';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style variant */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'link';
   /** Size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
   /** Loading state — shows spinner, disables interaction */
   loading?: boolean;
   /** Stretch to fill container */
@@ -19,11 +19,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 /**
- * Button — primary interactive element.
+ * Button — primary interactive element (shadcn v4 aligned).
  *
  * @example
  * ```tsx
- * <Button variant="primary" size="md">Save changes</Button>
+ * <Button variant="default" size="md">Save changes</Button>
  * <Button variant="outline" loading>Submitting...</Button>
  * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
  * ```
@@ -31,7 +31,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
-      variant = 'primary',
+      variant = 'default',
       size = 'md',
       loading = false,
       fullWidth = false,

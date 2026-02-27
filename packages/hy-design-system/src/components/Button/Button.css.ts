@@ -17,6 +17,13 @@ export const spinner = style({
   flexShrink: 0,
 });
 
+/**
+ * Button recipe — shadcn v4 aligned.
+ * - `default` = primary CTA (was `primary`)
+ * - Added `link` variant
+ * - Uses `shadow.xs` on applicable variants
+ * - High-density sizing (sm=28, md=32, lg=40)
+ */
 export const buttonRecipe = recipe({
   base: {
     display: 'inline-flex',
@@ -26,12 +33,14 @@ export const buttonRecipe = recipe({
     fontFamily: vars.font.family.sans,
     fontWeight: vars.font.weight.medium,
     letterSpacing: vars.font.letterSpacing.normal,
+    fontSize: vars.font.size.sm,
     borderRadius: vars.radii.md,
     border: '1px solid transparent',
     cursor: 'pointer',
     textDecoration: 'none',
     whiteSpace: 'nowrap',
     flexShrink: 0,
+    outline: 'none',
     transition: [
       `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
       `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
@@ -41,8 +50,8 @@ export const buttonRecipe = recipe({
     ].join(', '),
     selectors: {
       '&:focus-visible': {
-        outline: `2px solid ${vars.color.focusRing}`,
-        outlineOffset: '2px',
+        borderColor: vars.color.focusRing,
+        boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
       },
       '&:disabled, &[aria-disabled="true"]': {
         opacity: '0.5',
@@ -53,27 +62,23 @@ export const buttonRecipe = recipe({
   },
   variants: {
     variant: {
-      primary: {
+      default: {
         backgroundColor: vars.color.primary,
         color: vars.color.primaryForeground,
         borderColor: vars.color.primary,
-        boxShadow: `0 1px 2px rgba(0,0,0,0.3)`,
         selectors: {
           '&:hover:not(:disabled)': {
-            filter: 'brightness(1.1)',
-          },
-          '&:active:not(:disabled)': {
-            filter: 'brightness(0.95)',
+            filter: 'brightness(0.9)',
           },
         },
       },
-      secondary: {
-        backgroundColor: vars.color.secondary,
-        color: vars.color.secondaryForeground,
-        borderColor: vars.color.border,
+      destructive: {
+        backgroundColor: vars.color.destructive,
+        color: vars.color.destructiveForeground,
+        borderColor: vars.color.destructive,
         selectors: {
           '&:hover:not(:disabled)': {
-            backgroundColor: vars.color.surfaceElevated,
+            filter: 'brightness(0.9)',
           },
         },
       },
@@ -81,9 +86,19 @@ export const buttonRecipe = recipe({
         backgroundColor: 'transparent',
         color: vars.color.text,
         borderColor: vars.color.border,
+        boxShadow: vars.shadow.xs,
         selectors: {
           '&:hover:not(:disabled)': {
             backgroundColor: vars.color.ghostHover,
+          },
+        },
+      },
+      secondary: {
+        backgroundColor: vars.color.secondary,
+        color: vars.color.secondaryForeground,
+        selectors: {
+          '&:hover:not(:disabled)': {
+            filter: 'brightness(0.8)',
           },
         },
       },
@@ -97,13 +112,15 @@ export const buttonRecipe = recipe({
           },
         },
       },
-      destructive: {
-        backgroundColor: vars.color.destructive,
-        color: vars.color.destructiveForeground,
-        borderColor: vars.color.destructive,
+      link: {
+        backgroundColor: 'transparent',
+        color: vars.color.primary,
+        borderColor: 'transparent',
+        textDecoration: 'none',
         selectors: {
           '&:hover:not(:disabled)': {
-            filter: 'brightness(1.1)',
+            textDecoration: 'underline',
+            textUnderlineOffset: '4px',
           },
         },
       },
@@ -111,9 +128,10 @@ export const buttonRecipe = recipe({
     size: {
       sm: {
         height: vars.space['7'],
-        paddingLeft: vars.space['2_5'],
-        paddingRight: vars.space['2_5'],
+        paddingLeft: vars.space['3'],
+        paddingRight: vars.space['3'],
         fontSize: vars.font.size.xs,
+        gap: vars.space['1_5'],
       },
       md: {
         height: vars.space['8'],
@@ -126,6 +144,21 @@ export const buttonRecipe = recipe({
         paddingLeft: vars.space['5'],
         paddingRight: vars.space['5'],
         fontSize: vars.font.size.sm,
+      },
+      icon: {
+        width: vars.space['8'],
+        height: vars.space['8'],
+        padding: 0,
+      },
+      'icon-sm': {
+        width: vars.space['7'],
+        height: vars.space['7'],
+        padding: 0,
+      },
+      'icon-lg': {
+        width: vars.space['10'],
+        height: vars.space['10'],
+        padding: 0,
       },
     },
     loading: {
@@ -142,7 +175,7 @@ export const buttonRecipe = recipe({
     },
   },
   defaultVariants: {
-    variant: 'primary',
+    variant: 'default',
     size: 'md',
     loading: false,
     fullWidth: false,

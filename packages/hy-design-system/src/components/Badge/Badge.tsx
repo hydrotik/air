@@ -2,15 +2,14 @@ import React from 'react';
 import { badgeRecipe } from './Badge.css';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'primary' | 'destructive' | 'success' | 'warning' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning';
 }
 
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ variant = 'default', size = 'md', className, ...props }, ref) => (
+  ({ variant = 'default', className, ...props }, ref) => (
     <span
       ref={ref}
-      className={[badgeRecipe({ variant, size }), className].filter(Boolean).join(' ')}
+      className={[badgeRecipe({ variant }), className].filter(Boolean).join(' ')}
       {...props}
     />
   ),

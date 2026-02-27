@@ -1,12 +1,17 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
+/**
+ * Table — shadcn v4 aligned.
+ * - Simple overflow wrapper, no border on wrapper
+ * - th: text-foreground, font-medium, no uppercase, h-10
+ * - Hover: bg-muted/50 (ghostHover)
+ * - Selected: bg-muted (secondary)
+ */
 export const tableWrapper = style({
   position: 'relative',
   width: '100%',
   overflowX: 'auto',
-  borderRadius: vars.radii.md,
-  border: `1px solid ${vars.color.border}`,
 });
 
 export const table = style({
@@ -18,7 +23,7 @@ export const table = style({
 });
 
 export const tableCaption = style({
-  marginTop: vars.space[3],
+  marginTop: vars.space['4'],
   fontSize: vars.font.size.sm,
   color: vars.color.textMuted,
   textAlign: 'center',
@@ -36,7 +41,7 @@ globalStyle(`${tableBody} tr:last-child`, {
 
 export const tableFooter = style({
   borderTop: `1px solid ${vars.color.border}`,
-  backgroundColor: `color-mix(in srgb, ${vars.color.surface} 50%, transparent)`,
+  backgroundColor: `color-mix(in srgb, ${vars.color.secondary} 50%, transparent)`,
   fontWeight: vars.font.weight.medium,
 });
 
@@ -49,7 +54,7 @@ export const tableRow = style({
   transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&[data-state="selected"]': {
-      backgroundColor: vars.color.ghostHover,
+      backgroundColor: vars.color.secondary,
     },
     '&:hover': {
       backgroundColor: vars.color.ghostHover,
@@ -58,28 +63,24 @@ export const tableRow = style({
 });
 
 export const tableHead = style({
-  padding: `${vars.space['2']} ${vars.space['3']}`,
+  height: vars.space['10'],
+  padding: `0 ${vars.space['2']}`,
   textAlign: 'left',
   verticalAlign: 'middle',
-  fontWeight: vars.font.weight.semibold,
-  color: vars.color.textMuted,
-  fontSize: vars.font.size.xs,
-  textTransform: 'uppercase',
-  letterSpacing: vars.font.letterSpacing.wide,
+  fontWeight: vars.font.weight.medium,
+  color: vars.color.text,
+  fontSize: vars.font.size.sm,
   whiteSpace: 'nowrap',
   selectors: {
     '&:has([role=checkbox])': { paddingRight: 0 },
-    '&[data-align="right"]': { textAlign: 'right' },
-    '&[data-align="center"]': { textAlign: 'center' },
   },
 });
 
 export const tableCell = style({
-  padding: `${vars.space['2']} ${vars.space['3']}`,
+  padding: vars.space['2'],
   verticalAlign: 'middle',
+  whiteSpace: 'nowrap',
   selectors: {
     '&:has([role=checkbox])': { paddingRight: 0 },
-    '&[data-align="right"]': { textAlign: 'right' },
-    '&[data-align="center"]': { textAlign: 'center' },
   },
 });

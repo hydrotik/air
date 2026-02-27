@@ -1,6 +1,12 @@
 import { recipe } from '@vanilla-extract/recipes';
 import { vars } from '@hydrotik/tokens';
 
+/**
+ * Toggle — shadcn v4 aligned.
+ * - hover: bg-muted (secondary) + text-muted
+ * - on: bg-accent (ghostHover) + text-foreground
+ * - outline: border + shadow-xs
+ */
 export const toggleRecipe = recipe({
   base: {
     display: 'inline-flex',
@@ -15,19 +21,21 @@ export const toggleRecipe = recipe({
     backgroundColor: 'transparent',
     color: vars.color.textMuted,
     cursor: 'pointer',
-    transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+    whiteSpace: 'nowrap',
+    outline: 'none',
+    transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}, background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
     selectors: {
       '&:hover': {
-        backgroundColor: vars.color.ghostHover,
-        color: vars.color.text,
+        backgroundColor: vars.color.secondary,
+        color: vars.color.textMuted,
       },
       '&[data-state="on"]': {
         backgroundColor: vars.color.ghostHover,
         color: vars.color.text,
       },
       '&:focus-visible': {
-        outline: `2px solid ${vars.color.focusRing}`,
-        outlineOffset: '2px',
+        borderColor: vars.color.focusRing,
+        boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
       },
       '&:disabled': {
         opacity: '0.5',
@@ -41,10 +49,11 @@ export const toggleRecipe = recipe({
       default: {},
       outline: {
         border: `1px solid ${vars.color.border}`,
+        backgroundColor: 'transparent',
+        boxShadow: vars.shadow.xs,
         selectors: {
-          '&[data-state="on"]': {
+          '&:hover': {
             backgroundColor: vars.color.ghostHover,
-            borderColor: vars.color.primary,
           },
         },
       },
@@ -54,16 +63,19 @@ export const toggleRecipe = recipe({
         height: vars.space['7'],
         paddingLeft: vars.space['1_5'],
         paddingRight: vars.space['1_5'],
+        minWidth: vars.space['7'],
       },
       md: {
         height: vars.space['8'],
-        paddingLeft: vars.space['2_5'],
-        paddingRight: vars.space['2_5'],
+        paddingLeft: vars.space['2'],
+        paddingRight: vars.space['2'],
+        minWidth: vars.space['8'],
       },
       lg: {
         height: vars.space['10'],
-        paddingLeft: vars.space['3'],
-        paddingRight: vars.space['3'],
+        paddingLeft: vars.space['2_5'],
+        paddingRight: vars.space['2_5'],
+        minWidth: vars.space['10'],
       },
     },
   },

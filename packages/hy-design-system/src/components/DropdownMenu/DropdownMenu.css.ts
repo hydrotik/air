@@ -21,14 +21,22 @@ const slideRightAndFade = keyframes({
   to: { opacity: 1, transform: 'translateX(0)' },
 });
 
+/**
+ * DropdownMenu — shadcn v4 aligned.
+ * - bg-popover (surfaceElevated)
+ * - No text color change on highlight (focus:bg-accent only)
+ * - Labels: font-medium, no uppercase
+ */
 export const dropdownContent = style({
-  minWidth: '180px',
+  minWidth: '8rem',
   backgroundColor: vars.color.surfaceElevated,
+  color: vars.color.text,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.md,
-  boxShadow: vars.shadow.lg,
+  boxShadow: vars.shadow.md,
   padding: vars.space['1'],
   zIndex: vars.zIndex.dropdown,
+  overflow: 'hidden',
   animationDuration: vars.motion.duration.normal,
   animationTimingFunction: vars.motion.easing.default,
   selectors: {
@@ -50,6 +58,7 @@ export const dropdownItem = style({
   cursor: 'default',
   userSelect: 'none',
   outline: 'none',
+  position: 'relative',
   transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&[data-highlighted]': {
@@ -65,9 +74,10 @@ export const dropdownItem = style({
 export const dropdownDestructiveItem = style([
   dropdownItem,
   {
+    color: vars.color.destructive,
     selectors: {
       '&[data-highlighted]': {
-        backgroundColor: vars.color.ghostHover,
+        backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 10%, transparent)`,
         color: vars.color.destructive,
       },
     },
@@ -76,33 +86,30 @@ export const dropdownDestructiveItem = style([
 
 export const dropdownLabel = style({
   padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.xs,
-  fontWeight: vars.font.weight.semibold,
-  color: vars.color.textMuted,
-  textTransform: 'uppercase',
-  letterSpacing: vars.font.letterSpacing.wide,
+  fontSize: vars.font.size.sm,
+  fontWeight: vars.font.weight.medium,
 });
 
 export const dropdownSeparator = style({
   height: '1px',
   backgroundColor: vars.color.borderSubtle,
-  margin: `${vars.space['1']} 0`,
+  margin: `${vars.space['1']} -${vars.space['1']}`,
 });
 
 export const dropdownItemIndicator = style({
+  position: 'absolute',
+  left: vars.space['2'],
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: vars.space['4'],
-  flexShrink: 0,
-  color: vars.color.primary,
+  width: '14px',
+  height: '14px',
 });
 
 export const dropdownCheckboxItem = style([
   dropdownItem,
   {
     paddingLeft: vars.space['8'],
-    position: 'relative',
   },
 ]);
 

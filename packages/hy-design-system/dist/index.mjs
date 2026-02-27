@@ -1,5 +1,7 @@
 import React, { forwardRef, useId } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import * as Icons from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, MoreHorizontal, Search, X } from "lucide-react";
 import { globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@hydrotik/tokens";
 import { jsx, jsxs } from "react/jsx-runtime";
@@ -30,7 +32,6 @@ import * as ToastPrimitive from "@radix-ui/react-toast";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import * as Icons from "lucide-react";
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = keyframes({
@@ -41,54 +42,70 @@ const slideUp = keyframes({
 	from: { height: "var(--radix-accordion-content-height)" },
 	to: { height: "0" }
 });
-const accordionRoot = style({
-	borderRadius: vars.radii.lg,
-	border: `1px solid ${vars.color.border}`,
-	overflow: "hidden"
-});
+/**
+* Accordion — shadcn v4 aligned.
+* No wrapping border container — items separated by bottom border.
+*/
+const accordionRoot = style({});
 const accordionItem = style({
-	borderBottom: `1px solid ${vars.color.borderSubtle}`,
+	borderBottom: `1px solid ${vars.color.border}`,
 	selectors: { "&:last-child": { borderBottom: "none" } }
 });
 const accordionTrigger = style({
 	display: "flex",
-	alignItems: "center",
+	flex: 1,
+	alignItems: "flex-start",
 	justifyContent: "space-between",
+	gap: vars.space["4"],
 	width: "100%",
-	padding: `${vars.space["2_5"]} ${vars.space["3"]}`,
+	padding: `${vars.space["4"]} 0`,
 	fontFamily: vars.font.family.sans,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
 	color: vars.color.text,
 	backgroundColor: "transparent",
 	border: "none",
+	borderRadius: vars.radii.md,
 	cursor: "pointer",
 	textAlign: "left",
-	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	outline: "none",
+	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { backgroundColor: vars.color.ghostHover },
+		"&:hover": { textDecoration: "underline" },
 		"&:focus-visible": {
 			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "-2px"
+			outlineOffset: "2px",
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+		},
+		"&:disabled": {
+			opacity: "0.5",
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		}
 	}
 });
 const accordionChevron = style({
 	transition: `transform ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
 	flexShrink: 0,
-	color: vars.color.textMuted
+	color: vars.color.textMuted,
+	marginTop: "2px",
+	width: "16px",
+	height: "16px",
+	pointerEvents: "none"
 });
 globalStyle(`${accordionTrigger}[data-state="open"] ${accordionChevron}`, { transform: "rotate(180deg)" });
 const accordionContent = style({
 	overflow: "hidden",
 	fontSize: vars.font.size.sm,
-	color: vars.color.textMuted,
 	selectors: {
 		"&[data-state=\"open\"]": { animation: `${slideDown} ${vars.motion.duration.normal} ${vars.motion.easing.default}` },
 		"&[data-state=\"closed\"]": { animation: `${slideUp} ${vars.motion.duration.normal} ${vars.motion.easing.default}` }
 	}
 });
-const accordionContentInner = style({ padding: `0 ${vars.space["3"]} ${vars.space["3"]}` });
+const accordionContentInner = style({
+	paddingTop: 0,
+	paddingBottom: vars.space["4"]
+});
 
 //#endregion
 //#region src/components/Accordion/Accordion.tsx
@@ -105,24 +122,16 @@ const AccordionItem = React.forwardRef(({ className, ...props }, ref) => /* @__P
 }));
 AccordionItem.displayName = "AccordionItem";
 const AccordionTrigger = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(AccordionPrimitive.Header, {
-	asChild: true,
-	children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(AccordionPrimitive.Trigger, {
+	style: { display: "flex" },
+	children: /* @__PURE__ */ jsxs(AccordionPrimitive.Trigger, {
 		ref,
 		className: [accordionTrigger, className].filter(Boolean).join(" "),
 		...props,
-		children: [children, /* @__PURE__ */ jsx("svg", {
+		children: [children, /* @__PURE__ */ jsx(ChevronDown, {
 			className: accordionChevron,
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z",
-				fill: "currentColor"
-			})
+			"aria-hidden": true
 		})]
-	}) })
+	})
 }));
 AccordionTrigger.displayName = "AccordionTrigger";
 const AccordionContent = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(AccordionPrimitive.Content, {
@@ -138,17 +147,25 @@ AccordionContent.displayName = "AccordionContent";
 
 //#endregion
 //#region src/components/Alert/Alert.css.ts
+/**
+* Alert — shadcn v4 aligned.
+* Grid layout: when an SVG icon is present as direct child, the icon gets
+* column 1 (16px wide) and the text gets column 2. Without an icon, column 1
+* collapses to 0.
+*/
 const alertRecipe = recipe({
 	base: {
 		position: "relative",
-		display: "flex",
-		gap: vars.space["3"],
 		width: "100%",
 		borderRadius: vars.radii.lg,
 		border: `1px solid ${vars.color.border}`,
-		padding: vars.space["3"],
+		padding: `${vars.space["3"]} ${vars.space["4"]}`,
 		fontSize: vars.font.size.sm,
-		lineHeight: vars.font.lineHeight.normal
+		lineHeight: vars.font.lineHeight.normal,
+		display: "grid",
+		gridTemplateColumns: "0 1fr",
+		gap: `${vars.space["0_5"]} 0`,
+		alignItems: "start"
 	},
 	variants: { variant: {
 		default: {
@@ -156,58 +173,71 @@ const alertRecipe = recipe({
 			color: vars.color.text
 		},
 		destructive: {
-			borderColor: vars.color.destructive,
+			backgroundColor: vars.color.surface,
 			color: vars.color.destructive
-		},
-		success: {
-			borderColor: vars.color.success,
-			color: vars.color.success
-		},
-		warning: {
-			borderColor: vars.color.warning,
-			color: vars.color.warning
 		}
 	} },
 	defaultVariants: { variant: "default" }
 });
+/**
+* When the alert has a direct SVG child (icon), expand the grid to fit it.
+* We use a CSS class that the Alert component applies conditionally when
+* an icon prop is provided.
+*/
+const alertWithIcon = style({
+	gridTemplateColumns: `${vars.space["4"]} 1fr`,
+	columnGap: vars.space["3"]
+});
 const alertIcon = style({
+	gridColumn: "1",
+	gridRow: "1 / -1",
+	width: vars.space["4"],
+	height: vars.space["4"],
+	marginTop: "2px",
 	flexShrink: 0,
-	marginTop: "1px"
+	color: "currentColor"
 });
 const alertTitle = style({
-	fontWeight: vars.font.weight.semibold,
+	gridColumn: "2",
+	fontWeight: vars.font.weight.medium,
 	lineHeight: vars.font.lineHeight.tight,
 	letterSpacing: vars.font.letterSpacing.tight,
-	marginBottom: vars.space["1"]
+	minHeight: vars.space["4"]
 });
 const alertDescription = style({
+	gridColumn: "2",
 	fontSize: vars.font.size.sm,
 	color: vars.color.textMuted,
-	lineHeight: vars.font.lineHeight.relaxed
+	lineHeight: vars.font.lineHeight.relaxed,
+	selectors: { [`${alertRecipe.classNames.variants.variant.destructive} &`]: { color: `color-mix(in srgb, ${vars.color.destructive} 90%, transparent)` } }
 });
 
 //#endregion
 //#region src/components/Alert/Alert.tsx
-const Alert = React.forwardRef(({ variant = "default", className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
-	ref,
-	role: "alert",
-	className: [alertRecipe({ variant }), className].filter(Boolean).join(" "),
-	...props
-}));
+const Alert = React.forwardRef(({ variant = "default", icon, className, children, ...props }, ref) => {
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		role: "alert",
+		className: [
+			alertRecipe({ variant }),
+			icon ? alertWithIcon : "",
+			className
+		].filter(Boolean).join(" "),
+		...props,
+		children: [icon && /* @__PURE__ */ jsx("div", {
+			className: alertIcon,
+			children: icon
+		}), children]
+	});
+});
 Alert.displayName = "Alert";
-const AlertIcon = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
-	ref,
-	className: [alertIcon, className].filter(Boolean).join(" "),
-	...props
-}));
-AlertIcon.displayName = "AlertIcon";
 const AlertTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("h5", {
 	ref,
 	className: [alertTitle, className].filter(Boolean).join(" "),
 	...props
 }));
 AlertTitle.displayName = "AlertTitle";
-const AlertDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("p", {
+const AlertDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	className: [alertDescription, className].filter(Boolean).join(" "),
 	...props
@@ -230,42 +260,49 @@ const contentShow$1 = keyframes({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
+/**
+* AlertDialog — shadcn v4 aligned.
+* Same as Dialog but without close button.
+*/
 const alertDialogOverlay = style({
-	backgroundColor: vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: vars.zIndex.overlay,
 	animation: `${overlayShow$2} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
 });
 const alertDialogContent = style({
-	backgroundColor: vars.color.surfaceOverlay,
+	backgroundColor: vars.color.background,
 	border: `1px solid ${vars.color.border}`,
-	borderRadius: vars.radii.xl,
-	boxShadow: vars.shadow.xl,
+	borderRadius: vars.radii.lg,
+	boxShadow: vars.shadow.lg,
 	position: "fixed",
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
 	width: "90vw",
-	maxWidth: "500px",
+	maxWidth: "32rem",
 	maxHeight: "85vh",
-	padding: vars.space["5"],
+	padding: vars.space["6"],
 	zIndex: vars.zIndex.modal,
+	display: "grid",
+	gap: vars.space["4"],
 	animation: `${contentShow$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
-	selectors: { "&:focus-visible": { outline: "none" } }
+	outline: "none"
 });
 const alertDialogHeader = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["1_5"],
-	marginBottom: vars.space["3"]
+	gap: vars.space["2"]
 });
 const alertDialogFooter = style({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column-reverse",
 	gap: vars.space["2"],
-	marginTop: vars.space["4"]
+	"@media": { "screen and (min-width: 640px)": {
+		flexDirection: "row",
+		justifyContent: "flex-end"
+	} }
 });
 const alertDialogTitle = style({
 	fontSize: vars.font.size.lg,
@@ -403,79 +440,69 @@ AvatarFallback.displayName = "AvatarFallback";
 
 //#endregion
 //#region src/components/Badge/Badge.css.ts
+/**
+* Badge recipe — shadcn v4 aligned.
+* - `default` = solid primary bg (was missing)
+* - `secondary` = muted bg
+* - `destructive` = solid destructive bg
+* - `outline` = transparent with border
+* - Kept `success` / `warning` as useful extensions
+* - Rounded full (pill), no size variants (shadcn has single size)
+*/
 const badgeRecipe = recipe({
 	base: {
 		display: "inline-flex",
 		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: vars.radii.full,
+		border: "1px solid transparent",
 		fontWeight: vars.font.weight.medium,
 		fontFamily: vars.font.family.sans,
+		fontSize: vars.font.size.xs,
 		whiteSpace: "nowrap",
 		lineHeight: "1",
-		border: "1px solid transparent"
+		padding: `${vars.space["0_5"]} ${vars.space["2_5"]}`,
+		gap: vars.space["1"],
+		width: "fit-content",
+		flexShrink: 0,
+		overflow: "hidden",
+		transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`
 	},
-	variants: {
-		variant: {
-			default: {
-				backgroundColor: vars.color.secondary,
-				color: vars.color.secondaryForeground,
-				borderColor: vars.color.border
-			},
-			primary: {
-				backgroundColor: `color-mix(in srgb, ${vars.color.primary} 12%, transparent)`,
-				color: vars.color.primary,
-				borderColor: `color-mix(in srgb, ${vars.color.primary} 25%, transparent)`
-			},
-			destructive: {
-				backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 12%, transparent)`,
-				color: vars.color.destructive,
-				borderColor: `color-mix(in srgb, ${vars.color.destructive} 25%, transparent)`
-			},
-			success: {
-				backgroundColor: `color-mix(in srgb, ${vars.color.success} 12%, transparent)`,
-				color: vars.color.success,
-				borderColor: `color-mix(in srgb, ${vars.color.success} 25%, transparent)`
-			},
-			warning: {
-				backgroundColor: `color-mix(in srgb, ${vars.color.warning} 12%, transparent)`,
-				color: vars.color.warning,
-				borderColor: `color-mix(in srgb, ${vars.color.warning} 25%, transparent)`
-			},
-			outline: {
-				backgroundColor: "transparent",
-				color: vars.color.text,
-				borderColor: vars.color.border
-			}
+	variants: { variant: {
+		default: {
+			backgroundColor: vars.color.primary,
+			color: vars.color.primaryForeground
 		},
-		size: {
-			sm: {
-				fontSize: vars.font.size.xs,
-				padding: `2px ${vars.space["2"]}`
-			},
-			md: {
-				fontSize: vars.font.size.xs,
-				padding: `${vars.space["0_5"]} ${vars.space["2_5"]}`
-			},
-			lg: {
-				fontSize: vars.font.size.sm,
-				padding: `${vars.space["1"]} ${vars.space["3"]}`
-			}
+		secondary: {
+			backgroundColor: vars.color.secondary,
+			color: vars.color.secondaryForeground
+		},
+		destructive: {
+			backgroundColor: vars.color.destructive,
+			color: vars.color.destructiveForeground
+		},
+		outline: {
+			backgroundColor: "transparent",
+			color: vars.color.text,
+			borderColor: vars.color.border
+		},
+		success: {
+			backgroundColor: vars.color.success,
+			color: vars.color.successForeground
+		},
+		warning: {
+			backgroundColor: vars.color.warning,
+			color: vars.color.warningForeground
 		}
-	},
-	defaultVariants: {
-		variant: "default",
-		size: "md"
-	}
+	} },
+	defaultVariants: { variant: "default" }
 });
 
 //#endregion
 //#region src/components/Badge/Badge.tsx
-const Badge = React.forwardRef(({ variant = "default", size = "md", className, ...props }, ref) => /* @__PURE__ */ jsx("span", {
+const Badge = React.forwardRef(({ variant = "default", className, ...props }, ref) => /* @__PURE__ */ jsx("span", {
 	ref,
-	className: [badgeRecipe({
-		variant,
-		size
-	}), className].filter(Boolean).join(" "),
+	className: [badgeRecipe({ variant }), className].filter(Boolean).join(" "),
 	...props
 }));
 Badge.displayName = "Badge";
@@ -575,16 +602,7 @@ const BreadcrumbSeparator = ({ className, children, ...props }) => /* @__PURE__ 
 	"aria-hidden": "true",
 	className: [breadcrumbSeparator, className].filter(Boolean).join(" "),
 	...props,
-	children: children ?? /* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
-	})
+	children: children ?? /* @__PURE__ */ jsx(ChevronRight, { size: 16 })
 });
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("span", {
@@ -592,23 +610,8 @@ const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("sp
 	"aria-hidden": "true",
 	className: [breadcrumbEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M3.625 7.5C3.625 8.12132 3.12132 8.625 2.5 8.625C1.87868 8.625 1.375 8.12132 1.375 7.5C1.375 6.87868 1.87868 6.375 2.5 6.375C3.12132 6.375 3.625 6.87868 3.625 7.5ZM8.625 7.5C8.625 8.12132 8.12132 8.625 7.5 8.625C6.87868 8.625 6.375 8.12132 6.375 7.5C6.375 6.87868 6.87868 6.375 7.5 6.375C8.12132 6.375 8.625 6.87868 8.625 7.5ZM13.625 7.5C13.625 8.12132 13.1213 8.625 12.5 8.625C11.8787 8.625 11.375 8.12132 11.375 7.5C11.375 6.87868 11.8787 6.375 12.5 6.375C13.1213 6.375 13.625 6.87868 13.625 7.5Z",
-			fill: "currentColor"
-		})
-	}), /* @__PURE__ */ jsx("span", {
-		style: {
-			position: "absolute",
-			width: "1px",
-			height: "1px",
-			overflow: "hidden",
-			clip: "rect(0,0,0,0)"
-		},
+	children: [/* @__PURE__ */ jsx(MoreHorizontal, { size: 16 }), /* @__PURE__ */ jsx("span", {
+		className: "sr-only",
 		children: "More"
 	})]
 });
@@ -627,6 +630,13 @@ const spinner = style({
 	animation: `${spin$1} 0.6s linear infinite`,
 	flexShrink: 0
 });
+/**
+* Button recipe — shadcn v4 aligned.
+* - `default` = primary CTA (was `primary`)
+* - Added `link` variant
+* - Uses `shadow.xs` on applicable variants
+* - High-density sizing (sm=28, md=32, lg=40)
+*/
 const buttonRecipe = recipe({
 	base: {
 		display: "inline-flex",
@@ -636,12 +646,14 @@ const buttonRecipe = recipe({
 		fontFamily: vars.font.family.sans,
 		fontWeight: vars.font.weight.medium,
 		letterSpacing: vars.font.letterSpacing.normal,
+		fontSize: vars.font.size.sm,
 		borderRadius: vars.radii.md,
 		border: "1px solid transparent",
 		cursor: "pointer",
 		textDecoration: "none",
 		whiteSpace: "nowrap",
 		flexShrink: 0,
+		outline: "none",
 		transition: [
 			`background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 			`border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
@@ -651,8 +663,8 @@ const buttonRecipe = recipe({
 		].join(", "),
 		selectors: {
 			"&:focus-visible": {
-				outline: `2px solid ${vars.color.focusRing}`,
-				outlineOffset: "2px"
+				borderColor: vars.color.focusRing,
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
 				opacity: "0.5",
@@ -663,27 +675,29 @@ const buttonRecipe = recipe({
 	},
 	variants: {
 		variant: {
-			primary: {
+			default: {
 				backgroundColor: vars.color.primary,
 				color: vars.color.primaryForeground,
 				borderColor: vars.color.primary,
-				boxShadow: `0 1px 2px rgba(0,0,0,0.3)`,
-				selectors: {
-					"&:hover:not(:disabled)": { filter: "brightness(1.1)" },
-					"&:active:not(:disabled)": { filter: "brightness(0.95)" }
-				}
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.9)" } }
 			},
-			secondary: {
-				backgroundColor: vars.color.secondary,
-				color: vars.color.secondaryForeground,
-				borderColor: vars.color.border,
-				selectors: { "&:hover:not(:disabled)": { backgroundColor: vars.color.surfaceElevated } }
+			destructive: {
+				backgroundColor: vars.color.destructive,
+				color: vars.color.destructiveForeground,
+				borderColor: vars.color.destructive,
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.9)" } }
 			},
 			outline: {
 				backgroundColor: "transparent",
 				color: vars.color.text,
 				borderColor: vars.color.border,
+				boxShadow: vars.shadow.xs,
 				selectors: { "&:hover:not(:disabled)": { backgroundColor: vars.color.ghostHover } }
+			},
+			secondary: {
+				backgroundColor: vars.color.secondary,
+				color: vars.color.secondaryForeground,
+				selectors: { "&:hover:not(:disabled)": { filter: "brightness(0.8)" } }
 			},
 			ghost: {
 				backgroundColor: "transparent",
@@ -691,19 +705,24 @@ const buttonRecipe = recipe({
 				borderColor: "transparent",
 				selectors: { "&:hover:not(:disabled)": { backgroundColor: vars.color.ghostHover } }
 			},
-			destructive: {
-				backgroundColor: vars.color.destructive,
-				color: vars.color.destructiveForeground,
-				borderColor: vars.color.destructive,
-				selectors: { "&:hover:not(:disabled)": { filter: "brightness(1.1)" } }
+			link: {
+				backgroundColor: "transparent",
+				color: vars.color.primary,
+				borderColor: "transparent",
+				textDecoration: "none",
+				selectors: { "&:hover:not(:disabled)": {
+					textDecoration: "underline",
+					textUnderlineOffset: "4px"
+				} }
 			}
 		},
 		size: {
 			sm: {
 				height: vars.space["7"],
-				paddingLeft: vars.space["2_5"],
-				paddingRight: vars.space["2_5"],
-				fontSize: vars.font.size.xs
+				paddingLeft: vars.space["3"],
+				paddingRight: vars.space["3"],
+				fontSize: vars.font.size.xs,
+				gap: vars.space["1_5"]
 			},
 			md: {
 				height: vars.space["8"],
@@ -716,6 +735,21 @@ const buttonRecipe = recipe({
 				paddingLeft: vars.space["5"],
 				paddingRight: vars.space["5"],
 				fontSize: vars.font.size.sm
+			},
+			icon: {
+				width: vars.space["8"],
+				height: vars.space["8"],
+				padding: 0
+			},
+			"icon-sm": {
+				width: vars.space["7"],
+				height: vars.space["7"],
+				padding: 0
+			},
+			"icon-lg": {
+				width: vars.space["10"],
+				height: vars.space["10"],
+				padding: 0
 			}
 		},
 		loading: {
@@ -732,7 +766,7 @@ const buttonRecipe = recipe({
 		}
 	},
 	defaultVariants: {
-		variant: "primary",
+		variant: "default",
 		size: "md",
 		loading: false,
 		fullWidth: false
@@ -742,16 +776,16 @@ const buttonRecipe = recipe({
 //#endregion
 //#region src/components/Button/Button.tsx
 /**
-* Button — primary interactive element.
+* Button — primary interactive element (shadcn v4 aligned).
 *
 * @example
 * ```tsx
-* <Button variant="primary" size="md">Save changes</Button>
+* <Button variant="default" size="md">Save changes</Button>
 * <Button variant="outline" loading>Submitting...</Button>
 * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
 * ```
 */
-const Button = forwardRef(({ variant = "primary", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
+const Button = forwardRef(({ variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
 	return /* @__PURE__ */ jsxs(asChild ? Slot : "button", {
 		ref,
 		className: [buttonRecipe({
@@ -773,44 +807,29 @@ Button.displayName = "Button";
 
 //#endregion
 //#region src/components/Card/Card.css.ts
-const cardRecipe = recipe({
-	base: {
-		backgroundColor: vars.color.surface,
-		border: `1px solid ${vars.color.border}`,
-		borderRadius: vars.radii.lg,
-		overflow: "hidden"
-	},
-	variants: {
-		elevation: {
-			flat: {},
-			raised: { boxShadow: vars.shadow.sm },
-			elevated: {
-				backgroundColor: vars.color.surfaceElevated,
-				boxShadow: vars.shadow.md
-			}
-		},
-		padding: {
-			none: {},
-			sm: { padding: vars.space["3"] },
-			md: { padding: vars.space["4"] },
-			lg: { padding: vars.space["6"] }
-		}
-	},
-	defaultVariants: {
-		elevation: "raised",
-		padding: "md"
-	}
-});
-const cardHeader = style({
+/**
+* Card — shadcn v4 aligned.
+* Simple flex column, border + rounded-lg, no internal header/footer borders.
+* Uses bg-surface (like shadcn bg-card).
+*/
+const cardRoot = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["1"],
-	paddingBottom: vars.space["3"],
-	borderBottom: `1px solid ${vars.color.borderSubtle}`,
-	marginBottom: vars.space["3"]
+	backgroundColor: vars.color.surface,
+	border: `1px solid ${vars.color.border}`,
+	borderRadius: vars.radii.lg,
+	boxShadow: vars.shadow.sm,
+	overflow: "hidden"
+});
+const cardHeader = style({
+	display: "grid",
+	gridAutoRows: "min-content",
+	alignItems: "start",
+	gap: vars.space["1_5"],
+	padding: vars.space["6"]
 });
 const cardTitle = style({
-	fontSize: vars.font.size.md,
+	fontSize: vars.font.size.lg,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.text,
 	lineHeight: vars.font.lineHeight.tight
@@ -820,23 +839,18 @@ const cardDescription = style({
 	color: vars.color.textMuted,
 	lineHeight: vars.font.lineHeight.normal
 });
+const cardContent = style({ padding: `0 ${vars.space["6"]} ${vars.space["6"]}` });
 const cardFooter = style({
 	display: "flex",
 	alignItems: "center",
-	gap: vars.space["2"],
-	paddingTop: vars.space["3"],
-	borderTop: `1px solid ${vars.color.borderSubtle}`,
-	marginTop: vars.space["3"]
+	padding: `0 ${vars.space["6"]} ${vars.space["6"]}`
 });
 
 //#endregion
 //#region src/components/Card/Card.tsx
-const Card = React.forwardRef(({ elevation = "raised", padding = "md", className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+const Card = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
-	className: [cardRecipe({
-		elevation,
-		padding
-	}), className].filter(Boolean).join(" "),
+	className: [cardRoot, className].filter(Boolean).join(" "),
 	...props
 }));
 Card.displayName = "Card";
@@ -858,37 +872,43 @@ const CardDescription = React.forwardRef(({ className, ...props }, ref) => /* @_
 	...props
 }));
 CardDescription.displayName = "CardDescription";
+const CardContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	className: [cardContent, className].filter(Boolean).join(" "),
+	...props
+}));
+CardContent.displayName = "CardContent";
 const CardFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	className: [cardFooter, className].filter(Boolean).join(" "),
 	...props
 }));
 CardFooter.displayName = "CardFooter";
-const CardContent = React.forwardRef((props, ref) => /* @__PURE__ */ jsx("div", {
-	ref,
-	...props
-}));
-CardContent.displayName = "CardContent";
 
 //#endregion
 //#region src/components/Checkbox/Checkbox.css.ts
+/**
+* Checkbox — shadcn v4 aligned.
+* 16px square, rounded-[4px], shadow-xs, primary bg when checked.
+*/
 const checkboxRoot = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
 	width: "16px",
 	height: "16px",
-	borderRadius: vars.radii.sm,
+	borderRadius: "4px",
 	border: `1px solid ${vars.color.border}`,
 	backgroundColor: vars.color.input,
+	boxShadow: vars.shadow.xs,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	outline: "none",
+	transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { borderColor: vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 		},
 		"&[data-state=\"checked\"], &[data-state=\"indeterminate\"]": {
 			backgroundColor: vars.color.primary,
@@ -902,9 +922,8 @@ const checkboxRoot = style({
 	}
 });
 const checkboxIndicator = style({
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
+	display: "grid",
+	placeContent: "center",
 	color: "currentColor"
 });
 
@@ -916,19 +935,7 @@ const Checkbox = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__
 	...props,
 	children: /* @__PURE__ */ jsx(CheckboxPrimitive.Indicator, {
 		className: checkboxIndicator,
-		children: /* @__PURE__ */ jsx("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		})
+		children: /* @__PURE__ */ jsx(Check, { size: 14 })
 	})
 }));
 Checkbox.displayName = "Checkbox";
@@ -1048,19 +1055,7 @@ const CommandInput = React.forwardRef(({ className, icon, ...props }, ref) => /*
 	className: commandInput,
 	children: [/* @__PURE__ */ jsx("div", {
 		className: commandInputIcon,
-		children: icon ?? /* @__PURE__ */ jsx("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		})
+		children: icon ?? /* @__PURE__ */ jsx(Search, { size: 15 })
 	}), /* @__PURE__ */ jsx("input", {
 		ref,
 		className: [commandInputField, className].filter(Boolean).join(" "),
@@ -1127,15 +1122,19 @@ const slideIn$2 = keyframes({
 		transform: "scale(1)"
 	}
 });
+/**
+* ContextMenu — shadcn v4 aligned.
+* bg-popover (surfaceElevated), no text color change on highlight.
+*/
 const contextMenuContent = style({
 	zIndex: vars.zIndex.dropdown,
-	minWidth: "160px",
+	minWidth: "8rem",
 	overflow: "hidden",
 	borderRadius: vars.radii.md,
 	border: `1px solid ${vars.color.border}`,
 	backgroundColor: vars.color.surfaceElevated,
 	padding: vars.space["1"],
-	boxShadow: vars.shadow.lg,
+	boxShadow: vars.shadow.md,
 	animation: `${slideIn$2} ${vars.motion.duration.fast} ${vars.motion.easing.default}`
 });
 const contextMenuItem = style({
@@ -1147,14 +1146,14 @@ const contextMenuItem = style({
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	fontSize: vars.font.size.sm,
 	color: vars.color.text,
-	cursor: "pointer",
+	cursor: "default",
 	outline: "none",
 	userSelect: "none",
 	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
 		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
 		"&[data-disabled]": {
-			color: vars.color.textDisabled,
+			opacity: "0.5",
 			pointerEvents: "none"
 		}
 	}
@@ -1163,13 +1162,12 @@ const contextMenuCheckboxItem = style([contextMenuItem, {}]);
 const contextMenuRadioItem = style([contextMenuItem, {}]);
 const contextMenuLabel = style({
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	fontSize: vars.font.size.xs,
-	fontWeight: vars.font.weight.semibold,
-	color: vars.color.textMuted
+	fontSize: vars.font.size.sm,
+	fontWeight: vars.font.weight.medium
 });
 const contextMenuSeparator = style({
 	height: "1px",
-	margin: `${vars.space["1"]} ${vars.space["0_5"]}`,
+	margin: `${vars.space["1"]} -${vars.space["1"]}`,
 	backgroundColor: vars.color.borderSubtle
 });
 const contextMenuShortcut = style({
@@ -1219,19 +1217,7 @@ const ContextMenuCheckboxItem = React.forwardRef(({ className, children, checked
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		}) })
+		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
 	}), children]
 }));
 ContextMenuCheckboxItem.displayName = "ContextMenuCheckboxItem";
@@ -1242,18 +1228,9 @@ const ContextMenuRadioItem = React.forwardRef(({ className, children, ...props }
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("circle", {
-				cx: "7.5",
-				cy: "7.5",
-				r: "4.5",
-				fill: "currentColor"
-			})
+		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -1281,17 +1258,10 @@ const ContextMenuSubTrigger = React.forwardRef(({ className, inset, children, ..
 	className: [contextMenuSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
+		"aria-hidden": true
 	})]
 }));
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";
@@ -1318,8 +1288,14 @@ const contentShow = keyframes({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
+/**
+* Dialog — shadcn v4 aligned.
+* - Overlay: black/50
+* - Content: bg-background (not surfaceOverlay)
+* - gap-4, p-6, rounded-lg
+*/
 const dialogOverlay = style({
-	backgroundColor: vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: vars.zIndex.overlay,
@@ -1327,43 +1303,44 @@ const dialogOverlay = style({
 	selectors: { "&[data-state=\"closed\"]": { animationDirection: "reverse" } }
 });
 const dialogContent = style({
-	backgroundColor: vars.color.surfaceOverlay,
+	backgroundColor: vars.color.background,
 	border: `1px solid ${vars.color.border}`,
-	borderRadius: vars.radii.xl,
-	boxShadow: vars.shadow.xl,
+	borderRadius: vars.radii.lg,
+	boxShadow: vars.shadow.lg,
 	position: "fixed",
 	top: "50%",
 	left: "50%",
 	transform: "translate(-50%, -50%)",
 	width: "90vw",
-	maxWidth: "560px",
+	maxWidth: "32rem",
 	maxHeight: "85vh",
 	overflowY: "auto",
-	padding: vars.space["5"],
+	padding: vars.space["6"],
 	zIndex: vars.zIndex.modal,
+	display: "grid",
+	gap: vars.space["4"],
 	animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
-	selectors: { "&:focus-visible": { outline: "none" } }
+	outline: "none"
 });
 const dialogHeader = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["1_5"],
-	marginBottom: vars.space["4"]
+	gap: vars.space["2"]
 });
 const dialogFooter = style({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column-reverse",
 	gap: vars.space["2"],
-	marginTop: vars.space["4"],
-	paddingTop: vars.space["3"],
-	borderTop: `1px solid ${vars.color.borderSubtle}`
+	"@media": { "screen and (min-width: 640px)": {
+		flexDirection: "row",
+		justifyContent: "flex-end"
+	} }
 });
 const dialogTitle = style({
 	fontSize: vars.font.size.lg,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.text,
-	lineHeight: vars.font.lineHeight.tight,
+	lineHeight: "1",
 	margin: 0
 });
 const dialogDescription = style({
@@ -1379,19 +1356,17 @@ const dialogClose = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["8"],
-	height: vars.space["8"],
+	width: vars.space["6"],
+	height: vars.space["6"],
 	borderRadius: vars.radii.sm,
 	color: vars.color.textMuted,
 	backgroundColor: "transparent",
 	border: "none",
 	cursor: "pointer",
-	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	opacity: "0.7",
+	transition: `opacity ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": {
-			color: vars.color.text,
-			backgroundColor: vars.color.ghostHover
-		},
+		"&:hover": { opacity: "1" },
 		"&:focus-visible": {
 			outline: `2px solid ${vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -1411,24 +1386,17 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => /* @__P
 	...props
 }));
 DialogOverlay.displayName = "DialogOverlay";
-const DialogContent = React.forwardRef(({ className, children, showClose = true, ...props }, ref) => /* @__PURE__ */ jsxs(DialogPortal, { children: [/* @__PURE__ */ jsx(DialogOverlay, {}), /* @__PURE__ */ jsxs(DialogPrimitive.Content, {
+const DialogContent = React.forwardRef(({ className, children, showCloseButton = true, ...props }, ref) => /* @__PURE__ */ jsxs(DialogPortal, { children: [/* @__PURE__ */ jsx(DialogOverlay, {}), /* @__PURE__ */ jsxs(DialogPrimitive.Content, {
 	ref,
 	className: [dialogContent, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, showClose && /* @__PURE__ */ jsx(DialogPrimitive.Close, {
+	children: [children, showCloseButton && /* @__PURE__ */ jsxs(DialogPrimitive.Close, {
 		className: dialogClose,
 		"aria-label": "Close dialog",
-		children: /* @__PURE__ */ jsx("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-				fill: "currentColor"
-			})
-		})
+		children: [/* @__PURE__ */ jsx(X, { size: 16 }), /* @__PURE__ */ jsx("span", {
+			className: "sr-only",
+			children: "Close"
+		})]
 	})]
 })] }));
 DialogContent.displayName = "DialogContent";
@@ -1497,14 +1465,22 @@ const slideRightAndFade = keyframes({
 		transform: "translateX(0)"
 	}
 });
+/**
+* DropdownMenu — shadcn v4 aligned.
+* - bg-popover (surfaceElevated)
+* - No text color change on highlight (focus:bg-accent only)
+* - Labels: font-medium, no uppercase
+*/
 const dropdownContent = style({
-	minWidth: "180px",
+	minWidth: "8rem",
 	backgroundColor: vars.color.surfaceElevated,
+	color: vars.color.text,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
-	boxShadow: vars.shadow.lg,
+	boxShadow: vars.shadow.md,
 	padding: vars.space["1"],
 	zIndex: vars.zIndex.dropdown,
+	overflow: "hidden",
 	animationDuration: vars.motion.duration.normal,
 	animationTimingFunction: vars.motion.easing.default,
 	selectors: {
@@ -1525,6 +1501,7 @@ const dropdownItem = style({
 	cursor: "default",
 	userSelect: "none",
 	outline: "none",
+	position: "relative",
 	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
 		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
@@ -1534,35 +1511,33 @@ const dropdownItem = style({
 		}
 	}
 });
-const dropdownDestructiveItem = style([dropdownItem, { selectors: { "&[data-highlighted]": {
-	backgroundColor: vars.color.ghostHover,
-	color: vars.color.destructive
-} } }]);
+const dropdownDestructiveItem = style([dropdownItem, {
+	color: vars.color.destructive,
+	selectors: { "&[data-highlighted]": {
+		backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 10%, transparent)`,
+		color: vars.color.destructive
+	} }
+}]);
 const dropdownLabel = style({
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	fontSize: vars.font.size.xs,
-	fontWeight: vars.font.weight.semibold,
-	color: vars.color.textMuted,
-	textTransform: "uppercase",
-	letterSpacing: vars.font.letterSpacing.wide
+	fontSize: vars.font.size.sm,
+	fontWeight: vars.font.weight.medium
 });
 const dropdownSeparator = style({
 	height: "1px",
 	backgroundColor: vars.color.borderSubtle,
-	margin: `${vars.space["1"]} 0`
+	margin: `${vars.space["1"]} -${vars.space["1"]}`
 });
 const dropdownItemIndicator = style({
+	position: "absolute",
+	left: vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["4"],
-	flexShrink: 0,
-	color: vars.color.primary
+	width: "14px",
+	height: "14px"
 });
-const dropdownCheckboxItem = style([dropdownItem, {
-	paddingLeft: vars.space["8"],
-	position: "relative"
-}]);
+const dropdownCheckboxItem = style([dropdownItem, { paddingLeft: vars.space["8"] }]);
 const dropdownRadioItem = style([dropdownCheckboxItem]);
 const dropdownSubTrigger = style([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
 const dropdownSubContent = style([dropdownContent]);
@@ -1584,20 +1559,10 @@ const DropdownMenuSubTrigger = React.forwardRef(({ className, inset, children, .
 	ref,
 	className: [dropdownSubTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ jsx("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
+	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M4.5 2.5L8 6L4.5 9.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
+		"aria-hidden": true
 	})]
 }));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";
@@ -1609,7 +1574,7 @@ const DropdownMenuSubContent = React.forwardRef(({ className, ...props }, ref) =
 	...props
 }));
 DropdownMenuSubContent.displayName = "DropdownMenuSubContent";
-const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 6, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.Content, {
+const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.Content, {
 	ref,
 	className: [dropdownContent, className].filter(Boolean).join(" "),
 	sideOffset,
@@ -1629,20 +1594,7 @@ const DropdownMenuCheckboxItem = React.forwardRef(({ className, children, checke
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "12",
-			height: "12",
-			viewBox: "0 0 12 12",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M2 6L5 9L10 3",
-				stroke: "currentColor",
-				strokeWidth: "1.5",
-				strokeLinecap: "round",
-				strokeLinejoin: "round"
-			})
-		}) })
+		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
 	}), children]
 }));
 DropdownMenuCheckboxItem.displayName = "DropdownMenuCheckboxItem";
@@ -1652,17 +1604,9 @@ const DropdownMenuRadioItem = React.forwardRef(({ className, children, ...props 
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 8 8",
-			fill: "currentColor",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("circle", {
-				cx: "4",
-				cy: "4",
-				r: "4"
-			})
+		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -1766,9 +1710,14 @@ const inputWrapperRecipe = recipe({
 	} },
 	defaultVariants: { fullWidth: false }
 });
+/**
+* Input — shadcn v4 aligned.
+* Uses shadow-xs, border-input, dark bg-input/30 pattern.
+*/
 const inputRecipe = recipe({
 	base: {
 		width: "100%",
+		minWidth: 0,
 		backgroundColor: vars.color.input,
 		color: vars.color.text,
 		border: `1px solid ${vars.color.border}`,
@@ -1776,23 +1725,23 @@ const inputRecipe = recipe({
 		fontFamily: vars.font.family.sans,
 		fontSize: vars.font.size.sm,
 		lineHeight: vars.font.lineHeight.normal,
-		transition: [`border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`, `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`].join(", "),
+		boxShadow: vars.shadow.xs,
+		outline: "none",
+		transition: [`color ${vars.motion.duration.fast} ${vars.motion.easing.default}`, `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`].join(", "),
 		selectors: {
 			"&::placeholder": { color: vars.color.placeholder },
-			"&:hover:not(:disabled):not([aria-invalid=\"true\"])": { borderColor: vars.color.textMuted },
 			"&:focus-visible": {
-				outline: "none",
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
 				cursor: "not-allowed",
-				backgroundColor: vars.color.surface
+				pointerEvents: "none"
 			},
 			"&[aria-invalid=\"true\"]": {
 				borderColor: vars.color.destructive,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 			}
 		}
 	},
@@ -1805,8 +1754,8 @@ const inputRecipe = recipe({
 		},
 		md: {
 			height: vars.space["8"],
-			paddingLeft: vars.space["2_5"],
-			paddingRight: vars.space["2_5"],
+			paddingLeft: vars.space["3"],
+			paddingRight: vars.space["3"],
 			fontSize: vars.font.size.sm
 		},
 		lg: {
@@ -2088,19 +2037,7 @@ const MenubarCheckboxItem = React.forwardRef(({ className, children, checked, ..
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "10",
-			height: "10",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3354 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.5553 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z",
-				fill: "currentColor",
-				fillRule: "evenodd",
-				clipRule: "evenodd"
-			})
-		}) })
+		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
 	}), children]
 }));
 MenubarCheckboxItem.displayName = "MenubarCheckboxItem";
@@ -2111,18 +2048,9 @@ const MenubarRadioItem = React.forwardRef(({ className, children, ...props }, re
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx("svg", {
-			width: "8",
-			height: "8",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("circle", {
-				cx: "7.5",
-				cy: "7.5",
-				r: "4.5",
-				fill: "currentColor"
-			})
+		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+			size: 8,
+			fill: "currentColor"
 		}) })
 	}), children]
 }));
@@ -2150,17 +2078,10 @@ const MenubarSubTrigger = React.forwardRef(({ className, inset, children, ...pro
 	className: [menubarSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+		size: 16,
 		style: { marginLeft: "auto" },
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
+		"aria-hidden": true
 	})]
 }));
 MenubarSubTrigger.displayName = "MenubarSubTrigger";
@@ -2331,20 +2252,10 @@ const NavigationMenuTrigger = React.forwardRef(({ className, children, ...props 
 	ref,
 	className: [navigationMenuTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ jsx("svg", {
-		width: "10",
-		height: "10",
-		viewBox: "0 0 15 15",
-		fill: "none",
+	children: [children, /* @__PURE__ */ jsx(ChevronDown, {
+		size: 12,
 		"aria-hidden": true,
-		style: {
-			transition: "transform 200ms",
-			transform: "var(--radix-navigation-menu-trigger-open, rotate(0deg))"
-		},
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z",
-			fill: "currentColor"
-		})
+		style: { transition: "transform 200ms" }
 	})]
 }));
 NavigationMenuTrigger.displayName = "NavigationMenuTrigger";
@@ -2477,41 +2388,24 @@ const PaginationPrevious = ({ className, ...props }) => /* @__PURE__ */ jsxs(Pag
 	"aria-label": "Go to previous page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M8.84182 3.13514C9.04327 3.32401 9.05348 3.64042 8.86462 3.84188L5.43521 7.49991L8.86462 11.1579C9.05348 11.3594 9.04327 11.6758 8.84182 11.8647C8.64036 12.0535 8.32394 12.0433 8.13508 11.8419L4.38508 7.84188C4.20477 7.64955 4.20477 7.35027 4.38508 7.15794L8.13508 3.15794C8.32394 2.95648 8.64036 2.94628 8.84182 3.13514Z",
-			fill: "currentColor"
-		})
-	}), /* @__PURE__ */ jsx("span", { children: "Previous" })]
+	children: [/* @__PURE__ */ jsx(ChevronLeft, { size: 16 }), /* @__PURE__ */ jsx("span", { children: "Previous" })]
 });
 PaginationPrevious.displayName = "PaginationPrevious";
 const PaginationNext = ({ className, ...props }) => /* @__PURE__ */ jsxs(PaginationLink, {
 	"aria-label": "Go to next page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ jsx("span", { children: "Next" }), /* @__PURE__ */ jsx("svg", {
-		width: "15",
-		height: "15",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z",
-			fill: "currentColor"
-		})
-	})]
+	children: [/* @__PURE__ */ jsx("span", { children: "Next" }), /* @__PURE__ */ jsx(ChevronRight, { size: 16 })]
 });
 PaginationNext.displayName = "PaginationNext";
-const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsx("span", {
+const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("span", {
 	"aria-hidden": true,
 	className: [paginationEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: "···"
+	children: [/* @__PURE__ */ jsx(MoreHorizontal, { size: 16 }), /* @__PURE__ */ jsx("span", {
+		className: "sr-only",
+		children: "More pages"
+	})]
 });
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
@@ -2578,7 +2472,7 @@ const popoverClose = style({
 const Popover = PopoverPrimitive.Root;
 const PopoverTrigger = PopoverPrimitive.Trigger;
 const PopoverAnchor = PopoverPrimitive.Anchor;
-const PopoverContent = React.forwardRef(({ className, align = "center", sideOffset = 6, showArrow = false, ...props }, ref) => /* @__PURE__ */ jsx(PopoverPrimitive.Portal, { children: /* @__PURE__ */ jsxs(PopoverPrimitive.Content, {
+const PopoverContent = React.forwardRef(({ className, align = "center", sideOffset = 4, showArrow = false, ...props }, ref) => /* @__PURE__ */ jsx(PopoverPrimitive.Portal, { children: /* @__PURE__ */ jsxs(PopoverPrimitive.Content, {
 	ref,
 	align,
 	sideOffset,
@@ -2592,36 +2486,32 @@ const PopoverClose = React.forwardRef(({ className, children, ...props }, ref) =
 	className: [popoverClose, className].filter(Boolean).join(" "),
 	"aria-label": "Close",
 	...props,
-	children: children ?? /* @__PURE__ */ jsx("svg", {
-		width: "14",
-		height: "14",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-			fill: "currentColor"
-		})
-	})
+	children: children ?? /* @__PURE__ */ jsx(X, { size: 14 })
 }));
 PopoverClose.displayName = "PopoverClose";
 
 //#endregion
 //#region src/components/Progress/Progress.css.ts
+/**
+* Progress — shadcn v4 aligned.
+* Track: primary/20 (20% of primary color)
+* Indicator: solid primary
+* Height: 8px (h-2)
+*/
 const progressRoot = style({
 	position: "relative",
 	width: "100%",
 	height: "8px",
 	overflow: "hidden",
 	borderRadius: vars.radii.full,
-	backgroundColor: vars.color.secondary
+	backgroundColor: `color-mix(in srgb, ${vars.color.primary} 20%, transparent)`
 });
 const progressIndicator = style({
 	height: "100%",
 	width: "100%",
+	flex: 1,
 	backgroundColor: vars.color.primary,
-	borderRadius: "inherit",
-	transition: `transform ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+	transition: `all ${vars.motion.duration.normal} ${vars.motion.easing.default}`
 });
 
 //#endregion
@@ -2639,9 +2529,14 @@ Progress.displayName = "Progress";
 
 //#endregion
 //#region src/components/RadioGroup/RadioGroup.css.ts
+/**
+* RadioGroup — shadcn v4 aligned.
+* 16px circle, shadow-xs, primary border when checked, inner dot.
+*/
 const radioGroupRoot = style({
 	display: "grid",
-	gap: vars.space["2"]
+	gap: vars.space["2"],
+	width: "100%"
 });
 const radioGroupItem = style({
 	display: "inline-flex",
@@ -2649,17 +2544,18 @@ const radioGroupItem = style({
 	justifyContent: "center",
 	width: "16px",
 	height: "16px",
+	aspectRatio: "1",
 	borderRadius: vars.radii.full,
 	border: `1px solid ${vars.color.border}`,
-	backgroundColor: vars.color.input,
+	boxShadow: vars.shadow.xs,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	outline: "none",
+	transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { borderColor: vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 		},
 		"&[data-state=\"checked\"]": { borderColor: vars.color.primary },
 		"&:disabled": {
@@ -2785,6 +2681,13 @@ const slideUpAndFade = keyframes({
 		transform: "translateY(0)"
 	}
 });
+/**
+* Select — shadcn v4 aligned.
+* - Trigger: shadow-xs, border-input, dark bg
+* - Content: bg-popover (surfaceElevated)
+* - Labels: no uppercase
+* - Item highlight: ghostHover, no text color change
+*/
 const selectTrigger = recipe({
 	base: {
 		display: "inline-flex",
@@ -2799,14 +2702,15 @@ const selectTrigger = recipe({
 		fontFamily: vars.font.family.sans,
 		fontSize: vars.font.size.sm,
 		lineHeight: vars.font.lineHeight.normal,
+		boxShadow: vars.shadow.xs,
 		cursor: "default",
 		outline: "none",
-		transition: `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+		whiteSpace: "nowrap",
+		transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 		selectors: {
-			"&:hover": { borderColor: vars.color.textMuted },
-			"&:focus": {
+			"&:focus-visible": {
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 			},
 			"&[data-placeholder]": { color: vars.color.placeholder },
 			"&[data-disabled]": {
@@ -2825,7 +2729,7 @@ const selectTrigger = recipe({
 			},
 			md: {
 				height: vars.space["8"],
-				padding: `0 ${vars.space["2_5"]}`
+				padding: `0 ${vars.space["3"]}`
 			},
 			lg: {
 				height: vars.space["10"],
@@ -2835,9 +2739,9 @@ const selectTrigger = recipe({
 		},
 		isError: { true: {
 			borderColor: vars.color.destructive,
-			selectors: { "&:focus": {
+			selectors: { "&:focus-visible": {
 				borderColor: vars.color.destructive,
-				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 			} }
 		} }
 	},
@@ -2851,7 +2755,7 @@ const selectContent = style({
 	backgroundColor: vars.color.surfaceElevated,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
-	boxShadow: vars.shadow.lg,
+	boxShadow: vars.shadow.md,
 	zIndex: vars.zIndex.dropdown,
 	minWidth: "var(--radix-select-trigger-width)",
 	maxHeight: "var(--radix-select-content-available-height)",
@@ -2868,6 +2772,7 @@ const selectItem = style({
 	alignItems: "center",
 	gap: vars.space["2"],
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
+	paddingRight: vars.space["8"],
 	borderRadius: vars.radii.sm,
 	fontSize: vars.font.size.sm,
 	color: vars.color.text,
@@ -2881,30 +2786,27 @@ const selectItem = style({
 		"&[data-disabled]": {
 			opacity: "0.5",
 			pointerEvents: "none"
-		},
-		"&[data-state=\"checked\"]": { fontWeight: vars.font.weight.medium }
+		}
 	}
 });
 const selectItemIndicator = style({
+	position: "absolute",
+	right: vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["4"],
-	flexShrink: 0,
-	color: vars.color.primary
+	width: "14px",
+	height: "14px"
 });
 const selectLabel = style({
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	fontSize: vars.font.size.xs,
-	fontWeight: vars.font.weight.semibold,
-	color: vars.color.textMuted,
-	textTransform: "uppercase",
-	letterSpacing: vars.font.letterSpacing.wide
+	color: vars.color.textMuted
 });
 const selectSeparator = style({
 	height: "1px",
 	backgroundColor: vars.color.borderSubtle,
-	margin: `${vars.space["1"]} 0`
+	margin: `${vars.space["1"]} -${vars.space["1"]}`
 });
 const selectScrollButton = style({
 	display: "flex",
@@ -2916,7 +2818,8 @@ const selectScrollButton = style({
 });
 const selectIcon = style({
 	color: vars.color.textMuted,
-	flexShrink: 0
+	flexShrink: 0,
+	opacity: "0.5"
 });
 
 //#endregion
@@ -2933,20 +2836,7 @@ const SelectTrigger = React.forwardRef(({ className, children, size = "md", isEr
 	...props,
 	children: [children, /* @__PURE__ */ jsx(SelectPrimitive.Icon, {
 		className: selectIcon,
-		children: /* @__PURE__ */ jsx("svg", {
-			width: "12",
-			height: "12",
-			viewBox: "0 0 12 12",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M2.5 4.5L6 8L9.5 4.5",
-				stroke: "currentColor",
-				strokeWidth: "1.5",
-				strokeLinecap: "round",
-				strokeLinejoin: "round"
-			})
-		})
+		children: /* @__PURE__ */ jsx(ChevronDown, { size: 16 })
 	})]
 }));
 SelectTrigger.displayName = "SelectTrigger";
@@ -2954,40 +2844,14 @@ const SelectScrollUpButton = React.forwardRef(({ className, ...props }, ref) => 
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ jsx("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M2.5 7.5L6 4L9.5 7.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
+	children: /* @__PURE__ */ jsx(ChevronUp, { size: 16 })
 }));
 SelectScrollUpButton.displayName = "SelectScrollUpButton";
 const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.ScrollDownButton, {
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ jsx("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M2.5 4.5L6 8L9.5 4.5",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
+	children: /* @__PURE__ */ jsx(ChevronDown, { size: 16 })
 }));
 SelectScrollDownButton.displayName = "SelectScrollDownButton";
 const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsxs(SelectPrimitive.Content, {
@@ -3016,26 +2880,12 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
 	ref,
 	className: [selectItem, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ jsx(SelectItemIndicator, {}), /* @__PURE__ */ jsx(SelectPrimitive.ItemText, { children })]
+	children: [/* @__PURE__ */ jsx("span", {
+		className: selectItemIndicator,
+		children: /* @__PURE__ */ jsx(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
+	}), /* @__PURE__ */ jsx(SelectPrimitive.ItemText, { children })]
 }));
 SelectItem.displayName = "SelectItem";
-const SelectItemIndicator = () => /* @__PURE__ */ jsx(SelectPrimitive.ItemIndicator, {
-	className: selectItemIndicator,
-	children: /* @__PURE__ */ jsx("svg", {
-		width: "12",
-		height: "12",
-		viewBox: "0 0 12 12",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M2 6L5 9L10 3",
-			stroke: "currentColor",
-			strokeWidth: "1.5",
-			strokeLinecap: "round",
-			strokeLinejoin: "round"
-		})
-	})
-});
 const SelectSeparator = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.Separator, {
 	ref,
 	className: [selectSeparator, className].filter(Boolean).join(" "),
@@ -3080,8 +2930,14 @@ const overlayShow = keyframes({
 	from: { opacity: "0" },
 	to: { opacity: "1" }
 });
+/**
+* Sheet — shadcn v4 aligned.
+* - Overlay: black/50
+* - Content: bg-background (not surfaceOverlay)
+* - Side-based animations
+*/
 const sheetOverlay = style({
-	backgroundColor: vars.color.overlay,
+	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: vars.zIndex.overlay,
@@ -3107,10 +2963,11 @@ const sheetContent = recipe({
 	base: {
 		position: "fixed",
 		zIndex: vars.zIndex.modal,
-		backgroundColor: vars.color.surfaceOverlay,
-		boxShadow: vars.shadow.xl,
+		backgroundColor: vars.color.background,
+		boxShadow: vars.shadow.lg,
 		display: "flex",
 		flexDirection: "column",
+		gap: vars.space["4"],
 		outline: "none"
 	},
 	variants: { side: {
@@ -3118,37 +2975,35 @@ const sheetContent = recipe({
 			top: 0,
 			right: 0,
 			height: "100%",
-			width: "400px",
-			maxWidth: "100vw",
+			width: "75%",
+			maxWidth: "24rem",
 			borderLeft: `1px solid ${vars.color.border}`,
-			animation: `${slideInFromRight$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+			animation: `${slideInFromRight$1} 500ms ${vars.motion.easing.default}`
 		},
 		left: {
 			top: 0,
 			left: 0,
 			height: "100%",
-			width: "400px",
-			maxWidth: "100vw",
+			width: "75%",
+			maxWidth: "24rem",
 			borderRight: `1px solid ${vars.color.border}`,
-			animation: `${slideInFromLeft} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+			animation: `${slideInFromLeft} 500ms ${vars.motion.easing.default}`
 		},
 		top: {
 			top: 0,
 			left: 0,
 			right: 0,
 			height: "auto",
-			maxHeight: "80vh",
 			borderBottom: `1px solid ${vars.color.border}`,
-			animation: `${slideInFromTop} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+			animation: `${slideInFromTop} 500ms ${vars.motion.easing.default}`
 		},
 		bottom: {
 			bottom: 0,
 			left: 0,
 			right: 0,
 			height: "auto",
-			maxHeight: "80vh",
 			borderTop: `1px solid ${vars.color.border}`,
-			animation: `${slideInFromBottom} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+			animation: `${slideInFromBottom} 500ms ${vars.motion.easing.default}`
 		}
 	} },
 	defaultVariants: { side: "right" }
@@ -3156,33 +3011,29 @@ const sheetContent = recipe({
 const sheetHeader = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["2"],
-	padding: vars.space["4"],
-	paddingBottom: 0
+	gap: vars.space["1_5"],
+	padding: vars.space["4"]
 });
 const sheetFooter = style({
 	display: "flex",
-	alignItems: "center",
-	justifyContent: "flex-end",
+	flexDirection: "column",
 	gap: vars.space["2"],
 	padding: vars.space["4"],
-	paddingTop: 0
+	marginTop: "auto"
 });
 const sheetBody = style({
 	flex: 1,
 	overflow: "auto",
-	padding: vars.space["4"]
+	padding: `0 ${vars.space["4"]}`
 });
 const sheetTitle = style({
-	fontSize: vars.font.size.lg,
+	fontSize: vars.font.size.md,
 	fontWeight: vars.font.weight.semibold,
-	color: vars.color.text,
-	lineHeight: vars.font.lineHeight.tight
+	color: vars.color.text
 });
 const sheetDescription = style({
 	fontSize: vars.font.size.sm,
-	color: vars.color.textMuted,
-	lineHeight: vars.font.lineHeight.relaxed
+	color: vars.color.textMuted
 });
 const sheetClose = style({
 	position: "absolute",
@@ -3191,19 +3042,17 @@ const sheetClose = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["8"],
-	height: vars.space["8"],
+	width: vars.space["6"],
+	height: vars.space["6"],
 	borderRadius: vars.radii.sm,
 	color: vars.color.textMuted,
 	backgroundColor: "transparent",
 	border: "none",
 	cursor: "pointer",
-	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	opacity: "0.7",
+	transition: `opacity ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": {
-			color: vars.color.text,
-			backgroundColor: vars.color.ghostHover
-		},
+		"&:hover": { opacity: "1" },
 		"&:focus-visible": {
 			outline: `2px solid ${vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -3223,24 +3072,17 @@ const SheetOverlay = React.forwardRef(({ className, ...props }, ref) => /* @__PU
 	...props
 }));
 SheetOverlay.displayName = "SheetOverlay";
-const SheetContent = React.forwardRef(({ side = "right", showClose = true, className, children, ...props }, ref) => /* @__PURE__ */ jsxs(SheetPortal, { children: [/* @__PURE__ */ jsx(SheetOverlay, {}), /* @__PURE__ */ jsxs(DialogPrimitive.Content, {
+const SheetContent = React.forwardRef(({ side = "right", showCloseButton = true, className, children, ...props }, ref) => /* @__PURE__ */ jsxs(SheetPortal, { children: [/* @__PURE__ */ jsx(SheetOverlay, {}), /* @__PURE__ */ jsxs(DialogPrimitive.Content, {
 	ref,
 	className: [sheetContent({ side }), className].filter(Boolean).join(" "),
 	...props,
-	children: [children, showClose && /* @__PURE__ */ jsx(DialogPrimitive.Close, {
+	children: [children, showCloseButton && /* @__PURE__ */ jsxs(DialogPrimitive.Close, {
 		className: sheetClose,
 		"aria-label": "Close",
-		children: /* @__PURE__ */ jsx("svg", {
-			width: "15",
-			height: "15",
-			viewBox: "0 0 15 15",
-			fill: "none",
-			"aria-hidden": true,
-			children: /* @__PURE__ */ jsx("path", {
-				d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-				fill: "currentColor"
-			})
-		})
+		children: [/* @__PURE__ */ jsx(X, { size: 16 }), /* @__PURE__ */ jsx("span", {
+			className: "sr-only",
+			children: "Close"
+		})]
 	})]
 })] }));
 SheetContent.displayName = "SheetContent";
@@ -3295,6 +3137,12 @@ Skeleton.displayName = "Skeleton";
 
 //#endregion
 //#region src/components/Slider/Slider.css.ts
+/**
+* Slider — shadcn v4 aligned.
+* Track: bg-muted (secondary), h-1.5
+* Range: bg-primary
+* Thumb: white bg, primary border, ring on hover/focus
+*/
 const sliderRoot = style({
 	position: "relative",
 	display: "flex",
@@ -3302,7 +3150,6 @@ const sliderRoot = style({
 	touchAction: "none",
 	userSelect: "none",
 	alignItems: "center",
-	cursor: "pointer",
 	selectors: { "&[data-disabled]": {
 		opacity: "0.5",
 		cursor: "not-allowed"
@@ -3319,23 +3166,24 @@ const sliderTrack = style({
 const sliderRange = style({
 	position: "absolute",
 	height: "100%",
-	backgroundColor: vars.color.primary,
-	borderRadius: "inherit"
+	backgroundColor: vars.color.primary
 });
 const sliderThumb = style({
 	display: "block",
 	width: "16px",
 	height: "16px",
 	borderRadius: vars.radii.full,
-	backgroundColor: vars.color.primaryForeground,
+	backgroundColor: "#ffffff",
 	border: `2px solid ${vars.color.primary}`,
 	boxShadow: vars.shadow.sm,
-	transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	outline: "none",
 	selectors: {
-		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.primary} 20%, transparent)` },
-		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
+		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)` },
+		"&:focus-visible": { boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)` },
+		"&:disabled": {
+			opacity: "0.5",
+			pointerEvents: "none"
 		}
 	}
 });
@@ -3399,23 +3247,32 @@ Spinner.displayName = "Spinner";
 
 //#endregion
 //#region src/components/Switch/Switch.css.ts
+/**
+* Switch — shadcn v4 aligned.
+* - Unchecked: bg-input (border-ish color)
+* - Checked: bg-primary
+* - Border transparent, shadow-xs, rounded-full
+* - Default: 32x18px, thumb 16px
+*/
 const switchRoot = style({
 	display: "inline-flex",
 	alignItems: "center",
-	width: "36px",
-	height: "20px",
+	width: "32px",
+	height: "18px",
 	borderRadius: vars.radii.full,
-	backgroundColor: vars.color.secondary,
-	border: "none",
-	padding: "2px",
+	backgroundColor: vars.color.border,
+	border: "1px solid transparent",
+	padding: 0,
 	cursor: "pointer",
 	flexShrink: 0,
-	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	boxShadow: vars.shadow.xs,
+	outline: "none",
+	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
 		"&[data-state=\"checked\"]": { backgroundColor: vars.color.primary },
 		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3428,10 +3285,14 @@ const switchThumb = style({
 	width: "16px",
 	height: "16px",
 	borderRadius: vars.radii.full,
-	backgroundColor: vars.color.primaryForeground,
+	backgroundColor: vars.color.background,
 	boxShadow: vars.shadow.sm,
+	pointerEvents: "none",
 	transition: `transform ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-	selectors: { "&[data-state=\"checked\"]": { transform: "translateX(16px)" } }
+	selectors: {
+		"&[data-state=\"checked\"]": { transform: "translateX(calc(100% - 2px))" },
+		"&[data-state=\"unchecked\"]": { transform: "translateX(0)" }
+	}
 });
 
 //#endregion
@@ -3446,12 +3307,17 @@ Switch.displayName = "Switch";
 
 //#endregion
 //#region src/components/Table/Table.css.ts
+/**
+* Table — shadcn v4 aligned.
+* - Simple overflow wrapper, no border on wrapper
+* - th: text-foreground, font-medium, no uppercase, h-10
+* - Hover: bg-muted/50 (ghostHover)
+* - Selected: bg-muted (secondary)
+*/
 const tableWrapper = style({
 	position: "relative",
 	width: "100%",
-	overflowX: "auto",
-	borderRadius: vars.radii.md,
-	border: `1px solid ${vars.color.border}`
+	overflowX: "auto"
 });
 const table = style({
 	width: "100%",
@@ -3461,7 +3327,7 @@ const table = style({
 	color: vars.color.text
 });
 const tableCaption = style({
-	marginTop: vars.space[3],
+	marginTop: vars.space["4"],
 	fontSize: vars.font.size.sm,
 	color: vars.color.textMuted,
 	textAlign: "center"
@@ -3471,7 +3337,7 @@ const tableBody = style({});
 globalStyle(`${tableBody} tr:last-child`, { borderBottom: "none" });
 const tableFooter = style({
 	borderTop: `1px solid ${vars.color.border}`,
-	backgroundColor: `color-mix(in srgb, ${vars.color.surface} 50%, transparent)`,
+	backgroundColor: `color-mix(in srgb, ${vars.color.secondary} 50%, transparent)`,
 	fontWeight: vars.font.weight.medium
 });
 globalStyle(`${tableFooter} tr:last-child`, { borderBottom: "none" });
@@ -3479,34 +3345,26 @@ const tableRow = style({
 	borderBottom: `1px solid ${vars.color.border}`,
 	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&[data-state=\"selected\"]": { backgroundColor: vars.color.ghostHover },
+		"&[data-state=\"selected\"]": { backgroundColor: vars.color.secondary },
 		"&:hover": { backgroundColor: vars.color.ghostHover }
 	}
 });
 const tableHead = style({
-	padding: `${vars.space["2"]} ${vars.space["3"]}`,
+	height: vars.space["10"],
+	padding: `0 ${vars.space["2"]}`,
 	textAlign: "left",
 	verticalAlign: "middle",
-	fontWeight: vars.font.weight.semibold,
-	color: vars.color.textMuted,
-	fontSize: vars.font.size.xs,
-	textTransform: "uppercase",
-	letterSpacing: vars.font.letterSpacing.wide,
+	fontWeight: vars.font.weight.medium,
+	color: vars.color.text,
+	fontSize: vars.font.size.sm,
 	whiteSpace: "nowrap",
-	selectors: {
-		"&:has([role=checkbox])": { paddingRight: 0 },
-		"&[data-align=\"right\"]": { textAlign: "right" },
-		"&[data-align=\"center\"]": { textAlign: "center" }
-	}
+	selectors: { "&:has([role=checkbox])": { paddingRight: 0 } }
 });
 const tableCell = style({
-	padding: `${vars.space["2"]} ${vars.space["3"]}`,
+	padding: vars.space["2"],
 	verticalAlign: "middle",
-	selectors: {
-		"&:has([role=checkbox])": { paddingRight: 0 },
-		"&[data-align=\"right\"]": { textAlign: "right" },
-		"&[data-align=\"center\"]": { textAlign: "center" }
-	}
+	whiteSpace: "nowrap",
+	selectors: { "&:has([role=checkbox])": { paddingRight: 0 } }
 });
 
 //#endregion
@@ -3567,58 +3425,64 @@ TableCell.displayName = "TableCell";
 
 //#endregion
 //#region src/components/Tabs/Tabs.css.ts
+/**
+* Tabs — shadcn v4 aligned.
+* - List: bg-muted (secondary), rounded-lg, 3px padding, no border
+* - Trigger: data-[state=active] gets bg-background + shadow-sm
+* - h-9 compact
+*/
 const tabsList = style({
 	display: "inline-flex",
 	alignItems: "center",
 	backgroundColor: vars.color.secondary,
-	border: `1px solid ${vars.color.border}`,
-	borderRadius: vars.radii.md,
-	padding: vars.space["1"],
-	gap: vars.space["0_5"]
+	borderRadius: vars.radii.lg,
+	padding: "3px",
+	gap: vars.space["0_5"],
+	height: vars.space["8"],
+	color: vars.color.textMuted
 });
 const tabsTrigger = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
+	flex: 1,
+	height: "calc(100% - 1px)",
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"],
 	paddingTop: vars.space["1"],
 	paddingBottom: vars.space["1"],
-	paddingLeft: vars.space["3"],
-	paddingRight: vars.space["3"],
-	borderRadius: vars.radii.sm,
+	borderRadius: vars.radii.md,
+	border: "1px solid transparent",
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
 	color: vars.color.textMuted,
 	cursor: "pointer",
-	border: "none",
 	backgroundColor: "transparent",
+	whiteSpace: "nowrap",
 	transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	outline: "none",
+	gap: vars.space["1_5"],
 	selectors: {
-		"&:hover": {
-			color: vars.color.text,
-			backgroundColor: vars.color.ghostHover
-		},
+		"&:hover": { color: vars.color.text },
 		"&[data-state=\"active\"]": {
 			color: vars.color.text,
-			backgroundColor: vars.color.surfaceElevated,
+			backgroundColor: vars.color.background,
 			boxShadow: vars.shadow.sm
 		},
 		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
+			borderColor: vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
-			cursor: "not-allowed"
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		}
 	}
 });
 const tabsContent = style({
-	marginTop: vars.space["3"],
-	selectors: { "&:focus-visible": {
-		outline: `2px solid ${vars.color.focusRing}`,
-		outlineOffset: "2px",
-		borderRadius: vars.radii.sm
-	} }
+	flex: 1,
+	outline: "none"
 });
 
 //#endregion
@@ -3645,10 +3509,14 @@ TabsContent.displayName = "TabsContent";
 
 //#endregion
 //#region src/components/Textarea/Textarea.css.ts
+/**
+* Textarea — shadcn v4 aligned.
+* border-input, shadow-xs, focus ring pattern.
+*/
 const textarea = style({
 	width: "100%",
-	minHeight: "80px",
-	padding: `${vars.space["2"]} ${vars.space["2_5"]}`,
+	minHeight: "4rem",
+	padding: `${vars.space["2"]} ${vars.space["3"]}`,
 	backgroundColor: vars.color.input,
 	color: vars.color.text,
 	border: `1px solid ${vars.color.border}`,
@@ -3657,22 +3525,23 @@ const textarea = style({
 	fontSize: vars.font.size.sm,
 	lineHeight: vars.font.lineHeight.relaxed,
 	resize: "vertical",
-	transition: `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	boxShadow: vars.shadow.xs,
+	outline: "none",
+	transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
 		"&::placeholder": { color: vars.color.placeholder },
-		"&:hover:not(:disabled)": { borderColor: vars.color.textMuted },
 		"&:focus-visible": {
-			outline: "none",
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
-			cursor: "not-allowed"
+			cursor: "not-allowed",
+			pointerEvents: "none"
 		},
 		"&[aria-invalid=\"true\"]": {
 			borderColor: vars.color.destructive,
-			boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 		}
 	}
 });
@@ -3831,17 +3700,7 @@ const ToastClose = React.forwardRef(({ className, ...props }, ref) => /* @__PURE
 	className: [toastClose, className].filter(Boolean).join(" "),
 	"aria-label": "Dismiss notification",
 	...props,
-	children: /* @__PURE__ */ jsx("svg", {
-		width: "14",
-		height: "14",
-		viewBox: "0 0 15 15",
-		fill: "none",
-		"aria-hidden": true,
-		children: /* @__PURE__ */ jsx("path", {
-			d: "M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z",
-			fill: "currentColor"
-		})
-	})
+	children: /* @__PURE__ */ jsx(X, { size: 14 })
 }));
 ToastClose.displayName = "ToastClose";
 const ToastTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(ToastPrimitive.Title, {
@@ -3859,6 +3718,12 @@ ToastDescription.displayName = "ToastDescription";
 
 //#endregion
 //#region src/components/Toggle/Toggle.css.ts
+/**
+* Toggle — shadcn v4 aligned.
+* - hover: bg-muted (secondary) + text-muted
+* - on: bg-accent (ghostHover) + text-foreground
+* - outline: border + shadow-xs
+*/
 const toggleRecipe = recipe({
 	base: {
 		display: "inline-flex",
@@ -3873,19 +3738,21 @@ const toggleRecipe = recipe({
 		backgroundColor: "transparent",
 		color: vars.color.textMuted,
 		cursor: "pointer",
-		transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+		whiteSpace: "nowrap",
+		outline: "none",
+		transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}, background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 		selectors: {
 			"&:hover": {
-				backgroundColor: vars.color.ghostHover,
-				color: vars.color.text
+				backgroundColor: vars.color.secondary,
+				color: vars.color.textMuted
 			},
 			"&[data-state=\"on\"]": {
 				backgroundColor: vars.color.ghostHover,
 				color: vars.color.text
 			},
 			"&:focus-visible": {
-				outline: `2px solid ${vars.color.focusRing}`,
-				outlineOffset: "2px"
+				borderColor: vars.color.focusRing,
+				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -3899,27 +3766,29 @@ const toggleRecipe = recipe({
 			default: {},
 			outline: {
 				border: `1px solid ${vars.color.border}`,
-				selectors: { "&[data-state=\"on\"]": {
-					backgroundColor: vars.color.ghostHover,
-					borderColor: vars.color.primary
-				} }
+				backgroundColor: "transparent",
+				boxShadow: vars.shadow.xs,
+				selectors: { "&:hover": { backgroundColor: vars.color.ghostHover } }
 			}
 		},
 		size: {
 			sm: {
 				height: vars.space["7"],
 				paddingLeft: vars.space["1_5"],
-				paddingRight: vars.space["1_5"]
+				paddingRight: vars.space["1_5"],
+				minWidth: vars.space["7"]
 			},
 			md: {
 				height: vars.space["8"],
-				paddingLeft: vars.space["2_5"],
-				paddingRight: vars.space["2_5"]
+				paddingLeft: vars.space["2"],
+				paddingRight: vars.space["2"],
+				minWidth: vars.space["8"]
 			},
 			lg: {
 				height: vars.space["10"],
-				paddingLeft: vars.space["3"],
-				paddingRight: vars.space["3"]
+				paddingLeft: vars.space["2_5"],
+				paddingRight: vars.space["2_5"],
+				minWidth: vars.space["10"]
 			}
 		}
 	},
@@ -4165,5 +4034,5 @@ const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
 const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertIcon, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectItemIndicator, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl };
 //# sourceMappingURL=index.mjs.map

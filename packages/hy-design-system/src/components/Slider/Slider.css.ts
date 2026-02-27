@@ -1,6 +1,12 @@
 import { style } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
+/**
+ * Slider — shadcn v4 aligned.
+ * Track: bg-muted (secondary), h-1.5
+ * Range: bg-primary
+ * Thumb: white bg, primary border, ring on hover/focus
+ */
 export const sliderRoot = style({
   position: 'relative',
   display: 'flex',
@@ -8,7 +14,6 @@ export const sliderRoot = style({
   touchAction: 'none',
   userSelect: 'none',
   alignItems: 'center',
-  cursor: 'pointer',
   selectors: {
     '&[data-disabled]': {
       opacity: '0.5',
@@ -30,7 +35,6 @@ export const sliderRange = style({
   position: 'absolute',
   height: '100%',
   backgroundColor: vars.color.primary,
-  borderRadius: 'inherit',
 });
 
 export const sliderThumb = style({
@@ -38,17 +42,21 @@ export const sliderThumb = style({
   width: '16px',
   height: '16px',
   borderRadius: vars.radii.full,
-  backgroundColor: vars.color.primaryForeground,
+  backgroundColor: '#ffffff',
   border: `2px solid ${vars.color.primary}`,
   boxShadow: vars.shadow.sm,
-  transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+  transition: `color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+  outline: 'none',
   selectors: {
     '&:hover': {
-      boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.primary} 20%, transparent)`,
+      boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
     },
     '&:focus-visible': {
-      outline: `2px solid ${vars.color.focusRing}`,
-      outlineOffset: '2px',
+      boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
+    },
+    '&:disabled': {
+      opacity: '0.5',
+      pointerEvents: 'none',
     },
   },
 });

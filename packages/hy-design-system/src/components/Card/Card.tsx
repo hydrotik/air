@@ -1,16 +1,18 @@
 import React from 'react';
-import { cardRecipe, cardHeader, cardTitle, cardDescription, cardFooter } from './Card.css';
+import {
+  cardRoot,
+  cardHeader,
+  cardTitle,
+  cardDescription,
+  cardContent,
+  cardFooter,
+} from './Card.css';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  elevation?: 'flat' | 'raised' | 'elevated';
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-}
-
-export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ elevation = 'raised', padding = 'md', className, ...props }, ref) => (
+export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={[cardRecipe({ elevation, padding }), className].filter(Boolean).join(' ')}
+      className={[cardRoot, className].filter(Boolean).join(' ')}
       {...props}
     />
   ),
@@ -38,14 +40,16 @@ export const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTML
 );
 CardDescription.displayName = 'CardDescription';
 
+export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={[cardContent, className].filter(Boolean).join(' ')} {...props} />
+  ),
+);
+CardContent.displayName = 'CardContent';
+
 export const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={[cardFooter, className].filter(Boolean).join(' ')} {...props} />
   ),
 );
 CardFooter.displayName = 'CardFooter';
-
-export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  (props, ref) => <div ref={ref} {...props} />,
-);
-CardContent.displayName = 'CardContent';

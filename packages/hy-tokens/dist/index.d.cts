@@ -65,6 +65,7 @@ declare const vars: {
     full: `var(--${string})`;
   };
   shadow: {
+    xs: `var(--${string})`;
     sm: `var(--${string})`;
     md: `var(--${string})`;
     lg: `var(--${string})`;

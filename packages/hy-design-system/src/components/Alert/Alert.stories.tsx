@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { AlertCircle, Terminal, CheckCircle2, TriangleAlert } from 'lucide-react';
 import { Alert, AlertTitle, AlertDescription } from './Alert';
 
 const meta = {
@@ -8,7 +9,7 @@ const meta = {
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
   argTypes: {
-    variant: { control: 'select', options: ['default', 'destructive', 'success', 'warning'] },
+    variant: { control: 'select', options: ['default', 'destructive'] },
   },
 } satisfies Meta<typeof Alert>;
 
@@ -18,9 +19,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div style={{ width: 450 }}>
-      <Alert>
+      <Alert icon={<Terminal size={16} />}>
         <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>You can add components to your app using the CLI.</AlertDescription>
+        <AlertDescription>
+          You can add components to your app using the CLI.
+        </AlertDescription>
       </Alert>
     </div>
   ),
@@ -29,31 +32,24 @@ export const Default: Story = {
 export const Destructive: Story = {
   render: () => (
     <div style={{ width: 450 }}>
-      <Alert variant="destructive">
+      <Alert variant="destructive" icon={<AlertCircle size={16} />}>
         <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Your session has expired. Please log in again.</AlertDescription>
+        <AlertDescription>
+          Your session has expired. Please log in again.
+        </AlertDescription>
       </Alert>
     </div>
   ),
 };
 
-export const Success: Story = {
+export const WithoutIcon: Story = {
   render: () => (
     <div style={{ width: 450 }}>
-      <Alert variant="success">
-        <AlertTitle>Success</AlertTitle>
-        <AlertDescription>Your changes have been saved successfully.</AlertDescription>
-      </Alert>
-    </div>
-  ),
-};
-
-export const Warning: Story = {
-  render: () => (
-    <div style={{ width: 450 }}>
-      <Alert variant="warning">
-        <AlertTitle>Warning</AlertTitle>
-        <AlertDescription>Your account is approaching its storage limit.</AlertDescription>
+      <Alert>
+        <AlertTitle>Note</AlertTitle>
+        <AlertDescription>
+          This alert has no icon — the grid collapses gracefully.
+        </AlertDescription>
       </Alert>
     </div>
   ),

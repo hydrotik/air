@@ -1,5 +1,6 @@
 import React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
+import { ChevronDown, ChevronUp, Check } from 'lucide-react';
 import {
   selectTrigger,
   selectContent,
@@ -33,9 +34,7 @@ export const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon className={selectIcon}>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-        <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <ChevronDown size={16} />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -50,9 +49,7 @@ export const SelectScrollUpButton = React.forwardRef<
     className={[selectScrollButton, className].filter(Boolean).join(' ')}
     {...props}
   >
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path d="M2.5 7.5L6 4L9.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <ChevronUp size={16} />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = 'SelectScrollUpButton';
@@ -66,9 +63,7 @@ export const SelectScrollDownButton = React.forwardRef<
     className={[selectScrollButton, className].filter(Boolean).join(' ')}
     {...props}
   >
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <ChevronDown size={16} />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName = 'SelectScrollDownButton';
@@ -114,19 +109,15 @@ export const SelectItem = React.forwardRef<
     className={[selectItem, className].filter(Boolean).join(' ')}
     {...props}
   >
-    <SelectItemIndicator />
+    <span className={selectItemIndicator}>
+      <SelectPrimitive.ItemIndicator>
+        <Check size={16} />
+      </SelectPrimitive.ItemIndicator>
+    </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = 'SelectItem';
-
-export const SelectItemIndicator = () => (
-  <SelectPrimitive.ItemIndicator className={selectItemIndicator}>
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  </SelectPrimitive.ItemIndicator>
-);
 
 export const SelectSeparator = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitive.Separator>,

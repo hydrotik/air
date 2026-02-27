@@ -11,14 +11,14 @@ const slideUp = keyframes({
   to: { height: '0' },
 });
 
-export const accordionRoot = style({
-  borderRadius: vars.radii.lg,
-  border: `1px solid ${vars.color.border}`,
-  overflow: 'hidden',
-});
+/**
+ * Accordion — shadcn v4 aligned.
+ * No wrapping border container — items separated by bottom border.
+ */
+export const accordionRoot = style({});
 
 export const accordionItem = style({
-  borderBottom: `1px solid ${vars.color.borderSubtle}`,
+  borderBottom: `1px solid ${vars.color.border}`,
   selectors: {
     '&:last-child': {
       borderBottom: 'none',
@@ -28,26 +28,36 @@ export const accordionItem = style({
 
 export const accordionTrigger = style({
   display: 'flex',
-  alignItems: 'center',
+  flex: 1,
+  alignItems: 'flex-start',
   justifyContent: 'space-between',
+  gap: vars.space['4'],
   width: '100%',
-  padding: `${vars.space['2_5']} ${vars.space['3']}`,
+  padding: `${vars.space['4']} 0`,
   fontFamily: vars.font.family.sans,
   fontSize: vars.font.size.sm,
   fontWeight: vars.font.weight.medium,
   color: vars.color.text,
   backgroundColor: 'transparent',
   border: 'none',
+  borderRadius: vars.radii.md,
   cursor: 'pointer',
   textAlign: 'left',
-  transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+  outline: 'none',
+  transition: `all ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&:hover': {
-      backgroundColor: vars.color.ghostHover,
+      textDecoration: 'underline',
     },
     '&:focus-visible': {
       outline: `2px solid ${vars.color.focusRing}`,
-      outlineOffset: '-2px',
+      outlineOffset: '2px',
+      boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
+    },
+    '&:disabled': {
+      opacity: '0.5',
+      cursor: 'not-allowed',
+      pointerEvents: 'none',
     },
   },
 });
@@ -56,6 +66,10 @@ export const accordionChevron = style({
   transition: `transform ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
   flexShrink: 0,
   color: vars.color.textMuted,
+  marginTop: '2px',
+  width: '16px',
+  height: '16px',
+  pointerEvents: 'none',
 });
 
 globalStyle(`${accordionTrigger}[data-state="open"] ${accordionChevron}`, {
@@ -65,7 +79,6 @@ globalStyle(`${accordionTrigger}[data-state="open"] ${accordionChevron}`, {
 export const accordionContent = style({
   overflow: 'hidden',
   fontSize: vars.font.size.sm,
-  color: vars.color.textMuted,
   selectors: {
     '&[data-state="open"]': {
       animation: `${slideDown} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
@@ -77,5 +90,6 @@ export const accordionContent = style({
 });
 
 export const accordionContentInner = style({
-  padding: `0 ${vars.space['3']} ${vars.space['3']}`,
+  paddingTop: 0,
+  paddingBottom: vars.space['4'],
 });

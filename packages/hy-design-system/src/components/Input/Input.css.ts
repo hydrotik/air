@@ -16,9 +16,14 @@ export const inputWrapperRecipe = recipe({
   defaultVariants: { fullWidth: false },
 });
 
+/**
+ * Input — shadcn v4 aligned.
+ * Uses shadow-xs, border-input, dark bg-input/30 pattern.
+ */
 export const inputRecipe = recipe({
   base: {
     width: '100%',
+    minWidth: 0,
     backgroundColor: vars.color.input,
     color: vars.color.text,
     border: `1px solid ${vars.color.border}`,
@@ -26,30 +31,28 @@ export const inputRecipe = recipe({
     fontFamily: vars.font.family.sans,
     fontSize: vars.font.size.sm,
     lineHeight: vars.font.lineHeight.normal,
+    boxShadow: vars.shadow.xs,
+    outline: 'none',
     transition: [
-      `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+      `color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
       `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
     ].join(', '),
     selectors: {
       '&::placeholder': {
         color: vars.color.placeholder,
       },
-      '&:hover:not(:disabled):not([aria-invalid="true"])': {
-        borderColor: vars.color.textMuted,
-      },
       '&:focus-visible': {
-        outline: 'none',
         borderColor: vars.color.focusRing,
-        boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`,
+        boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
       },
       '&:disabled': {
         opacity: '0.5',
         cursor: 'not-allowed',
-        backgroundColor: vars.color.surface,
+        pointerEvents: 'none',
       },
       '&[aria-invalid="true"]': {
         borderColor: vars.color.destructive,
-        boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`,
+        boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`,
       },
     },
   },
@@ -63,8 +66,8 @@ export const inputRecipe = recipe({
       },
       md: {
         height: vars.space['8'],
-        paddingLeft: vars.space['2_5'],
-        paddingRight: vars.space['2_5'],
+        paddingLeft: vars.space['3'],
+        paddingRight: vars.space['3'],
         fontSize: vars.font.size.sm,
       },
       lg: {

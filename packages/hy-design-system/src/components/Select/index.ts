@@ -6,7 +6,7 @@ export {
   SelectContent,
   SelectLabel,
   SelectItem,
-  SelectItemIndicator,
+
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,

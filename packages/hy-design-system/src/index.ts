@@ -5,7 +5,8 @@
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './components/Accordion';
 
 // ─── Alert ───────────────────────────────────────────────────────────────────
-export { Alert, AlertIcon, AlertTitle, AlertDescription } from './components/Alert';
+export { Alert, AlertTitle, AlertDescription } from './components/Alert';
+export type { AlertProps } from './components/Alert';
 export type { AlertProps } from './components/Alert';
 
 // ─── AlertDialog ─────────────────────────────────────────────────────────────
@@ -59,7 +60,7 @@ export {
   CardContent,
   CardFooter,
 } from './components/Card';
-export type { CardProps } from './components/Card';
+// Card no longer has custom props — uses React.HTMLAttributes directly
 
 // ─── Checkbox ────────────────────────────────────────────────────────────────
 export { Checkbox } from './components/Checkbox';
@@ -216,7 +217,7 @@ export {
   SelectContent,
   SelectLabel,
   SelectItem,
-  SelectItemIndicator,
+
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,

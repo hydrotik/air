@@ -10,9 +10,8 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'primary', 'destructive', 'success', 'warning', 'outline'],
+      options: ['default', 'secondary', 'destructive', 'outline', 'success', 'warning'],
     },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
   },
 } satisfies Meta<typeof Badge>;
 
@@ -27,21 +26,11 @@ export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
       <Badge variant="default">Default</Badge>
-      <Badge variant="primary">Primary</Badge>
+      <Badge variant="secondary">Secondary</Badge>
       <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="outline">Outline</Badge>
       <Badge variant="success">Success</Badge>
       <Badge variant="warning">Warning</Badge>
-      <Badge variant="outline">Outline</Badge>
-    </div>
-  ),
-};
-
-export const AllSizes: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-      <Badge size="sm">Small</Badge>
-      <Badge size="md">Medium</Badge>
-      <Badge size="lg">Large</Badge>
     </div>
   ),
 };
