@@ -16,10 +16,10 @@ export const avatarRoot = recipe({
   },
   variants: {
     size: {
-      sm: { width: vars.space['8'], height: vars.space['8'] },
-      md: { width: vars.space['10'], height: vars.space['10'] },
-      lg: { width: vars.space['12'], height: vars.space['12'] },
-      xl: { width: vars.space['16'], height: vars.space['16'] },
+      sm: { width: vars.space['6'], height: vars.space['6'] },
+      md: { width: vars.space['8'], height: vars.space['8'] },
+      lg: { width: vars.space['10'], height: vars.space['10'] },
+      xl: { width: vars.space['14'], height: vars.space['14'] },
     },
   },
   defaultVariants: { size: 'md' },

@@ -72,6 +72,7 @@ export const vars = createThemeContract({
     '6': null,
     '7': null,
     '8': null,
+    '9': null,
     '10': null,
     '12': null,
     '14': null,

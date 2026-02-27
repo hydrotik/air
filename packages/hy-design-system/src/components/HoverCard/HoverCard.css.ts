@@ -8,11 +8,11 @@ const slideIn = keyframes({
 
 export const hoverCardContent = style({
   zIndex: vars.zIndex.dropdown,
-  width: '320px',
+  width: '280px',
   borderRadius: vars.radii.lg,
   border: `1px solid ${vars.color.border}`,
   backgroundColor: vars.color.surfaceElevated,
-  padding: vars.space['4'],
+  padding: vars.space['3'],
   boxShadow: vars.shadow.lg,
   outline: 'none',
   animation: `${slideIn} ${vars.motion.duration.fast} ${vars.motion.easing.default}`,

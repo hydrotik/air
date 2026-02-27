@@ -46,6 +46,7 @@ declare const vars: {
     '6': `var(--${string})`;
     '7': `var(--${string})`;
     '8': `var(--${string})`;
+    '9': `var(--${string})`;
     '10': `var(--${string})`;
     '12': `var(--${string})`;
     '14': `var(--${string})`;

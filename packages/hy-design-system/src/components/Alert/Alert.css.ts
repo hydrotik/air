@@ -10,7 +10,7 @@ export const alertRecipe = recipe({
     width: '100%',
     borderRadius: vars.radii.lg,
     border: `1px solid ${vars.color.border}`,
-    padding: vars.space['4'],
+    padding: vars.space['3'],
     fontSize: vars.font.size.sm,
     lineHeight: vars.font.lineHeight.normal,
   },

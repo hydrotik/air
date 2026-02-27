@@ -20,9 +20,9 @@ export const cardRecipe = recipe({
     },
     padding: {
       none: {},
-      sm: { padding: vars.space['4'] },
-      md: { padding: vars.space['6'] },
-      lg: { padding: vars.space['8'] },
+      sm: { padding: vars.space['3'] },
+      md: { padding: vars.space['4'] },
+      lg: { padding: vars.space['6'] },
     },
   },
   defaultVariants: { elevation: 'raised', padding: 'md' },
@@ -31,14 +31,14 @@ export const cardRecipe = recipe({
 export const cardHeader = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: vars.space['1_5'],
-  paddingBottom: vars.space['4'],
+  gap: vars.space['1'],
+  paddingBottom: vars.space['3'],
   borderBottom: `1px solid ${vars.color.borderSubtle}`,
-  marginBottom: vars.space['4'],
+  marginBottom: vars.space['3'],
 });
 
 export const cardTitle = style({
-  fontSize: vars.font.size.lg,
+  fontSize: vars.font.size.md,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.text,
   lineHeight: vars.font.lineHeight.tight,
@@ -53,8 +53,8 @@ export const cardDescription = style({
 export const cardFooter = style({
   display: 'flex',
   alignItems: 'center',
-  gap: vars.space['3'],
-  paddingTop: vars.space['4'],
+  gap: vars.space['2'],
+  paddingTop: vars.space['3'],
   borderTop: `1px solid ${vars.color.borderSubtle}`,
-  marginTop: vars.space['4'],
+  marginTop: vars.space['3'],
 });

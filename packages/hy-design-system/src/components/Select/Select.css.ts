@@ -49,9 +49,9 @@ export const selectTrigger = recipe({
   },
   variants: {
     size: {
-      sm: { height: vars.space['8'], padding: `0 ${vars.space['2']}`, fontSize: vars.font.size.xs },
-      md: { height: vars.space['10'], padding: `0 ${vars.space['3']}` },
-      lg: { height: vars.space['12'], padding: `0 ${vars.space['4']}`, fontSize: vars.font.size.md },
+      sm: { height: vars.space['7'], padding: `0 ${vars.space['2']}`, fontSize: vars.font.size.xs },
+      md: { height: vars.space['8'], padding: `0 ${vars.space['2_5']}` },
+      lg: { height: vars.space['10'], padding: `0 ${vars.space['3']}`, fontSize: vars.font.size.sm },
     },
     isError: {
       true: {

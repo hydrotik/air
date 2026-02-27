@@ -31,7 +31,7 @@ export const accordionTrigger = style({
   alignItems: 'center',
   justifyContent: 'space-between',
   width: '100%',
-  padding: `${vars.space['4']} ${vars.space['4']}`,
+  padding: `${vars.space['2_5']} ${vars.space['3']}`,
   fontFamily: vars.font.family.sans,
   fontSize: vars.font.size.sm,
   fontWeight: vars.font.weight.medium,
@@ -77,5 +77,5 @@ export const accordionContent = style({
 });
 
 export const accordionContentInner = style({
-  padding: `0 ${vars.space['4']} ${vars.space['4']}`,
+  padding: `0 ${vars.space['3']} ${vars.space['3']}`,
 });

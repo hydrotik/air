@@ -3,8 +3,8 @@ import { vars } from '@hydrotik/tokens';
 
 export const textarea = style({
   width: '100%',
-  minHeight: '100px',
-  padding: `${vars.space['3']} ${vars.space['3']}`,
+  minHeight: '80px',
+  padding: `${vars.space['2']} ${vars.space['2_5']}`,
   backgroundColor: vars.color.input,
   color: vars.color.text,
   border: `1px solid ${vars.color.border}`,

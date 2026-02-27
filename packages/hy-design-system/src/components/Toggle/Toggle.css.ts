@@ -51,19 +51,19 @@ export const toggleRecipe = recipe({
     },
     size: {
       sm: {
-        height: vars.space['8'],
-        paddingLeft: vars.space['2'],
-        paddingRight: vars.space['2'],
+        height: vars.space['7'],
+        paddingLeft: vars.space['1_5'],
+        paddingRight: vars.space['1_5'],
       },
       md: {
+        height: vars.space['8'],
+        paddingLeft: vars.space['2_5'],
+        paddingRight: vars.space['2_5'],
+      },
+      lg: {
         height: vars.space['10'],
         paddingLeft: vars.space['3'],
         paddingRight: vars.space['3'],
-      },
-      lg: {
-        height: vars.space['12'],
-        paddingLeft: vars.space['4'],
-        paddingRight: vars.space['4'],
       },
     },
   },

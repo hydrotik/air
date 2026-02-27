@@ -15,10 +15,10 @@ export const tabsTrigger = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  paddingTop: vars.space['1_5'],
-  paddingBottom: vars.space['1_5'],
-  paddingLeft: vars.space['4'],
-  paddingRight: vars.space['4'],
+  paddingTop: vars.space['1'],
+  paddingBottom: vars.space['1'],
+  paddingLeft: vars.space['3'],
+  paddingRight: vars.space['3'],
   borderRadius: vars.radii.sm,
   fontSize: vars.font.size.sm,
   fontWeight: vars.font.weight.medium,
@@ -49,7 +49,7 @@ export const tabsTrigger = style({
 });
 
 export const tabsContent = style({
-  marginTop: vars.space['4'],
+  marginTop: vars.space['3'],
   selectors: {
     '&:focus-visible': {
       outline: `2px solid ${vars.color.focusRing}`,

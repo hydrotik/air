@@ -19,8 +19,8 @@ export const commandInput = style({
 
 export const commandInputField = style({
   flex: 1,
-  height: vars.space['12'],
-  padding: `0 ${vars.space['4']}`,
+  height: vars.space['9'],
+  padding: `0 ${vars.space['3']}`,
   fontSize: vars.font.size.sm,
   fontFamily: vars.font.family.sans,
   color: vars.color.text,

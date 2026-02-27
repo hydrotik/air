@@ -44,7 +44,7 @@ export const navigationMenuTrigger = style({
   display: 'inline-flex',
   alignItems: 'center',
   gap: vars.space['1'],
-  padding: `${vars.space['2']} ${vars.space['3']}`,
+  padding: `${vars.space['1_5']} ${vars.space['2_5']}`,
   borderRadius: vars.radii.sm,
   fontSize: vars.font.size.sm,
   fontWeight: vars.font.weight.medium,

@@ -31,7 +31,7 @@ export const alertDialogContent = style({
   width: '90vw',
   maxWidth: '500px',
   maxHeight: '85vh',
-  padding: vars.space['6'],
+  padding: vars.space['5'],
   zIndex: vars.zIndex.modal,
   animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
   selectors: {
@@ -44,16 +44,16 @@ export const alertDialogContent = style({
 export const alertDialogHeader = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: vars.space['2'],
-  marginBottom: vars.space['4'],
+  gap: vars.space['1_5'],
+  marginBottom: vars.space['3'],
 });
 
 export const alertDialogFooter = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
-  gap: vars.space['3'],
-  marginTop: vars.space['6'],
+  gap: vars.space['2'],
+  marginTop: vars.space['4'],
 });
 
 export const alertDialogTitle = style({

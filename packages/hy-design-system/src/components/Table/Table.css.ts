@@ -58,7 +58,7 @@ export const tableRow = style({
 });
 
 export const tableHead = style({
-  padding: `${vars.space[3]} ${vars.space[4]}`,
+  padding: `${vars.space['2']} ${vars.space['3']}`,
   textAlign: 'left',
   verticalAlign: 'middle',
   fontWeight: vars.font.weight.semibold,
@@ -75,7 +75,7 @@ export const tableHead = style({
 });
 
 export const tableCell = style({
-  padding: `${vars.space[3]} ${vars.space[4]}`,
+  padding: `${vars.space['2']} ${vars.space['3']}`,
   verticalAlign: 'middle',
   selectors: {
     '&:has([role=checkbox])': { paddingRight: 0 },

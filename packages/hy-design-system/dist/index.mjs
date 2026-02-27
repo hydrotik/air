@@ -55,7 +55,7 @@ const accordionTrigger = style({
 	alignItems: "center",
 	justifyContent: "space-between",
 	width: "100%",
-	padding: `${vars.space["4"]} ${vars.space["4"]}`,
+	padding: `${vars.space["2_5"]} ${vars.space["3"]}`,
 	fontFamily: vars.font.family.sans,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
@@ -88,7 +88,7 @@ const accordionContent = style({
 		"&[data-state=\"closed\"]": { animation: `${slideUp} ${vars.motion.duration.normal} ${vars.motion.easing.default}` }
 	}
 });
-const accordionContentInner = style({ padding: `0 ${vars.space["4"]} ${vars.space["4"]}` });
+const accordionContentInner = style({ padding: `0 ${vars.space["3"]} ${vars.space["3"]}` });
 
 //#endregion
 //#region src/components/Accordion/Accordion.tsx
@@ -146,7 +146,7 @@ const alertRecipe = recipe({
 		width: "100%",
 		borderRadius: vars.radii.lg,
 		border: `1px solid ${vars.color.border}`,
-		padding: vars.space["4"],
+		padding: vars.space["3"],
 		fontSize: vars.font.size.sm,
 		lineHeight: vars.font.lineHeight.normal
 	},
@@ -249,7 +249,7 @@ const alertDialogContent = style({
 	width: "90vw",
 	maxWidth: "500px",
 	maxHeight: "85vh",
-	padding: vars.space["6"],
+	padding: vars.space["5"],
 	zIndex: vars.zIndex.modal,
 	animation: `${contentShow$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
 	selectors: { "&:focus-visible": { outline: "none" } }
@@ -257,15 +257,15 @@ const alertDialogContent = style({
 const alertDialogHeader = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["2"],
-	marginBottom: vars.space["4"]
+	gap: vars.space["1_5"],
+	marginBottom: vars.space["3"]
 });
 const alertDialogFooter = style({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: vars.space["3"],
-	marginTop: vars.space["6"]
+	gap: vars.space["2"],
+	marginTop: vars.space["4"]
 });
 const alertDialogTitle = style({
 	fontSize: vars.font.size.lg,
@@ -343,20 +343,20 @@ const avatarRoot = recipe({
 	},
 	variants: { size: {
 		sm: {
+			width: vars.space["6"],
+			height: vars.space["6"]
+		},
+		md: {
 			width: vars.space["8"],
 			height: vars.space["8"]
 		},
-		md: {
+		lg: {
 			width: vars.space["10"],
 			height: vars.space["10"]
 		},
-		lg: {
-			width: vars.space["12"],
-			height: vars.space["12"]
-		},
 		xl: {
-			width: vars.space["16"],
-			height: vars.space["16"]
+			width: vars.space["14"],
+			height: vars.space["14"]
 		}
 	} },
 	defaultVariants: { size: "md" }
@@ -700,22 +700,22 @@ const buttonRecipe = recipe({
 		},
 		size: {
 			sm: {
+				height: vars.space["7"],
+				paddingLeft: vars.space["2_5"],
+				paddingRight: vars.space["2_5"],
+				fontSize: vars.font.size.xs
+			},
+			md: {
 				height: vars.space["8"],
 				paddingLeft: vars.space["3"],
 				paddingRight: vars.space["3"],
 				fontSize: vars.font.size.sm
 			},
-			md: {
-				height: vars.space["10"],
-				paddingLeft: vars.space["4"],
-				paddingRight: vars.space["4"],
-				fontSize: vars.font.size.sm
-			},
 			lg: {
-				height: vars.space["12"],
-				paddingLeft: vars.space["6"],
-				paddingRight: vars.space["6"],
-				fontSize: vars.font.size.md
+				height: vars.space["10"],
+				paddingLeft: vars.space["5"],
+				paddingRight: vars.space["5"],
+				fontSize: vars.font.size.sm
 			}
 		},
 		loading: {
@@ -791,9 +791,9 @@ const cardRecipe = recipe({
 		},
 		padding: {
 			none: {},
-			sm: { padding: vars.space["4"] },
-			md: { padding: vars.space["6"] },
-			lg: { padding: vars.space["8"] }
+			sm: { padding: vars.space["3"] },
+			md: { padding: vars.space["4"] },
+			lg: { padding: vars.space["6"] }
 		}
 	},
 	defaultVariants: {
@@ -804,13 +804,13 @@ const cardRecipe = recipe({
 const cardHeader = style({
 	display: "flex",
 	flexDirection: "column",
-	gap: vars.space["1_5"],
-	paddingBottom: vars.space["4"],
+	gap: vars.space["1"],
+	paddingBottom: vars.space["3"],
 	borderBottom: `1px solid ${vars.color.borderSubtle}`,
-	marginBottom: vars.space["4"]
+	marginBottom: vars.space["3"]
 });
 const cardTitle = style({
-	fontSize: vars.font.size.lg,
+	fontSize: vars.font.size.md,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.text,
 	lineHeight: vars.font.lineHeight.tight
@@ -823,10 +823,10 @@ const cardDescription = style({
 const cardFooter = style({
 	display: "flex",
 	alignItems: "center",
-	gap: vars.space["3"],
-	paddingTop: vars.space["4"],
+	gap: vars.space["2"],
+	paddingTop: vars.space["3"],
 	borderTop: `1px solid ${vars.color.borderSubtle}`,
-	marginTop: vars.space["4"]
+	marginTop: vars.space["3"]
 });
 
 //#endregion
@@ -957,8 +957,8 @@ const commandInput = style({
 });
 const commandInputField = style({
 	flex: 1,
-	height: vars.space["12"],
-	padding: `0 ${vars.space["4"]}`,
+	height: vars.space["9"],
+	padding: `0 ${vars.space["3"]}`,
 	fontSize: vars.font.size.sm,
 	fontFamily: vars.font.family.sans,
 	color: vars.color.text,
@@ -1339,7 +1339,7 @@ const dialogContent = style({
 	maxWidth: "560px",
 	maxHeight: "85vh",
 	overflowY: "auto",
-	padding: vars.space["6"],
+	padding: vars.space["5"],
 	zIndex: vars.zIndex.modal,
 	animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
 	selectors: { "&:focus-visible": { outline: "none" } }
@@ -1348,19 +1348,19 @@ const dialogHeader = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: vars.space["1_5"],
-	marginBottom: vars.space["5"]
+	marginBottom: vars.space["4"]
 });
 const dialogFooter = style({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: vars.space["3"],
-	marginTop: vars.space["6"],
-	paddingTop: vars.space["4"],
+	gap: vars.space["2"],
+	marginTop: vars.space["4"],
+	paddingTop: vars.space["3"],
 	borderTop: `1px solid ${vars.color.borderSubtle}`
 });
 const dialogTitle = style({
-	fontSize: vars.font.size.xl,
+	fontSize: vars.font.size.lg,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.text,
 	lineHeight: vars.font.lineHeight.tight,
@@ -1729,11 +1729,11 @@ const slideIn$1 = keyframes({
 });
 const hoverCardContent = style({
 	zIndex: vars.zIndex.dropdown,
-	width: "320px",
+	width: "280px",
 	borderRadius: vars.radii.lg,
 	border: `1px solid ${vars.color.border}`,
 	backgroundColor: vars.color.surfaceElevated,
-	padding: vars.space["4"],
+	padding: vars.space["3"],
 	boxShadow: vars.shadow.lg,
 	outline: "none",
 	animation: `${slideIn$1} ${vars.motion.duration.fast} ${vars.motion.easing.default}`
@@ -1798,22 +1798,22 @@ const inputRecipe = recipe({
 	},
 	variants: { size: {
 		sm: {
-			height: vars.space["8"],
-			paddingLeft: vars.space["3"],
-			paddingRight: vars.space["3"],
+			height: vars.space["7"],
+			paddingLeft: vars.space["2"],
+			paddingRight: vars.space["2"],
 			fontSize: vars.font.size.xs
 		},
 		md: {
+			height: vars.space["8"],
+			paddingLeft: vars.space["2_5"],
+			paddingRight: vars.space["2_5"],
+			fontSize: vars.font.size.sm
+		},
+		lg: {
 			height: vars.space["10"],
 			paddingLeft: vars.space["3"],
 			paddingRight: vars.space["3"],
 			fontSize: vars.font.size.sm
-		},
-		lg: {
-			height: vars.space["12"],
-			paddingLeft: vars.space["4"],
-			paddingRight: vars.space["4"],
-			fontSize: vars.font.size.md
 		}
 	} },
 	defaultVariants: { size: "md" }
@@ -1964,7 +1964,7 @@ const menubarTrigger = style({
 	justifyContent: "center",
 	gap: vars.space["1"],
 	borderRadius: vars.radii.sm,
-	padding: `${vars.space["1_5"]} ${vars.space["3"]}`,
+	padding: `${vars.space["1"]} ${vars.space["2_5"]}`,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
 	color: vars.color.text,
@@ -2234,7 +2234,7 @@ const navigationMenuTrigger = style({
 	display: "inline-flex",
 	alignItems: "center",
 	gap: vars.space["1"],
-	padding: `${vars.space["2"]} ${vars.space["3"]}`,
+	padding: `${vars.space["1_5"]} ${vars.space["2_5"]}`,
 	borderRadius: vars.radii.sm,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
@@ -2406,10 +2406,10 @@ const paginationLink = recipe({
 		alignItems: "center",
 		justifyContent: "center",
 		gap: vars.space["1"],
-		minWidth: vars.space["10"],
-		height: vars.space["10"],
-		paddingLeft: vars.space["3"],
-		paddingRight: vars.space["3"],
+		minWidth: vars.space["8"],
+		height: vars.space["8"],
+		paddingLeft: vars.space["2_5"],
+		paddingRight: vars.space["2_5"],
 		borderRadius: vars.radii.md,
 		border: `1px solid transparent`,
 		fontSize: vars.font.size.sm,
@@ -2440,8 +2440,8 @@ const paginationEllipsis = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["10"],
-	height: vars.space["10"],
+	width: vars.space["8"],
+	height: vars.space["8"],
 	color: vars.color.textMuted,
 	fontSize: vars.font.size.sm
 });
@@ -2532,9 +2532,9 @@ const popoverContent = style({
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
 	boxShadow: vars.shadow.lg,
-	padding: vars.space["4"],
+	padding: vars.space["3"],
 	zIndex: vars.zIndex.dropdown,
-	maxWidth: "320px",
+	maxWidth: "280px",
 	width: "var(--radix-popover-trigger-width, auto)",
 	animationName: fadeIn$1,
 	animationDuration: vars.motion.duration.normal,
@@ -2819,18 +2819,18 @@ const selectTrigger = recipe({
 	variants: {
 		size: {
 			sm: {
-				height: vars.space["8"],
+				height: vars.space["7"],
 				padding: `0 ${vars.space["2"]}`,
 				fontSize: vars.font.size.xs
 			},
 			md: {
-				height: vars.space["10"],
-				padding: `0 ${vars.space["3"]}`
+				height: vars.space["8"],
+				padding: `0 ${vars.space["2_5"]}`
 			},
 			lg: {
-				height: vars.space["12"],
-				padding: `0 ${vars.space["4"]}`,
-				fontSize: vars.font.size.md
+				height: vars.space["10"],
+				padding: `0 ${vars.space["3"]}`,
+				fontSize: vars.font.size.sm
 			}
 		},
 		isError: { true: {
@@ -3157,21 +3157,21 @@ const sheetHeader = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: vars.space["2"],
-	padding: vars.space["6"],
+	padding: vars.space["4"],
 	paddingBottom: 0
 });
 const sheetFooter = style({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: vars.space["3"],
-	padding: vars.space["6"],
+	gap: vars.space["2"],
+	padding: vars.space["4"],
 	paddingTop: 0
 });
 const sheetBody = style({
 	flex: 1,
 	overflow: "auto",
-	padding: vars.space["6"]
+	padding: vars.space["4"]
 });
 const sheetTitle = style({
 	fontSize: vars.font.size.lg,
@@ -3484,7 +3484,7 @@ const tableRow = style({
 	}
 });
 const tableHead = style({
-	padding: `${vars.space[3]} ${vars.space[4]}`,
+	padding: `${vars.space["2"]} ${vars.space["3"]}`,
 	textAlign: "left",
 	verticalAlign: "middle",
 	fontWeight: vars.font.weight.semibold,
@@ -3500,7 +3500,7 @@ const tableHead = style({
 	}
 });
 const tableCell = style({
-	padding: `${vars.space[3]} ${vars.space[4]}`,
+	padding: `${vars.space["2"]} ${vars.space["3"]}`,
 	verticalAlign: "middle",
 	selectors: {
 		"&:has([role=checkbox])": { paddingRight: 0 },
@@ -3580,10 +3580,10 @@ const tabsTrigger = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	paddingTop: vars.space["1_5"],
-	paddingBottom: vars.space["1_5"],
-	paddingLeft: vars.space["4"],
-	paddingRight: vars.space["4"],
+	paddingTop: vars.space["1"],
+	paddingBottom: vars.space["1"],
+	paddingLeft: vars.space["3"],
+	paddingRight: vars.space["3"],
 	borderRadius: vars.radii.sm,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,
@@ -3613,7 +3613,7 @@ const tabsTrigger = style({
 	}
 });
 const tabsContent = style({
-	marginTop: vars.space["4"],
+	marginTop: vars.space["3"],
 	selectors: { "&:focus-visible": {
 		outline: `2px solid ${vars.color.focusRing}`,
 		outlineOffset: "2px",
@@ -3647,8 +3647,8 @@ TabsContent.displayName = "TabsContent";
 //#region src/components/Textarea/Textarea.css.ts
 const textarea = style({
 	width: "100%",
-	minHeight: "100px",
-	padding: `${vars.space["3"]} ${vars.space["3"]}`,
+	minHeight: "80px",
+	padding: `${vars.space["2"]} ${vars.space["2_5"]}`,
 	backgroundColor: vars.color.input,
 	color: vars.color.text,
 	border: `1px solid ${vars.color.border}`,
@@ -3708,8 +3708,8 @@ const toastViewport = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: vars.space[2],
-	padding: vars.space[6],
-	maxWidth: "420px",
+	padding: vars.space["4"],
+	maxWidth: "380px",
 	margin: 0,
 	listStyle: "none",
 	zIndex: vars.zIndex.toast,
@@ -3721,8 +3721,8 @@ const toast = recipe({
 		display: "grid",
 		gridTemplateColumns: "auto 1fr auto",
 		alignItems: "start",
-		gap: `${vars.space[2]} ${vars.space[3]}`,
-		padding: vars.space[4],
+		gap: `${vars.space["1_5"]} ${vars.space["2"]}`,
+		padding: vars.space["3"],
 		borderRadius: vars.radii.md,
 		border: `1px solid ${vars.color.border}`,
 		backgroundColor: vars.color.surface,
@@ -3907,19 +3907,19 @@ const toggleRecipe = recipe({
 		},
 		size: {
 			sm: {
-				height: vars.space["8"],
-				paddingLeft: vars.space["2"],
-				paddingRight: vars.space["2"]
+				height: vars.space["7"],
+				paddingLeft: vars.space["1_5"],
+				paddingRight: vars.space["1_5"]
 			},
 			md: {
+				height: vars.space["8"],
+				paddingLeft: vars.space["2_5"],
+				paddingRight: vars.space["2_5"]
+			},
+			lg: {
 				height: vars.space["10"],
 				paddingLeft: vars.space["3"],
 				paddingRight: vars.space["3"]
-			},
-			lg: {
-				height: vars.space["12"],
-				paddingLeft: vars.space["4"],
-				paddingRight: vars.space["4"]
 			}
 		}
 	},
@@ -3955,9 +3955,9 @@ const toggleGroupItem = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	height: vars.space["10"],
-	paddingLeft: vars.space["3"],
-	paddingRight: vars.space["3"],
+	height: vars.space["8"],
+	paddingLeft: vars.space["2_5"],
+	paddingRight: vars.space["2_5"],
 	fontFamily: vars.font.family.sans,
 	fontSize: vars.font.size.sm,
 	fontWeight: vars.font.weight.medium,

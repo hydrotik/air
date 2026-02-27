@@ -37,7 +37,7 @@ export const dialogContent = style({
   maxWidth: '560px',
   maxHeight: '85vh',
   overflowY: 'auto',
-  padding: vars.space['6'],
+  padding: vars.space['5'],
   zIndex: vars.zIndex.modal,
   animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
   selectors: {
@@ -51,21 +51,21 @@ export const dialogHeader = style({
   display: 'flex',
   flexDirection: 'column',
   gap: vars.space['1_5'],
-  marginBottom: vars.space['5'],
+  marginBottom: vars.space['4'],
 });
 
 export const dialogFooter = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
-  gap: vars.space['3'],
-  marginTop: vars.space['6'],
-  paddingTop: vars.space['4'],
+  gap: vars.space['2'],
+  marginTop: vars.space['4'],
+  paddingTop: vars.space['3'],
   borderTop: `1px solid ${vars.color.borderSubtle}`,
 });
 
 export const dialogTitle = style({
-  fontSize: vars.font.size.xl,
+  fontSize: vars.font.size.lg,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.text,
   lineHeight: vars.font.lineHeight.tight,

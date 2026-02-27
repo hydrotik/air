@@ -92,7 +92,7 @@ export const sheetHeader = style({
   display: 'flex',
   flexDirection: 'column',
   gap: vars.space['2'],
-  padding: vars.space['6'],
+  padding: vars.space['4'],
   paddingBottom: 0,
 });
 
@@ -100,15 +100,15 @@ export const sheetFooter = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
-  gap: vars.space['3'],
-  padding: vars.space['6'],
+  gap: vars.space['2'],
+  padding: vars.space['4'],
   paddingTop: 0,
 });
 
 export const sheetBody = style({
   flex: 1,
   overflow: 'auto',
-  padding: vars.space['6'],
+  padding: vars.space['4'],
 });
 
 export const sheetTitle = style({

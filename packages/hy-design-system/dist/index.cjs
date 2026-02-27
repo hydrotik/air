@@ -111,7 +111,7 @@ const accordionTrigger = (0, _vanilla_extract_css.style)({
 	alignItems: "center",
 	justifyContent: "space-between",
 	width: "100%",
-	padding: `${_hydrotik_tokens.vars.space["4"]} ${_hydrotik_tokens.vars.space["4"]}`,
+	padding: `${_hydrotik_tokens.vars.space["2_5"]} ${_hydrotik_tokens.vars.space["3"]}`,
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
@@ -144,7 +144,7 @@ const accordionContent = (0, _vanilla_extract_css.style)({
 		"&[data-state=\"closed\"]": { animation: `${slideUp} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}` }
 	}
 });
-const accordionContentInner = (0, _vanilla_extract_css.style)({ padding: `0 ${_hydrotik_tokens.vars.space["4"]} ${_hydrotik_tokens.vars.space["4"]}` });
+const accordionContentInner = (0, _vanilla_extract_css.style)({ padding: `0 ${_hydrotik_tokens.vars.space["3"]} ${_hydrotik_tokens.vars.space["3"]}` });
 
 //#endregion
 //#region src/components/Accordion/Accordion.tsx
@@ -202,7 +202,7 @@ const alertRecipe = (0, _vanilla_extract_recipes.recipe)({
 		width: "100%",
 		borderRadius: _hydrotik_tokens.vars.radii.lg,
 		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-		padding: _hydrotik_tokens.vars.space["4"],
+		padding: _hydrotik_tokens.vars.space["3"],
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
 		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal
 	},
@@ -305,7 +305,7 @@ const alertDialogContent = (0, _vanilla_extract_css.style)({
 	width: "90vw",
 	maxWidth: "500px",
 	maxHeight: "85vh",
-	padding: _hydrotik_tokens.vars.space["6"],
+	padding: _hydrotik_tokens.vars.space["5"],
 	zIndex: _hydrotik_tokens.vars.zIndex.modal,
 	animation: `${contentShow$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: { "&:focus-visible": { outline: "none" } }
@@ -313,15 +313,15 @@ const alertDialogContent = (0, _vanilla_extract_css.style)({
 const alertDialogHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["2"],
-	marginBottom: _hydrotik_tokens.vars.space["4"]
+	gap: _hydrotik_tokens.vars.space["1_5"],
+	marginBottom: _hydrotik_tokens.vars.space["3"]
 });
 const alertDialogFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: _hydrotik_tokens.vars.space["3"],
-	marginTop: _hydrotik_tokens.vars.space["6"]
+	gap: _hydrotik_tokens.vars.space["2"],
+	marginTop: _hydrotik_tokens.vars.space["4"]
 });
 const alertDialogTitle = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.lg,
@@ -399,20 +399,20 @@ const avatarRoot = (0, _vanilla_extract_recipes.recipe)({
 	},
 	variants: { size: {
 		sm: {
+			width: _hydrotik_tokens.vars.space["6"],
+			height: _hydrotik_tokens.vars.space["6"]
+		},
+		md: {
 			width: _hydrotik_tokens.vars.space["8"],
 			height: _hydrotik_tokens.vars.space["8"]
 		},
-		md: {
+		lg: {
 			width: _hydrotik_tokens.vars.space["10"],
 			height: _hydrotik_tokens.vars.space["10"]
 		},
-		lg: {
-			width: _hydrotik_tokens.vars.space["12"],
-			height: _hydrotik_tokens.vars.space["12"]
-		},
 		xl: {
-			width: _hydrotik_tokens.vars.space["16"],
-			height: _hydrotik_tokens.vars.space["16"]
+			width: _hydrotik_tokens.vars.space["14"],
+			height: _hydrotik_tokens.vars.space["14"]
 		}
 	} },
 	defaultVariants: { size: "md" }
@@ -756,22 +756,22 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		},
 		size: {
 			sm: {
+				height: _hydrotik_tokens.vars.space["7"],
+				paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+				paddingRight: _hydrotik_tokens.vars.space["2_5"],
+				fontSize: _hydrotik_tokens.vars.font.size.xs
+			},
+			md: {
 				height: _hydrotik_tokens.vars.space["8"],
 				paddingLeft: _hydrotik_tokens.vars.space["3"],
 				paddingRight: _hydrotik_tokens.vars.space["3"],
 				fontSize: _hydrotik_tokens.vars.font.size.sm
 			},
-			md: {
-				height: _hydrotik_tokens.vars.space["10"],
-				paddingLeft: _hydrotik_tokens.vars.space["4"],
-				paddingRight: _hydrotik_tokens.vars.space["4"],
-				fontSize: _hydrotik_tokens.vars.font.size.sm
-			},
 			lg: {
-				height: _hydrotik_tokens.vars.space["12"],
-				paddingLeft: _hydrotik_tokens.vars.space["6"],
-				paddingRight: _hydrotik_tokens.vars.space["6"],
-				fontSize: _hydrotik_tokens.vars.font.size.md
+				height: _hydrotik_tokens.vars.space["10"],
+				paddingLeft: _hydrotik_tokens.vars.space["5"],
+				paddingRight: _hydrotik_tokens.vars.space["5"],
+				fontSize: _hydrotik_tokens.vars.font.size.sm
 			}
 		},
 		loading: {
@@ -847,9 +847,9 @@ const cardRecipe = (0, _vanilla_extract_recipes.recipe)({
 		},
 		padding: {
 			none: {},
-			sm: { padding: _hydrotik_tokens.vars.space["4"] },
-			md: { padding: _hydrotik_tokens.vars.space["6"] },
-			lg: { padding: _hydrotik_tokens.vars.space["8"] }
+			sm: { padding: _hydrotik_tokens.vars.space["3"] },
+			md: { padding: _hydrotik_tokens.vars.space["4"] },
+			lg: { padding: _hydrotik_tokens.vars.space["6"] }
 		}
 	},
 	defaultVariants: {
@@ -860,13 +860,13 @@ const cardRecipe = (0, _vanilla_extract_recipes.recipe)({
 const cardHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["1_5"],
-	paddingBottom: _hydrotik_tokens.vars.space["4"],
+	gap: _hydrotik_tokens.vars.space["1"],
+	paddingBottom: _hydrotik_tokens.vars.space["3"],
 	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
-	marginBottom: _hydrotik_tokens.vars.space["4"]
+	marginBottom: _hydrotik_tokens.vars.space["3"]
 });
 const cardTitle = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.lg,
+	fontSize: _hydrotik_tokens.vars.font.size.md,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.text,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight
@@ -879,10 +879,10 @@ const cardDescription = (0, _vanilla_extract_css.style)({
 const cardFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space["3"],
-	paddingTop: _hydrotik_tokens.vars.space["4"],
+	gap: _hydrotik_tokens.vars.space["2"],
+	paddingTop: _hydrotik_tokens.vars.space["3"],
 	borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
-	marginTop: _hydrotik_tokens.vars.space["4"]
+	marginTop: _hydrotik_tokens.vars.space["3"]
 });
 
 //#endregion
@@ -1013,8 +1013,8 @@ const commandInput = (0, _vanilla_extract_css.style)({
 });
 const commandInputField = (0, _vanilla_extract_css.style)({
 	flex: 1,
-	height: _hydrotik_tokens.vars.space["12"],
-	padding: `0 ${_hydrotik_tokens.vars.space["4"]}`,
+	height: _hydrotik_tokens.vars.space["9"],
+	padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
 	color: _hydrotik_tokens.vars.color.text,
@@ -1395,7 +1395,7 @@ const dialogContent = (0, _vanilla_extract_css.style)({
 	maxWidth: "560px",
 	maxHeight: "85vh",
 	overflowY: "auto",
-	padding: _hydrotik_tokens.vars.space["6"],
+	padding: _hydrotik_tokens.vars.space["5"],
 	zIndex: _hydrotik_tokens.vars.zIndex.modal,
 	animation: `${contentShow} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: { "&:focus-visible": { outline: "none" } }
@@ -1404,19 +1404,19 @@ const dialogHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
 	gap: _hydrotik_tokens.vars.space["1_5"],
-	marginBottom: _hydrotik_tokens.vars.space["5"]
+	marginBottom: _hydrotik_tokens.vars.space["4"]
 });
 const dialogFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: _hydrotik_tokens.vars.space["3"],
-	marginTop: _hydrotik_tokens.vars.space["6"],
-	paddingTop: _hydrotik_tokens.vars.space["4"],
+	gap: _hydrotik_tokens.vars.space["2"],
+	marginTop: _hydrotik_tokens.vars.space["4"],
+	paddingTop: _hydrotik_tokens.vars.space["3"],
 	borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`
 });
 const dialogTitle = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.xl,
+	fontSize: _hydrotik_tokens.vars.font.size.lg,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.text,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight,
@@ -1785,11 +1785,11 @@ const slideIn$1 = (0, _vanilla_extract_css.keyframes)({
 });
 const hoverCardContent = (0, _vanilla_extract_css.style)({
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
-	width: "320px",
+	width: "280px",
 	borderRadius: _hydrotik_tokens.vars.radii.lg,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
-	padding: _hydrotik_tokens.vars.space["4"],
+	padding: _hydrotik_tokens.vars.space["3"],
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
 	outline: "none",
 	animation: `${slideIn$1} ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
@@ -1854,22 +1854,22 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 	},
 	variants: { size: {
 		sm: {
-			height: _hydrotik_tokens.vars.space["8"],
-			paddingLeft: _hydrotik_tokens.vars.space["3"],
-			paddingRight: _hydrotik_tokens.vars.space["3"],
+			height: _hydrotik_tokens.vars.space["7"],
+			paddingLeft: _hydrotik_tokens.vars.space["2"],
+			paddingRight: _hydrotik_tokens.vars.space["2"],
 			fontSize: _hydrotik_tokens.vars.font.size.xs
 		},
 		md: {
+			height: _hydrotik_tokens.vars.space["8"],
+			paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+			paddingRight: _hydrotik_tokens.vars.space["2_5"],
+			fontSize: _hydrotik_tokens.vars.font.size.sm
+		},
+		lg: {
 			height: _hydrotik_tokens.vars.space["10"],
 			paddingLeft: _hydrotik_tokens.vars.space["3"],
 			paddingRight: _hydrotik_tokens.vars.space["3"],
 			fontSize: _hydrotik_tokens.vars.font.size.sm
-		},
-		lg: {
-			height: _hydrotik_tokens.vars.space["12"],
-			paddingLeft: _hydrotik_tokens.vars.space["4"],
-			paddingRight: _hydrotik_tokens.vars.space["4"],
-			fontSize: _hydrotik_tokens.vars.font.size.md
 		}
 	} },
 	defaultVariants: { size: "md" }
@@ -2020,7 +2020,7 @@ const menubarTrigger = (0, _vanilla_extract_css.style)({
 	justifyContent: "center",
 	gap: _hydrotik_tokens.vars.space["1"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
-	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	padding: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["2_5"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
 	color: _hydrotik_tokens.vars.color.text,
@@ -2290,7 +2290,7 @@ const navigationMenuTrigger = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	gap: _hydrotik_tokens.vars.space["1"],
-	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2_5"]}`,
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
@@ -2462,10 +2462,10 @@ const paginationLink = (0, _vanilla_extract_recipes.recipe)({
 		alignItems: "center",
 		justifyContent: "center",
 		gap: _hydrotik_tokens.vars.space["1"],
-		minWidth: _hydrotik_tokens.vars.space["10"],
-		height: _hydrotik_tokens.vars.space["10"],
-		paddingLeft: _hydrotik_tokens.vars.space["3"],
-		paddingRight: _hydrotik_tokens.vars.space["3"],
+		minWidth: _hydrotik_tokens.vars.space["8"],
+		height: _hydrotik_tokens.vars.space["8"],
+		paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+		paddingRight: _hydrotik_tokens.vars.space["2_5"],
 		borderRadius: _hydrotik_tokens.vars.radii.md,
 		border: `1px solid transparent`,
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
@@ -2496,8 +2496,8 @@ const paginationEllipsis = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["10"],
-	height: _hydrotik_tokens.vars.space["10"],
+	width: _hydrotik_tokens.vars.space["8"],
+	height: _hydrotik_tokens.vars.space["8"],
 	color: _hydrotik_tokens.vars.color.textMuted,
 	fontSize: _hydrotik_tokens.vars.font.size.sm
 });
@@ -2588,9 +2588,9 @@ const popoverContent = (0, _vanilla_extract_css.style)({
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
-	padding: _hydrotik_tokens.vars.space["4"],
+	padding: _hydrotik_tokens.vars.space["3"],
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
-	maxWidth: "320px",
+	maxWidth: "280px",
 	width: "var(--radix-popover-trigger-width, auto)",
 	animationName: fadeIn$1,
 	animationDuration: _hydrotik_tokens.vars.motion.duration.normal,
@@ -2875,18 +2875,18 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 	variants: {
 		size: {
 			sm: {
-				height: _hydrotik_tokens.vars.space["8"],
+				height: _hydrotik_tokens.vars.space["7"],
 				padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
 				fontSize: _hydrotik_tokens.vars.font.size.xs
 			},
 			md: {
-				height: _hydrotik_tokens.vars.space["10"],
-				padding: `0 ${_hydrotik_tokens.vars.space["3"]}`
+				height: _hydrotik_tokens.vars.space["8"],
+				padding: `0 ${_hydrotik_tokens.vars.space["2_5"]}`
 			},
 			lg: {
-				height: _hydrotik_tokens.vars.space["12"],
-				padding: `0 ${_hydrotik_tokens.vars.space["4"]}`,
-				fontSize: _hydrotik_tokens.vars.font.size.md
+				height: _hydrotik_tokens.vars.space["10"],
+				padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
+				fontSize: _hydrotik_tokens.vars.font.size.sm
 			}
 		},
 		isError: { true: {
@@ -3213,21 +3213,21 @@ const sheetHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
 	gap: _hydrotik_tokens.vars.space["2"],
-	padding: _hydrotik_tokens.vars.space["6"],
+	padding: _hydrotik_tokens.vars.space["4"],
 	paddingBottom: 0
 });
 const sheetFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
 	justifyContent: "flex-end",
-	gap: _hydrotik_tokens.vars.space["3"],
-	padding: _hydrotik_tokens.vars.space["6"],
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: _hydrotik_tokens.vars.space["4"],
 	paddingTop: 0
 });
 const sheetBody = (0, _vanilla_extract_css.style)({
 	flex: 1,
 	overflow: "auto",
-	padding: _hydrotik_tokens.vars.space["6"]
+	padding: _hydrotik_tokens.vars.space["4"]
 });
 const sheetTitle = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.lg,
@@ -3540,7 +3540,7 @@ const tableRow = (0, _vanilla_extract_css.style)({
 	}
 });
 const tableHead = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space[3]} ${_hydrotik_tokens.vars.space[4]}`,
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
 	textAlign: "left",
 	verticalAlign: "middle",
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
@@ -3556,7 +3556,7 @@ const tableHead = (0, _vanilla_extract_css.style)({
 	}
 });
 const tableCell = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space[3]} ${_hydrotik_tokens.vars.space[4]}`,
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
 	verticalAlign: "middle",
 	selectors: {
 		"&:has([role=checkbox])": { paddingRight: 0 },
@@ -3636,10 +3636,10 @@ const tabsTrigger = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	paddingTop: _hydrotik_tokens.vars.space["1_5"],
-	paddingBottom: _hydrotik_tokens.vars.space["1_5"],
-	paddingLeft: _hydrotik_tokens.vars.space["4"],
-	paddingRight: _hydrotik_tokens.vars.space["4"],
+	paddingTop: _hydrotik_tokens.vars.space["1"],
+	paddingBottom: _hydrotik_tokens.vars.space["1"],
+	paddingLeft: _hydrotik_tokens.vars.space["3"],
+	paddingRight: _hydrotik_tokens.vars.space["3"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
@@ -3669,7 +3669,7 @@ const tabsTrigger = (0, _vanilla_extract_css.style)({
 	}
 });
 const tabsContent = (0, _vanilla_extract_css.style)({
-	marginTop: _hydrotik_tokens.vars.space["4"],
+	marginTop: _hydrotik_tokens.vars.space["3"],
 	selectors: { "&:focus-visible": {
 		outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
 		outlineOffset: "2px",
@@ -3703,8 +3703,8 @@ TabsContent.displayName = "TabsContent";
 //#region src/components/Textarea/Textarea.css.ts
 const textarea = (0, _vanilla_extract_css.style)({
 	width: "100%",
-	minHeight: "100px",
-	padding: `${_hydrotik_tokens.vars.space["3"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	minHeight: "80px",
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["2_5"]}`,
 	backgroundColor: _hydrotik_tokens.vars.color.input,
 	color: _hydrotik_tokens.vars.color.text,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
@@ -3764,8 +3764,8 @@ const toastViewport = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
 	gap: _hydrotik_tokens.vars.space[2],
-	padding: _hydrotik_tokens.vars.space[6],
-	maxWidth: "420px",
+	padding: _hydrotik_tokens.vars.space["4"],
+	maxWidth: "380px",
 	margin: 0,
 	listStyle: "none",
 	zIndex: _hydrotik_tokens.vars.zIndex.toast,
@@ -3777,8 +3777,8 @@ const toast = (0, _vanilla_extract_recipes.recipe)({
 		display: "grid",
 		gridTemplateColumns: "auto 1fr auto",
 		alignItems: "start",
-		gap: `${_hydrotik_tokens.vars.space[2]} ${_hydrotik_tokens.vars.space[3]}`,
-		padding: _hydrotik_tokens.vars.space[4],
+		gap: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
+		padding: _hydrotik_tokens.vars.space["3"],
 		borderRadius: _hydrotik_tokens.vars.radii.md,
 		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 		backgroundColor: _hydrotik_tokens.vars.color.surface,
@@ -3963,19 +3963,19 @@ const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 		},
 		size: {
 			sm: {
-				height: _hydrotik_tokens.vars.space["8"],
-				paddingLeft: _hydrotik_tokens.vars.space["2"],
-				paddingRight: _hydrotik_tokens.vars.space["2"]
+				height: _hydrotik_tokens.vars.space["7"],
+				paddingLeft: _hydrotik_tokens.vars.space["1_5"],
+				paddingRight: _hydrotik_tokens.vars.space["1_5"]
 			},
 			md: {
+				height: _hydrotik_tokens.vars.space["8"],
+				paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+				paddingRight: _hydrotik_tokens.vars.space["2_5"]
+			},
+			lg: {
 				height: _hydrotik_tokens.vars.space["10"],
 				paddingLeft: _hydrotik_tokens.vars.space["3"],
 				paddingRight: _hydrotik_tokens.vars.space["3"]
-			},
-			lg: {
-				height: _hydrotik_tokens.vars.space["12"],
-				paddingLeft: _hydrotik_tokens.vars.space["4"],
-				paddingRight: _hydrotik_tokens.vars.space["4"]
 			}
 		}
 	},
@@ -4011,9 +4011,9 @@ const toggleGroupItem = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	height: _hydrotik_tokens.vars.space["10"],
-	paddingLeft: _hydrotik_tokens.vars.space["3"],
-	paddingRight: _hydrotik_tokens.vars.space["3"],
+	height: _hydrotik_tokens.vars.space["8"],
+	paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+	paddingRight: _hydrotik_tokens.vars.space["2_5"],
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontWeight: _hydrotik_tokens.vars.font.weight.medium,

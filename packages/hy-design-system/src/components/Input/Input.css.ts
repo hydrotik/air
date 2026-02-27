@@ -56,22 +56,22 @@ export const inputRecipe = recipe({
   variants: {
     size: {
       sm: {
-        height: vars.space['8'],
-        paddingLeft: vars.space['3'],
-        paddingRight: vars.space['3'],
+        height: vars.space['7'],
+        paddingLeft: vars.space['2'],
+        paddingRight: vars.space['2'],
         fontSize: vars.font.size.xs,
       },
       md: {
+        height: vars.space['8'],
+        paddingLeft: vars.space['2_5'],
+        paddingRight: vars.space['2_5'],
+        fontSize: vars.font.size.sm,
+      },
+      lg: {
         height: vars.space['10'],
         paddingLeft: vars.space['3'],
         paddingRight: vars.space['3'],
         fontSize: vars.font.size.sm,
-      },
-      lg: {
-        height: vars.space['12'],
-        paddingLeft: vars.space['4'],
-        paddingRight: vars.space['4'],
-        fontSize: vars.font.size.md,
       },
     },
   },
