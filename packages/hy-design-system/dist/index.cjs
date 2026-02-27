@@ -300,12 +300,16 @@ const AlertDescription = react.default.forwardRef(({ className, ...props }, ref)
 AlertDescription.displayName = "AlertDescription";
 
 //#endregion
-//#region src/components/AlertDialog/AlertDialog.css.ts
-const overlayShow$2 = (0, _vanilla_extract_css.keyframes)({
+//#region src/styles/overlay.css.ts
+/**
+* Shared overlay/modal styles used by Dialog, AlertDialog, and Sheet.
+* Extracted to reduce boilerplate duplication across modal components.
+*/
+const overlayShow$1 = (0, _vanilla_extract_css.keyframes)({
 	from: { opacity: "0" },
 	to: { opacity: "1" }
 });
-const contentShow$1 = (0, _vanilla_extract_css.keyframes)({
+const contentShow = (0, _vanilla_extract_css.keyframes)({
 	from: {
 		opacity: "0",
 		transform: "translate(-50%, -48%) scale(0.95)"
@@ -315,18 +319,16 @@ const contentShow$1 = (0, _vanilla_extract_css.keyframes)({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
-/**
-* AlertDialog — shadcn v4 aligned.
-* Same as Dialog but without close button.
-*/
-const alertDialogOverlay = (0, _vanilla_extract_css.style)({
+/** Standard modal overlay — rgba(0,0,0,0.5) per shadcn convention */
+const baseOverlay = (0, _vanilla_extract_css.style)({
 	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: _hydrotik_tokens.vars.zIndex.overlay,
-	animation: `${overlayShow$2} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
+	animation: `${overlayShow$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`
 });
-const alertDialogContent = (0, _vanilla_extract_css.style)({
+/** Standard centered modal content container */
+const baseModalContent = (0, _vanilla_extract_css.style)({
 	backgroundColor: _hydrotik_tokens.vars.color.background,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.lg,
@@ -342,15 +344,17 @@ const alertDialogContent = (0, _vanilla_extract_css.style)({
 	zIndex: _hydrotik_tokens.vars.zIndex.modal,
 	display: "grid",
 	gap: _hydrotik_tokens.vars.space["4"],
-	animation: `${contentShow$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	animation: `${contentShow} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	outline: "none"
 });
-const alertDialogHeader = (0, _vanilla_extract_css.style)({
+/** Shared modal header layout */
+const baseModalHeader = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column",
 	gap: _hydrotik_tokens.vars.space["2"]
 });
-const alertDialogFooter = (0, _vanilla_extract_css.style)({
+/** Shared responsive modal footer */
+const baseModalFooter = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	flexDirection: "column-reverse",
 	gap: _hydrotik_tokens.vars.space["2"],
@@ -359,17 +363,32 @@ const alertDialogFooter = (0, _vanilla_extract_css.style)({
 		justifyContent: "flex-end"
 	} }
 });
-const alertDialogTitle = (0, _vanilla_extract_css.style)({
+/** Shared modal title */
+const baseModalTitle = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.lg,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.text,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight
 });
-const alertDialogDescription = (0, _vanilla_extract_css.style)({
+/** Shared modal description */
+const baseModalDescription = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.textMuted,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
 });
+
+//#endregion
+//#region src/components/AlertDialog/AlertDialog.css.ts
+/**
+* AlertDialog — shadcn v4 aligned.
+* Uses shared overlay/modal styles. Same as Dialog but without close button.
+*/
+const alertDialogOverlay = baseOverlay;
+const alertDialogContent = baseModalContent;
+const alertDialogHeader = baseModalHeader;
+const alertDialogFooter = baseModalFooter;
+const alertDialogTitle = baseModalTitle;
+const alertDialogDescription = baseModalDescription;
 
 //#endregion
 //#region src/components/AlertDialog/AlertDialog.tsx
@@ -1166,33 +1185,13 @@ const CommandShortcut = ({ className, ...props }) => /* @__PURE__ */ (0, react_j
 CommandShortcut.displayName = "CommandShortcut";
 
 //#endregion
-//#region src/components/ContextMenu/ContextMenu.css.ts
-const slideIn$2 = (0, _vanilla_extract_css.keyframes)({
-	from: {
-		opacity: "0",
-		transform: "scale(0.96)"
-	},
-	to: {
-		opacity: "1",
-		transform: "scale(1)"
-	}
-});
+//#region src/styles/menu-item.css.ts
 /**
-* ContextMenu — shadcn v4 aligned.
-* bg-popover (surfaceElevated), no text color change on highlight.
+* Shared menu item styles used by DropdownMenu, ContextMenu, Command, Menubar, Select.
+* Extracted to reduce boilerplate duplication across menu-like components.
 */
-const contextMenuContent = (0, _vanilla_extract_css.style)({
-	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
-	minWidth: "8rem",
-	overflow: "hidden",
-	borderRadius: _hydrotik_tokens.vars.radii.md,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
-	padding: _hydrotik_tokens.vars.space["1"],
-	boxShadow: _hydrotik_tokens.vars.shadow.md,
-	animation: `${slideIn$2} ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
-});
-const contextMenuItem = (0, _vanilla_extract_css.style)({
+/** Base menu item — flex row with hover highlight */
+const baseMenuItem = (0, _vanilla_extract_css.style)({
 	position: "relative",
 	display: "flex",
 	alignItems: "center",
@@ -1213,27 +1212,27 @@ const contextMenuItem = (0, _vanilla_extract_css.style)({
 		}
 	}
 });
-const contextMenuCheckboxItem = (0, _vanilla_extract_css.style)([contextMenuItem, {}]);
-const contextMenuRadioItem = (0, _vanilla_extract_css.style)([contextMenuItem, {}]);
-const contextMenuLabel = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	fontWeight: _hydrotik_tokens.vars.font.weight.medium
-});
-const contextMenuSeparator = (0, _vanilla_extract_css.style)({
+/** Menu separator line */
+const baseMenuSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
 	margin: `${_hydrotik_tokens.vars.space["1"]} -${_hydrotik_tokens.vars.space["1"]}`,
 	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle
 });
-const contextMenuShortcut = (0, _vanilla_extract_css.style)({
+/** Menu label (group header) */
+const baseMenuLabel = (0, _vanilla_extract_css.style)({
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium
+});
+/** Menu shortcut text */
+const baseMenuShortcut = (0, _vanilla_extract_css.style)({
 	marginLeft: "auto",
 	fontSize: _hydrotik_tokens.vars.font.size.xs,
 	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide,
 	color: _hydrotik_tokens.vars.color.textMuted
 });
-const contextMenuSubTrigger = (0, _vanilla_extract_css.style)([contextMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
-const contextMenuSubContent = (0, _vanilla_extract_css.style)([contextMenuContent, {}]);
-const contextMenuItemIndicator = (0, _vanilla_extract_css.style)({
+/** Item indicator container (for checkboxes/radios) */
+const baseMenuItemIndicator = (0, _vanilla_extract_css.style)({
 	position: "absolute",
 	left: _hydrotik_tokens.vars.space["2"],
 	display: "inline-flex",
@@ -1242,6 +1241,43 @@ const contextMenuItemIndicator = (0, _vanilla_extract_css.style)({
 	width: "14px",
 	height: "14px"
 });
+
+//#endregion
+//#region src/components/ContextMenu/ContextMenu.css.ts
+const slideIn$2 = (0, _vanilla_extract_css.keyframes)({
+	from: {
+		opacity: "0",
+		transform: "scale(0.96)"
+	},
+	to: {
+		opacity: "1",
+		transform: "scale(1)"
+	}
+});
+/**
+* ContextMenu — shadcn v4 aligned.
+* Uses shared menu-item styles.
+*/
+const contextMenuContent = (0, _vanilla_extract_css.style)({
+	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
+	minWidth: "8rem",
+	overflow: "hidden",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
+	padding: _hydrotik_tokens.vars.space["1"],
+	boxShadow: _hydrotik_tokens.vars.shadow.md,
+	animation: `${slideIn$2} ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
+});
+const contextMenuItem = baseMenuItem;
+const contextMenuCheckboxItem = baseMenuItem;
+const contextMenuRadioItem = baseMenuItem;
+const contextMenuLabel = baseMenuLabel;
+const contextMenuSeparator = baseMenuSeparator;
+const contextMenuShortcut = baseMenuShortcut;
+const contextMenuItemIndicator = baseMenuItemIndicator;
+const contextMenuSubTrigger = (0, _vanilla_extract_css.style)([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
+const contextMenuSubContent = (0, _vanilla_extract_css.style)([contextMenuContent, {}]);
 
 //#endregion
 //#region src/components/ContextMenu/ContextMenu.tsx
@@ -1329,104 +1365,32 @@ ContextMenuSubContent.displayName = "ContextMenuSubContent";
 
 //#endregion
 //#region src/components/Dialog/Dialog.css.ts
-const overlayShow$1 = (0, _vanilla_extract_css.keyframes)({
-	from: { opacity: "0" },
-	to: { opacity: "1" }
-});
-const contentShow = (0, _vanilla_extract_css.keyframes)({
-	from: {
-		opacity: "0",
-		transform: "translate(-50%, -48%) scale(0.95)"
-	},
-	to: {
-		opacity: "1",
-		transform: "translate(-50%, -50%) scale(1)"
-	}
-});
 /**
 * Dialog — shadcn v4 aligned.
-* - Overlay: black/50
-* - Content: bg-background (not surfaceOverlay)
-* - gap-4, p-6, rounded-lg
+* Uses shared overlay/modal styles.
 */
-const dialogOverlay = (0, _vanilla_extract_css.style)({
-	backgroundColor: "rgba(0, 0, 0, 0.5)",
-	position: "fixed",
-	inset: 0,
-	zIndex: _hydrotik_tokens.vars.zIndex.overlay,
-	animation: `${overlayShow$1} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: { "&[data-state=\"closed\"]": { animationDirection: "reverse" } }
-});
-const dialogContent = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.background,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	borderRadius: _hydrotik_tokens.vars.radii.lg,
-	boxShadow: _hydrotik_tokens.vars.shadow.lg,
-	position: "fixed",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "90vw",
-	maxWidth: "32rem",
-	maxHeight: "85vh",
-	overflowY: "auto",
-	padding: _hydrotik_tokens.vars.space["6"],
-	zIndex: _hydrotik_tokens.vars.zIndex.modal,
-	display: "grid",
-	gap: _hydrotik_tokens.vars.space["4"],
-	animation: `${contentShow} ${_hydrotik_tokens.vars.motion.duration.normal} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	outline: "none"
-});
-const dialogHeader = (0, _vanilla_extract_css.style)({
-	display: "flex",
-	flexDirection: "column",
-	gap: _hydrotik_tokens.vars.space["2"]
-});
-const dialogFooter = (0, _vanilla_extract_css.style)({
-	display: "flex",
-	flexDirection: "column-reverse",
-	gap: _hydrotik_tokens.vars.space["2"],
-	"@media": { "screen and (min-width: 640px)": {
-		flexDirection: "row",
-		justifyContent: "flex-end"
-	} }
-});
-const dialogTitle = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.lg,
-	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
-	color: _hydrotik_tokens.vars.color.text,
-	lineHeight: "1",
-	margin: 0
-});
-const dialogDescription = (0, _vanilla_extract_css.style)({
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal,
-	margin: 0
-});
+const dialogOverlay = baseOverlay;
+const dialogContent = baseModalContent;
+const dialogHeader = baseModalHeader;
+const dialogFooter = baseModalFooter;
+const dialogTitle = baseModalTitle;
+const dialogDescription = baseModalDescription;
 const dialogClose = (0, _vanilla_extract_css.style)({
 	position: "absolute",
-	top: _hydrotik_tokens.vars.space["4"],
 	right: _hydrotik_tokens.vars.space["4"],
+	top: _hydrotik_tokens.vars.space["4"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space["6"],
-	height: _hydrotik_tokens.vars.space["6"],
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	backgroundColor: "transparent",
-	border: "none",
-	cursor: "pointer",
 	opacity: "0.7",
+	cursor: "pointer",
+	background: "none",
+	border: "none",
+	padding: 0,
+	color: _hydrotik_tokens.vars.color.text,
 	transition: `opacity ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: {
-		"&:hover": { opacity: "1" },
-		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
-			outlineOffset: "2px"
-		}
-	}
+	selectors: { "&:hover": { opacity: "1" } }
 });
 
 //#endregion
@@ -1522,9 +1486,7 @@ const slideRightAndFade = (0, _vanilla_extract_css.keyframes)({
 });
 /**
 * DropdownMenu — shadcn v4 aligned.
-* - bg-popover (surfaceElevated)
-* - No text color change on highlight (focus:bg-accent only)
-* - Labels: font-medium, no uppercase
+* Uses shared menu-item styles + directional animations.
 */
 const dropdownContent = (0, _vanilla_extract_css.style)({
 	minWidth: "8rem",
@@ -1545,63 +1507,22 @@ const dropdownContent = (0, _vanilla_extract_css.style)({
 		"&[data-side=\"right\"]": { animationName: slideRightAndFade }
 	}
 });
-const dropdownItem = (0, _vanilla_extract_css.style)({
-	display: "flex",
-	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space["2"],
-	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	borderRadius: _hydrotik_tokens.vars.radii.sm,
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	color: _hydrotik_tokens.vars.color.text,
-	cursor: "default",
-	userSelect: "none",
-	outline: "none",
-	position: "relative",
-	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: {
-		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
-		"&[data-disabled]": {
-			opacity: "0.5",
-			pointerEvents: "none"
-		}
-	}
-});
-const dropdownDestructiveItem = (0, _vanilla_extract_css.style)([dropdownItem, {
+const dropdownItem = baseMenuItem;
+const dropdownDestructiveItem = (0, _vanilla_extract_css.style)([baseMenuItem, {
 	color: _hydrotik_tokens.vars.color.destructive,
 	selectors: { "&[data-highlighted]": {
 		backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 10%, transparent)`,
 		color: _hydrotik_tokens.vars.color.destructive
 	} }
 }]);
-const dropdownLabel = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	fontWeight: _hydrotik_tokens.vars.font.weight.medium
-});
-const dropdownSeparator = (0, _vanilla_extract_css.style)({
-	height: "1px",
-	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle,
-	margin: `${_hydrotik_tokens.vars.space["1"]} -${_hydrotik_tokens.vars.space["1"]}`
-});
-const dropdownItemIndicator = (0, _vanilla_extract_css.style)({
-	position: "absolute",
-	left: _hydrotik_tokens.vars.space["2"],
-	display: "inline-flex",
-	alignItems: "center",
-	justifyContent: "center",
-	width: "14px",
-	height: "14px"
-});
-const dropdownCheckboxItem = (0, _vanilla_extract_css.style)([dropdownItem, { paddingLeft: _hydrotik_tokens.vars.space["8"] }]);
+const dropdownLabel = baseMenuLabel;
+const dropdownSeparator = baseMenuSeparator;
+const dropdownItemIndicator = baseMenuItemIndicator;
+const dropdownShortcut = baseMenuShortcut;
+const dropdownCheckboxItem = (0, _vanilla_extract_css.style)([baseMenuItem, { paddingLeft: _hydrotik_tokens.vars.space["8"] }]);
 const dropdownRadioItem = (0, _vanilla_extract_css.style)([dropdownCheckboxItem]);
-const dropdownSubTrigger = (0, _vanilla_extract_css.style)([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
+const dropdownSubTrigger = (0, _vanilla_extract_css.style)([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
 const dropdownSubContent = (0, _vanilla_extract_css.style)([dropdownContent]);
-const dropdownShortcut = (0, _vanilla_extract_css.style)({
-	marginLeft: "auto",
-	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	color: _hydrotik_tokens.vars.color.textMuted,
-	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide
-});
 
 //#endregion
 //#region src/components/DropdownMenu/DropdownMenu.tsx
@@ -1997,57 +1918,20 @@ const menubarContent = (0, _vanilla_extract_css.style)({
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
 	animation: `${slideIn} ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
 });
-const menubarItem = (0, _vanilla_extract_css.style)({
-	position: "relative",
-	display: "flex",
-	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space["2"],
-	borderRadius: _hydrotik_tokens.vars.radii.sm,
-	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	color: _hydrotik_tokens.vars.color.text,
-	cursor: "pointer",
-	outline: "none",
-	userSelect: "none",
-	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
-	selectors: {
-		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
-		"&[data-disabled]": {
-			color: _hydrotik_tokens.vars.color.textDisabled,
-			pointerEvents: "none"
-		}
-	}
-});
-const menubarSeparator = (0, _vanilla_extract_css.style)({
-	height: "1px",
-	margin: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["0_5"]}`,
-	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle
-});
+const menubarItem = baseMenuItem;
+const menubarSeparator = baseMenuSeparator;
 const menubarLabel = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.xs,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.textMuted
 });
-const menubarShortcut = (0, _vanilla_extract_css.style)({
-	marginLeft: "auto",
-	fontSize: _hydrotik_tokens.vars.font.size.xs,
-	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide,
-	color: _hydrotik_tokens.vars.color.textMuted
-});
-const menubarSubTrigger = (0, _vanilla_extract_css.style)([menubarItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
+const menubarShortcut = baseMenuShortcut;
+const menubarItemIndicator = baseMenuItemIndicator;
+const menubarSubTrigger = (0, _vanilla_extract_css.style)([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
 const menubarSubContent = (0, _vanilla_extract_css.style)([menubarContent, {}]);
-const menubarCheckboxItem = (0, _vanilla_extract_css.style)([menubarItem, {}]);
-const menubarRadioItem = (0, _vanilla_extract_css.style)([menubarItem, {}]);
-const menubarItemIndicator = (0, _vanilla_extract_css.style)({
-	position: "absolute",
-	left: _hydrotik_tokens.vars.space["2"],
-	display: "inline-flex",
-	alignItems: "center",
-	justifyContent: "center",
-	width: "14px",
-	height: "14px"
-});
+const menubarCheckboxItem = baseMenuItem;
+const menubarRadioItem = baseMenuItem;
 
 //#endregion
 //#region src/components/Menubar/Menubar.tsx
@@ -3723,10 +3607,6 @@ const toastClose = (0, _vanilla_extract_css.style)({
 			outlineOffset: "1px"
 		}
 	}
-});
-const toastIcon = (0, _vanilla_extract_css.style)({
-	gridRow: "1 / -1",
-	marginTop: "1px"
 });
 
 //#endregion

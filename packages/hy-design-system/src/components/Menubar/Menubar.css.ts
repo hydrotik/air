@@ -1,5 +1,12 @@
 import { style, keyframes } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
+import {
+  baseMenuItem,
+  baseMenuSeparator,
+  baseMenuLabel,
+  baseMenuShortcut,
+  baseMenuItemIndicator,
+} from '../../styles/menu-item.css';
 
 const slideIn = keyframes({
   from: { opacity: '0', transform: 'scale(0.96)' },
@@ -58,35 +65,8 @@ export const menubarContent = style({
   animation: `${slideIn} ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 });
 
-export const menubarItem = style({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  borderRadius: vars.radii.sm,
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.sm,
-  color: vars.color.text,
-  cursor: 'pointer',
-  outline: 'none',
-  userSelect: 'none',
-  transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-  selectors: {
-    '&[data-highlighted]': {
-      backgroundColor: vars.color.ghostHover,
-    },
-    '&[data-disabled]': {
-      color: vars.color.textDisabled,
-      pointerEvents: 'none',
-    },
-  },
-});
-
-export const menubarSeparator = style({
-  height: '1px',
-  margin: `${vars.space['1']} ${vars.space['0_5']}`,
-  backgroundColor: vars.color.borderSubtle,
-});
+export const menubarItem = baseMenuItem;
+export const menubarSeparator = baseMenuSeparator;
 
 export const menubarLabel = style({
   padding: `${vars.space['1_5']} ${vars.space['2']}`,
@@ -95,15 +75,11 @@ export const menubarLabel = style({
   color: vars.color.textMuted,
 });
 
-export const menubarShortcut = style({
-  marginLeft: 'auto',
-  fontSize: vars.font.size.xs,
-  letterSpacing: vars.font.letterSpacing.wide,
-  color: vars.color.textMuted,
-});
+export const menubarShortcut = baseMenuShortcut;
+export const menubarItemIndicator = baseMenuItemIndicator;
 
 export const menubarSubTrigger = style([
-  menubarItem,
+  baseMenuItem,
   {
     selectors: {
       '&[data-state="open"]': {
@@ -114,16 +90,5 @@ export const menubarSubTrigger = style([
 ]);
 
 export const menubarSubContent = style([menubarContent, {}]);
-
-export const menubarCheckboxItem = style([menubarItem, {}]);
-export const menubarRadioItem = style([menubarItem, {}]);
-
-export const menubarItemIndicator = style({
-  position: 'absolute',
-  left: vars.space['2'],
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '14px',
-  height: '14px',
-});
+export const menubarCheckboxItem = baseMenuItem;
+export const menubarRadioItem = baseMenuItem;

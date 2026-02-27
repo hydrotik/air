@@ -153,7 +153,7 @@ declare const lightThemeClass: string;
  * document.documentElement.setAttribute('data-theme', 'dark');
  * ```
  */
-declare const themeClasses: Record<ThemeName, string>;
+declare const themeClasses: Record<'dark' | 'light', string>;
 //#endregion
 //#region src/index.d.ts
 /** Canonical theme names */

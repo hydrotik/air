@@ -1,5 +1,12 @@
 import { style, keyframes } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
+import {
+  baseMenuItem,
+  baseMenuSeparator,
+  baseMenuLabel,
+  baseMenuShortcut,
+  baseMenuItemIndicator,
+} from '../../styles/menu-item.css';
 
 const slideDownAndFade = keyframes({
   from: { opacity: 0, transform: 'translateY(-4px)' },
@@ -23,9 +30,7 @@ const slideRightAndFade = keyframes({
 
 /**
  * DropdownMenu — shadcn v4 aligned.
- * - bg-popover (surfaceElevated)
- * - No text color change on highlight (focus:bg-accent only)
- * - Labels: font-medium, no uppercase
+ * Uses shared menu-item styles + directional animations.
  */
 export const dropdownContent = style({
   minWidth: '8rem',
@@ -47,32 +52,10 @@ export const dropdownContent = style({
   },
 });
 
-export const dropdownItem = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  borderRadius: vars.radii.sm,
-  fontSize: vars.font.size.sm,
-  color: vars.color.text,
-  cursor: 'default',
-  userSelect: 'none',
-  outline: 'none',
-  position: 'relative',
-  transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-  selectors: {
-    '&[data-highlighted]': {
-      backgroundColor: vars.color.ghostHover,
-    },
-    '&[data-disabled]': {
-      opacity: '0.5',
-      pointerEvents: 'none',
-    },
-  },
-});
+export const dropdownItem = baseMenuItem;
 
 export const dropdownDestructiveItem = style([
-  dropdownItem,
+  baseMenuItem,
   {
     color: vars.color.destructive,
     selectors: {
@@ -84,30 +67,13 @@ export const dropdownDestructiveItem = style([
   },
 ]);
 
-export const dropdownLabel = style({
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.sm,
-  fontWeight: vars.font.weight.medium,
-});
-
-export const dropdownSeparator = style({
-  height: '1px',
-  backgroundColor: vars.color.borderSubtle,
-  margin: `${vars.space['1']} -${vars.space['1']}`,
-});
-
-export const dropdownItemIndicator = style({
-  position: 'absolute',
-  left: vars.space['2'],
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '14px',
-  height: '14px',
-});
+export const dropdownLabel = baseMenuLabel;
+export const dropdownSeparator = baseMenuSeparator;
+export const dropdownItemIndicator = baseMenuItemIndicator;
+export const dropdownShortcut = baseMenuShortcut;
 
 export const dropdownCheckboxItem = style([
-  dropdownItem,
+  baseMenuItem,
   {
     paddingLeft: vars.space['8'],
   },
@@ -116,7 +82,7 @@ export const dropdownCheckboxItem = style([
 export const dropdownRadioItem = style([dropdownCheckboxItem]);
 
 export const dropdownSubTrigger = style([
-  dropdownItem,
+  baseMenuItem,
   {
     selectors: {
       '&[data-state="open"]': {
@@ -127,10 +93,3 @@ export const dropdownSubTrigger = style([
 ]);
 
 export const dropdownSubContent = style([dropdownContent]);
-
-export const dropdownShortcut = style({
-  marginLeft: 'auto',
-  fontSize: vars.font.size.xs,
-  color: vars.color.textMuted,
-  letterSpacing: vars.font.letterSpacing.wide,
-});

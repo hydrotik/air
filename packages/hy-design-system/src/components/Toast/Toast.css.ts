@@ -140,7 +140,4 @@ export const toastClose = style({
   },
 });
 
-export const toastIcon = style({
-  gridRow: '1 / -1',
-  marginTop: '1px',
-});
+

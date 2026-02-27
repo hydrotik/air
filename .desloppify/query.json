@@ -1,0 +1,513 @@
+{
+  "command": "show",
+  "query": "boilerplate_duplication",
+  "status_filter": "open",
+  "total": 10,
+  "summary": {
+    "by_tier": {
+      "T3": 10
+    },
+    "by_detector": {
+      "boilerplate_duplication": 10
+    },
+    "files": 6
+  },
+  "by_file": {
+    "packages/hy-design-system/src/components/Dialog/Dialog.tsx": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Dialog/Dialog.tsx::9db0e8833a8abad9",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 11 lines): packages/hy-design-system/src/components/Dialog/Dialog.tsx:69, packages/hy-design-system/src/components/Sheet/Sheet.tsx:76",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 11,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Dialog/Dialog.tsx",
+              "line": 69
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Sheet/Sheet.tsx",
+              "line": 76
+            }
+          ],
+          "sample": [
+            "= React.forwardRef<",
+            "  React.ComponentRef<typeof DialogPrimitive.Title>,",
+            "  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>",
+            ">(({ className, ...props }, ref) => ("
+          ]
+        }
+      },
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Dialog/Dialog.tsx::d5ca6b524610478a",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 11 lines): packages/hy-design-system/src/components/Dialog/Dialog.tsx:81, packages/hy-design-system/src/components/Sheet/Sheet.tsx:88",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 11,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Dialog/Dialog.tsx",
+              "line": 81
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Sheet/Sheet.tsx",
+              "line": 88
+            }
+          ],
+          "sample": [
+            "= React.forwardRef<",
+            "  React.ComponentRef<typeof DialogPrimitive.Description>,",
+            "  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>",
+            ">(({ className, ...props }, ref) => ("
+          ]
+        }
+      },
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Dialog/Dialog.tsx::d8038b5a367b23a2",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 11 lines): packages/hy-design-system/src/components/Dialog/Dialog.tsx:19, packages/hy-design-system/src/components/Sheet/Sheet.tsx:20",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 11,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Dialog/Dialog.tsx",
+              "line": 19
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Sheet/Sheet.tsx",
+              "line": 20
+            }
+          ],
+          "sample": [
+            "= React.forwardRef<",
+            "  React.ComponentRef<typeof DialogPrimitive.Overlay>,",
+            "  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>",
+            ">(({ className, ...props }, ref) => ("
+          ]
+        }
+      }
+    ],
+    "packages/hy-design-system/src/components/Command/Command.css.ts": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Command/Command.css.ts::73157703e19b8fee",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 3 files (window 15 lines): packages/hy-design-system/src/components/Command/Command.css.ts:64, packages/hy-design-system/src/components/Menubar/Menubar.css.ts:61, packages/hy-design-system/src/styles/menu-item.css.ts:10",
+        "detail": {
+          "distinct_files": 3,
+          "window_size": 15,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Command/Command.css.ts",
+              "line": 64
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Menubar/Menubar.css.ts",
+              "line": 61
+            },
+            {
+              "file": "packages/hy-design-system/src/styles/menu-item.css.ts",
+              "line": 10
+            }
+          ],
+          "sample": [
+            "= style({",
+            "  position: 'relative',",
+            "  display: 'flex',",
+            "  alignItems: 'center',"
+          ]
+        }
+      },
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Command/Command.css.ts::ab5a76e98f3f6af1",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 6 lines): packages/hy-design-system/src/components/Command/Command.css.ts:55, packages/hy-design-system/src/components/Menubar/Menubar.css.ts:91",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 6,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Command/Command.css.ts",
+              "line": 55
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Menubar/Menubar.css.ts",
+              "line": 91
+            }
+          ],
+          "sample": [
+            "= style({",
+            "  padding: `${vars.space['1_5']} ${vars.space['2']}`,",
+            "  fontSize: vars.font.size.xs,",
+            "  fontWeight: vars.font.weight.semibold,"
+          ]
+        }
+      }
+    ],
+    "packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts::0ea1665c956f6959",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 14 lines): packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts:1, packages/hy-design-system/src/components/Select/Select.css.ts:2",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 14,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts",
+              "line": 1
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Select/Select.css.ts",
+              "line": 2
+            }
+          ],
+          "sample": [
+            ";",
+            "import { vars } from '@hydrotik/tokens';",
+            "",
+            "const slideDownAndFade = keyframes({"
+          ]
+        }
+      },
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts::8af2fca0b0eb0486",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 14 lines): packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts:61, packages/hy-design-system/src/components/Select/Select.css.ts:117",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 14,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts",
+              "line": 61
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Select/Select.css.ts",
+              "line": 117
+            }
+          ],
+          "sample": [
+            ",",
+            "  transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,",
+            "  selectors: {",
+            "    '&[data-highlighted]': {"
+          ]
+        }
+      }
+    ],
+    "packages/hy-design-system/src/components/Button/Button.css.ts": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Button/Button.css.ts::7c21c18f773f7362",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 11 lines): packages/hy-design-system/src/components/Button/Button.css.ts:134, packages/hy-design-system/src/components/Input/Input.css.ts:65",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 11,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Button/Button.css.ts",
+              "line": 134
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Input/Input.css.ts",
+              "line": 65
+            }
+          ],
+          "sample": [
+            ",",
+            "      },",
+            "      md: {",
+            "        height: vars.space['8'],"
+          ]
+        }
+      }
+    ],
+    "packages/hy-design-system/src/components/Checkbox/Checkbox.css.ts": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/Checkbox/Checkbox.css.ts::35b9750094372a5e",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 12 lines): packages/hy-design-system/src/components/Checkbox/Checkbox.css.ts:16, packages/hy-design-system/src/components/RadioGroup/RadioGroup.css.ts:22",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 12,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/Checkbox/Checkbox.css.ts",
+              "line": 16
+            },
+            {
+              "file": "packages/hy-design-system/src/components/RadioGroup/RadioGroup.css.ts",
+              "line": 22
+            }
+          ],
+          "sample": [
+            ",",
+            "  boxShadow: vars.shadow.xs,",
+            "  cursor: 'pointer',",
+            "  flexShrink: 0,"
+          ]
+        }
+      }
+    ],
+    "packages/hy-design-system/src/components/ContextMenu/ContextMenu.tsx": [
+      {
+        "id": "boilerplate_duplication::packages/hy-design-system/src/components/ContextMenu/ContextMenu.tsx::85d023a6337fdb02",
+        "tier": 3,
+        "confidence": "medium",
+        "summary": "Boilerplate block repeated across 2 files (window 17 lines): packages/hy-design-system/src/components/ContextMenu/ContextMenu.tsx:128, packages/hy-design-system/src/components/Menubar/Menubar.tsx:156",
+        "detail": {
+          "distinct_files": 2,
+          "window_size": 17,
+          "locations": [
+            {
+              "file": "packages/hy-design-system/src/components/ContextMenu/ContextMenu.tsx",
+              "line": 128
+            },
+            {
+              "file": "packages/hy-design-system/src/components/Menubar/Menubar.tsx",
+              "line": 156
+            }
+          ],
+          "sample": [
+            ", className].filter(Boolean).join(' ')}",
+            "    style={inset ? { paddingLeft: '2rem' } : undefined}",
+            "    {...props}",
+            "  >"
+          ]
+        }
+      }
+    ]
+  },
+  "total_matching": 18,
+  "hidden": {
+    "by_detector": {
+      "boilerplate_duplication": 8
+    },
+    "total": 8
+  },
+  "noise_budget": 10,
+  "noise_global_budget": 0,
+  "narrative": {
+    "phase": "early_momentum",
+    "headline": "All T1 and T2 items cleared!",
+    "dimensions": {
+      "lowest_dimensions": [
+        {
+          "name": "Error consistency",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "Abstraction fit",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "AI generated debt",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        }
+      ],
+      "biggest_gap_dimensions": [
+        {
+          "name": "Code quality",
+          "lenient": 100.0,
+          "strict": 96.6,
+          "gap": 3.4,
+          "wontfix_count": 44
+        }
+      ],
+      "stagnant_dimensions": []
+    },
+    "actions": [
+      {
+        "type": "refactor",
+        "detector": "structural",
+        "count": 1,
+        "description": "1 structural findings \u2014 decompose large files \u2014 extract logic into focused modules",
+        "command": "desloppify show structural --status open",
+        "impact": 0.0,
+        "dimension": "File health",
+        "priority": 1,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "refactor",
+        "detector": "test_coverage",
+        "count": 63,
+        "description": "63 test_coverage findings \u2014 add tests for untested production modules \u2014 prioritize by import count",
+        "command": "desloppify show test_coverage --status open",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 2,
+        "lane": "test_coverage"
+      },
+      {
+        "type": "refactor",
+        "detector": "boilerplate_duplication",
+        "count": 18,
+        "description": "18 boilerplate_duplication findings \u2014 extract shared boilerplate into reusable helpers or base classes",
+        "command": "desloppify show boilerplate_duplication --status open",
+        "impact": 0.0,
+        "dimension": "Duplication",
+        "priority": 3,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "subjective_review",
+        "count": 89,
+        "description": "89 files need design review \u2014 run design review with dimension templates",
+        "command": "desloppify fix review",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 4,
+        "lane": "refactor_1"
+      }
+    ],
+    "strategy": {
+      "fixer_leverage": {
+        "auto_fixable_count": 0,
+        "total_count": 171,
+        "coverage": 0.0,
+        "impact_ratio": 0.0,
+        "recommendation": "none"
+      },
+      "lanes": {
+        "refactor_0": {
+          "actions": [
+            1
+          ],
+          "file_count": 1,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_1": {
+          "actions": [
+            3,
+            4
+          ],
+          "file_count": 89,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "test_coverage": {
+          "actions": [
+            2
+          ],
+          "file_count": 63,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        }
+      },
+      "can_parallelize": true,
+      "hint": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify."
+    },
+    "tools": {
+      "fixers": [],
+      "move": {
+        "available": true,
+        "relevant": false,
+        "reason": null,
+        "usage": "desloppify move <source> <dest> [--dry-run]"
+      },
+      "plan": {
+        "command": "desloppify plan",
+        "description": "Generate prioritized markdown cleanup plan"
+      },
+      "badge": {
+        "generated": true,
+        "in_readme": false,
+        "path": "scorecard.png",
+        "recommendation": "Add to README: <img src=\"scorecard.png\" width=\"100%\">"
+      }
+    },
+    "debt": {
+      "overall_gap": 0.1,
+      "wontfix_count": 45,
+      "worst_dimension": "Code quality",
+      "worst_gap": 3.4,
+      "trend": "stable"
+    },
+    "milestone": "All T1 and T2 items cleared!",
+    "primary_action": {
+      "command": "desloppify show structural --status open",
+      "description": "1 structural findings \u2014 decompose large files \u2014 extract logic into focused modules"
+    },
+    "why_now": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify.",
+    "verification_step": {
+      "command": "desloppify scan",
+      "reason": "revalidate after changes"
+    },
+    "risk_flags": [
+      {
+        "type": "wontfix_gap",
+        "severity": "medium",
+        "message": "Strict/lenient gap is 0.1 pts with 45 wontfix findings"
+      }
+    ],
+    "strict_target": {
+      "target": 95.0,
+      "current": 33.9,
+      "gap": 61.1,
+      "state": "below",
+      "warning": null
+    },
+    "reminders": [
+      {
+        "type": "zone_classification",
+        "message": "46 of 199 files classified as non-production (1 config, 45 test). Override with `desloppify zone set <file> production` if any are misclassified.",
+        "command": "desloppify zone show",
+        "priority": 2,
+        "severity": "medium"
+      }
+    ],
+    "reminder_history": {
+      "zone_classification": 3,
+      "report_scores": 2,
+      "feedback_nudge": 1
+    }
+  },
+  "config": {
+    "target_strict_score": 95,
+    "review_max_age_days": 30,
+    "review_batch_max_files": 80,
+    "holistic_max_age_days": 30,
+    "generate_scorecard": true,
+    "badge_path": "scorecard.png",
+    "exclude": [],
+    "ignore": [],
+    "ignore_metadata": {},
+    "zone_overrides": {},
+    "review_dimensions": [],
+    "large_files_threshold": 0,
+    "props_threshold": 0,
+    "finding_noise_budget": 10,
+    "finding_noise_global_budget": 0,
+    "languages": {}
+  }
+}

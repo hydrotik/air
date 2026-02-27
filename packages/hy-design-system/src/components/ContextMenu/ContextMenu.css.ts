@@ -1,5 +1,12 @@
 import { style, keyframes } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
+import {
+  baseMenuItem,
+  baseMenuSeparator,
+  baseMenuLabel,
+  baseMenuShortcut,
+  baseMenuItemIndicator,
+} from '../../styles/menu-item.css';
 
 const slideIn = keyframes({
   from: { opacity: '0', transform: 'scale(0.96)' },
@@ -8,7 +15,7 @@ const slideIn = keyframes({
 
 /**
  * ContextMenu — shadcn v4 aligned.
- * bg-popover (surfaceElevated), no text color change on highlight.
+ * Uses shared menu-item styles.
  */
 export const contextMenuContent = style({
   zIndex: vars.zIndex.dropdown,
@@ -22,54 +29,16 @@ export const contextMenuContent = style({
   animation: `${slideIn} ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 });
 
-export const contextMenuItem = style({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  borderRadius: vars.radii.sm,
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.sm,
-  color: vars.color.text,
-  cursor: 'default',
-  outline: 'none',
-  userSelect: 'none',
-  transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-  selectors: {
-    '&[data-highlighted]': {
-      backgroundColor: vars.color.ghostHover,
-    },
-    '&[data-disabled]': {
-      opacity: '0.5',
-      pointerEvents: 'none',
-    },
-  },
-});
-
-export const contextMenuCheckboxItem = style([contextMenuItem, {}]);
-export const contextMenuRadioItem = style([contextMenuItem, {}]);
-
-export const contextMenuLabel = style({
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
-  fontSize: vars.font.size.sm,
-  fontWeight: vars.font.weight.medium,
-});
-
-export const contextMenuSeparator = style({
-  height: '1px',
-  margin: `${vars.space['1']} -${vars.space['1']}`,
-  backgroundColor: vars.color.borderSubtle,
-});
-
-export const contextMenuShortcut = style({
-  marginLeft: 'auto',
-  fontSize: vars.font.size.xs,
-  letterSpacing: vars.font.letterSpacing.wide,
-  color: vars.color.textMuted,
-});
+export const contextMenuItem = baseMenuItem;
+export const contextMenuCheckboxItem = baseMenuItem;
+export const contextMenuRadioItem = baseMenuItem;
+export const contextMenuLabel = baseMenuLabel;
+export const contextMenuSeparator = baseMenuSeparator;
+export const contextMenuShortcut = baseMenuShortcut;
+export const contextMenuItemIndicator = baseMenuItemIndicator;
 
 export const contextMenuSubTrigger = style([
-  contextMenuItem,
+  baseMenuItem,
   {
     selectors: {
       '&[data-state="open"]': {
@@ -80,13 +49,3 @@ export const contextMenuSubTrigger = style([
 ]);
 
 export const contextMenuSubContent = style([contextMenuContent, {}]);
-
-export const contextMenuItemIndicator = style({
-  position: 'absolute',
-  left: vars.space['2'],
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '14px',
-  height: '14px',
-});

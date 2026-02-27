@@ -245,12 +245,16 @@ const AlertDescription = React.forwardRef(({ className, ...props }, ref) => /* @
 AlertDescription.displayName = "AlertDescription";
 
 //#endregion
-//#region src/components/AlertDialog/AlertDialog.css.ts
-const overlayShow$2 = keyframes({
+//#region src/styles/overlay.css.ts
+/**
+* Shared overlay/modal styles used by Dialog, AlertDialog, and Sheet.
+* Extracted to reduce boilerplate duplication across modal components.
+*/
+const overlayShow$1 = keyframes({
 	from: { opacity: "0" },
 	to: { opacity: "1" }
 });
-const contentShow$1 = keyframes({
+const contentShow = keyframes({
 	from: {
 		opacity: "0",
 		transform: "translate(-50%, -48%) scale(0.95)"
@@ -260,18 +264,16 @@ const contentShow$1 = keyframes({
 		transform: "translate(-50%, -50%) scale(1)"
 	}
 });
-/**
-* AlertDialog — shadcn v4 aligned.
-* Same as Dialog but without close button.
-*/
-const alertDialogOverlay = style({
+/** Standard modal overlay — rgba(0,0,0,0.5) per shadcn convention */
+const baseOverlay = style({
 	backgroundColor: "rgba(0, 0, 0, 0.5)",
 	position: "fixed",
 	inset: 0,
 	zIndex: vars.zIndex.overlay,
-	animation: `${overlayShow$2} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
+	animation: `${overlayShow$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`
 });
-const alertDialogContent = style({
+/** Standard centered modal content container */
+const baseModalContent = style({
 	backgroundColor: vars.color.background,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.lg,
@@ -287,15 +289,17 @@ const alertDialogContent = style({
 	zIndex: vars.zIndex.modal,
 	display: "grid",
 	gap: vars.space["4"],
-	animation: `${contentShow$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
+	animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
 	outline: "none"
 });
-const alertDialogHeader = style({
+/** Shared modal header layout */
+const baseModalHeader = style({
 	display: "flex",
 	flexDirection: "column",
 	gap: vars.space["2"]
 });
-const alertDialogFooter = style({
+/** Shared responsive modal footer */
+const baseModalFooter = style({
 	display: "flex",
 	flexDirection: "column-reverse",
 	gap: vars.space["2"],
@@ -304,17 +308,32 @@ const alertDialogFooter = style({
 		justifyContent: "flex-end"
 	} }
 });
-const alertDialogTitle = style({
+/** Shared modal title */
+const baseModalTitle = style({
 	fontSize: vars.font.size.lg,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.text,
 	lineHeight: vars.font.lineHeight.tight
 });
-const alertDialogDescription = style({
+/** Shared modal description */
+const baseModalDescription = style({
 	fontSize: vars.font.size.sm,
 	color: vars.color.textMuted,
 	lineHeight: vars.font.lineHeight.relaxed
 });
+
+//#endregion
+//#region src/components/AlertDialog/AlertDialog.css.ts
+/**
+* AlertDialog — shadcn v4 aligned.
+* Uses shared overlay/modal styles. Same as Dialog but without close button.
+*/
+const alertDialogOverlay = baseOverlay;
+const alertDialogContent = baseModalContent;
+const alertDialogHeader = baseModalHeader;
+const alertDialogFooter = baseModalFooter;
+const alertDialogTitle = baseModalTitle;
+const alertDialogDescription = baseModalDescription;
 
 //#endregion
 //#region src/components/AlertDialog/AlertDialog.tsx
@@ -1111,33 +1130,13 @@ const CommandShortcut = ({ className, ...props }) => /* @__PURE__ */ jsx("span",
 CommandShortcut.displayName = "CommandShortcut";
 
 //#endregion
-//#region src/components/ContextMenu/ContextMenu.css.ts
-const slideIn$2 = keyframes({
-	from: {
-		opacity: "0",
-		transform: "scale(0.96)"
-	},
-	to: {
-		opacity: "1",
-		transform: "scale(1)"
-	}
-});
+//#region src/styles/menu-item.css.ts
 /**
-* ContextMenu — shadcn v4 aligned.
-* bg-popover (surfaceElevated), no text color change on highlight.
+* Shared menu item styles used by DropdownMenu, ContextMenu, Command, Menubar, Select.
+* Extracted to reduce boilerplate duplication across menu-like components.
 */
-const contextMenuContent = style({
-	zIndex: vars.zIndex.dropdown,
-	minWidth: "8rem",
-	overflow: "hidden",
-	borderRadius: vars.radii.md,
-	border: `1px solid ${vars.color.border}`,
-	backgroundColor: vars.color.surfaceElevated,
-	padding: vars.space["1"],
-	boxShadow: vars.shadow.md,
-	animation: `${slideIn$2} ${vars.motion.duration.fast} ${vars.motion.easing.default}`
-});
-const contextMenuItem = style({
+/** Base menu item — flex row with hover highlight */
+const baseMenuItem = style({
 	position: "relative",
 	display: "flex",
 	alignItems: "center",
@@ -1158,27 +1157,27 @@ const contextMenuItem = style({
 		}
 	}
 });
-const contextMenuCheckboxItem = style([contextMenuItem, {}]);
-const contextMenuRadioItem = style([contextMenuItem, {}]);
-const contextMenuLabel = style({
-	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	fontSize: vars.font.size.sm,
-	fontWeight: vars.font.weight.medium
-});
-const contextMenuSeparator = style({
+/** Menu separator line */
+const baseMenuSeparator = style({
 	height: "1px",
 	margin: `${vars.space["1"]} -${vars.space["1"]}`,
 	backgroundColor: vars.color.borderSubtle
 });
-const contextMenuShortcut = style({
+/** Menu label (group header) */
+const baseMenuLabel = style({
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
+	fontSize: vars.font.size.sm,
+	fontWeight: vars.font.weight.medium
+});
+/** Menu shortcut text */
+const baseMenuShortcut = style({
 	marginLeft: "auto",
 	fontSize: vars.font.size.xs,
 	letterSpacing: vars.font.letterSpacing.wide,
 	color: vars.color.textMuted
 });
-const contextMenuSubTrigger = style([contextMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
-const contextMenuSubContent = style([contextMenuContent, {}]);
-const contextMenuItemIndicator = style({
+/** Item indicator container (for checkboxes/radios) */
+const baseMenuItemIndicator = style({
 	position: "absolute",
 	left: vars.space["2"],
 	display: "inline-flex",
@@ -1187,6 +1186,43 @@ const contextMenuItemIndicator = style({
 	width: "14px",
 	height: "14px"
 });
+
+//#endregion
+//#region src/components/ContextMenu/ContextMenu.css.ts
+const slideIn$2 = keyframes({
+	from: {
+		opacity: "0",
+		transform: "scale(0.96)"
+	},
+	to: {
+		opacity: "1",
+		transform: "scale(1)"
+	}
+});
+/**
+* ContextMenu — shadcn v4 aligned.
+* Uses shared menu-item styles.
+*/
+const contextMenuContent = style({
+	zIndex: vars.zIndex.dropdown,
+	minWidth: "8rem",
+	overflow: "hidden",
+	borderRadius: vars.radii.md,
+	border: `1px solid ${vars.color.border}`,
+	backgroundColor: vars.color.surfaceElevated,
+	padding: vars.space["1"],
+	boxShadow: vars.shadow.md,
+	animation: `${slideIn$2} ${vars.motion.duration.fast} ${vars.motion.easing.default}`
+});
+const contextMenuItem = baseMenuItem;
+const contextMenuCheckboxItem = baseMenuItem;
+const contextMenuRadioItem = baseMenuItem;
+const contextMenuLabel = baseMenuLabel;
+const contextMenuSeparator = baseMenuSeparator;
+const contextMenuShortcut = baseMenuShortcut;
+const contextMenuItemIndicator = baseMenuItemIndicator;
+const contextMenuSubTrigger = style([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
+const contextMenuSubContent = style([contextMenuContent, {}]);
 
 //#endregion
 //#region src/components/ContextMenu/ContextMenu.tsx
@@ -1274,104 +1310,32 @@ ContextMenuSubContent.displayName = "ContextMenuSubContent";
 
 //#endregion
 //#region src/components/Dialog/Dialog.css.ts
-const overlayShow$1 = keyframes({
-	from: { opacity: "0" },
-	to: { opacity: "1" }
-});
-const contentShow = keyframes({
-	from: {
-		opacity: "0",
-		transform: "translate(-50%, -48%) scale(0.95)"
-	},
-	to: {
-		opacity: "1",
-		transform: "translate(-50%, -50%) scale(1)"
-	}
-});
 /**
 * Dialog — shadcn v4 aligned.
-* - Overlay: black/50
-* - Content: bg-background (not surfaceOverlay)
-* - gap-4, p-6, rounded-lg
+* Uses shared overlay/modal styles.
 */
-const dialogOverlay = style({
-	backgroundColor: "rgba(0, 0, 0, 0.5)",
-	position: "fixed",
-	inset: 0,
-	zIndex: vars.zIndex.overlay,
-	animation: `${overlayShow$1} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
-	selectors: { "&[data-state=\"closed\"]": { animationDirection: "reverse" } }
-});
-const dialogContent = style({
-	backgroundColor: vars.color.background,
-	border: `1px solid ${vars.color.border}`,
-	borderRadius: vars.radii.lg,
-	boxShadow: vars.shadow.lg,
-	position: "fixed",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "90vw",
-	maxWidth: "32rem",
-	maxHeight: "85vh",
-	overflowY: "auto",
-	padding: vars.space["6"],
-	zIndex: vars.zIndex.modal,
-	display: "grid",
-	gap: vars.space["4"],
-	animation: `${contentShow} ${vars.motion.duration.normal} ${vars.motion.easing.default}`,
-	outline: "none"
-});
-const dialogHeader = style({
-	display: "flex",
-	flexDirection: "column",
-	gap: vars.space["2"]
-});
-const dialogFooter = style({
-	display: "flex",
-	flexDirection: "column-reverse",
-	gap: vars.space["2"],
-	"@media": { "screen and (min-width: 640px)": {
-		flexDirection: "row",
-		justifyContent: "flex-end"
-	} }
-});
-const dialogTitle = style({
-	fontSize: vars.font.size.lg,
-	fontWeight: vars.font.weight.semibold,
-	color: vars.color.text,
-	lineHeight: "1",
-	margin: 0
-});
-const dialogDescription = style({
-	fontSize: vars.font.size.sm,
-	color: vars.color.textMuted,
-	lineHeight: vars.font.lineHeight.normal,
-	margin: 0
-});
+const dialogOverlay = baseOverlay;
+const dialogContent = baseModalContent;
+const dialogHeader = baseModalHeader;
+const dialogFooter = baseModalFooter;
+const dialogTitle = baseModalTitle;
+const dialogDescription = baseModalDescription;
 const dialogClose = style({
 	position: "absolute",
-	top: vars.space["4"],
 	right: vars.space["4"],
+	top: vars.space["4"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space["6"],
-	height: vars.space["6"],
 	borderRadius: vars.radii.sm,
-	color: vars.color.textMuted,
-	backgroundColor: "transparent",
-	border: "none",
-	cursor: "pointer",
 	opacity: "0.7",
+	cursor: "pointer",
+	background: "none",
+	border: "none",
+	padding: 0,
+	color: vars.color.text,
 	transition: `opacity ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-	selectors: {
-		"&:hover": { opacity: "1" },
-		"&:focus-visible": {
-			outline: `2px solid ${vars.color.focusRing}`,
-			outlineOffset: "2px"
-		}
-	}
+	selectors: { "&:hover": { opacity: "1" } }
 });
 
 //#endregion
@@ -1467,9 +1431,7 @@ const slideRightAndFade = keyframes({
 });
 /**
 * DropdownMenu — shadcn v4 aligned.
-* - bg-popover (surfaceElevated)
-* - No text color change on highlight (focus:bg-accent only)
-* - Labels: font-medium, no uppercase
+* Uses shared menu-item styles + directional animations.
 */
 const dropdownContent = style({
 	minWidth: "8rem",
@@ -1490,63 +1452,22 @@ const dropdownContent = style({
 		"&[data-side=\"right\"]": { animationName: slideRightAndFade }
 	}
 });
-const dropdownItem = style({
-	display: "flex",
-	alignItems: "center",
-	gap: vars.space["2"],
-	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	borderRadius: vars.radii.sm,
-	fontSize: vars.font.size.sm,
-	color: vars.color.text,
-	cursor: "default",
-	userSelect: "none",
-	outline: "none",
-	position: "relative",
-	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-	selectors: {
-		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
-		"&[data-disabled]": {
-			opacity: "0.5",
-			pointerEvents: "none"
-		}
-	}
-});
-const dropdownDestructiveItem = style([dropdownItem, {
+const dropdownItem = baseMenuItem;
+const dropdownDestructiveItem = style([baseMenuItem, {
 	color: vars.color.destructive,
 	selectors: { "&[data-highlighted]": {
 		backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 10%, transparent)`,
 		color: vars.color.destructive
 	} }
 }]);
-const dropdownLabel = style({
-	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	fontSize: vars.font.size.sm,
-	fontWeight: vars.font.weight.medium
-});
-const dropdownSeparator = style({
-	height: "1px",
-	backgroundColor: vars.color.borderSubtle,
-	margin: `${vars.space["1"]} -${vars.space["1"]}`
-});
-const dropdownItemIndicator = style({
-	position: "absolute",
-	left: vars.space["2"],
-	display: "inline-flex",
-	alignItems: "center",
-	justifyContent: "center",
-	width: "14px",
-	height: "14px"
-});
-const dropdownCheckboxItem = style([dropdownItem, { paddingLeft: vars.space["8"] }]);
+const dropdownLabel = baseMenuLabel;
+const dropdownSeparator = baseMenuSeparator;
+const dropdownItemIndicator = baseMenuItemIndicator;
+const dropdownShortcut = baseMenuShortcut;
+const dropdownCheckboxItem = style([baseMenuItem, { paddingLeft: vars.space["8"] }]);
 const dropdownRadioItem = style([dropdownCheckboxItem]);
-const dropdownSubTrigger = style([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
+const dropdownSubTrigger = style([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
 const dropdownSubContent = style([dropdownContent]);
-const dropdownShortcut = style({
-	marginLeft: "auto",
-	fontSize: vars.font.size.xs,
-	color: vars.color.textMuted,
-	letterSpacing: vars.font.letterSpacing.wide
-});
 
 //#endregion
 //#region src/components/DropdownMenu/DropdownMenu.tsx
@@ -1942,57 +1863,20 @@ const menubarContent = style({
 	boxShadow: vars.shadow.lg,
 	animation: `${slideIn} ${vars.motion.duration.fast} ${vars.motion.easing.default}`
 });
-const menubarItem = style({
-	position: "relative",
-	display: "flex",
-	alignItems: "center",
-	gap: vars.space["2"],
-	borderRadius: vars.radii.sm,
-	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
-	fontSize: vars.font.size.sm,
-	color: vars.color.text,
-	cursor: "pointer",
-	outline: "none",
-	userSelect: "none",
-	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
-	selectors: {
-		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
-		"&[data-disabled]": {
-			color: vars.color.textDisabled,
-			pointerEvents: "none"
-		}
-	}
-});
-const menubarSeparator = style({
-	height: "1px",
-	margin: `${vars.space["1"]} ${vars.space["0_5"]}`,
-	backgroundColor: vars.color.borderSubtle
-});
+const menubarItem = baseMenuItem;
+const menubarSeparator = baseMenuSeparator;
 const menubarLabel = style({
 	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	fontSize: vars.font.size.xs,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.textMuted
 });
-const menubarShortcut = style({
-	marginLeft: "auto",
-	fontSize: vars.font.size.xs,
-	letterSpacing: vars.font.letterSpacing.wide,
-	color: vars.color.textMuted
-});
-const menubarSubTrigger = style([menubarItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
+const menubarShortcut = baseMenuShortcut;
+const menubarItemIndicator = baseMenuItemIndicator;
+const menubarSubTrigger = style([baseMenuItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
 const menubarSubContent = style([menubarContent, {}]);
-const menubarCheckboxItem = style([menubarItem, {}]);
-const menubarRadioItem = style([menubarItem, {}]);
-const menubarItemIndicator = style({
-	position: "absolute",
-	left: vars.space["2"],
-	display: "inline-flex",
-	alignItems: "center",
-	justifyContent: "center",
-	width: "14px",
-	height: "14px"
-});
+const menubarCheckboxItem = baseMenuItem;
+const menubarRadioItem = baseMenuItem;
 
 //#endregion
 //#region src/components/Menubar/Menubar.tsx
@@ -3668,10 +3552,6 @@ const toastClose = style({
 			outlineOffset: "1px"
 		}
 	}
-});
-const toastIcon = style({
-	gridRow: "1 / -1",
-	marginTop: "1px"
 });
 
 //#endregion
