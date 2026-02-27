@@ -532,6 +532,119 @@ describe('MyComponent', () => {
     ),
   );
 
+  // ── 13. Fonts & Icons ──────────────────────────────────────────────────
+  upsert(
+    makeChunk(
+      'conventions',
+      'Fonts and Icons',
+      `# Fonts & Icons
+
+## Fonts
+Both fonts are bundled via \`@fontsource-variable\` — no external CDN.
+Loaded automatically by importing the global styles:
+\`\`\`ts
+import '@hydrotik/design-system/src/global.css';
+\`\`\`
+
+| Font | Token | Package |
+|---|---|---|
+| **Inter Variable** (sans) | \`vars.font.family.sans\` | \`@fontsource-variable/inter\` |
+| **JetBrains Mono Variable** (mono) | \`vars.font.family.mono\` | \`@fontsource-variable/jetbrains-mono\` |
+
+## Icons
+All [Lucide](https://lucide.dev) icons are available via re-export:
+\`\`\`tsx
+import { Icons } from '@hydrotik/design-system';
+
+<Icons.Search size={16} />
+<Icons.ChevronDown />
+<Icons.Settings />
+<Icons.X />
+\`\`\`
+
+Common icons used in the design system:
+- Close buttons: \`Icons.X\`
+- Chevrons: \`Icons.ChevronDown\`, \`Icons.ChevronRight\`, \`Icons.ChevronLeft\`
+- Search: \`Icons.Search\`
+- Loading: use the \`<Spinner />\` component instead
+- Check: \`Icons.Check\`
+- Info/Warning/Error: \`Icons.Info\`, \`Icons.AlertTriangle\`, \`Icons.AlertCircle\`
+`,
+      ['fonts', 'icons', 'inter', 'jetbrains-mono', 'lucide', 'fontsource', 'typography'],
+      'static',
+    ),
+  );
+
+  // ── 14. Component catalog summary ──────────────────────────────────────
+  upsert(
+    makeChunk(
+      'conventions',
+      'Component Catalog',
+      `# Component Catalog — 42 Components
+
+## Layout & Structure
+- AspectRatio, Card, Separator, ScrollArea, Collapsible, Skeleton
+
+## Typography & Display
+- Typography (H1–H4, P, Lead, Large, Small, Muted, InlineCode, Blockquote, Ul, Ol, Hr)
+- Badge, Kbd, Spinner, Avatar
+
+## Form Controls
+- Button, Input, Textarea, Checkbox, RadioGroup, Switch, Slider
+- Select, Toggle, ToggleGroup, Label, FieldMessage, Progress
+
+## Overlays & Dialogs
+- Dialog, AlertDialog, Sheet (slide-in panel, 4 sides)
+- Popover, HoverCard, Tooltip, Toast
+
+## Navigation
+- Tabs, Accordion, Breadcrumb, Pagination, NavigationMenu
+
+## Menus
+- DropdownMenu, ContextMenu, Menubar, Command
+
+## Data Display
+- Table, Alert
+
+All components:
+- Built on Radix UI primitives (where applicable)
+- Styled with vanilla-extract + \`vars.*\` design tokens
+- Dark mode first
+- \`React.forwardRef\`, \`className\` merge, \`displayName\`
+- Exported from \`@hydrotik/design-system\`
+`,
+      ['catalog', 'components', 'list', 'all', 'inventory', '42'],
+      'static',
+    ),
+  );
+
+  // ── 15. Radix re-export convention ─────────────────────────────────────
+  upsert(
+    makeChunk(
+      'conventions',
+      'Radix Re-export Convention',
+      `# Radix Primitive Re-export Convention
+
+When re-exporting Radix primitives directly (without wrapping in forwardRef),
+you MUST add a \`typeof\` annotation to prevent DTS build errors:
+
+\`\`\`ts
+// ✅ CORRECT — typeof annotation
+export const Dialog: typeof DialogPrimitive.Root = DialogPrimitive.Root;
+export const DialogTrigger: typeof DialogPrimitive.Trigger = DialogPrimitive.Trigger;
+
+// ❌ WRONG — will fail DTS generation
+export const Dialog = DialogPrimitive.Root;
+\`\`\`
+
+This is required because tsdown/rolldown cannot infer the type without a reference
+to the internal Radix context module, which isn't portable.
+`,
+      ['radix', 'typeof', 'export', 'primitive', 'dts', 'convention'],
+      'static',
+    ),
+  );
+
   // Finalize
   store.chunks = newChunks;
   store.syncedAt = new Date().toISOString();

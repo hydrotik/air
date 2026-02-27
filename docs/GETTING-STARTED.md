@@ -135,13 +135,16 @@ pnpm format:check
 
 ```
 packages/hy-design-system/src/components/MyComponent/
-├── MyComponent.css.ts       # vanilla-extract styles
-├── MyComponent.tsx          # React component
-├── MyComponent.test.tsx     # Tests (optional but recommended)
-└── index.ts                 # Re-exports
+├── MyComponent.tsx            # React component (forwardRef)
+├── MyComponent.styles.ts      # vanilla-extract styles
+├── MyComponent.jest.tsx        # Tests (Jest + Testing Library + jest-axe)
+├── MyComponent.stories.tsx     # Storybook stories
+└── index.ts                    # Barrel re-exports
 ```
 
-2. **Write styles (`MyComponent.css.ts`)**
+> **File naming:** Styles use `.styles.ts`, tests use `.jest.tsx`, stories use `.stories.tsx`.
+
+2. **Write styles (`MyComponent.styles.ts`)**
 
 ```ts
 import { recipe } from '@vanilla-extract/recipes';
@@ -162,22 +165,20 @@ export const myComponentRecipe = recipe({
 
 ```tsx
 import React from 'react';
-import { myComponentRecipe } from './MyComponent.css';
+import { myComponentRecipe } from './MyComponent.styles';
 
 export interface MyComponentProps extends React.HTMLAttributes<HTMLDivElement> {
   // your props
 }
 
 export const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={[myComponentRecipe(), className].filter(Boolean).join(' ')}
-        {...props}
-      />
-    );
-  }
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={[myComponentRecipe(), className].filter(Boolean).join(' ')}
+      {...props}
+    />
+  ),
 );
 
 MyComponent.displayName = 'MyComponent';
@@ -197,7 +198,7 @@ export type { MyComponentProps } from './MyComponent';
 export * from './components/MyComponent';
 ```
 
-6. **Write tests (`MyComponent.test.tsx`)**
+6. **Write tests (`MyComponent.jest.tsx`)**
 
 ```tsx
 import { render, screen } from '@testing-library/react';

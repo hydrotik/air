@@ -12,9 +12,10 @@ hydrotik/
 │   └── hy-storybook/            # Storybook 8 component explorer
 │
 ├── packages/
-│   ├── hy-design-system/        # Core UI component library (Radix + vanilla-extract)
+│   ├── hy-design-system/        # Core UI component library — 42 components (Radix + vanilla-extract)
 │   ├── hy-tokens/               # Design token system (vanilla-extract theme contract)
 │   ├── hy-theme-provider/       # React ThemeProvider + useTheme + ThemeScript (no-FOUC)
+│   ├── hy-design-mcp/           # MCP server with RAG for design decisions & conventions
 │   ├── hy-ai-tools/             # LLM context management CLI
 │   ├── hy-component-template/   # Scaffold for new components
 │   ├── hy-eslint-config/        # Shared ESLint configuration presets

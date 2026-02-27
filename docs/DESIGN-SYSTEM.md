@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hydrotik design system is a **CSS-in-TypeScript** component library built on:
+The Hydrotik design system is a **CSS-in-TypeScript** component library with **42 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope. Built on:
 
 | Layer | Technology |
 |---|---|
@@ -10,8 +10,41 @@ The Hydrotik design system is a **CSS-in-TypeScript** component library built on
 | Theming | `@hydrotik/theme-provider` React context + `data-theme` attribute |
 | Components | Radix UI primitives + vanilla-extract styles |
 | Variants | `@vanilla-extract/recipes` |
+| Icons | `lucide-react` (re-exported as `Icons`) |
+| Fonts | Inter Variable (sans) + JetBrains Mono Variable (mono) via `@fontsource-variable` |
 
-No Tailwind. No runtime CSS injection. All styles are statically extracted at build time.
+No Tailwind. No runtime CSS injection. All styles are statically extracted at build time. **Dark mode first.**
+
+---
+
+## Fonts & Icons
+
+### Fonts
+
+Fonts are loaded automatically when you import the global styles:
+
+```ts
+import '@hydrotik/design-system/src/global.css';
+```
+
+| Font | Token | Usage |
+|---|---|---|
+| **Inter Variable** | `vars.font.family.sans` | All body text, headings, UI |
+| **JetBrains Mono Variable** | `vars.font.family.mono` | Code, kbd, monospace elements |
+
+Both are bundled via `@fontsource-variable` — no external CDN requests.
+
+### Icons
+
+All [Lucide](https://lucide.dev) icons are available:
+
+```tsx
+import { Icons } from '@hydrotik/design-system';
+
+<Icons.Search className="..." />
+<Icons.ChevronDown />
+<Icons.Settings size={20} />
+```
 
 ---
 
@@ -30,34 +63,55 @@ createTheme(contract, lightMap) →  lightThemeClass (CSS class with :root vars)
 ### Token Categories
 
 ```ts
-vars.color.primary          // brand primary
-vars.color.primaryHover     // hover state for primary actions
-vars.color.text             // default text
-vars.color.textMuted        // secondary / subdued text
-vars.color.background       // page background
-vars.color.surface          // card / panel surface
-vars.color.border           // default border
-vars.color.focusRing        // keyboard focus outline
-vars.color.ghostHover       // hover bg for ghost/subtle elements
-vars.color.error            // error/danger
-vars.color.errorBg          // error background tint
-vars.color.success          // success
-vars.color.warning          // warning / amber
-vars.color.info             // informational blue
+// Colors
+vars.color.background           // page background
+vars.color.surface              // card / panel
+vars.color.surfaceElevated      // popovers, dropdowns
+vars.color.surfaceOverlay       // modals, toasts
+vars.color.border               // standard border
+vars.color.borderSubtle         // subtle dividers
+vars.color.text                 // primary text
+vars.color.textMuted            // secondary text
+vars.color.textInverse          // text on colored backgrounds
+vars.color.textDisabled         // disabled text
+vars.color.primary              // brand accent
+vars.color.primaryForeground    // text on primary
+vars.color.secondary            // secondary interactive
+vars.color.secondaryForeground  // text on secondary
+vars.color.destructive          // error / danger
+vars.color.destructiveForeground
+vars.color.success              // success state
+vars.color.successForeground
+vars.color.warning              // warning state
+vars.color.warningForeground
+vars.color.focusRing            // keyboard focus outline
+vars.color.overlay              // modal overlay scrim
+vars.color.ghostHover           // hover highlight
+vars.color.input                // input background
+vars.color.placeholder          // placeholder text
 
-vars.font.family.sans       // sans-serif stack
-vars.font.family.mono       // monospace stack
-vars.font.size.xs | sm | md | lg | xl | 2xl | 3xl
+// Typography
+vars.font.family.sans | mono
+vars.font.size.xs | sm | md | lg | xl | 2xl | 3xl | 4xl
 vars.font.weight.normal | medium | semibold | bold
-vars.font.lineHeight.tight | normal | relaxed
+vars.font.lineHeight.tight | snug | normal | relaxed
+vars.font.letterSpacing.tight | normal | wide
 
-vars.space[1..10]           // spacing scale (0.25rem increments)
+// Spacing (rem-based)
+vars.space.px | 0_5 | 1 | 1_5 | 2 | 2_5 | 3 | 4 | 5 | 6 | 7 | 8 | 10 | 12 | 14 | 16 | 20 | 24 | 32
 
-vars.radius.sm | md | lg | full
+// Radii
+vars.radii.none | sm | md | lg | xl | 2xl | full
 
-vars.shadow.sm | md | lg
+// Shadows (4-step elevation)
+vars.shadow.sm | md | lg | xl
 
-vars.zIndex.dropdown | modal | tooltip | toast
+// Motion
+vars.motion.duration.instant | fast | normal | slow
+vars.motion.easing.default | in | out | spring
+
+// Z-Index
+vars.zIndex.base | dropdown | sticky | overlay | modal | toast | tooltip
 ```
 
 ### Adding/Changing Tokens
@@ -77,7 +131,7 @@ import { ThemeProvider } from '@hydrotik/theme-provider';
 
 function Root() {
   return (
-    <ThemeProvider defaultTheme="light">
+    <ThemeProvider defaultTheme="dark">
       <App />
     </ThemeProvider>
   );
@@ -87,26 +141,12 @@ function Root() {
 ### `useTheme` hook
 
 ```tsx
-import { useTheme } from '@hydrotik/theme-provider';
-
-function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  return (
-    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-      Current: {theme}
-    </button>
-  );
-}
+const { theme, setTheme } = useTheme();
 ```
 
-### `ThemeScript` (prevent flash of unstyled theme)
-
-For SSR/SSG contexts, render `ThemeScript` inside `<head>` before any content. It reads `localStorage.theme` and applies the correct `data-theme` attribute synchronously before paint.
+### `ThemeScript` (prevent FOUC)
 
 ```tsx
-import { ThemeScript } from '@hydrotik/theme-provider';
-
-// In your _document or root layout:
 <head>
   <ThemeScript />
 </head>
@@ -114,278 +154,88 @@ import { ThemeScript } from '@hydrotik/theme-provider';
 
 ### How it works
 
-`ThemeProvider` applies a CSS class (`darkThemeClass` or `lightThemeClass` from `@hydrotik/tokens`) to the `<html>` element. vanilla-extract maps the CSS variables in that class to the correct theme values. Switching themes swaps the class → all `vars.*` tokens update via CSS custom properties, no JS re-render needed for styles.
+`ThemeProvider` applies a CSS class (`darkThemeClass` or `lightThemeClass`) to `<html>`. vanilla-extract maps CSS variables in that class to the correct values. Switching themes swaps the class → all `vars.*` tokens update via CSS custom properties.
 
 ---
 
-## Component Catalog
+## Component Catalog (42 components)
 
-All components live in `packages/hy-design-system/src/components/`.
-All components:
-- Use `React.forwardRef`
-- Accept `className` prop (merged via utility)
-- Only reference `vars.*` tokens (no hardcoded colors)
-- Are exported from `@hydrotik/design-system`
+### Layout & Structure
 
-### Button
-
-```tsx
-<Button variant="primary" size="md" onClick={...}>Submit</Button>
-```
-
-| Prop | Type | Default |
+| Component | Built On | Description |
 |---|---|---|
-| `variant` | `"primary" \| "secondary" \| "ghost" \| "danger"` | `"primary"` |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` |
-| `disabled` | `boolean` | — |
-| All native `<button>` props | — | — |
+| **AspectRatio** | `@radix-ui/react-aspect-ratio` | Constrain child to a ratio |
+| **Card** | Native | Surface container with Header, Title, Description, Content, Footer |
+| **Separator** | `@radix-ui/react-separator` | Horizontal or vertical divider |
+| **ScrollArea** | `@radix-ui/react-scroll-area` | Custom scrollbars, both orientations |
+| **Collapsible** | `@radix-ui/react-collapsible` | Show/hide content section |
+| **Skeleton** | Native | Pulsing placeholder for loading states |
 
----
+### Typography & Display
 
-### Input
+| Component | Description |
+|---|---|
+| **Typography** | H1–H4, P, Lead, Large, Small, Muted, InlineCode, Blockquote, Ul, Ol, Hr |
+| **Badge** | Inline status indicator — default, primary, success, warning, error |
+| **Kbd** | Keyboard shortcut display — sm, md sizes |
+| **Spinner** | Loading animation — sm, md, lg, xl sizes |
+| **Avatar** | Profile image with fallback — sm, md, lg, xl sizes |
 
-```tsx
-<Input placeholder="Enter email" type="email" />
-```
+### Form Controls
 
-Accepts all native `<input>` props. Styled with focus ring from `vars.color.focusRing`.
-
----
-
-### Textarea
-
-```tsx
-<Textarea rows={4} placeholder="Write a message..." />
-```
-
-Accepts all native `<textarea>` props.
-
----
-
-### Label
-
-```tsx
-<Label htmlFor="email">Email address</Label>
-```
-
-Thin wrapper over `@radix-ui/react-label` with token-based typography.
-
----
-
-### FieldMessage
-
-```tsx
-<FieldMessage variant="error">This field is required.</FieldMessage>
-```
-
-| Prop | Type | Default |
+| Component | Built On | Description |
 |---|---|---|
-| `variant` | `"default" \| "error" \| "success"` | `"default"` |
+| **Button** | Native + Slot | primary, secondary, outline, ghost, destructive × sm, md, lg |
+| **Input** | Native | Text input with focus ring |
+| **Textarea** | Native | Multi-line text input |
+| **Checkbox** | `@radix-ui/react-checkbox` | Check/uncheck with indicator |
+| **RadioGroup** | `@radix-ui/react-radio-group` | Radio button group |
+| **Switch** | `@radix-ui/react-switch` | Toggle switch with sliding thumb |
+| **Slider** | `@radix-ui/react-slider` | Range slider with thumb |
+| **Select** | `@radix-ui/react-select` | Dropdown select menu |
+| **Toggle** | `@radix-ui/react-toggle` | Pressable toggle — default, outline variants |
+| **ToggleGroup** | `@radix-ui/react-toggle-group` | Grouped toggles |
+| **Label** | `@radix-ui/react-label` | Form label |
+| **FieldMessage** | Native | Validation/help message — default, error, success |
+| **Progress** | `@radix-ui/react-progress` | Progress bar indicator |
 
----
+### Overlays & Dialogs
 
-### Card
-
-```tsx
-<Card>
-  <Card.Header>Title</Card.Header>
-  <Card.Content>Body</Card.Content>
-  <Card.Footer>Footer</Card.Footer>
-</Card>
-```
-
-Or with props:
-
-```tsx
-<Card padding="lg" shadow="md">Content</Card>
-```
-
----
-
-### Badge
-
-```tsx
-<Badge variant="success" size="sm">Active</Badge>
-```
-
-| Prop | Type | Default |
+| Component | Built On | Description |
 |---|---|---|
-| `variant` | `"default" \| "primary" \| "success" \| "warning" \| "error"` | `"default"` |
-| `size` | `"sm" \| "md"` | `"md"` |
+| **Dialog** | `@radix-ui/react-dialog` | Modal with focus trap + scroll lock |
+| **AlertDialog** | `@radix-ui/react-alert-dialog` | Confirmation dialog (no click-outside dismiss) |
+| **Sheet** | `@radix-ui/react-dialog` | Slide-in panel — top, right, bottom, left |
+| **Popover** | `@radix-ui/react-popover` | Floating content panel |
+| **HoverCard** | `@radix-ui/react-hover-card` | Content on hover |
+| **Tooltip** | `@radix-ui/react-tooltip` | Hover tooltip (includes own Provider) |
+| **Toast** | `@radix-ui/react-toast` | Notifications via provider + hook |
 
----
+### Navigation
 
-### Separator
-
-```tsx
-<Separator orientation="horizontal" />
-<Separator orientation="vertical" />
-```
-
-Built on `@radix-ui/react-separator`.
-
----
-
-### Tabs
-
-```tsx
-<Tabs defaultValue="account">
-  <Tabs.List>
-    <Tabs.Trigger value="account">Account</Tabs.Trigger>
-    <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
-  </Tabs.List>
-  <Tabs.Content value="account">Account content</Tabs.Content>
-  <Tabs.Content value="settings">Settings content</Tabs.Content>
-</Tabs>
-```
-
-Built on `@radix-ui/react-tabs`.
-
----
-
-### Dialog
-
-```tsx
-<Dialog>
-  <Dialog.Trigger asChild>
-    <Button>Open</Button>
-  </Dialog.Trigger>
-  <Dialog.Content title="Confirm action">
-    <p>Are you sure?</p>
-    <Dialog.Footer>
-      <Dialog.Close asChild><Button variant="ghost">Cancel</Button></Dialog.Close>
-      <Button variant="danger">Delete</Button>
-    </Dialog.Footer>
-  </Dialog.Content>
-</Dialog>
-```
-
-Built on `@radix-ui/react-dialog`. Includes focus trap and scroll lock automatically.
-
----
-
-### Select
-
-```tsx
-<Select onValueChange={setValue}>
-  <Select.Trigger placeholder="Choose..." />
-  <Select.Content>
-    <Select.Item value="a">Option A</Select.Item>
-    <Select.Item value="b">Option B</Select.Item>
-  </Select.Content>
-</Select>
-```
-
-Built on `@radix-ui/react-select`.
-
----
-
-### DropdownMenu
-
-```tsx
-<DropdownMenu>
-  <DropdownMenu.Trigger asChild>
-    <Button variant="ghost">Actions</Button>
-  </DropdownMenu.Trigger>
-  <DropdownMenu.Content>
-    <DropdownMenu.Item onSelect={handleEdit}>Edit</DropdownMenu.Item>
-    <DropdownMenu.Separator />
-    <DropdownMenu.Item onSelect={handleDelete}>Delete</DropdownMenu.Item>
-  </DropdownMenu.Content>
-</DropdownMenu>
-```
-
-Built on `@radix-ui/react-dropdown-menu`.
-
----
-
-### Popover
-
-```tsx
-<Popover>
-  <Popover.Trigger asChild>
-    <Button variant="secondary">Info</Button>
-  </Popover.Trigger>
-  <Popover.Content>
-    <p>Additional details here.</p>
-  </Popover.Content>
-</Popover>
-```
-
-Built on `@radix-ui/react-popover`.
-
----
-
-### Tooltip
-
-```tsx
-<Tooltip content="This is a tooltip">
-  <Button variant="ghost">Hover me</Button>
-</Tooltip>
-```
-
-Built on `@radix-ui/react-tooltip`. `TooltipProvider` is included in the component — no extra wrapping needed.
-
----
-
-### Toast
-
-Toast uses a provider + hook pattern:
-
-```tsx
-// In your app root:
-import { ToastProvider } from '@hydrotik/design-system';
-
-function Root() {
-  return (
-    <ToastProvider>
-      <App />
-    </ToastProvider>
-  );
-}
-
-// In any component:
-import { useToast } from '@hydrotik/design-system';
-
-function Demo() {
-  const { toast } = useToast();
-  return (
-    <Button onClick={() => toast({ title: 'Saved', variant: 'success' })}>
-      Save
-    </Button>
-  );
-}
-```
-
-| Toast prop | Type | Options |
+| Component | Built On | Description |
 |---|---|---|
-| `title` | `string` | — |
-| `description` | `string` | optional |
-| `variant` | `string` | `"default" \| "success" \| "error" \| "warning"` |
-| `duration` | `number` | ms, default 4000 |
+| **Tabs** | `@radix-ui/react-tabs` | Tabbed content panels |
+| **Accordion** | `@radix-ui/react-accordion` | Expandable content sections |
+| **Breadcrumb** | Native + Slot | Navigation breadcrumbs with separator + ellipsis |
+| **Pagination** | Native | Page navigation with prev/next + links |
+| **NavigationMenu** | `@radix-ui/react-navigation-menu` | Site-level navigation with viewport |
 
-Built on `@radix-ui/react-toast`.
+### Menus
 
----
+| Component | Built On | Description |
+|---|---|---|
+| **DropdownMenu** | `@radix-ui/react-dropdown-menu` | Action menu with checkbox, radio, sub-menus |
+| **ContextMenu** | `@radix-ui/react-context-menu` | Right-click menu with full sub-menu support |
+| **Menubar** | `@radix-ui/react-menubar` | App-style menu bar |
+| **Command** | Native | Searchable command palette shell |
 
-### Table
+### Data Display
 
-```tsx
-<Table>
-  <Table.Header>
-    <Table.Row>
-      <Table.Head>Name</Table.Head>
-      <Table.Head>Status</Table.Head>
-    </Table.Row>
-  </Table.Header>
-  <Table.Body>
-    <Table.Row>
-      <Table.Cell>Alice</Table.Cell>
-      <Table.Cell><Badge variant="success">Active</Badge></Table.Cell>
-    </Table.Row>
-  </Table.Body>
-</Table>
-```
+| Component | Description |
+|---|---|
+| **Table** | Wrapper, Header, Body, Footer, Row, Head, Cell, Caption |
+| **Alert** | Feedback banner — default, destructive, success, warning |
 
 ---
 
@@ -399,7 +249,7 @@ import { vars } from '@hydrotik/tokens';
 
 export const buttonRecipe = recipe({
   base: {
-    borderRadius: vars.radius.md,
+    borderRadius: vars.radii.md,
     fontWeight: vars.font.weight.medium,
   },
   variants: {
@@ -422,7 +272,6 @@ export const buttonRecipe = recipe({
 import { globalStyle } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
-// In global.css.ts — applied at app level
 globalStyle('body', {
   backgroundColor: vars.color.background,
   color: vars.color.text,
@@ -430,4 +279,37 @@ globalStyle('body', {
 });
 ```
 
-**Note:** `globalStyle` calls cannot be nested inside `@media` top-level calls. Use selector nesting with the `selectors` key or `@media` within a single `style()` block instead.
+**Rules:**
+- `style()` selectors can ONLY target `&` (self) — never children
+- For child selectors: `globalStyle(\`${parentClass} child\`, { ... })`
+- `globalStyle` calls cannot be nested inside top-level `@media`
+- Use `@media` within a `style()` block instead
+
+### Component conventions
+
+1. Always use `React.forwardRef`
+2. Accept `className` prop — merge: `[recipe(), className].filter(Boolean).join(' ')`
+3. Spread `...props` on the root element
+4. Set `displayName`
+5. Export the props interface
+6. Only use `vars.*` tokens — no hardcoded values
+7. Add `typeof` annotations when re-exporting Radix primitives directly
+
+### Focus & accessibility
+
+- `:focus-visible` → `outline: 2px solid ${vars.color.focusRing}`, `outlineOffset: '2px'`
+- Disabled → `opacity: '0.45'`, `cursor: 'not-allowed'`, `pointerEvents: 'none'`
+- All tests must include `jest-axe`: `expect(await axe(container)).toHaveNoViolations()`
+
+### Component file structure
+
+```
+ComponentName/
+├── ComponentName.tsx            # React component (forwardRef)
+├── ComponentName.styles.ts      # vanilla-extract styles (recipe + style)
+├── ComponentName.jest.tsx        # Tests: Jest + Testing Library + jest-axe
+├── ComponentName.stories.tsx     # Storybook stories
+└── index.ts                      # Barrel re-exports
+```
+
+> **Note:** New components use `.styles.ts` / `.jest.tsx`. Some existing components still use `.css.ts` / `.test.tsx` — these will be migrated.
