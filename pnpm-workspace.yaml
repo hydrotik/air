@@ -12,6 +12,7 @@ packages:
   - packages/hy-theme-provider
   - packages/hy-tsdown-config
   - packages/hy-typescript-config
+  - packages/hy-design-mcp
 
 onlyBuiltDependencies:
   - esbuild

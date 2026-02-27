@@ -31,5 +31,8 @@ Thumbs.db
 npm-debug.log*
 pnpm-debug.log*
 
+# RAG store (generated)
+rag-store.json
+
 # Misc
 .cache

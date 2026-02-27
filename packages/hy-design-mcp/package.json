@@ -1,0 +1,21 @@
+{
+  "name": "@hydrotik/design-mcp",
+  "version": "0.2.0",
+  "private": true,
+  "description": "MCP server for Hydrotik design decisions, tokens, styling conventions, and documentation",
+  "type": "module",
+  "bin": {
+    "hy-design-mcp": "./dist/index.mjs"
+  },
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm --platform node --target node20 --no-dts",
+    "dev": "node --loader ts-node/esm src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}
