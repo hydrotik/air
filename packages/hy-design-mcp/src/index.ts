@@ -487,10 +487,11 @@ hy-design-system → hy-tokens + Radix UI + vanilla-extract + React
 hy-storybook → hy-design-system + hy-theme-provider + hy-tokens
 \`\`\`
 
-## Key commands
-- \`pnpm build\` — build all
-- \`pnpm turbo run dev --filter=@hydrotik/storybook\` — Storybook
-- \`pnpm typecheck\` / \`pnpm test\` / \`pnpm format\`
+## Key commands (always use \`pnpm turbo run\`)
+- \`pnpm turbo run build\` — build all (topo order)
+- \`pnpm turbo run dev --filter=@hydrotik/component-preview\` — Kitchen sink (port 3100)
+- \`pnpm turbo run dev --filter=@hydrotik/storybook\` — Storybook (port 6006)
+- \`pnpm turbo run typecheck\` / \`pnpm turbo run test\` / \`pnpm turbo run lint\`
 `,
       ['architecture', 'monorepo', 'pnpm', 'turborepo', 'tsdown', 'build', 'dependency'],
       'static',
@@ -641,6 +642,134 @@ This is required because tsdown/rolldown cannot infer the type without a referen
 to the internal Radix context module, which isn't portable.
 `,
       ['radix', 'typeof', 'export', 'primitive', 'dts', 'convention'],
+      'static',
+    ),
+  );
+
+  // ── 16. Turborepo CLI Conventions ──────────────────────────────────────
+  upsert(
+    makeChunk(
+      'conventions',
+      'Turborepo CLI Conventions',
+      `# Turborepo CLI Conventions
+
+## Standard command format
+
+Always use \`pnpm turbo run\` with \`--filter\` for task execution:
+
+\`\`\`bash
+pnpm turbo run <task> --filter=@hydrotik/<package-name>
+\`\`\`
+
+### Common commands
+\`\`\`bash
+# Dev servers
+pnpm turbo run dev --filter=@hydrotik/component-preview   # Kitchen sink — port 3100
+pnpm turbo run dev --filter=@hydrotik/storybook            # Storybook — port 6006
+pnpm turbo run dev --filter=@hydrotik/bff-fastify          # BFF API — port 4000
+
+# Build
+pnpm turbo run build                                       # Build everything (topo order)
+pnpm turbo run build --filter=@hydrotik/design-system      # Build single package
+pnpm turbo run build --filter=@hydrotik/tokens...          # Build package + its deps
+
+# Quality
+pnpm turbo run typecheck                                   # Typecheck all
+pnpm turbo run test --filter=@hydrotik/design-system       # Test single package
+pnpm turbo run lint                                        # Lint all
+\`\`\`
+
+### Rules
+- **Never use \`pnpm --filter\`** for running tasks — always \`pnpm turbo run\`
+- Turbo handles dependency ordering (\`dependsOn: ["^build"]\`)
+- Dev tasks are \`persistent: true\` and \`cache: false\` in turbo.json
+- Build outputs are cached: \`dist/**\`, \`build/**\`, \`storybook-static/**\`
+`,
+      ['turborepo', 'turbo', 'cli', 'pnpm', 'filter', 'dev', 'build', 'command', 'convention'],
+      'static',
+    ),
+  );
+
+  // ── 17. Centralized Port Configuration ────────────────────────────────
+  upsert(
+    makeChunk(
+      'architecture',
+      'Port Configuration',
+      `# Centralized Port Configuration
+
+All dev server ports are managed in \`@hydrotik/config\` (\`packages/hy-config/\`).
+
+## Port assignments
+| App                  | Port | Constant                 |
+|----------------------|------|--------------------------|
+| Component Preview    | 3100 | \`ports.componentPreview\` |
+| BFF Fastify          | 4000 | \`ports.bffFastify\`       |
+| Design MCP           | 5100 | \`ports.designMcp\`        |
+| Storybook            | 6006 | \`ports.storybook\`        |
+
+## Port ranges (convention)
+- **3000–3099** — Frontend apps
+- **4000–4099** — Backend services / BFFs
+- **5000–5099** — Tooling (MCP, etc.)
+- **6000–6099** — Documentation / Storybook
+
+## Usage in Vite configs
+\`\`\`ts
+import { ports } from '@hydrotik/config/ports';
+
+export default defineConfig({
+  server: { port: ports.componentPreview },
+});
+\`\`\`
+
+Note: \`@hydrotik/config/ports\` exports CJS (\`ports.cjs\`) for Node/Vite config
+compatibility, plus TypeScript source for app code.
+`,
+      ['port', 'config', 'vite', 'server', 'dev', 'architecture', 'convention'],
+      'static',
+    ),
+  );
+
+  // ── 18. Vite Source Aliases Convention ─────────────────────────────────
+  upsert(
+    makeChunk(
+      'conventions',
+      'Vite Source Aliases',
+      `# Vite Source Aliases Convention
+
+Any Vite-based app that imports from \`@hydrotik/design-system\`, \`@hydrotik/tokens\`,
+or \`@hydrotik/theme-provider\` **must** alias those packages to their \`src/\` directories.
+This is required so the vanilla-extract Vite plugin can process \`.css.ts\` files directly.
+
+Without these aliases, Vite imports the pre-built \`dist/\` which contains raw
+\`createVar()\` / \`createThemeContract()\` calls that fail outside a VE file scope.
+
+## Required vite.config.ts pattern
+\`\`\`ts
+import path from 'path';
+
+const workspaceRoot = path.resolve(__dirname, '../..');
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@hydrotik/design-system': path.resolve(workspaceRoot, 'packages/hy-design-system/src'),
+      '@hydrotik/tokens': path.resolve(workspaceRoot, 'packages/hy-tokens/src'),
+      '@hydrotik/theme-provider': path.resolve(workspaceRoot, 'packages/hy-theme-provider/src'),
+    },
+  },
+  server: {
+    fs: { allow: [workspaceRoot] },   // allow serving files from monorepo root
+  },
+  optimizeDeps: {
+    exclude: ['@vanilla-extract/css', '@vanilla-extract/css/fileScope', '@vanilla-extract/recipes'],
+  },
+});
+\`\`\`
+
+This pattern is used in both \`apps/hy-storybook\` and \`apps/hy-component-preview\`.
+`,
+      ['vite', 'alias', 'vanilla-extract', 'source', 'resolve', 'config', 'convention'],
       'static',
     ),
   );
