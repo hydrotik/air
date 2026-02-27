@@ -1,146 +1,41 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useTheme } from '@hydrotik/theme-provider';
+import { Button, TooltipProvider } from '@hydrotik/design-system';
+import { Sun, Moon, Github, ArrowRight } from 'lucide-react';
 import {
-  Button,
-  Separator,
-  ScrollArea,
-  TooltipProvider,
-} from '@hydrotik/design-system';
-import { Sun, Moon, Github } from 'lucide-react';
-import {
-  ButtonsSection,
-  BadgesSection,
-  FormSection,
-  CardsSection,
-  TabsSection,
-  OverlaysSection,
-  TableSection,
-  AccordionSection,
-  AlertSection,
-  TypographySection,
-  FeedbackSection,
-  NavigationSection,
-  ToggleSection,
-  AvatarSection,
-} from './sections';
-
-/** Section registry — drives both the sidebar nav and the content */
-const sections = [
-  { id: 'typography', label: 'Typography', component: TypographySection },
-  { id: 'buttons', label: 'Button', component: ButtonsSection },
-  { id: 'badges', label: 'Badge', component: BadgesSection },
-  { id: 'cards', label: 'Card', component: CardsSection },
-  { id: 'alerts', label: 'Alert', component: AlertSection },
-  { id: 'accordion', label: 'Accordion', component: AccordionSection },
-  { id: 'tabs', label: 'Tabs', component: TabsSection },
-  { id: 'forms', label: 'Form Controls', component: FormSection },
-  { id: 'table', label: 'Table', component: TableSection },
-  { id: 'overlays', label: 'Overlays & Popover', component: OverlaysSection },
-  { id: 'feedback', label: 'Feedback', component: FeedbackSection },
-  { id: 'navigation', label: 'Navigation', component: NavigationSection },
-  { id: 'toggles', label: 'Toggle & Kbd', component: ToggleSection },
-  { id: 'avatars', label: 'Avatar & HoverCard', component: AvatarSection },
-] as const;
-
-function SidebarNav({
-  activeId,
-  onNavigate,
-}: {
-  activeId: string;
-  onNavigate: (id: string) => void;
-}) {
-  return (
-    <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-      <div
-        style={{
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          opacity: 0.4,
-          padding: '8px 12px 6px',
-        }}
-      >
-        Components
-      </div>
-      {sections.map((s) => (
-        <button
-          key={s.id}
-          onClick={() => onNavigate(s.id)}
-          style={{
-            display: 'block',
-            width: '100%',
-            textAlign: 'left',
-            padding: '6px 12px',
-            fontSize: '13px',
-            fontWeight: activeId === s.id ? 600 : 400,
-            color: 'inherit',
-            opacity: activeId === s.id ? 1 : 0.6,
-            background: activeId === s.id ? 'rgba(255,255,255,0.06)' : 'transparent',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-            fontFamily: 'inherit',
-          }}
-        >
-          {s.label}
-        </button>
-      ))}
-    </nav>
-  );
-}
+  PaymentCard,
+  TeamCard,
+  LoadingCard,
+  PriceRangeCard,
+  UrlInputCard,
+  ProgressCard,
+  InputStatesCard,
+  TwoFactorCard,
+  AlertCard,
+  SettingsCard,
+  PromptCard,
+  SourceCard,
+  ActionButtonsCard,
+  TermsCard,
+  CopilotCard,
+  SurveyCard,
+  ProcessingCard,
+} from './cards';
+import * as s from './App.css';
 
 export default function App() {
   const { theme, setTheme } = useTheme();
-  const [activeId, setActiveId] = useState<string>(sections[0].id);
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
-
-  function handleNavigate(id: string) {
-    setActiveId(id);
-    sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Intersection observer for scroll-spy
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        }
-      },
-      { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 },
-    );
-    for (const el of Object.values(sectionRefs.current)) {
-      if (el) observer.observe(el);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <TooltipProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Top bar */}
-        <header
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 40,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            height: '52px',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(12px)',
-            backgroundColor: 'rgba(14,15,17,0.85)',
-          }}
-        >
+      <div className={s.page}>
+        {/* ─── Navbar ──────────────────────────────────────────────── */}
+        <header className={s.navbar}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '-0.01em' }}>hydrotik</span>
-            <span style={{ fontSize: '12px', opacity: 0.4, fontWeight: 500 }}>/ design system</span>
+            <span style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '-0.01em' }}>
+              hydrotik
+            </span>
+            <span style={{ fontSize: '12px', opacity: 0.4, fontWeight: 500 }}>/&nbsp;design system</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Button
@@ -162,59 +57,84 @@ export default function App() {
           </div>
         </header>
 
-        <div style={{ display: 'flex', flex: 1 }}>
-          {/* Sidebar */}
-          <aside
-            style={{
-              width: '220px',
-              flexShrink: 0,
-              position: 'sticky',
-              top: '52px',
-              height: 'calc(100vh - 52px)',
-              borderRight: '1px solid rgba(255,255,255,0.08)',
-              overflowY: 'auto',
-              padding: '12px 8px',
-            }}
-          >
-            <SidebarNav activeId={activeId} onNavigate={handleNavigate} />
-          </aside>
+        {/* ─── Hero ────────────────────────────────────────────────── */}
+        <section className={s.hero}>
+          <h1 className={s.heroTitle}>
+            The Foundation for your Design System
+          </h1>
+          <p className={s.heroSubtitle}>
+            A set of beautifully designed components built with vanilla-extract tokens
+            and Radix UI primitives. Dark theme first. Open source.
+          </p>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
+            <Button>
+              Get Started <ArrowRight size={14} />
+            </Button>
+            <Button variant="outline">View Components</Button>
+          </div>
+        </section>
 
-          {/* Main content */}
-          <main style={{ flex: 1, padding: '40px 48px', maxWidth: '960px' }}>
-            <div style={{ marginBottom: '40px' }}>
-              <h1 style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.02em', margin: 0 }}>
-                Component Kitchen Sink
-              </h1>
-              <p style={{ fontSize: '15px', opacity: 0.5, marginTop: '6px' }}>
-                Every component in the Hydrotik design system, styled with vanilla-extract tokens.
-              </p>
+        {/* ─── Bento Grid ──────────────────────────────────────────── */}
+        <main className={s.bentoGrid}>
+          {/* Row 1: Payment (wide) + Team & Loading (narrow) */}
+          <div className={s.span8}>
+            <PaymentCard />
+          </div>
+          <div className={`${s.span4} ${s.stackColumn}`}>
+            <TeamCard />
+            <LoadingCard />
+          </div>
+
+          {/* Row 2: Price Range + URL Input + Progress */}
+          <div className={s.span4}>
+            <PriceRangeCard />
+          </div>
+          <div className={s.span4}>
+            <UrlInputCard />
+          </div>
+          <div className={s.span4}>
+            <ProgressCard />
+          </div>
+
+          {/* Row 3: Input States + 2FA + Alert */}
+          <div className={s.span4}>
+            <InputStatesCard />
+          </div>
+          <div className={s.span4}>
+            <TwoFactorCard />
+          </div>
+          <div className={`${s.span4} ${s.centerContent}`}>
+            <AlertCard />
+          </div>
+
+          {/* Row 4: Settings (wide) + Survey (narrow) */}
+          <div className={s.span8}>
+            <SettingsCard />
+          </div>
+          <div className={s.span4}>
+            <SurveyCard />
+          </div>
+
+          {/* Row 5: Prompt + Source/Actions + Terms/Copilot */}
+          <div className={s.span4}>
+            <PromptCard />
+          </div>
+          <div className={`${s.span4} ${s.stackColumn}`}>
+            <SourceCard />
+            <ActionButtonsCard />
+          </div>
+          <div className={`${s.span4} ${s.stackColumn}`}>
+            <TermsCard />
+            <div className={s.centerPad}>
+              <CopilotCard />
             </div>
+          </div>
 
-            {sections.map((s, i) => (
-              <section
-                key={s.id}
-                id={s.id}
-                ref={(el) => { sectionRefs.current[s.id] = el; }}
-                style={{ scrollMarginTop: '80px' }}
-              >
-                <h2
-                  style={{
-                    fontSize: '18px',
-                    fontWeight: 700,
-                    letterSpacing: '-0.01em',
-                    marginBottom: '16px',
-                  }}
-                >
-                  {s.label}
-                </h2>
-                <s.component />
-                {i < sections.length - 1 && (
-                  <Separator style={{ margin: '40px 0' }} />
-                )}
-              </section>
-            ))}
-          </main>
-        </div>
+          {/* Row 6: Processing (centered) */}
+          <div className={s.span6Center}>
+            <ProcessingCard />
+          </div>
+        </main>
       </div>
     </TooltipProvider>
   );
