@@ -7,7 +7,6 @@ export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './
 // ─── Alert ───────────────────────────────────────────────────────────────────
 export { Alert, AlertTitle, AlertDescription } from './components/Alert';
 export type { AlertProps } from './components/Alert';
-export type { AlertProps } from './components/Alert';
 
 // ─── AlertDialog ─────────────────────────────────────────────────────────────
 export {

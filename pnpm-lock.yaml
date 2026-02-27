@@ -118,6 +118,9 @@ importers:
 
   apps/hy-component-preview:
     dependencies:
+      '@hydrotik/config':
+        specifier: workspace:*
+        version: link:../../packages/hy-config
       '@hydrotik/design-system':
         specifier: workspace:*
         version: link:../../packages/hy-design-system
@@ -127,6 +130,9 @@ importers:
       '@hydrotik/tokens':
         specifier: workspace:*
         version: link:../../packages/hy-tokens
+      lucide-react:
+        specifier: ^0.511.0
+        version: 0.511.0(react@19.2.4)
       react:
         specifier: ^19.1.0
         version: 19.2.4
@@ -214,6 +220,12 @@ importers:
   packages/hy-ai-tools: {}
 
   packages/hy-component-template: {}
+
+  packages/hy-config:
+    devDependencies:
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
 
   packages/hy-design-mcp:
     dependencies:
@@ -2078,7 +2090,6 @@ packages:
   '@rolldown/binding-darwin-arm64@1.0.0-rc.6':
     resolution: {integrity: sha512-+tJhD21KvGNtUrpLXrZQlT+j5HZKiEwR2qtcZb3vNOUpvoT9QjEykr75ZW/Kr0W89gose/HVXU6351uVZD8Qvw==}
     engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [arm64]
     os: [darwin]
 
   '@rolldown/binding-darwin-x64@1.0.0-rc.5':
@@ -4498,6 +4509,11 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lucide-react@0.511.0:
+    resolution: {integrity: sha512-VK5a2ydJ7xm8GvBeKLS9mu1pVK6ucef9780JVUjw6bAjJL/QXnd4Y0p7SPeOUMC27YhzNCZvm5d/QX0Tp3rc0w==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   lucide-react@0.575.0:
     resolution: {integrity: sha512-VuXgKZrk0uiDlWjGGXmKV6MSk9Yy4l10qgVvzGn2AWBx1Ylt0iBexKOAoA6I7JO3m+M9oeovJd3yYENfkUbOeg==}
@@ -10353,6 +10369,10 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lucide-react@0.511.0(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   lucide-react@0.575.0(react@19.2.4):
     dependencies:
