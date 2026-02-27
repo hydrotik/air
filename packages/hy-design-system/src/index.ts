@@ -1,26 +1,56 @@
 // Global styles — import as a side effect at app root:
 // import '@hydrotik/design-system/src/global.css';
 
-// Button
+// ─── Accordion ───────────────────────────────────────────────────────────────
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './components/Accordion';
+
+// ─── Alert ───────────────────────────────────────────────────────────────────
+export { Alert, AlertIcon, AlertTitle, AlertDescription } from './components/Alert';
+export type { AlertProps } from './components/Alert';
+
+// ─── AlertDialog ─────────────────────────────────────────────────────────────
+export {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from './components/AlertDialog';
+
+// ─── AspectRatio ─────────────────────────────────────────────────────────────
+export { AspectRatio } from './components/AspectRatio';
+
+// ─── Avatar ──────────────────────────────────────────────────────────────────
+export { Avatar, AvatarImage, AvatarFallback } from './components/Avatar';
+export type { AvatarProps } from './components/Avatar';
+
+// ─── Badge ───────────────────────────────────────────────────────────────────
+export { Badge } from './components/Badge';
+export type { BadgeProps } from './components/Badge';
+
+// ─── Breadcrumb ──────────────────────────────────────────────────────────────
+export {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
+} from './components/Breadcrumb';
+export type { BreadcrumbLinkProps } from './components/Breadcrumb';
+
+// ─── Button ──────────────────────────────────────────────────────────────────
 export { Button } from './components/Button';
 export type { ButtonProps } from './components/Button';
 
-// Label
-export { Label } from './components/Label';
-
-// FieldMessage
-export { FieldMessage } from './components/FieldMessage';
-export type { FieldMessageProps } from './components/FieldMessage';
-
-// Input
-export { Input } from './components/Input';
-export type { InputProps } from './components/Input';
-
-// Textarea
-export { Textarea } from './components/Textarea';
-export type { TextareaProps } from './components/Textarea';
-
-// Card
+// ─── Card ────────────────────────────────────────────────────────────────────
 export {
   Card,
   CardHeader,
@@ -31,17 +61,45 @@ export {
 } from './components/Card';
 export type { CardProps } from './components/Card';
 
-// Badge
-export { Badge } from './components/Badge';
-export type { BadgeProps } from './components/Badge';
+// ─── Checkbox ────────────────────────────────────────────────────────────────
+export { Checkbox } from './components/Checkbox';
 
-// Separator
-export { Separator } from './components/Separator';
+// ─── Collapsible ─────────────────────────────────────────────────────────────
+export { Collapsible, CollapsibleTrigger, CollapsibleContent } from './components/Collapsible';
 
-// Tabs
-export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs';
+// ─── Command ─────────────────────────────────────────────────────────────────
+export {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+  CommandShortcut,
+} from './components/Command';
+export type { CommandInputProps, CommandGroupProps } from './components/Command';
 
-// Dialog
+// ─── ContextMenu ─────────────────────────────────────────────────────────────
+export {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuGroup,
+  ContextMenuPortal,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuRadioGroup,
+} from './components/ContextMenu';
+
+// ─── Dialog ──────────────────────────────────────────────────────────────────
 export {
   Dialog,
   DialogTrigger,
@@ -56,23 +114,7 @@ export {
 } from './components/Dialog';
 export type { DialogContentProps } from './components/Dialog';
 
-// Select
-export {
-  Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectLabel,
-  SelectItem,
-  SelectItemIndicator,
-  SelectSeparator,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
-} from './components/Select';
-export type { SelectTriggerProps } from './components/Select';
-
-// DropdownMenu
+// ─── DropdownMenu ────────────────────────────────────────────────────────────
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -91,25 +133,129 @@ export {
   DropdownMenuShortcut,
 } from './components/DropdownMenu';
 
-// Popover
+// ─── FieldMessage ────────────────────────────────────────────────────────────
+export { FieldMessage } from './components/FieldMessage';
+export type { FieldMessageProps } from './components/FieldMessage';
+
+// ─── HoverCard ───────────────────────────────────────────────────────────────
+export { HoverCard, HoverCardTrigger, HoverCardContent } from './components/HoverCard';
+
+// ─── Input ───────────────────────────────────────────────────────────────────
+export { Input } from './components/Input';
+export type { InputProps } from './components/Input';
+
+// ─── Kbd ─────────────────────────────────────────────────────────────────────
+export { Kbd } from './components/Kbd';
+export type { KbdProps } from './components/Kbd';
+
+// ─── Label ───────────────────────────────────────────────────────────────────
+export { Label } from './components/Label';
+
+// ─── Menubar ─────────────────────────────────────────────────────────────────
+export {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+  MenubarCheckboxItem,
+  MenubarRadioItem,
+  MenubarLabel,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarGroup,
+  MenubarPortal,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarRadioGroup,
+} from './components/Menubar';
+
+// ─── NavigationMenu ──────────────────────────────────────────────────────────
+export {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+  NavigationMenuViewport,
+  NavigationMenuIndicator,
+} from './components/NavigationMenu';
+
+// ─── Pagination ──────────────────────────────────────────────────────────────
+export {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from './components/Pagination';
+export type { PaginationLinkProps } from './components/Pagination';
+
+// ─── Popover ─────────────────────────────────────────────────────────────────
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverClose } from './components/Popover';
 
-// Tooltip
-export { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './components/Tooltip';
+// ─── Progress ────────────────────────────────────────────────────────────────
+export { Progress } from './components/Progress';
 
-// Toast
+// ─── RadioGroup ──────────────────────────────────────────────────────────────
+export { RadioGroup, RadioGroupItem } from './components/RadioGroup';
+
+// ─── ScrollArea ──────────────────────────────────────────────────────────────
+export { ScrollArea, ScrollBar } from './components/ScrollArea';
+
+// ─── Select ──────────────────────────────────────────────────────────────────
 export {
-  ToastProvider,
-  ToastViewport,
-  Toast,
-  ToastAction,
-  ToastClose,
-  ToastTitle,
-  ToastDescription,
-} from './components/Toast';
-export type { ToastProps } from './components/Toast';
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectItemIndicator,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from './components/Select';
+export type { SelectTriggerProps } from './components/Select';
 
-// Table
+// ─── Separator ───────────────────────────────────────────────────────────────
+export { Separator } from './components/Separator';
+
+// ─── Sheet ───────────────────────────────────────────────────────────────────
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetPortal,
+  SheetOverlay,
+  SheetContent,
+  SheetHeader,
+  SheetBody,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from './components/Sheet';
+export type { SheetContentProps } from './components/Sheet';
+
+// ─── Skeleton ────────────────────────────────────────────────────────────────
+export { Skeleton } from './components/Skeleton';
+
+// ─── Slider ──────────────────────────────────────────────────────────────────
+export { Slider } from './components/Slider';
+
+// ─── Spinner ─────────────────────────────────────────────────────────────────
+export { Spinner } from './components/Spinner';
+export type { SpinnerProps } from './components/Spinner';
+
+// ─── Switch ──────────────────────────────────────────────────────────────────
+export { Switch } from './components/Switch';
+
+// ─── Table ───────────────────────────────────────────────────────────────────
 export {
   TableWrapper,
   Table,
@@ -121,3 +267,53 @@ export {
   TableHead,
   TableCell,
 } from './components/Table';
+
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs';
+
+// ─── Textarea ────────────────────────────────────────────────────────────────
+export { Textarea } from './components/Textarea';
+export type { TextareaProps } from './components/Textarea';
+
+// ─── Toast ───────────────────────────────────────────────────────────────────
+export {
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastTitle,
+  ToastDescription,
+} from './components/Toast';
+export type { ToastProps } from './components/Toast';
+
+// ─── Toggle ──────────────────────────────────────────────────────────────────
+export { Toggle } from './components/Toggle';
+export type { ToggleProps } from './components/Toggle';
+
+// ─── ToggleGroup ─────────────────────────────────────────────────────────────
+export { ToggleGroup, ToggleGroupItem } from './components/ToggleGroup';
+
+// ─── Tooltip ─────────────────────────────────────────────────────────────────
+export { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './components/Tooltip';
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+export {
+  TypographyH1,
+  TypographyH2,
+  TypographyH3,
+  TypographyH4,
+  TypographyP,
+  TypographyLead,
+  TypographyLarge,
+  TypographySmall,
+  TypographyMuted,
+  TypographyInlineCode,
+  TypographyBlockquote,
+  TypographyUl,
+  TypographyOl,
+  TypographyHr,
+} from './components/Typography';
+
+// ─── Icons (re-export lucide-react) ──────────────────────────────────────────
+export * as Icons from 'lucide-react';

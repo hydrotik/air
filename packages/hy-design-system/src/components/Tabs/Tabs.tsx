@@ -2,7 +2,7 @@ import React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { tabsList, tabsTrigger, tabsContent } from './Tabs.css';
 
-export const Tabs = TabsPrimitive.Root;
+export const Tabs: typeof TabsPrimitive.Root = TabsPrimitive.Root;
 
 export const TabsList = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.List>,

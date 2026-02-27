@@ -2,9 +2,9 @@ import React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { popoverContent, popoverArrow, popoverClose } from './Popover.css';
 
-export const Popover = PopoverPrimitive.Root;
-export const PopoverTrigger = PopoverPrimitive.Trigger;
-export const PopoverAnchor = PopoverPrimitive.Anchor;
+export const Popover: typeof PopoverPrimitive.Root = PopoverPrimitive.Root;
+export const PopoverTrigger: typeof PopoverPrimitive.Trigger = PopoverPrimitive.Trigger;
+export const PopoverAnchor: typeof PopoverPrimitive.Anchor = PopoverPrimitive.Anchor;
 
 export const PopoverContent = React.forwardRef<
   React.ComponentRef<typeof PopoverPrimitive.Content>,

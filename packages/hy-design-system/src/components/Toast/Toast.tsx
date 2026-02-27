@@ -9,7 +9,7 @@ import {
   toastClose,
 } from './Toast.css';
 
-export const ToastProvider = ToastPrimitive.Provider;
+export const ToastProvider: typeof ToastPrimitive.Provider = ToastPrimitive.Provider;
 
 export const ToastViewport = React.forwardRef<
   React.ComponentRef<typeof ToastPrimitive.Viewport>,

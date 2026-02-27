@@ -12,9 +12,9 @@ import {
   selectIcon,
 } from './Select.css';
 
-export const Select = SelectPrimitive.Root;
-export const SelectGroup = SelectPrimitive.Group;
-export const SelectValue = SelectPrimitive.Value;
+export const Select: typeof SelectPrimitive.Root = SelectPrimitive.Root;
+export const SelectGroup: typeof SelectPrimitive.Group = SelectPrimitive.Group;
+export const SelectValue: typeof SelectPrimitive.Value = SelectPrimitive.Value;
 
 export interface SelectTriggerProps
   extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {

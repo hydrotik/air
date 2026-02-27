@@ -1,9 +1,17 @@
 import { globalStyle } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
+// Font imports — Inter (sans) and JetBrains Mono (mono)
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+
 /**
  * Global baseline styles for the Hydrotik design system.
  * Import this once at your app entry or Storybook preview.
+ *
+ * Fonts loaded:
+ * - Inter Variable (sans-serif) — all weights 100-900
+ * - JetBrains Mono Variable (monospace) — all weights 100-800
  */
 
 // Box sizing reset

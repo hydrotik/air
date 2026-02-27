@@ -14,11 +14,11 @@ import {
   dropdownShortcut,
 } from './DropdownMenu.css';
 
-export const DropdownMenu = DropdownMenuPrimitive.Root;
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
-export const DropdownMenuGroup = DropdownMenuPrimitive.Group;
-export const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
-export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+export const DropdownMenu: typeof DropdownMenuPrimitive.Root = DropdownMenuPrimitive.Root;
+export const DropdownMenuTrigger: typeof DropdownMenuPrimitive.Trigger = DropdownMenuPrimitive.Trigger;
+export const DropdownMenuGroup: typeof DropdownMenuPrimitive.Group = DropdownMenuPrimitive.Group;
+export const DropdownMenuPortal: typeof DropdownMenuPrimitive.Portal = DropdownMenuPrimitive.Portal;
+export const DropdownMenuRadioGroup: typeof DropdownMenuPrimitive.RadioGroup = DropdownMenuPrimitive.RadioGroup;
 
 export const DropdownMenuSubTrigger = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.SubTrigger>,
@@ -152,4 +152,4 @@ export const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttribut
 );
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut';
 
-export const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+export const DropdownMenuSub: typeof DropdownMenuPrimitive.Sub = DropdownMenuPrimitive.Sub;

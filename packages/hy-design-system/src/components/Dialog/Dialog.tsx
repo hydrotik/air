@@ -10,10 +10,10 @@ import {
   dialogClose,
 } from './Dialog.css';
 
-export const Dialog = DialogPrimitive.Root;
-export const DialogTrigger = DialogPrimitive.Trigger;
-export const DialogPortal = DialogPrimitive.Portal;
-export const DialogClose = DialogPrimitive.Close;
+export const Dialog: typeof DialogPrimitive.Root = DialogPrimitive.Root;
+export const DialogTrigger: typeof DialogPrimitive.Trigger = DialogPrimitive.Trigger;
+export const DialogPortal: typeof DialogPrimitive.Portal = DialogPrimitive.Portal;
+export const DialogClose: typeof DialogPrimitive.Close = DialogPrimitive.Close;
 
 export const DialogOverlay = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Overlay>,
