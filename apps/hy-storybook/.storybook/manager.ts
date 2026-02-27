@@ -2,6 +2,7 @@ import { addons } from '@storybook/manager-api';
 import { themes } from '@storybook/theming';
 
 addons.setConfig({
+  density: 'compact',
   theme: {
     ...themes.dark,
     brandTitle: 'Hydrotik Design System',
