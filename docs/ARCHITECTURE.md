@@ -12,6 +12,7 @@ hydrotik/
 │   └── hy-storybook/            # Storybook 8 component explorer
 │
 ├── packages/
+│   ├── hy-config/               # Cross-project configuration (ports, shared constants)
 │   ├── hy-design-system/        # Core UI component library — 42 components (Radix + vanilla-extract)
 │   ├── hy-tokens/               # Design token system (vanilla-extract theme contract)
 │   ├── hy-theme-provider/       # React ThemeProvider + useTheme + ThemeScript (no-FOUC)
@@ -81,8 +82,11 @@ hy-theme-provider     → hy-tokens, React (peer)
 hy-design-system      → hy-tokens, Radix UI, vanilla-extract (React peer)
        │
        ▼
+hy-config             (no deps — shared constants)
+       │
+       ▼
 hy-storybook          → hy-design-system, hy-theme-provider, hy-tokens
-hy-component-preview  → hy-design-system, hy-theme-provider, hy-tokens
+hy-component-preview  → hy-design-system, hy-theme-provider, hy-tokens, hy-config
 ```
 
 ---
@@ -166,7 +170,15 @@ A Fastify 5 backend-for-frontend API server. Configured with:
 - Environment validation via `dotenv`
 
 ### `hy-component-preview`
-A Vite + React app that renders every design system component in a single page. Used for quick visual validation without Storybook overhead. Runs: `pnpm dev` in the app directory.
+A Vite + React app modeled after the [shadcn/ui homepage](https://ui.shadcn.com) — a **bento grid** of self-contained interactive component demo cards. Features:
+- Hero section with CTA buttons
+- 17 bento cards showcasing all major components (Payment form, Team, Settings, Sliders, Inputs, etc.)
+- 12-column responsive CSS Grid (12→6→1 cols at desktop→tablet→mobile)
+- Dark theme default with theme toggle
+- Styles via vanilla-extract (`App.css.ts`) using design tokens
+- Port `3100` via `@hydrotik/config`
+
+Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
 
 ### `hy-storybook`
 Storybook 8 powered by `@storybook/react-vite`. Includes:

@@ -56,7 +56,6 @@ pnpm build --filter @hydrotik/design-system
 ## Running Storybook
 
 ```bash
-# Recommended — builds workspace deps first, then starts Storybook
 pnpm turbo run dev --filter=@hydrotik/storybook
 ```
 
@@ -68,17 +67,28 @@ are always built before Storybook starts.
 
 See [STORYBOOK.md](./STORYBOOK.md) for full setup details and troubleshooting.
 
+### Dev Server Ports (centralized in `@hydrotik/config`)
+
+| App | Port | Command |
+|-----|------|---------|
+| Component Preview | 3100 | `pnpm turbo run dev --filter=@hydrotik/component-preview` |
+| BFF Fastify | 4000 | `pnpm turbo run dev --filter=@hydrotik/bff-fastify` |
+| Design MCP | 5100 | (auto-started via `.mcp.json`) |
+| Storybook | 6006 | `pnpm turbo run dev --filter=@hydrotik/storybook` |
+
+Port ranges: 3xxx=frontend, 4xxx=backend, 5xxx=tooling, 6xxx=docs.
+
 ---
 
 ## Running Component Preview
 
-The preview app is a full Vite + React page that renders all components at once.
+The preview app is a shadcn-style bento grid showcasing every design system component in interactive demo cards.
 
 ```bash
-pnpm --filter @hydrotik/component-preview dev
+pnpm turbo run dev --filter=@hydrotik/component-preview
 ```
 
-Opens at `http://localhost:5173` by default.
+Opens at `http://localhost:3100`. Uses centralized port from `@hydrotik/config`.
 
 ---
 

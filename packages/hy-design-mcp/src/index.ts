@@ -774,6 +774,115 @@ This pattern is used in both \`apps/hy-storybook\` and \`apps/hy-component-previ
     ),
   );
 
+  // ── 19. Component Preview App Architecture ─────────────────────────────
+  upsert(
+    makeChunk(
+      'architecture',
+      'Component Preview App',
+      `# Component Preview App
+
+Location: \`apps/hy-component-preview/\`
+Port: 3100 (via \`@hydrotik/config\`)
+Start: \`pnpm turbo run dev --filter=@hydrotik/component-preview\`
+
+## Layout
+Modeled after the [shadcn/ui homepage](https://ui.shadcn.com) — a **bento grid** layout:
+1. **Hero section** — title, subtitle, Get Started + View Components CTAs
+2. **12-column responsive CSS Grid** — 17 self-contained interactive demo cards
+3. No sidebar, no scroll-spy — single scrollable page
+
+## Responsive breakpoints
+- Desktop: 12 columns
+- Tablet (≤1024px): 6 columns
+- Mobile (≤640px): 1 column
+
+## File structure
+\`\`\`
+apps/hy-component-preview/
+├── src/
+│   ├── App.tsx              # Main layout: navbar + hero + bento grid
+│   ├── App.css.ts           # vanilla-extract styles (grid, hero, responsive)
+│   ├── main.tsx             # Entry point (ThemeProvider wrapper)
+│   └── cards/               # 17 bento card components
+│       ├── PaymentCard.tsx   # Card + Input + Select + Checkbox + Textarea + Button
+│       ├── TeamCard.tsx      # Avatar stack + empty state
+│       ├── LoadingCard.tsx   # Badge + Spinner loading states
+│       ├── PriceRangeCard.tsx # Interactive Slider + Badge
+│       ├── UrlInputCard.tsx  # Input with prefix label
+│       ├── ProgressCard.tsx  # Badge + Progress + Button
+│       ├── InputStatesCard.tsx # Input variants (text, password, prefix)
+│       ├── TwoFactorCard.tsx # Switch + Label
+│       ├── AlertCard.tsx     # Alert with lucide icon
+│       ├── SettingsCard.tsx  # Card-style RadioGroup + Input + Switch
+│       ├── PromptCard.tsx    # Input + ghost icon buttons
+│       ├── SourceCard.tsx    # ToggleGroup
+│       ├── ActionButtonsCard.tsx # Outline buttons with icons
+│       ├── TermsCard.tsx     # Checkbox + Pagination
+│       ├── CopilotCard.tsx   # Standalone Badge
+│       ├── SurveyCard.tsx    # RadioGroup survey
+│       ├── ProcessingCard.tsx # Spinner + cancel button
+│       └── index.ts          # Barrel exports
+├── vite.config.ts            # Source aliases + VE plugin + port config
+└── index.html
+\`\`\`
+
+## Grid span pattern
+Cards use span classes from \`App.css.ts\`: \`span4\` (1/3), \`span6\` (1/2), \`span8\` (2/3), \`span12\` (full).
+Wide cards (Payment, Settings) span 8 cols; narrow cards span 4 cols.
+
+## Key conventions
+- Each card is a self-contained interactive demo (not a labeled showcase)
+- Cards use \`Card\` component for bordered containers
+- All imports from \`@hydrotik/design-system\` — no custom component code
+- Dark theme is the default; Sun/Moon toggle in navbar
+- Styles use design tokens via \`vars.*\` (no hardcoded values in App.css.ts)
+`,
+      ['component-preview', 'bento', 'grid', 'kitchen-sink', 'app', 'shadcn', 'layout', 'cards'],
+      'static',
+    ),
+  );
+
+  // ── 20. Shared CSS Utilities ──────────────────────────────────────────
+  upsert(
+    makeChunk(
+      'architecture',
+      'Shared CSS Utilities',
+      `# Shared CSS Utilities
+
+Location: \`packages/hy-design-system/src/styles/\`
+
+Reusable vanilla-extract style fragments extracted to reduce duplication across components.
+
+## Files
+
+### \`overlay.css.ts\`
+Shared modal/dialog styles used by Dialog, AlertDialog, Sheet:
+- \`baseOverlay\` — fixed fullscreen backdrop with \`rgba(0,0,0,0.5)\`
+- \`baseModalContent\` — centered content with background + border + shadow
+- \`baseModalHeader\`, \`baseModalFooter\` — header/footer layout
+- \`baseModalTitle\`, \`baseModalDescription\` — typography
+- Keyframe animations: \`overlayShow\`, \`contentShow\` (not exported — internal only)
+
+### \`menu-item.css.ts\`
+Shared menu item styles used by ContextMenu, DropdownMenu, Menubar:
+- \`baseMenuItem\` — standard menu item with hover/focus/disabled states
+- \`menuSeparator\` — horizontal divider
+- \`menuLabel\` — group label (no uppercase per shadcn v4)
+- \`menuShortcut\` — right-aligned keyboard shortcut text
+- \`menuIndicator\` — check/radio indicator spacing
+
+### \`focus-ring.css.ts\`
+Shared focus ring pattern:
+- \`focusRingStyle\` — \`borderColor: focusRing\` + 3px \`boxShadow\` color-mix ring
+
+### Barrel: \`styles/index.ts\`
+Re-exports all shared styles for internal use within the design system package.
+`,
+      ['shared', 'css', 'overlay', 'menu-item', 'focus-ring', 'styles', 'utility', 'duplication'],
+      'static',
+    ),
+  );
+
   // Finalize
   store.chunks = newChunks;
   store.syncedAt = new Date().toISOString();
