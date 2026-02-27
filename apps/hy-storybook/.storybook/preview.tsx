@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react';
+import { themes } from '@storybook/theming';
 import React from 'react';
 import { ThemeProvider } from '@hydrotik/theme-provider';
 // global baseline styles (vanilla-extract) — processed by Vite plugin
@@ -13,11 +14,16 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    docs: {
+      theme: themes.dark,
+    },
+  },
+  initialGlobals: {
+    theme: 'dark',
   },
   globalTypes: {
     theme: {
       description: 'Color theme',
-      defaultValue: 'dark',
       toolbar: {
         title: 'Theme',
         icon: 'circlehollow',

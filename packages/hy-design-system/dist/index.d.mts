@@ -273,7 +273,7 @@ declare const DropdownMenuSub: typeof DropdownMenuPrimitive.Sub;
 //#endregion
 //#region src/components/FieldMessage/FieldMessage.d.ts
 interface FieldMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  intent?: 'error' | 'help' | 'success';
+  variant?: 'default' | 'error' | 'success';
 }
 declare const FieldMessage: React.ForwardRefExoticComponent<FieldMessageProps & React.RefAttributes<HTMLParagraphElement>>;
 //#endregion

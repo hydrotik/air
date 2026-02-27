@@ -17,11 +17,11 @@ export const selectTrigger = recipe({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: vars.space[2],
+    gap: vars.space['2'],
     width: '100%',
     borderRadius: vars.radii.md,
     border: `1px solid ${vars.color.border}`,
-    backgroundColor: vars.color.surface,
+    backgroundColor: vars.color.input,
     color: vars.color.text,
     fontFamily: vars.font.family.sans,
     fontSize: vars.font.size.sm,
@@ -31,17 +31,17 @@ export const selectTrigger = recipe({
     transition: `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
     selectors: {
       '&:hover': {
-        borderColor: vars.color.primary,
+        borderColor: vars.color.textMuted,
       },
       '&:focus': {
-        borderColor: vars.color.primary,
-        boxShadow: `0 0 0 3px ${vars.color.ghostHover}`,
+        borderColor: vars.color.focusRing,
+        boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`,
       },
       '&[data-placeholder]': {
-        color: vars.color.textMuted,
+        color: vars.color.placeholder,
       },
       '&[data-disabled]': {
-        opacity: 0.5,
+        opacity: '0.5',
         cursor: 'not-allowed',
         pointerEvents: 'none',
       },
@@ -49,9 +49,9 @@ export const selectTrigger = recipe({
   },
   variants: {
     size: {
-      sm: { height: '32px', padding: `0 ${vars.space[2]}`, fontSize: vars.font.size.xs },
-      md: { height: '40px', padding: `0 ${vars.space[3]}` },
-      lg: { height: '48px', padding: `0 ${vars.space[4]}`, fontSize: vars.font.size.md },
+      sm: { height: vars.space['8'], padding: `0 ${vars.space['2']}`, fontSize: vars.font.size.xs },
+      md: { height: vars.space['10'], padding: `0 ${vars.space['3']}` },
+      lg: { height: vars.space['12'], padding: `0 ${vars.space['4']}`, fontSize: vars.font.size.md },
     },
     isError: {
       true: {
@@ -59,7 +59,7 @@ export const selectTrigger = recipe({
         selectors: {
           '&:focus': {
             borderColor: vars.color.destructive,
-            boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`,
+            boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`,
           },
         },
       },
@@ -73,7 +73,7 @@ export const selectTrigger = recipe({
 
 export const selectContent = style({
   overflow: 'hidden',
-  backgroundColor: vars.color.surface,
+  backgroundColor: vars.color.surfaceElevated,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.md,
   boxShadow: vars.shadow.lg,
@@ -93,14 +93,14 @@ export const selectContent = style({
 });
 
 export const selectViewport = style({
-  padding: vars.space[1],
+  padding: vars.space['1'],
 });
 
 export const selectItem = style({
   display: 'flex',
   alignItems: 'center',
-  gap: vars.space[2],
-  padding: `${vars.space[2]} ${vars.space[3]}`,
+  gap: vars.space['2'],
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
   borderRadius: vars.radii.sm,
   fontSize: vars.font.size.sm,
   color: vars.color.text,
@@ -112,10 +112,9 @@ export const selectItem = style({
   selectors: {
     '&[data-highlighted]': {
       backgroundColor: vars.color.ghostHover,
-      color: vars.color.primary,
     },
     '&[data-disabled]': {
-      opacity: 0.5,
+      opacity: '0.5',
       pointerEvents: 'none',
     },
     '&[data-state="checked"]': {
@@ -128,13 +127,13 @@ export const selectItemIndicator = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: vars.space[4],
+  width: vars.space['4'],
   flexShrink: 0,
   color: vars.color.primary,
 });
 
 export const selectLabel = style({
-  padding: `${vars.space[1]} ${vars.space[3]}`,
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
   fontSize: vars.font.size.xs,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.textMuted,
@@ -144,8 +143,8 @@ export const selectLabel = style({
 
 export const selectSeparator = style({
   height: '1px',
-  backgroundColor: vars.color.border,
-  margin: `${vars.space[1]} 0`,
+  backgroundColor: vars.color.borderSubtle,
+  margin: `${vars.space['1']} 0`,
 });
 
 export const selectScrollButton = style({

@@ -20,24 +20,24 @@ export const badgeRecipe = recipe({
         borderColor: vars.color.border,
       },
       primary: {
-        backgroundColor: `${vars.color.primary}20`,
+        backgroundColor: `color-mix(in srgb, ${vars.color.primary} 12%, transparent)`,
         color: vars.color.primary,
-        borderColor: `${vars.color.primary}40`,
+        borderColor: `color-mix(in srgb, ${vars.color.primary} 25%, transparent)`,
       },
       destructive: {
-        backgroundColor: `${vars.color.destructive}20`,
+        backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 12%, transparent)`,
         color: vars.color.destructive,
-        borderColor: `${vars.color.destructive}40`,
+        borderColor: `color-mix(in srgb, ${vars.color.destructive} 25%, transparent)`,
       },
       success: {
-        backgroundColor: `${vars.color.success}20`,
+        backgroundColor: `color-mix(in srgb, ${vars.color.success} 12%, transparent)`,
         color: vars.color.success,
-        borderColor: `${vars.color.success}40`,
+        borderColor: `color-mix(in srgb, ${vars.color.success} 25%, transparent)`,
       },
       warning: {
-        backgroundColor: `${vars.color.warning}20`,
+        backgroundColor: `color-mix(in srgb, ${vars.color.warning} 12%, transparent)`,
         color: vars.color.warning,
-        borderColor: `${vars.color.warning}40`,
+        borderColor: `color-mix(in srgb, ${vars.color.warning} 25%, transparent)`,
       },
       outline: {
         backgroundColor: 'transparent',

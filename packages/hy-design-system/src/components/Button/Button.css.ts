@@ -25,7 +25,7 @@ export const buttonRecipe = recipe({
     gap: vars.space['2'],
     fontFamily: vars.font.family.sans,
     fontWeight: vars.font.weight.medium,
-    letterSpacing: vars.font.letterSpacing.wide,
+    letterSpacing: vars.font.letterSpacing.normal,
     borderRadius: vars.radii.md,
     border: '1px solid transparent',
     cursor: 'pointer',
@@ -45,7 +45,7 @@ export const buttonRecipe = recipe({
         outlineOffset: '2px',
       },
       '&:disabled, &[aria-disabled="true"]': {
-        opacity: '0.45',
+        opacity: '0.5',
         cursor: 'not-allowed',
         pointerEvents: 'none',
       },

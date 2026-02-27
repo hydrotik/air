@@ -40,7 +40,7 @@ export const inputRecipe = recipe({
       '&:focus-visible': {
         outline: 'none',
         borderColor: vars.color.focusRing,
-        boxShadow: `0 0 0 2px ${vars.color.focusRing}30`,
+        boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`,
       },
       '&:disabled': {
         opacity: '0.5',
@@ -49,7 +49,7 @@ export const inputRecipe = recipe({
       },
       '&[aria-invalid="true"]': {
         borderColor: vars.color.destructive,
-        boxShadow: `0 0 0 2px ${vars.color.destructive}30`,
+        boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`,
       },
     },
   },

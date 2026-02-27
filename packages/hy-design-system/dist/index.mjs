@@ -422,24 +422,24 @@ const badgeRecipe = recipe({
 				borderColor: vars.color.border
 			},
 			primary: {
-				backgroundColor: `${vars.color.primary}20`,
+				backgroundColor: `color-mix(in srgb, ${vars.color.primary} 12%, transparent)`,
 				color: vars.color.primary,
-				borderColor: `${vars.color.primary}40`
+				borderColor: `color-mix(in srgb, ${vars.color.primary} 25%, transparent)`
 			},
 			destructive: {
-				backgroundColor: `${vars.color.destructive}20`,
+				backgroundColor: `color-mix(in srgb, ${vars.color.destructive} 12%, transparent)`,
 				color: vars.color.destructive,
-				borderColor: `${vars.color.destructive}40`
+				borderColor: `color-mix(in srgb, ${vars.color.destructive} 25%, transparent)`
 			},
 			success: {
-				backgroundColor: `${vars.color.success}20`,
+				backgroundColor: `color-mix(in srgb, ${vars.color.success} 12%, transparent)`,
 				color: vars.color.success,
-				borderColor: `${vars.color.success}40`
+				borderColor: `color-mix(in srgb, ${vars.color.success} 25%, transparent)`
 			},
 			warning: {
-				backgroundColor: `${vars.color.warning}20`,
+				backgroundColor: `color-mix(in srgb, ${vars.color.warning} 12%, transparent)`,
 				color: vars.color.warning,
-				borderColor: `${vars.color.warning}40`
+				borderColor: `color-mix(in srgb, ${vars.color.warning} 25%, transparent)`
 			},
 			outline: {
 				backgroundColor: "transparent",
@@ -635,7 +635,7 @@ const buttonRecipe = recipe({
 		gap: vars.space["2"],
 		fontFamily: vars.font.family.sans,
 		fontWeight: vars.font.weight.medium,
-		letterSpacing: vars.font.letterSpacing.wide,
+		letterSpacing: vars.font.letterSpacing.normal,
 		borderRadius: vars.radii.md,
 		border: "1px solid transparent",
 		cursor: "pointer",
@@ -655,7 +655,7 @@ const buttonRecipe = recipe({
 				outlineOffset: "2px"
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
-				opacity: "0.45",
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -896,7 +896,7 @@ const checkboxRoot = style({
 			color: vars.color.primaryForeground
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -1499,11 +1499,11 @@ const slideRightAndFade = keyframes({
 });
 const dropdownContent = style({
 	minWidth: "180px",
-	backgroundColor: vars.color.surface,
+	backgroundColor: vars.color.surfaceElevated,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
 	boxShadow: vars.shadow.lg,
-	padding: vars.space[1],
+	padding: vars.space["1"],
 	zIndex: vars.zIndex.dropdown,
 	animationDuration: vars.motion.duration.normal,
 	animationTimingFunction: vars.motion.easing.default,
@@ -1517,8 +1517,8 @@ const dropdownContent = style({
 const dropdownItem = style({
 	display: "flex",
 	alignItems: "center",
-	gap: vars.space[2],
-	padding: `${vars.space[2]} ${vars.space[3]}`,
+	gap: vars.space["2"],
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	borderRadius: vars.radii.sm,
 	fontSize: vars.font.size.sm,
 	color: vars.color.text,
@@ -1527,12 +1527,9 @@ const dropdownItem = style({
 	outline: "none",
 	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&[data-highlighted]": {
-			backgroundColor: vars.color.ghostHover,
-			color: vars.color.primary
-		},
+		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
 		"&[data-disabled]": {
-			opacity: .5,
+			opacity: "0.5",
 			pointerEvents: "none"
 		}
 	}
@@ -1542,7 +1539,7 @@ const dropdownDestructiveItem = style([dropdownItem, { selectors: { "&[data-high
 	color: vars.color.destructive
 } } }]);
 const dropdownLabel = style({
-	padding: `${vars.space[1]} ${vars.space[3]}`,
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	fontSize: vars.font.size.xs,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.textMuted,
@@ -1551,26 +1548,23 @@ const dropdownLabel = style({
 });
 const dropdownSeparator = style({
 	height: "1px",
-	backgroundColor: vars.color.border,
-	margin: `${vars.space[1]} 0`
+	backgroundColor: vars.color.borderSubtle,
+	margin: `${vars.space["1"]} 0`
 });
 const dropdownItemIndicator = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space[4],
+	width: vars.space["4"],
 	flexShrink: 0,
 	color: vars.color.primary
 });
 const dropdownCheckboxItem = style([dropdownItem, {
-	paddingLeft: vars.space[8],
+	paddingLeft: vars.space["8"],
 	position: "relative"
 }]);
 const dropdownRadioItem = style([dropdownCheckboxItem]);
-const dropdownSubTrigger = style([dropdownItem, { selectors: { "&[data-state=\"open\"]": {
-	backgroundColor: vars.color.ghostHover,
-	color: vars.color.primary
-} } }]);
+const dropdownSubTrigger = style([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: vars.color.ghostHover } } }]);
 const dropdownSubContent = style([dropdownContent]);
 const dropdownShortcut = style({
 	marginLeft: "auto",
@@ -1702,20 +1696,20 @@ const fieldMessageRecipe = recipe({
 		fontSize: vars.font.size.xs,
 		lineHeight: vars.font.lineHeight.normal
 	},
-	variants: { intent: {
+	variants: { variant: {
+		default: { color: vars.color.textMuted },
 		error: { color: vars.color.destructive },
-		help: { color: vars.color.textMuted },
 		success: { color: vars.color.success }
 	} },
-	defaultVariants: { intent: "help" }
+	defaultVariants: { variant: "default" }
 });
 
 //#endregion
 //#region src/components/FieldMessage/FieldMessage.tsx
-const FieldMessage = React.forwardRef(({ intent = "help", className, children, ...props }, ref) => /* @__PURE__ */ jsx("p", {
+const FieldMessage = React.forwardRef(({ variant = "default", className, children, ...props }, ref) => /* @__PURE__ */ jsx("p", {
 	ref,
-	className: [fieldMessageRecipe({ intent }), className].filter(Boolean).join(" "),
-	role: intent === "error" ? "alert" : void 0,
+	className: [fieldMessageRecipe({ variant }), className].filter(Boolean).join(" "),
+	role: variant === "error" ? "alert" : void 0,
 	...props,
 	children
 }));
@@ -1789,7 +1783,7 @@ const inputRecipe = recipe({
 			"&:focus-visible": {
 				outline: "none",
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 2px ${vars.color.focusRing}30`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -1798,7 +1792,7 @@ const inputRecipe = recipe({
 			},
 			"&[aria-invalid=\"true\"]": {
 				borderColor: vars.color.destructive,
-				boxShadow: `0 0 0 2px ${vars.color.destructive}30`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 			}
 		}
 	},
@@ -2534,11 +2528,11 @@ const fadeIn$1 = keyframes({
 	}
 });
 const popoverContent = style({
-	backgroundColor: vars.color.surface,
+	backgroundColor: vars.color.surfaceElevated,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
 	boxShadow: vars.shadow.lg,
-	padding: vars.space[4],
+	padding: vars.space["4"],
 	zIndex: vars.zIndex.dropdown,
 	maxWidth: "320px",
 	width: "var(--radix-popover-trigger-width, auto)",
@@ -2548,13 +2542,13 @@ const popoverContent = style({
 	outline: "none"
 });
 const popoverArrow = style({
-	fill: vars.color.surface,
+	fill: vars.color.surfaceElevated,
 	filter: `drop-shadow(0 1px 0 ${vars.color.border})`
 });
 const popoverClose = style({
 	position: "absolute",
-	top: vars.space[2],
-	right: vars.space[2],
+	top: vars.space["2"],
+	right: vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
@@ -2573,8 +2567,8 @@ const popoverClose = style({
 			color: vars.color.text
 		},
 		"&:focus-visible": {
-			outline: `2px solid ${vars.color.primary}`,
-			outlineOffset: "1px"
+			outline: `2px solid ${vars.color.focusRing}`,
+			outlineOffset: "2px"
 		}
 	}
 });
@@ -2669,7 +2663,7 @@ const radioGroupItem = style({
 		},
 		"&[data-state=\"checked\"]": { borderColor: vars.color.primary },
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -2796,11 +2790,11 @@ const selectTrigger = recipe({
 		display: "inline-flex",
 		alignItems: "center",
 		justifyContent: "space-between",
-		gap: vars.space[2],
+		gap: vars.space["2"],
 		width: "100%",
 		borderRadius: vars.radii.md,
 		border: `1px solid ${vars.color.border}`,
-		backgroundColor: vars.color.surface,
+		backgroundColor: vars.color.input,
 		color: vars.color.text,
 		fontFamily: vars.font.family.sans,
 		fontSize: vars.font.size.sm,
@@ -2809,14 +2803,14 @@ const selectTrigger = recipe({
 		outline: "none",
 		transition: `border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 		selectors: {
-			"&:hover": { borderColor: vars.color.primary },
+			"&:hover": { borderColor: vars.color.textMuted },
 			"&:focus": {
-				borderColor: vars.color.primary,
-				boxShadow: `0 0 0 3px ${vars.color.ghostHover}`
+				borderColor: vars.color.focusRing,
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
 			},
-			"&[data-placeholder]": { color: vars.color.textMuted },
+			"&[data-placeholder]": { color: vars.color.placeholder },
 			"&[data-disabled]": {
-				opacity: .5,
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -2825,17 +2819,17 @@ const selectTrigger = recipe({
 	variants: {
 		size: {
 			sm: {
-				height: "32px",
-				padding: `0 ${vars.space[2]}`,
+				height: vars.space["8"],
+				padding: `0 ${vars.space["2"]}`,
 				fontSize: vars.font.size.xs
 			},
 			md: {
-				height: "40px",
-				padding: `0 ${vars.space[3]}`
+				height: vars.space["10"],
+				padding: `0 ${vars.space["3"]}`
 			},
 			lg: {
-				height: "48px",
-				padding: `0 ${vars.space[4]}`,
+				height: vars.space["12"],
+				padding: `0 ${vars.space["4"]}`,
 				fontSize: vars.font.size.md
 			}
 		},
@@ -2843,7 +2837,7 @@ const selectTrigger = recipe({
 			borderColor: vars.color.destructive,
 			selectors: { "&:focus": {
 				borderColor: vars.color.destructive,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 			} }
 		} }
 	},
@@ -2854,7 +2848,7 @@ const selectTrigger = recipe({
 });
 const selectContent = style({
 	overflow: "hidden",
-	backgroundColor: vars.color.surface,
+	backgroundColor: vars.color.surfaceElevated,
 	border: `1px solid ${vars.color.border}`,
 	borderRadius: vars.radii.md,
 	boxShadow: vars.shadow.lg,
@@ -2868,12 +2862,12 @@ const selectContent = style({
 		"&[data-state=\"open\"][data-side=\"top\"]": { animationName: slideUpAndFade }
 	}
 });
-const selectViewport = style({ padding: vars.space[1] });
+const selectViewport = style({ padding: vars.space["1"] });
 const selectItem = style({
 	display: "flex",
 	alignItems: "center",
-	gap: vars.space[2],
-	padding: `${vars.space[2]} ${vars.space[3]}`,
+	gap: vars.space["2"],
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	borderRadius: vars.radii.sm,
 	fontSize: vars.font.size.sm,
 	color: vars.color.text,
@@ -2883,12 +2877,9 @@ const selectItem = style({
 	outline: "none",
 	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&[data-highlighted]": {
-			backgroundColor: vars.color.ghostHover,
-			color: vars.color.primary
-		},
+		"&[data-highlighted]": { backgroundColor: vars.color.ghostHover },
 		"&[data-disabled]": {
-			opacity: .5,
+			opacity: "0.5",
 			pointerEvents: "none"
 		},
 		"&[data-state=\"checked\"]": { fontWeight: vars.font.weight.medium }
@@ -2898,12 +2889,12 @@ const selectItemIndicator = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: vars.space[4],
+	width: vars.space["4"],
 	flexShrink: 0,
 	color: vars.color.primary
 });
 const selectLabel = style({
-	padding: `${vars.space[1]} ${vars.space[3]}`,
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
 	fontSize: vars.font.size.xs,
 	fontWeight: vars.font.weight.semibold,
 	color: vars.color.textMuted,
@@ -2912,8 +2903,8 @@ const selectLabel = style({
 });
 const selectSeparator = style({
 	height: "1px",
-	backgroundColor: vars.color.border,
-	margin: `${vars.space[1]} 0`
+	backgroundColor: vars.color.borderSubtle,
+	margin: `${vars.space["1"]} 0`
 });
 const selectScrollButton = style({
 	display: "flex",
@@ -3313,7 +3304,7 @@ const sliderRoot = style({
 	alignItems: "center",
 	cursor: "pointer",
 	selectors: { "&[data-disabled]": {
-		opacity: "0.45",
+		opacity: "0.5",
 		cursor: "not-allowed"
 	} }
 });
@@ -3341,7 +3332,7 @@ const sliderThumb = style({
 	boxShadow: vars.shadow.sm,
 	transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { boxShadow: `0 0 0 4px rgba(59, 130, 246, 0.2)` },
+		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.primary} 20%, transparent)` },
 		"&:focus-visible": {
 			outline: `2px solid ${vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -3427,7 +3418,7 @@ const switchRoot = style({
 			outlineOffset: "2px"
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -3616,7 +3607,7 @@ const tabsTrigger = style({
 			outlineOffset: "2px"
 		},
 		"&:disabled": {
-			opacity: "0.4",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -3673,7 +3664,7 @@ const textarea = style({
 		"&:focus-visible": {
 			outline: "none",
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 2px ${vars.color.focusRing}30`
+			boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.focusRing} 20%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3681,7 +3672,7 @@ const textarea = style({
 		},
 		"&[aria-invalid=\"true\"]": {
 			borderColor: vars.color.destructive,
-			boxShadow: `0 0 0 2px ${vars.color.destructive}30`
+			boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.color.destructive} 20%, transparent)`
 		}
 	}
 });
@@ -3897,7 +3888,7 @@ const toggleRecipe = recipe({
 				outlineOffset: "2px"
 			},
 			"&:disabled": {
-				opacity: "0.45",
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -3991,7 +3982,7 @@ const toggleGroupItem = style({
 			outlineOffset: "-2px"
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}

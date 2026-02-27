@@ -30,7 +30,7 @@ export const radioGroupItem = style({
       borderColor: vars.color.primary,
     },
     '&:disabled': {
-      opacity: '0.45',
+      opacity: '0.5',
       cursor: 'not-allowed',
     },
   },

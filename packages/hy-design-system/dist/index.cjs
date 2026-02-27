@@ -478,24 +478,24 @@ const badgeRecipe = (0, _vanilla_extract_recipes.recipe)({
 				borderColor: _hydrotik_tokens.vars.color.border
 			},
 			primary: {
-				backgroundColor: `${_hydrotik_tokens.vars.color.primary}20`,
+				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 12%, transparent)`,
 				color: _hydrotik_tokens.vars.color.primary,
-				borderColor: `${_hydrotik_tokens.vars.color.primary}40`
+				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 25%, transparent)`
 			},
 			destructive: {
-				backgroundColor: `${_hydrotik_tokens.vars.color.destructive}20`,
+				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 12%, transparent)`,
 				color: _hydrotik_tokens.vars.color.destructive,
-				borderColor: `${_hydrotik_tokens.vars.color.destructive}40`
+				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 25%, transparent)`
 			},
 			success: {
-				backgroundColor: `${_hydrotik_tokens.vars.color.success}20`,
+				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.success} 12%, transparent)`,
 				color: _hydrotik_tokens.vars.color.success,
-				borderColor: `${_hydrotik_tokens.vars.color.success}40`
+				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.success} 25%, transparent)`
 			},
 			warning: {
-				backgroundColor: `${_hydrotik_tokens.vars.color.warning}20`,
+				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.warning} 12%, transparent)`,
 				color: _hydrotik_tokens.vars.color.warning,
-				borderColor: `${_hydrotik_tokens.vars.color.warning}40`
+				borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.warning} 25%, transparent)`
 			},
 			outline: {
 				backgroundColor: "transparent",
@@ -691,7 +691,7 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		gap: _hydrotik_tokens.vars.space["2"],
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
 		fontWeight: _hydrotik_tokens.vars.font.weight.medium,
-		letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.wide,
+		letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.normal,
 		borderRadius: _hydrotik_tokens.vars.radii.md,
 		border: "1px solid transparent",
 		cursor: "pointer",
@@ -711,7 +711,7 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 				outlineOffset: "2px"
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
-				opacity: "0.45",
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -952,7 +952,7 @@ const checkboxRoot = (0, _vanilla_extract_css.style)({
 			color: _hydrotik_tokens.vars.color.primaryForeground
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -1555,11 +1555,11 @@ const slideRightAndFade = (0, _vanilla_extract_css.keyframes)({
 });
 const dropdownContent = (0, _vanilla_extract_css.style)({
 	minWidth: "180px",
-	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
-	padding: _hydrotik_tokens.vars.space[1],
+	padding: _hydrotik_tokens.vars.space["1"],
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
 	animationDuration: _hydrotik_tokens.vars.motion.duration.normal,
 	animationTimingFunction: _hydrotik_tokens.vars.motion.easing.default,
@@ -1573,8 +1573,8 @@ const dropdownContent = (0, _vanilla_extract_css.style)({
 const dropdownItem = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space[2],
-	padding: `${_hydrotik_tokens.vars.space[2]} ${_hydrotik_tokens.vars.space[3]}`,
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.text,
@@ -1583,12 +1583,9 @@ const dropdownItem = (0, _vanilla_extract_css.style)({
 	outline: "none",
 	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&[data-highlighted]": {
-			backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-			color: _hydrotik_tokens.vars.color.primary
-		},
+		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
 		"&[data-disabled]": {
-			opacity: .5,
+			opacity: "0.5",
 			pointerEvents: "none"
 		}
 	}
@@ -1598,7 +1595,7 @@ const dropdownDestructiveItem = (0, _vanilla_extract_css.style)([dropdownItem, {
 	color: _hydrotik_tokens.vars.color.destructive
 } } }]);
 const dropdownLabel = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space[1]} ${_hydrotik_tokens.vars.space[3]}`,
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.xs,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.textMuted,
@@ -1607,26 +1604,23 @@ const dropdownLabel = (0, _vanilla_extract_css.style)({
 });
 const dropdownSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
-	backgroundColor: _hydrotik_tokens.vars.color.border,
-	margin: `${_hydrotik_tokens.vars.space[1]} 0`
+	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle,
+	margin: `${_hydrotik_tokens.vars.space["1"]} 0`
 });
 const dropdownItemIndicator = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space[4],
+	width: _hydrotik_tokens.vars.space["4"],
 	flexShrink: 0,
 	color: _hydrotik_tokens.vars.color.primary
 });
 const dropdownCheckboxItem = (0, _vanilla_extract_css.style)([dropdownItem, {
-	paddingLeft: _hydrotik_tokens.vars.space[8],
+	paddingLeft: _hydrotik_tokens.vars.space["8"],
 	position: "relative"
 }]);
 const dropdownRadioItem = (0, _vanilla_extract_css.style)([dropdownCheckboxItem]);
-const dropdownSubTrigger = (0, _vanilla_extract_css.style)([dropdownItem, { selectors: { "&[data-state=\"open\"]": {
-	backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-	color: _hydrotik_tokens.vars.color.primary
-} } }]);
+const dropdownSubTrigger = (0, _vanilla_extract_css.style)([dropdownItem, { selectors: { "&[data-state=\"open\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover } } }]);
 const dropdownSubContent = (0, _vanilla_extract_css.style)([dropdownContent]);
 const dropdownShortcut = (0, _vanilla_extract_css.style)({
 	marginLeft: "auto",
@@ -1758,20 +1752,20 @@ const fieldMessageRecipe = (0, _vanilla_extract_recipes.recipe)({
 		fontSize: _hydrotik_tokens.vars.font.size.xs,
 		lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal
 	},
-	variants: { intent: {
+	variants: { variant: {
+		default: { color: _hydrotik_tokens.vars.color.textMuted },
 		error: { color: _hydrotik_tokens.vars.color.destructive },
-		help: { color: _hydrotik_tokens.vars.color.textMuted },
 		success: { color: _hydrotik_tokens.vars.color.success }
 	} },
-	defaultVariants: { intent: "help" }
+	defaultVariants: { variant: "default" }
 });
 
 //#endregion
 //#region src/components/FieldMessage/FieldMessage.tsx
-const FieldMessage = react.default.forwardRef(({ intent = "help", className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+const FieldMessage = react.default.forwardRef(({ variant = "default", className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 	ref,
-	className: [fieldMessageRecipe({ intent }), className].filter(Boolean).join(" "),
-	role: intent === "error" ? "alert" : void 0,
+	className: [fieldMessageRecipe({ variant }), className].filter(Boolean).join(" "),
+	role: variant === "error" ? "alert" : void 0,
 	...props,
 	children
 }));
@@ -1845,7 +1839,7 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 			"&:focus-visible": {
 				outline: "none",
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 2px ${_hydrotik_tokens.vars.color.focusRing}30`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -1854,7 +1848,7 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 			},
 			"&[aria-invalid=\"true\"]": {
 				borderColor: _hydrotik_tokens.vars.color.destructive,
-				boxShadow: `0 0 0 2px ${_hydrotik_tokens.vars.color.destructive}30`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 			}
 		}
 	},
@@ -2590,11 +2584,11 @@ const fadeIn$1 = (0, _vanilla_extract_css.keyframes)({
 	}
 });
 const popoverContent = (0, _vanilla_extract_css.style)({
-	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
-	padding: _hydrotik_tokens.vars.space[4],
+	padding: _hydrotik_tokens.vars.space["4"],
 	zIndex: _hydrotik_tokens.vars.zIndex.dropdown,
 	maxWidth: "320px",
 	width: "var(--radix-popover-trigger-width, auto)",
@@ -2604,13 +2598,13 @@ const popoverContent = (0, _vanilla_extract_css.style)({
 	outline: "none"
 });
 const popoverArrow = (0, _vanilla_extract_css.style)({
-	fill: _hydrotik_tokens.vars.color.surface,
+	fill: _hydrotik_tokens.vars.color.surfaceElevated,
 	filter: `drop-shadow(0 1px 0 ${_hydrotik_tokens.vars.color.border})`
 });
 const popoverClose = (0, _vanilla_extract_css.style)({
 	position: "absolute",
-	top: _hydrotik_tokens.vars.space[2],
-	right: _hydrotik_tokens.vars.space[2],
+	top: _hydrotik_tokens.vars.space["2"],
+	right: _hydrotik_tokens.vars.space["2"],
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
@@ -2629,8 +2623,8 @@ const popoverClose = (0, _vanilla_extract_css.style)({
 			color: _hydrotik_tokens.vars.color.text
 		},
 		"&:focus-visible": {
-			outline: `2px solid ${_hydrotik_tokens.vars.color.primary}`,
-			outlineOffset: "1px"
+			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
+			outlineOffset: "2px"
 		}
 	}
 });
@@ -2725,7 +2719,7 @@ const radioGroupItem = (0, _vanilla_extract_css.style)({
 		},
 		"&[data-state=\"checked\"]": { borderColor: _hydrotik_tokens.vars.color.primary },
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -2852,11 +2846,11 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 		display: "inline-flex",
 		alignItems: "center",
 		justifyContent: "space-between",
-		gap: _hydrotik_tokens.vars.space[2],
+		gap: _hydrotik_tokens.vars.space["2"],
 		width: "100%",
 		borderRadius: _hydrotik_tokens.vars.radii.md,
 		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-		backgroundColor: _hydrotik_tokens.vars.color.surface,
+		backgroundColor: _hydrotik_tokens.vars.color.input,
 		color: _hydrotik_tokens.vars.color.text,
 		fontFamily: _hydrotik_tokens.vars.font.family.sans,
 		fontSize: _hydrotik_tokens.vars.font.size.sm,
@@ -2865,14 +2859,14 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 		outline: "none",
 		transition: `border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 		selectors: {
-			"&:hover": { borderColor: _hydrotik_tokens.vars.color.primary },
+			"&:hover": { borderColor: _hydrotik_tokens.vars.color.textMuted },
 			"&:focus": {
-				borderColor: _hydrotik_tokens.vars.color.primary,
-				boxShadow: `0 0 0 3px ${_hydrotik_tokens.vars.color.ghostHover}`
+				borderColor: _hydrotik_tokens.vars.color.focusRing,
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
 			},
-			"&[data-placeholder]": { color: _hydrotik_tokens.vars.color.textMuted },
+			"&[data-placeholder]": { color: _hydrotik_tokens.vars.color.placeholder },
 			"&[data-disabled]": {
-				opacity: .5,
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -2881,17 +2875,17 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 	variants: {
 		size: {
 			sm: {
-				height: "32px",
-				padding: `0 ${_hydrotik_tokens.vars.space[2]}`,
+				height: _hydrotik_tokens.vars.space["8"],
+				padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
 				fontSize: _hydrotik_tokens.vars.font.size.xs
 			},
 			md: {
-				height: "40px",
-				padding: `0 ${_hydrotik_tokens.vars.space[3]}`
+				height: _hydrotik_tokens.vars.space["10"],
+				padding: `0 ${_hydrotik_tokens.vars.space["3"]}`
 			},
 			lg: {
-				height: "48px",
-				padding: `0 ${_hydrotik_tokens.vars.space[4]}`,
+				height: _hydrotik_tokens.vars.space["12"],
+				padding: `0 ${_hydrotik_tokens.vars.space["4"]}`,
 				fontSize: _hydrotik_tokens.vars.font.size.md
 			}
 		},
@@ -2899,7 +2893,7 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 			borderColor: _hydrotik_tokens.vars.color.destructive,
 			selectors: { "&:focus": {
 				borderColor: _hydrotik_tokens.vars.color.destructive,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
+				boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 			} }
 		} }
 	},
@@ -2910,7 +2904,7 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 });
 const selectContent = (0, _vanilla_extract_css.style)({
 	overflow: "hidden",
-	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	boxShadow: _hydrotik_tokens.vars.shadow.lg,
@@ -2924,12 +2918,12 @@ const selectContent = (0, _vanilla_extract_css.style)({
 		"&[data-state=\"open\"][data-side=\"top\"]": { animationName: slideUpAndFade }
 	}
 });
-const selectViewport = (0, _vanilla_extract_css.style)({ padding: _hydrotik_tokens.vars.space[1] });
+const selectViewport = (0, _vanilla_extract_css.style)({ padding: _hydrotik_tokens.vars.space["1"] });
 const selectItem = (0, _vanilla_extract_css.style)({
 	display: "flex",
 	alignItems: "center",
-	gap: _hydrotik_tokens.vars.space[2],
-	padding: `${_hydrotik_tokens.vars.space[2]} ${_hydrotik_tokens.vars.space[3]}`,
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.text,
@@ -2939,12 +2933,9 @@ const selectItem = (0, _vanilla_extract_css.style)({
 	outline: "none",
 	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&[data-highlighted]": {
-			backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
-			color: _hydrotik_tokens.vars.color.primary
-		},
+		"&[data-highlighted]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
 		"&[data-disabled]": {
-			opacity: .5,
+			opacity: "0.5",
 			pointerEvents: "none"
 		},
 		"&[data-state=\"checked\"]": { fontWeight: _hydrotik_tokens.vars.font.weight.medium }
@@ -2954,12 +2945,12 @@ const selectItemIndicator = (0, _vanilla_extract_css.style)({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	width: _hydrotik_tokens.vars.space[4],
+	width: _hydrotik_tokens.vars.space["4"],
 	flexShrink: 0,
 	color: _hydrotik_tokens.vars.color.primary
 });
 const selectLabel = (0, _vanilla_extract_css.style)({
-	padding: `${_hydrotik_tokens.vars.space[1]} ${_hydrotik_tokens.vars.space[3]}`,
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
 	fontSize: _hydrotik_tokens.vars.font.size.xs,
 	fontWeight: _hydrotik_tokens.vars.font.weight.semibold,
 	color: _hydrotik_tokens.vars.color.textMuted,
@@ -2968,8 +2959,8 @@ const selectLabel = (0, _vanilla_extract_css.style)({
 });
 const selectSeparator = (0, _vanilla_extract_css.style)({
 	height: "1px",
-	backgroundColor: _hydrotik_tokens.vars.color.border,
-	margin: `${_hydrotik_tokens.vars.space[1]} 0`
+	backgroundColor: _hydrotik_tokens.vars.color.borderSubtle,
+	margin: `${_hydrotik_tokens.vars.space["1"]} 0`
 });
 const selectScrollButton = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -3369,7 +3360,7 @@ const sliderRoot = (0, _vanilla_extract_css.style)({
 	alignItems: "center",
 	cursor: "pointer",
 	selectors: { "&[data-disabled]": {
-		opacity: "0.45",
+		opacity: "0.5",
 		cursor: "not-allowed"
 	} }
 });
@@ -3397,7 +3388,7 @@ const sliderThumb = (0, _vanilla_extract_css.style)({
 	boxShadow: _hydrotik_tokens.vars.shadow.sm,
 	transition: `box-shadow ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
 	selectors: {
-		"&:hover": { boxShadow: `0 0 0 4px rgba(59, 130, 246, 0.2)` },
+		"&:hover": { boxShadow: `0 0 0 4px color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 20%, transparent)` },
 		"&:focus-visible": {
 			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
 			outlineOffset: "2px"
@@ -3483,7 +3474,7 @@ const switchRoot = (0, _vanilla_extract_css.style)({
 			outlineOffset: "2px"
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -3672,7 +3663,7 @@ const tabsTrigger = (0, _vanilla_extract_css.style)({
 			outlineOffset: "2px"
 		},
 		"&:disabled": {
-			opacity: "0.4",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}
@@ -3729,7 +3720,7 @@ const textarea = (0, _vanilla_extract_css.style)({
 		"&:focus-visible": {
 			outline: "none",
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 2px ${_hydrotik_tokens.vars.color.focusRing}30`
+			boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 20%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3737,7 +3728,7 @@ const textarea = (0, _vanilla_extract_css.style)({
 		},
 		"&[aria-invalid=\"true\"]": {
 			borderColor: _hydrotik_tokens.vars.color.destructive,
-			boxShadow: `0 0 0 2px ${_hydrotik_tokens.vars.color.destructive}30`
+			boxShadow: `0 0 0 2px color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 20%, transparent)`
 		}
 	}
 });
@@ -3953,7 +3944,7 @@ const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 				outlineOffset: "2px"
 			},
 			"&:disabled": {
-				opacity: "0.45",
+				opacity: "0.5",
 				cursor: "not-allowed",
 				pointerEvents: "none"
 			}
@@ -4047,7 +4038,7 @@ const toggleGroupItem = (0, _vanilla_extract_css.style)({
 			outlineOffset: "-2px"
 		},
 		"&:disabled": {
-			opacity: "0.45",
+			opacity: "0.5",
 			cursor: "not-allowed"
 		}
 	}

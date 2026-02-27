@@ -2,15 +2,15 @@ import React from 'react';
 import { fieldMessageRecipe } from './FieldMessage.css';
 
 export interface FieldMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  intent?: 'error' | 'help' | 'success';
+  variant?: 'default' | 'error' | 'success';
 }
 
 export const FieldMessage = React.forwardRef<HTMLParagraphElement, FieldMessageProps>(
-  ({ intent = 'help', className, children, ...props }, ref) => (
+  ({ variant = 'default', className, children, ...props }, ref) => (
     <p
       ref={ref}
-      className={[fieldMessageRecipe({ intent }), className].filter(Boolean).join(' ')}
-      role={intent === 'error' ? 'alert' : undefined}
+      className={[fieldMessageRecipe({ variant }), className].filter(Boolean).join(' ')}
+      role={variant === 'error' ? 'alert' : undefined}
       {...props}
     >
       {children}

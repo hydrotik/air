@@ -7,11 +7,11 @@ const fadeIn = keyframes({
 });
 
 export const popoverContent = style({
-  backgroundColor: vars.color.surface,
+  backgroundColor: vars.color.surfaceElevated,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.md,
   boxShadow: vars.shadow.lg,
-  padding: vars.space[4],
+  padding: vars.space['4'],
   zIndex: vars.zIndex.dropdown,
   maxWidth: '320px',
   width: 'var(--radix-popover-trigger-width, auto)',
@@ -22,14 +22,14 @@ export const popoverContent = style({
 });
 
 export const popoverArrow = style({
-  fill: vars.color.surface,
+  fill: vars.color.surfaceElevated,
   filter: `drop-shadow(0 1px 0 ${vars.color.border})`,
 });
 
 export const popoverClose = style({
   position: 'absolute',
-  top: vars.space[2],
-  right: vars.space[2],
+  top: vars.space['2'],
+  right: vars.space['2'],
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -48,8 +48,8 @@ export const popoverClose = style({
       color: vars.color.text,
     },
     '&:focus-visible': {
-      outline: `2px solid ${vars.color.primary}`,
-      outlineOffset: '1px',
+      outline: `2px solid ${vars.color.focusRing}`,
+      outlineOffset: '2px',
     },
   },
 });

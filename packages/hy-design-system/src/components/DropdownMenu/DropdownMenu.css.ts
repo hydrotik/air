@@ -23,11 +23,11 @@ const slideRightAndFade = keyframes({
 
 export const dropdownContent = style({
   minWidth: '180px',
-  backgroundColor: vars.color.surface,
+  backgroundColor: vars.color.surfaceElevated,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.md,
   boxShadow: vars.shadow.lg,
-  padding: vars.space[1],
+  padding: vars.space['1'],
   zIndex: vars.zIndex.dropdown,
   animationDuration: vars.motion.duration.normal,
   animationTimingFunction: vars.motion.easing.default,
@@ -42,8 +42,8 @@ export const dropdownContent = style({
 export const dropdownItem = style({
   display: 'flex',
   alignItems: 'center',
-  gap: vars.space[2],
-  padding: `${vars.space[2]} ${vars.space[3]}`,
+  gap: vars.space['2'],
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
   borderRadius: vars.radii.sm,
   fontSize: vars.font.size.sm,
   color: vars.color.text,
@@ -54,10 +54,9 @@ export const dropdownItem = style({
   selectors: {
     '&[data-highlighted]': {
       backgroundColor: vars.color.ghostHover,
-      color: vars.color.primary,
     },
     '&[data-disabled]': {
-      opacity: 0.5,
+      opacity: '0.5',
       pointerEvents: 'none',
     },
   },
@@ -68,7 +67,7 @@ export const dropdownDestructiveItem = style([
   {
     selectors: {
       '&[data-highlighted]': {
-      backgroundColor: vars.color.ghostHover,
+        backgroundColor: vars.color.ghostHover,
         color: vars.color.destructive,
       },
     },
@@ -76,7 +75,7 @@ export const dropdownDestructiveItem = style([
 ]);
 
 export const dropdownLabel = style({
-  padding: `${vars.space[1]} ${vars.space[3]}`,
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
   fontSize: vars.font.size.xs,
   fontWeight: vars.font.weight.semibold,
   color: vars.color.textMuted,
@@ -86,15 +85,15 @@ export const dropdownLabel = style({
 
 export const dropdownSeparator = style({
   height: '1px',
-  backgroundColor: vars.color.border,
-  margin: `${vars.space[1]} 0`,
+  backgroundColor: vars.color.borderSubtle,
+  margin: `${vars.space['1']} 0`,
 });
 
 export const dropdownItemIndicator = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: vars.space[4],
+  width: vars.space['4'],
   flexShrink: 0,
   color: vars.color.primary,
 });
@@ -102,7 +101,7 @@ export const dropdownItemIndicator = style({
 export const dropdownCheckboxItem = style([
   dropdownItem,
   {
-    paddingLeft: vars.space[8],
+    paddingLeft: vars.space['8'],
     position: 'relative',
   },
 ]);
@@ -115,7 +114,6 @@ export const dropdownSubTrigger = style([
     selectors: {
       '&[data-state="open"]': {
         backgroundColor: vars.color.ghostHover,
-        color: vars.color.primary,
       },
     },
   },

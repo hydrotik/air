@@ -11,7 +11,7 @@ export const sliderRoot = style({
   cursor: 'pointer',
   selectors: {
     '&[data-disabled]': {
-      opacity: '0.45',
+      opacity: '0.5',
       cursor: 'not-allowed',
     },
   },
@@ -44,7 +44,7 @@ export const sliderThumb = style({
   transition: `box-shadow ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
   selectors: {
     '&:hover': {
-      boxShadow: `0 0 0 4px rgba(59, 130, 246, 0.2)`,
+      boxShadow: `0 0 0 4px color-mix(in srgb, ${vars.color.primary} 20%, transparent)`,
     },
     '&:focus-visible': {
       outline: `2px solid ${vars.color.focusRing}`,

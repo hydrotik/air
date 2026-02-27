@@ -27,7 +27,7 @@ export const checkboxRoot = style({
       color: vars.color.primaryForeground,
     },
     '&:disabled': {
-      opacity: '0.45',
+      opacity: '0.5',
       cursor: 'not-allowed',
     },
   },

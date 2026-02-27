@@ -10,11 +10,11 @@ export const fieldMessageRecipe = recipe({
     lineHeight: vars.font.lineHeight.normal,
   },
   variants: {
-    intent: {
+    variant: {
+      default: { color: vars.color.textMuted },
       error: { color: vars.color.destructive },
-      help: { color: vars.color.textMuted },
       success: { color: vars.color.success },
     },
   },
-  defaultVariants: { intent: 'help' },
+  defaultVariants: { variant: 'default' },
 });
