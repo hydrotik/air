@@ -1,0 +1,12 @@
+{
+  "name": "@hydrotik/prettify-config",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "files": ["index.mjs"]
+}

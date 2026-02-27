@@ -1,0 +1,175 @@
+# Hydrotik — Architecture Overview
+
+## Monorepo Structure
+
+This repository is a **pnpm + Turborepo monorepo** containing a design system, shared tooling, and application shells.
+
+```
+hydrotik/
+├── apps/
+│   ├── hy-bff-fastify/          # Node.js BFF API (Fastify 5)
+│   ├── hy-component-preview/    # Vite + React component kitchen sink
+│   └── hy-storybook/            # Storybook 8 component explorer
+│
+├── packages/
+│   ├── hy-design-system/        # Core UI component library (Radix + vanilla-extract)
+│   ├── hy-tokens/               # Design token system (vanilla-extract theme contract)
+│   ├── hy-theme-provider/       # React ThemeProvider + useTheme + ThemeScript (no-FOUC)
+│   ├── hy-ai-tools/             # LLM context management CLI
+│   ├── hy-component-template/   # Scaffold for new components
+│   ├── hy-eslint-config/        # Shared ESLint configuration presets
+│   ├── hy-jest-config/          # Shared Jest configuration presets
+│   ├── hy-prettify-config/      # Shared Prettier configuration
+│   ├── hy-tsdown-config/        # Shared tsdown (library bundler) configuration
+│   └── hy-typescript-config/   # Shared TypeScript compiler options
+│
+├── docs/                        # Project documentation (you are here)
+├── scripts/                     # Workspace automation scripts
+├── package.json                 # Root workspace (devDeps + scripts)
+├── pnpm-workspace.yaml          # pnpm workspace members
+└── turbo.json                   # Turborepo pipeline configuration
+```
+
+---
+
+## Package Manager & Build Orchestration
+
+| Tool | Version | Role |
+|---|---|---|
+| **pnpm** | 10.30.3 | Package management, workspace symlinks |
+| **Turborepo** | 2.8.11 | Task orchestration, caching, pipeline |
+| **TypeScript** | ~5.9.3 | Type checking across all packages |
+| **Node.js** | ≥20.0.0 | Runtime |
+
+### Workspace Configuration (`pnpm-workspace.yaml`)
+
+All packages and apps are declared as workspace members. pnpm creates symlinks in `node_modules/@hydrotik/*` so each package can import others as `@hydrotik/tokens`, `@hydrotik/design-system`, etc.
+
+Special entries in `onlyBuiltDependencies`:
+- `esbuild` — required post-install binary
+- `unrs-resolver` — required by some lint tooling
+
+### Turborepo Pipeline (`turbo.json`)
+
+```
+build → typecheck + lint (parallel)
+test depends on build
+storybook / dev are persistent tasks
+```
+
+Each package has a `build` script that Turbo caches. Build outputs are cached in `.turbo/` based on input file hashes.
+
+---
+
+## Package Dependency Graph
+
+```
+hy-typescript-config  (no deps)
+hy-prettify-config    (no deps)
+hy-eslint-config      (no deps)
+hy-jest-config        (no deps)
+hy-tsdown-config      (no deps)
+       │
+       ▼
+hy-tokens             → @vanilla-extract/css
+       │
+       ▼
+hy-theme-provider     → hy-tokens, React (peer)
+       │
+       ▼
+hy-design-system      → hy-tokens, Radix UI, vanilla-extract (React peer)
+       │
+       ▼
+hy-storybook          → hy-design-system, hy-theme-provider, hy-tokens
+hy-component-preview  → hy-design-system, hy-theme-provider, hy-tokens
+```
+
+---
+
+## Library Build System (tsdown)
+
+Library packages (`hy-tokens`, `hy-theme-provider`, `hy-design-system`) are built with **tsdown** using a shared config from `@hydrotik/tsdown-config`:
+
+```ts
+// packages/hy-tsdown-config/index.mjs
+export function defineLibrary(overrides) {
+  return defineConfig({
+    entry: ['src/index.ts'],
+    format: ['esm', 'cjs'],      // dual output
+    dts: true,                    // TypeScript declarations
+    sourcemap: true,
+    external: ['react', 'react-dom', '@radix-ui/*'],
+    vitePlugins: [vanillaExtractPlugin()],  // processes .css.ts files
+    ...overrides,
+  });
+}
+```
+
+**Output format per package:**
+
+| File | Format |
+|---|---|
+| `dist/index.mjs` | ESM |
+| `dist/index.cjs` | CommonJS |
+| `dist/index.d.mts` | ESM type declarations |
+| `dist/index.d.cts` | CJS type declarations |
+
+**Important:** `@rolldown/binding-darwin-arm64` must be installed as a workspace devDependency on Apple Silicon Macs (tsdown uses rolldown internally).
+
+---
+
+## TypeScript Configuration Strategy
+
+Shared base configs live in `@hydrotik/typescript-config/`:
+
+| File | Use case |
+|---|---|
+| `base.json` | NodeNext + strict, for scripts/config packages |
+| `react-library.json` | Bundler resolution + JSX + declarations, for component libraries |
+| `app.json` | Bundler resolution + JSX + noEmit, for Vite/Storybook apps |
+
+All library and app `tsconfig.json` files **inline** the compiler options directly (rather than extending via `@hydrotik/typescript-config/...`) to ensure consistent IDE/Pylance resolution. The shared files serve as the canonical source of truth that the inlined values track.
+
+---
+
+## Testing Strategy
+
+Tests use **Jest 30** with `jest-environment-jsdom` and **Testing Library 16**:
+
+- `@hydrotik/jest-config/base` — Node environment (utilities)
+- `@hydrotik/jest-config/react` — jsdom + `@testing-library/jest-dom` (components)
+- **jest-axe** — automated accessibility assertions (`toHaveNoViolations`)
+
+Test files live alongside components: `Component/Component.test.tsx`
+
+---
+
+## Code Quality
+
+| Tool | Config | Purpose |
+|---|---|---|
+| **ESLint 10** | `@hydrotik/eslint-config` | Lint JS/TS/React |
+| **Prettier 3** | `@hydrotik/prettify-config` | Code formatting |
+| **Husky** | `.husky/` | Pre-commit hooks |
+| **lint-staged** | root `package.json` | Run checks on staged files only |
+
+---
+
+## Apps
+
+### `hy-bff-fastify`
+A Fastify 5 backend-for-frontend API server. Configured with:
+- `@fastify/cors`, `@fastify/helmet`, `@fastify/jwt`, `@fastify/rate-limit`
+- `@fastify/swagger` + `@fastify/swagger-ui` for API documentation
+- Structured logging via `pino`
+- Environment validation via `dotenv`
+
+### `hy-component-preview`
+A Vite + React app that renders every design system component in a single page. Used for quick visual validation without Storybook overhead. Runs: `pnpm dev` in the app directory.
+
+### `hy-storybook`
+Storybook 8 powered by `@storybook/react-vite`. Includes:
+- `@storybook/addon-essentials` (controls, actions, docs)
+- `@storybook/addon-a11y` (accessibility panel)
+- Dark/Light theme toggle via `ThemeProvider`
+- Stories for: Button, Input, Badge, Card, Dialog, Tabs, Select, Tooltip, Toast, Table

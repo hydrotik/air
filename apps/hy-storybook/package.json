@@ -1,0 +1,30 @@
+{
+  "name": "@hydrotik/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o storybook-static",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hydrotik/design-system": "workspace:*",
+    "@hydrotik/theme-provider": "workspace:*",
+    "@hydrotik/tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^8.6.12",
+    "@storybook/addon-docs": "^8.6.12",
+    "@storybook/addon-essentials": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-vite": "^8.6.12",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "@vanilla-extract/vite-plugin": "^5.1.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "storybook": "^8.6.12",
+    "typescript": "~5.9.3",
+    "vite": "^6.3.5"
+  }
+}

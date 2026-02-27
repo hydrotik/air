@@ -1,0 +1,16 @@
+{
+  "name": "@hydrotik/tsdown-config",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "files": ["index.mjs"],
+  "dependencies": {
+    "@vanilla-extract/vite-plugin": "^5.1.4",
+    "tsdown": "^0.21.0-beta.2"
+  }
+}

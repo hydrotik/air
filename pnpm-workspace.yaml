@@ -1,0 +1,18 @@
+packages:
+  - apps/hy-bff-fastify
+  - apps/hy-component-preview
+  - apps/hy-storybook
+  - packages/hy-ai-tools
+  - packages/hy-component-template
+  - packages/hy-design-system
+  - packages/hy-eslint-config
+  - packages/hy-jest-config
+  - packages/hy-prettify-config
+  - packages/hy-tokens
+  - packages/hy-theme-provider
+  - packages/hy-tsdown-config
+  - packages/hy-typescript-config
+
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver

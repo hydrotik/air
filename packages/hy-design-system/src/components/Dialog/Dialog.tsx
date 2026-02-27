@@ -1,0 +1,94 @@
+import React from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import {
+  dialogOverlay,
+  dialogContent,
+  dialogHeader,
+  dialogFooter,
+  dialogTitle,
+  dialogDescription,
+  dialogClose,
+} from './Dialog.css';
+
+export const Dialog = DialogPrimitive.Root;
+export const DialogTrigger = DialogPrimitive.Trigger;
+export const DialogPortal = DialogPrimitive.Portal;
+export const DialogClose = DialogPrimitive.Close;
+
+export const DialogOverlay = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Overlay
+    ref={ref}
+    className={[dialogOverlay, className].filter(Boolean).join(' ')}
+    {...props}
+  />
+));
+DialogOverlay.displayName = 'DialogOverlay';
+
+export interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  showClose?: boolean;
+}
+
+export const DialogContent = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Content>,
+  DialogContentProps
+>(({ className, children, showClose = true, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={[dialogContent, className].filter(Boolean).join(' ')}
+      {...props}
+    >
+      {children}
+      {showClose && (
+        <DialogPrimitive.Close className={dialogClose} aria-label="Close dialog">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
+            <path
+              d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
+              fill="currentColor"
+            />
+          </svg>
+        </DialogPrimitive.Close>
+      )}
+    </DialogPrimitive.Content>
+  </DialogPortal>
+));
+DialogContent.displayName = 'DialogContent';
+
+export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={[dialogHeader, className].filter(Boolean).join(' ')} {...props} />
+);
+DialogHeader.displayName = 'DialogHeader';
+
+export const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={[dialogFooter, className].filter(Boolean).join(' ')} {...props} />
+);
+DialogFooter.displayName = 'DialogFooter';
+
+export const DialogTitle = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Title
+    ref={ref}
+    className={[dialogTitle, className].filter(Boolean).join(' ')}
+    {...props}
+  />
+));
+DialogTitle.displayName = 'DialogTitle';
+
+export const DialogDescription = React.forwardRef<
+  React.ComponentRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description
+    ref={ref}
+    className={[dialogDescription, className].filter(Boolean).join(' ')}
+    {...props}
+  />
+));
+DialogDescription.displayName = 'DialogDescription';

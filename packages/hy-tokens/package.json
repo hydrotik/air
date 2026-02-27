@@ -1,0 +1,37 @@
+{
+  "name": "@hydrotik/tokens",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsdown --config tsdown.config.mjs",
+    "dev": "tsdown --config tsdown.config.mjs --watch",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "^1.18.0"
+  },
+  "devDependencies": {
+    "@hydrotik/tsdown-config": "workspace:*",
+    "@hydrotik/typescript-config": "workspace:*",
+    "typescript": "~5.9.3"
+  }
+}
