@@ -142,3 +142,68 @@ export const navLinkActive = style({
   color: vars.color.text,
   backgroundColor: vars.color.secondary,
 });
+
+/* ─── Input group helpers ─── */
+
+/**
+ * Prefix/suffix addon that sits flush next to an Input.
+ * Matches Input token values: height, border, bg, font, shadow.
+ */
+export const inputAddon = style({
+  display: 'flex',
+  alignItems: 'center',
+  whiteSpace: 'nowrap',
+  height: vars.space['8'],
+  padding: `0 ${vars.space['2_5']}`,
+  fontSize: vars.font.size.sm,
+  color: vars.color.textMuted,
+  backgroundColor: vars.color.input,
+  border: `1px solid ${vars.color.border}`,
+  boxSizing: 'border-box',
+});
+
+export const inputAddonStart = style({
+  borderRadius: `${vars.radii.md} 0 0 ${vars.radii.md}`,
+  borderRight: 'none',
+});
+
+export const inputAddonEnd = style({
+  borderRadius: `0 ${vars.radii.md} ${vars.radii.md} 0`,
+  borderLeft: 'none',
+});
+
+/** Input that sits in the middle of a group (no border-radius) */
+export const inputGroupMiddle = style({
+  borderRadius: '0 !important',
+  flex: 1,
+});
+
+/** Input that starts a group (right side flush) */
+export const inputGroupStart = style({
+  borderRadius: `${vars.radii.md} 0 0 ${vars.radii.md} !important`,
+  flex: 1,
+});
+
+/** Input that ends a group (left side flush) */
+export const inputGroupEnd = style({
+  borderRadius: `0 ${vars.radii.md} ${vars.radii.md} 0 !important`,
+  flex: 1,
+});
+
+/** Wrapper border that contains a textarea + toolbar */
+export const fieldContainer = style({
+  borderRadius: vars.radii.lg,
+  border: `1px solid ${vars.color.border}`,
+  overflow: 'hidden',
+});
+
+/** Toolbar row below a textarea in a field container */
+export const fieldToolbar = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space['1'],
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
+  borderTop: `1px solid color-mix(in srgb, ${vars.color.border} 50%, transparent)`,
+  fontSize: vars.font.size.xs,
+  color: vars.color.textMuted,
+});

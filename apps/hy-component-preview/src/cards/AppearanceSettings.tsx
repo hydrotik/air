@@ -3,45 +3,46 @@ import {
   Label, RadioGroup, RadioGroupItem, Input, Switch, Button, Separator,
 } from '@hydrotik/design-system';
 import { Minus, Plus } from 'lucide-react';
+import { vars } from '@hydrotik/tokens';
 
 /** Appearance settings card — matches shadcn appearance-settings.tsx */
 export function AppearanceSettings() {
   const [gpuCount, setGpuCount] = useState(8);
   const [env, setEnv] = useState('kubernetes');
 
+  const radioCardStyle = (selected: boolean): React.CSSProperties => ({
+    display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px',
+    borderRadius: '8px',
+    border: `1px solid ${selected ? vars.color.primary : vars.color.border}`,
+    cursor: 'pointer',
+    opacity: selected ? 1 : 0.6,
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* Compute Environment */}
       <div>
         <div style={{ fontSize: '14px', fontWeight: 600 }}>Compute Environment</div>
-        <div style={{ fontSize: '12px', opacity: 0.5, marginTop: '2px' }}>
+        <div style={{ fontSize: '12px', color: vars.color.textMuted, marginTop: '2px' }}>
           Select the compute environment for your cluster.
         </div>
       </div>
 
       <RadioGroup value={env} onValueChange={setEnv}>
-        <label style={{
-          display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px',
-          borderRadius: '8px', border: `1px solid ${env === 'kubernetes' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'}`,
-          cursor: 'pointer',
-        }}>
+        <label style={radioCardStyle(env === 'kubernetes')}>
           <RadioGroupItem value="kubernetes" style={{ marginTop: '2px' }} />
           <div>
             <div style={{ fontSize: '14px', fontWeight: 500 }}>Kubernetes</div>
-            <div style={{ fontSize: '12px', opacity: 0.5 }}>
+            <div style={{ fontSize: '12px', color: vars.color.textMuted }}>
               Run GPU workloads on a K8s configured cluster. This is the default.
             </div>
           </div>
         </label>
-        <label style={{
-          display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px',
-          borderRadius: '8px', border: `1px solid ${env === 'vm' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)'}`,
-          cursor: 'pointer', opacity: 0.6,
-        }}>
+        <label style={radioCardStyle(env === 'vm')}>
           <RadioGroupItem value="vm" style={{ marginTop: '2px' }} />
           <div>
             <div style={{ fontSize: '14px', fontWeight: 500 }}>Virtual Machine</div>
-            <div style={{ fontSize: '12px', opacity: 0.5 }}>
+            <div style={{ fontSize: '12px', color: vars.color.textMuted }}>
               Access a VM configured cluster to run workloads. (Coming soon)
             </div>
           </div>
@@ -53,9 +54,9 @@ export function AppearanceSettings() {
       {/* Number of GPUs with +/- buttons */}
       <div>
         <div style={{ fontSize: '14px', fontWeight: 600 }}>Number of GPUs</div>
-        <div style={{ fontSize: '12px', opacity: 0.5, marginTop: '2px' }}>You can add more later.</div>
+        <div style={{ fontSize: '12px', color: vars.color.textMuted, marginTop: '2px' }}>You can add more later.</div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <Button
           variant="outline"
           size="icon-sm"
@@ -93,7 +94,7 @@ export function AppearanceSettings() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <div style={{ fontSize: '14px', fontWeight: 500 }}>Wallpaper Tinting</div>
-          <div style={{ fontSize: '12px', opacity: 0.5 }}>Allow the wallpaper to be tinted.</div>
+          <div style={{ fontSize: '12px', color: vars.color.textMuted }}>Allow the wallpaper to be tinted.</div>
         </div>
         <Switch defaultChecked />
       </div>

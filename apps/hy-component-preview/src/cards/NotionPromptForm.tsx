@@ -1,27 +1,22 @@
 import React from 'react';
 import { Textarea, Button, Badge } from '@hydrotik/design-system';
 import { Paperclip, ArrowUp, Plus, Globe } from 'lucide-react';
+import * as s from '../App.css';
 
 /** Simplified prompt form — inspired by shadcn notion-prompt-form.tsx */
 export function NotionPromptForm() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Label style={{ fontSize: '14px', fontWeight: 600 }}>Prompt</Label>
+      <div style={{ fontSize: '14px', fontWeight: 600 }}>Prompt</div>
 
       {/* Textarea with toolbar */}
-      <div style={{
-        borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)',
-        overflow: 'hidden',
-      }}>
+      <div className={s.fieldContainer}>
         <Textarea
           placeholder="Add context"
           rows={3}
           style={{ border: 'none', borderRadius: '8px 8px 0 0', resize: 'none' }}
         />
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '4px', padding: '8px',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-        }}>
+        <div className={s.fieldToolbar}>
           <Button variant="ghost" size="icon-sm" aria-label="Mention">
             <Plus size={14} />
           </Button>
@@ -42,8 +37,4 @@ export function NotionPromptForm() {
       </div>
     </div>
   );
-}
-
-function Label({ children, style: s }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return <div style={s}>{children}</div>;
 }

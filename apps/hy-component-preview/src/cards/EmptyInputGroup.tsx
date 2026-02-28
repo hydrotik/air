@@ -1,6 +1,11 @@
 import React from 'react';
 import { Input, Kbd } from '@hydrotik/design-system';
 import { Search } from 'lucide-react';
+import * as s from '../App.css';
+
+function cx(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
 
 /** 404 search — matches shadcn empty-input-group.tsx */
 export function EmptyInputGroup() {
@@ -13,17 +18,13 @@ export function EmptyInputGroup() {
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <span style={{
-          display: 'flex', alignItems: 'center', padding: '0 10px', height: '32px',
-          borderRadius: '6px 0 0 6px', border: '1px solid rgba(255,255,255,0.1)', borderRight: 'none',
-        }}>
-          <Search size={14} style={{ opacity: 0.5 }} />
+        <span className={cx(s.inputAddon, s.inputAddonStart)}>
+          <Search size={14} />
         </span>
-        <Input placeholder="" style={{ borderRadius: '0', flex: 1 }} />
-        <span style={{
-          display: 'flex', alignItems: 'center', padding: '0 8px', height: '32px',
-          borderRadius: '0 6px 6px 0', border: '1px solid rgba(255,255,255,0.1)', borderLeft: 'none',
-        }}>
+        <div style={{ flex: 1 }}>
+          <Input placeholder="" className={s.inputGroupMiddle} fullWidth />
+        </div>
+        <span className={cx(s.inputAddon, s.inputAddonEnd)}>
           <Kbd>/</Kbd>
         </span>
       </div>
