@@ -202,7 +202,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 - recharts v3 for charts (area, bar, pie/donut)
 - Port `3100` via `@hydrotik/config`
 - SPA fallback configured (`appType: 'spa'` in vite.config.ts)
-- **Playwright E2E tests** — 49 tests across 6 spec files (navigation, home cards, sink, ecommerce, plugin, theme)
+- **Playwright E2E tests** — 47 tests across 5 spec files (navigation, datagrid, ecommerce, plugin, theme)
 
 Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
 Test: `pnpm turbo run e2e --filter=@hydrotik/component-preview`
