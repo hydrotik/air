@@ -3379,7 +3379,7 @@ const tableWrapper = (0, _vanilla_extract_css.style)({
 	width: "100%",
 	overflowX: "auto"
 });
-const table = (0, _vanilla_extract_css.style)({
+const table$1 = (0, _vanilla_extract_css.style)({
 	width: "100%",
 	borderCollapse: "collapse",
 	captionSide: "bottom",
@@ -3436,7 +3436,7 @@ const TableWrapper = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_
 TableWrapper.displayName = "TableWrapper";
 const Table = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("table", {
 	ref,
-	className: [table, className].filter(Boolean).join(" "),
+	className: [table$1, className].filter(Boolean).join(" "),
 	...props
 }));
 Table.displayName = "Table";
@@ -4090,6 +4090,1824 @@ const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
 const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 
 //#endregion
+//#region src/components/DataGrid/core.ts
+function functionalUpdate(updater, old) {
+	return typeof updater === "function" ? updater(old) : updater;
+}
+function getDeepValue(obj, path) {
+	return path.split(".").reduce((acc, part) => acc?.[part], obj);
+}
+const sortingFns = {
+	alphanumeric: (rowA, rowB, columnId) => {
+		const a = String(rowA.getValue(columnId) ?? "").toLowerCase();
+		const b = String(rowB.getValue(columnId) ?? "").toLowerCase();
+		return a.localeCompare(b, void 0, {
+			numeric: true,
+			sensitivity: "base"
+		});
+	},
+	text: (rowA, rowB, columnId) => {
+		const a = String(rowA.getValue(columnId) ?? "").toLowerCase();
+		const b = String(rowB.getValue(columnId) ?? "").toLowerCase();
+		return a < b ? -1 : a > b ? 1 : 0;
+	},
+	datetime: (rowA, rowB, columnId) => {
+		const a = rowA.getValue(columnId);
+		const b = rowB.getValue(columnId);
+		return (a instanceof Date ? a.getTime() : Number(a) || 0) - (b instanceof Date ? b.getTime() : Number(b) || 0);
+	},
+	basic: (rowA, rowB, columnId) => {
+		const a = rowA.getValue(columnId);
+		const b = rowB.getValue(columnId);
+		return a < b ? -1 : a > b ? 1 : 0;
+	}
+};
+const filterFns = {
+	includesString: (row, columnId, filterValue) => {
+		return String(row.getValue(columnId) ?? "").toLowerCase().includes(String(filterValue).toLowerCase());
+	},
+	equalsString: (row, columnId, filterValue) => {
+		return String(row.getValue(columnId) ?? "").toLowerCase() === String(filterValue).toLowerCase();
+	},
+	inNumberRange: (row, columnId, filterValue) => {
+		const val = Number(row.getValue(columnId));
+		const [min, max] = filterValue;
+		return (min === void 0 || val >= min) && (max === void 0 || val <= max);
+	},
+	equals: (row, columnId, filterValue) => {
+		return row.getValue(columnId) === filterValue;
+	},
+	arrIncludes: (row, columnId, filterValue) => {
+		const val = row.getValue(columnId);
+		return Array.isArray(val) && val.includes(filterValue);
+	}
+};
+function getDefaultState() {
+	return {
+		sorting: [],
+		columnFilters: [],
+		globalFilter: "",
+		pagination: {
+			pageIndex: 0,
+			pageSize: 10
+		},
+		rowSelection: {},
+		columnVisibility: {},
+		columnSizing: {},
+		columnSizingInfo: {
+			isResizingColumn: false,
+			startOffset: null,
+			startSize: null,
+			deltaOffset: null,
+			columnSizingStart: []
+		},
+		columnOrder: [],
+		expanded: {},
+		editing: {
+			rowId: null,
+			columnId: null
+		},
+		grouping: []
+	};
+}
+const DEFAULT_COLUMN_SIZE = 150;
+const DEFAULT_MIN_SIZE = 40;
+const DEFAULT_MAX_SIZE = Number.MAX_SAFE_INTEGER;
+function resolveColumns(columnDefs, table, depth = 0, parent) {
+	const defaultColumn = table.options.defaultColumn ?? {};
+	return columnDefs.map((def) => {
+		const merged = {
+			...defaultColumn,
+			...def
+		};
+		let accessorFn;
+		if (merged.accessorFn) accessorFn = merged.accessorFn;
+		else if (merged.accessorKey) {
+			const key = merged.accessorKey;
+			accessorFn = key.includes(".") ? (row) => getDeepValue(row, key) : (row) => row[key];
+		}
+		const column = {
+			...merged,
+			depth,
+			parent,
+			childColumns: [],
+			getAccessorFn: () => accessorFn,
+			getSize: () => {
+				const sizing = table.getState().columnSizing;
+				return Math.min(Math.max(merged.minSize ?? DEFAULT_MIN_SIZE, sizing[merged.id] ?? merged.size ?? DEFAULT_COLUMN_SIZE), merged.maxSize ?? DEFAULT_MAX_SIZE);
+			},
+			getIsSorted: () => {
+				const sort = table.getState().sorting.find((s) => s.id === merged.id);
+				return sort ? sort.desc ? "desc" : "asc" : false;
+			},
+			getSortIndex: () => table.getState().sorting.findIndex((s) => s.id === merged.id),
+			toggleSorting: (desc, multi) => {
+				if (!(merged.enableSorting ?? table.options.enableSorting ?? true) || !accessorFn) return;
+				table.setSorting((old) => {
+					const existingIdx = old.findIndex((s) => s.id === merged.id);
+					const existing = existingIdx >= 0 ? old[existingIdx] : null;
+					const nextDesc = desc ?? (existing ? !existing.desc : merged.sortDescFirst ?? false);
+					if (multi && (table.options.enableMultiSort ?? true)) {
+						if (existing) {
+							if (desc === void 0 && existing.desc === nextDesc) return old.filter((s) => s.id !== merged.id);
+							return old.map((s) => s.id === merged.id ? {
+								...s,
+								desc: nextDesc
+							} : s);
+						}
+						const newSorting = [...old, {
+							id: merged.id,
+							desc: nextDesc
+						}];
+						const maxCols = table.options.maxMultiSortColCount ?? Infinity;
+						return newSorting.slice(-maxCols);
+					}
+					if (existing && desc === void 0) {
+						if (existing.desc) return [];
+						return [{
+							id: merged.id,
+							desc: true
+						}];
+					}
+					return [{
+						id: merged.id,
+						desc: nextDesc
+					}];
+				});
+			},
+			getCanSort: () => (merged.enableSorting ?? true) && (table.options.enableSorting ?? true) && !!accessorFn,
+			getCanResize: () => (merged.enableResizing ?? true) && (table.options.enableColumnResizing ?? true),
+			getCanFilter: () => (merged.enableFiltering ?? true) && (table.options.enableColumnFilters ?? true) && !!accessorFn,
+			getIsVisible: () => {
+				return table.getState().columnVisibility[merged.id] !== false;
+			},
+			toggleVisibility: (value) => {
+				table.setColumnVisibility((old) => ({
+					...old,
+					[merged.id]: value ?? !column.getIsVisible()
+				}));
+			},
+			getFilterValue: () => table.getState().columnFilters.find((f) => f.id === merged.id)?.value,
+			setFilterValue: (value) => {
+				table.setColumnFilters((old) => {
+					const existing = old.find((f) => f.id === merged.id);
+					if (value === void 0 || value === "" || value === null) return old.filter((f) => f.id !== merged.id);
+					if (existing) return old.map((f) => f.id === merged.id ? {
+						...f,
+						value
+					} : f);
+					return [...old, {
+						id: merged.id,
+						value
+					}];
+				});
+			},
+			getLeafColumns: () => {
+				if (column.childColumns.length) return column.childColumns.flatMap((c) => c.getLeafColumns());
+				return [column];
+			}
+		};
+		if (merged.columns?.length) column.childColumns = resolveColumns(merged.columns, table, depth + 1, column);
+		return column;
+	});
+}
+function createRow(table, original, index, id, depth, parentRow, subRows = []) {
+	const columns = table.getAllFlatColumns();
+	const valueCache = {};
+	const row = {
+		id,
+		index,
+		original,
+		depth,
+		parentRow,
+		subRows,
+		getValue: (columnId) => {
+			if (columnId in valueCache) return valueCache[columnId];
+			const accessor = columns.find((c) => c.id === columnId)?.getAccessorFn();
+			const value = accessor ? accessor(original, index) : void 0;
+			valueCache[columnId] = value;
+			return value;
+		},
+		renderValue: (columnId) => {
+			return row.getValue(columnId) ?? table.options.renderFallbackValue ?? null;
+		},
+		getIsSelected: () => {
+			return table.getState().rowSelection[id] ?? false;
+		},
+		toggleSelected: (value) => {
+			const enableSelection = table.options.enableRowSelection;
+			if (enableSelection === false) return;
+			if (typeof enableSelection === "function" && !enableSelection(row)) return;
+			table.setRowSelection((old) => {
+				if (value ?? !old[id]) {
+					if (table.options.enableMultiRowSelection === false) return { [id]: true };
+					return {
+						...old,
+						[id]: true
+					};
+				}
+				const { [id]: _, ...rest } = old;
+				return rest;
+			});
+		},
+		getIsExpanded: () => {
+			const expanded = table.getState().expanded;
+			if (expanded === true) return true;
+			return expanded[id] ?? false;
+		},
+		toggleExpanded: (value) => {
+			table.setExpanded((old) => {
+				if (old === true) return { [id]: value ?? false };
+				if (value ?? !old[id]) return {
+					...old,
+					[id]: true
+				};
+				const { [id]: _, ...rest } = old;
+				return rest;
+			});
+		},
+		getCanSelect: () => {
+			const opt = table.options.enableRowSelection;
+			if (opt === false) return false;
+			if (typeof opt === "function") return opt(row);
+			return true;
+		},
+		getIsEditing: () => {
+			return table.getState().editing.rowId === id;
+		}
+	};
+	return row;
+}
+function buildCoreRowModel(table) {
+	const data = table.options.data;
+	const getRowId = table.options.getRowId;
+	const getSubRows = table.options.getSubRows;
+	const rows = [];
+	const flatRows = [];
+	const rowsById = {};
+	const buildRows = (data, depth, parentRow) => {
+		return data.map((original, index) => {
+			const id = getRowId ? getRowId(original, index, parentRow) : parentRow ? `${parentRow.id}.${index}` : String(index);
+			const row = createRow(table, original, index, id, depth, parentRow);
+			flatRows.push(row);
+			rowsById[id] = row;
+			const subData = getSubRows?.(original);
+			if (subData?.length) row.subRows = buildRows(subData, depth + 1, row);
+			return row;
+		});
+	};
+	const builtRows = buildRows(data, 0);
+	rows.push(...builtRows);
+	return {
+		rows,
+		flatRows,
+		rowsById
+	};
+}
+function buildFilteredRowModel(table) {
+	if (table.options.manualFiltering) return table.getCoreRowModel();
+	const coreModel = table.getCoreRowModel();
+	const columnFilters = table.getState().columnFilters;
+	const globalFilter = table.getState().globalFilter;
+	const columns = table.getAllFlatColumns();
+	if (!columnFilters.length && !globalFilter) return coreModel;
+	const resolvedFilters = columnFilters.map((filter) => {
+		const col = columns.find((c) => c.id === filter.id);
+		if (!col) return null;
+		return {
+			column: col,
+			filterFn: col.filterFn ?? filterFns.includesString,
+			value: filter.value
+		};
+	}).filter(Boolean);
+	const globalFilterFn = table.options.globalFilterFn ?? filterFns.includesString;
+	const filterRow = (row) => {
+		for (const f of resolvedFilters) if (!f.filterFn(row, f.column.id, f.value)) return false;
+		if (globalFilter) {
+			if (!columns.some((col) => {
+				if (!col.getAccessorFn()) return false;
+				return globalFilterFn(row, col.id, globalFilter);
+			})) return false;
+		}
+		return true;
+	};
+	const filteredRows = [];
+	const filteredFlatRows = [];
+	const filteredById = {};
+	const recurse = (rows) => {
+		return rows.filter((row) => {
+			let subRowsPass = false;
+			if (row.subRows.length) {
+				const filteredSubs = recurse(row.subRows);
+				if (filteredSubs.length) {
+					subRowsPass = true;
+					row = {
+						...row,
+						subRows: filteredSubs
+					};
+				}
+			}
+			const passes = subRowsPass || filterRow(row);
+			if (passes) {
+				filteredFlatRows.push(row);
+				filteredById[row.id] = row;
+			}
+			return passes;
+		});
+	};
+	filteredRows.push(...recurse(coreModel.rows));
+	return {
+		rows: filteredRows,
+		flatRows: filteredFlatRows,
+		rowsById: filteredById
+	};
+}
+function buildSortedRowModel(table) {
+	if (table.options.manualSorting) return table.getFilteredRowModel();
+	const filteredModel = table.getFilteredRowModel();
+	const sorting = table.getState().sorting;
+	if (!sorting.length) return filteredModel;
+	const columns = table.getAllFlatColumns();
+	const sortRow = (rowA, rowB) => {
+		for (const sort of sorting) {
+			const col = columns.find((c) => c.id === sort.id);
+			if (!col) continue;
+			const result = (col.sortingFn ?? sortingFns.basic)(rowA, rowB, sort.id);
+			if (result !== 0) return sort.desc ? -result : result;
+		}
+		return 0;
+	};
+	const sortRows = (rows) => {
+		return [...rows].sort(sortRow).map((row) => {
+			if (row.subRows.length) return {
+				...row,
+				subRows: sortRows(row.subRows)
+			};
+			return row;
+		});
+	};
+	const sortedRows = sortRows(filteredModel.rows);
+	const flatRows = flattenRows(sortedRows);
+	return {
+		rows: sortedRows,
+		flatRows,
+		rowsById: Object.fromEntries(flatRows.map((r) => [r.id, r]))
+	};
+}
+function buildPaginatedRowModel(table) {
+	if (table.options.manualPagination || table.options.enablePagination === false) return table.getSortedRowModel();
+	const sortedModel = table.getSortedRowModel();
+	const { pageIndex, pageSize } = table.getState().pagination;
+	const start = pageIndex * pageSize;
+	const end = start + pageSize;
+	const paginatedRows = sortedModel.rows.slice(start, end);
+	const flatRows = flattenRows(paginatedRows);
+	return {
+		rows: paginatedRows,
+		flatRows,
+		rowsById: Object.fromEntries(flatRows.map((r) => [r.id, r]))
+	};
+}
+function flattenRows(rows) {
+	const result = [];
+	const recurse = (rows) => {
+		rows.forEach((row) => {
+			result.push(row);
+			if (row.subRows?.length && row.getIsExpanded()) recurse(row.subRows);
+		});
+	};
+	recurse(rows);
+	return result;
+}
+function createDataGrid(options) {
+	const defaultState = getDefaultState();
+	const initialState = {
+		...defaultState,
+		...options.initialState,
+		pagination: {
+			...defaultState.pagination,
+			...options.initialState?.pagination
+		},
+		columnSizingInfo: {
+			...defaultState.columnSizingInfo,
+			...options.initialState?.columnSizingInfo
+		},
+		editing: {
+			...defaultState.editing,
+			...options.initialState?.editing
+		}
+	};
+	let _state = { ...initialState };
+	const getState = () => ({
+		..._state,
+		...options.state
+	});
+	const setState = (updater) => {
+		_state = functionalUpdate(updater, _state);
+		options.onStateChange?.(updater);
+	};
+	const makeUpdater = (key, onChange) => {
+		return (updater) => {
+			if (onChange) onChange(updater);
+			else setState((old) => ({
+				...old,
+				[key]: functionalUpdate(updater, old[key])
+			}));
+		};
+	};
+	let _allColumns = null;
+	let _flatColumns = null;
+	let _coreRowModel = null;
+	let _filteredRowModel = null;
+	let _sortedRowModel = null;
+	let _paginatedRowModel = null;
+	const table = {
+		options,
+		initialState,
+		getState,
+		setState,
+		reset: () => {
+			_state = { ...initialState };
+		},
+		getAllColumns: () => {
+			if (!_allColumns) _allColumns = resolveColumns(options.columns, table);
+			return _allColumns;
+		},
+		getAllFlatColumns: () => {
+			if (!_flatColumns) _flatColumns = table.getAllColumns().flatMap((c) => c.getLeafColumns());
+			return _flatColumns;
+		},
+		getAllLeafColumns: () => table.getAllFlatColumns(),
+		getVisibleLeafColumns: () => {
+			const order = getState().columnOrder;
+			let cols = table.getAllLeafColumns().filter((c) => c.getIsVisible());
+			if (order.length) {
+				const ordered = order.map((id) => cols.find((c) => c.id === id)).filter(Boolean);
+				const remaining = cols.filter((c) => !order.includes(c.id));
+				cols = [...ordered, ...remaining];
+			}
+			return cols;
+		},
+		getColumn: (id) => table.getAllFlatColumns().find((c) => c.id === id),
+		getHeaderGroups: () => {
+			const allColumns = table.getAllColumns();
+			const maxDepth = Math.max(0, ...allColumns.map(getMaxDepth));
+			const groups = [];
+			for (let depth = 0; depth <= maxDepth; depth++) {
+				const headers = getColumnsAtDepth(allColumns, depth, maxDepth);
+				groups.push({
+					id: `header-${depth}`,
+					depth,
+					headers
+				});
+			}
+			return groups;
+		},
+		getCoreRowModel: () => {
+			if (!_coreRowModel) _coreRowModel = buildCoreRowModel(table);
+			return _coreRowModel;
+		},
+		getFilteredRowModel: () => {
+			if (!_filteredRowModel) _filteredRowModel = buildFilteredRowModel(table);
+			return _filteredRowModel;
+		},
+		getSortedRowModel: () => {
+			if (!_sortedRowModel) _sortedRowModel = buildSortedRowModel(table);
+			return _sortedRowModel;
+		},
+		getPaginatedRowModel: () => {
+			if (!_paginatedRowModel) _paginatedRowModel = buildPaginatedRowModel(table);
+			return _paginatedRowModel;
+		},
+		getRowModel: () => table.getPaginatedRowModel(),
+		getPrePaginationRowModel: () => table.getSortedRowModel(),
+		getRow: (id) => {
+			const row = table.getRowModel().rowsById[id] ?? table.getCoreRowModel().rowsById[id];
+			if (!row) throw new Error(`Row with id "${id}" not found`);
+			return row;
+		},
+		setSorting: makeUpdater("sorting", options.onSortingChange),
+		resetSorting: () => table.setSorting(initialState.sorting),
+		setColumnFilters: makeUpdater("columnFilters", options.onColumnFiltersChange),
+		resetColumnFilters: () => table.setColumnFilters([]),
+		setGlobalFilter: (value) => {
+			if (options.onGlobalFilterChange) options.onGlobalFilterChange(() => value);
+			else setState((old) => ({
+				...old,
+				globalFilter: value
+			}));
+		},
+		resetGlobalFilter: () => table.setGlobalFilter(""),
+		setPagination: makeUpdater("pagination", options.onPaginationChange),
+		setPageIndex: (updater) => {
+			table.setPagination((old) => {
+				const newIndex = functionalUpdate(updater, old.pageIndex);
+				const maxPage = Math.max(0, table.getPageCount() - 1);
+				return {
+					...old,
+					pageIndex: Math.max(0, Math.min(newIndex, maxPage))
+				};
+			});
+		},
+		setPageSize: (updater) => {
+			table.setPagination((old) => {
+				const newSize = Math.max(1, functionalUpdate(updater, old.pageSize));
+				const topRow = old.pageIndex * old.pageSize;
+				return {
+					...old,
+					pageSize: newSize,
+					pageIndex: Math.floor(topRow / newSize)
+				};
+			});
+		},
+		getPageCount: () => {
+			if (options.pageCount !== void 0) return options.pageCount;
+			const totalRows = options.rowCount ?? table.getPrePaginationRowModel().rows.length;
+			return Math.ceil(totalRows / getState().pagination.pageSize);
+		},
+		getCanPreviousPage: () => getState().pagination.pageIndex > 0,
+		getCanNextPage: () => {
+			const pc = table.getPageCount();
+			return pc === -1 || getState().pagination.pageIndex < pc - 1;
+		},
+		previousPage: () => table.setPageIndex((old) => old - 1),
+		nextPage: () => table.setPageIndex((old) => old + 1),
+		firstPage: () => table.setPageIndex(0),
+		lastPage: () => table.setPageIndex(table.getPageCount() - 1),
+		resetPagination: () => table.setPagination(initialState.pagination),
+		setRowSelection: makeUpdater("rowSelection", options.onRowSelectionChange),
+		resetRowSelection: () => table.setRowSelection({}),
+		getIsAllRowsSelected: () => {
+			const rows = table.getFilteredRowModel().flatRows.filter((r) => r.getCanSelect());
+			const selection = getState().rowSelection;
+			return rows.length > 0 && rows.every((r) => selection[r.id]);
+		},
+		getIsAllPageRowsSelected: () => {
+			const rows = table.getRowModel().flatRows.filter((r) => r.getCanSelect());
+			const selection = getState().rowSelection;
+			return rows.length > 0 && rows.every((r) => selection[r.id]);
+		},
+		getIsSomeRowsSelected: () => {
+			const selection = getState().rowSelection;
+			return Object.keys(selection).length > 0 && !table.getIsAllRowsSelected();
+		},
+		getIsSomePageRowsSelected: () => {
+			return !table.getIsAllPageRowsSelected() && table.getRowModel().flatRows.some((r) => r.getIsSelected());
+		},
+		toggleAllRowsSelected: (value) => {
+			const newValue = value ?? !table.getIsAllRowsSelected();
+			table.setRowSelection(() => {
+				if (!newValue) return {};
+				const selection = {};
+				table.getFilteredRowModel().flatRows.forEach((row) => {
+					if (row.getCanSelect()) selection[row.id] = true;
+				});
+				return selection;
+			});
+		},
+		toggleAllPageRowsSelected: (value) => {
+			const newValue = value ?? !table.getIsAllPageRowsSelected();
+			table.setRowSelection((old) => {
+				const selection = { ...old };
+				table.getRowModel().rows.forEach((row) => {
+					if (row.getCanSelect()) if (newValue) selection[row.id] = true;
+					else delete selection[row.id];
+				});
+				return selection;
+			});
+		},
+		getSelectedRowModel: () => {
+			const selection = getState().rowSelection;
+			const selectedRows = table.getCoreRowModel().flatRows.filter((r) => selection[r.id]);
+			return {
+				rows: selectedRows,
+				flatRows: selectedRows,
+				rowsById: Object.fromEntries(selectedRows.map((r) => [r.id, r]))
+			};
+		},
+		setColumnVisibility: makeUpdater("columnVisibility", options.onColumnVisibilityChange),
+		resetColumnVisibility: () => table.setColumnVisibility({}),
+		setColumnSizing: makeUpdater("columnSizing", options.onColumnSizingChange),
+		setColumnSizingInfo: makeUpdater("columnSizingInfo", options.onColumnSizingInfoChange),
+		resetColumnSizing: () => table.setColumnSizing({}),
+		getTotalSize: () => table.getVisibleLeafColumns().reduce((sum, col) => sum + col.getSize(), 0),
+		setColumnOrder: makeUpdater("columnOrder", options.onColumnOrderChange),
+		resetColumnOrder: () => table.setColumnOrder([]),
+		setExpanded: makeUpdater("expanded", options.onExpandedChange),
+		resetExpanded: () => table.setExpanded({}),
+		toggleAllRowsExpanded: (value) => {
+			if (value ?? !table.getIsAllRowsExpanded()) table.setExpanded(true);
+			else table.setExpanded({});
+		},
+		getIsAllRowsExpanded: () => {
+			return table.getState().expanded === true;
+		},
+		getExpandedDepth: () => {
+			const expanded = getState().expanded;
+			if (expanded === true) return Infinity;
+			return Object.keys(expanded).length ? 1 : 0;
+		},
+		setEditing: makeUpdater("editing", options.onEditingChange),
+		startEditing: (rowId, columnId) => {
+			table.setEditing(() => ({
+				rowId,
+				columnId
+			}));
+		},
+		stopEditing: () => {
+			table.setEditing(() => ({
+				rowId: null,
+				columnId: null
+			}));
+		},
+		setGrouping: makeUpdater("grouping", options.onGroupingChange),
+		resetGrouping: () => table.setGrouping([])
+	};
+	return table;
+}
+function getMaxDepth(col) {
+	if (!col.childColumns.length) return col.depth;
+	return Math.max(...col.childColumns.map(getMaxDepth));
+}
+function getColumnsAtDepth(columns, targetDepth, maxDepth) {
+	const result = [];
+	for (const col of columns) if (col.depth === targetDepth) result.push(col);
+	else if (col.childColumns.length) result.push(...getColumnsAtDepth(col.childColumns, targetDepth, maxDepth));
+	else if (col.depth < targetDepth) result.push(col);
+	return result;
+}
+
+//#endregion
+//#region src/components/DataGrid/useDataGrid.ts
+/**
+* React hook that creates and manages a DataGrid instance.
+*
+* Inspired by TanStack Table's `useReactTable` — provides a headless,
+* fully typed table instance with automatic React state management.
+*
+* @example
+* ```tsx
+* const table = useDataGrid({
+*   data: myData,
+*   columns: myColumns,
+*   enableSorting: true,
+*   enablePagination: true,
+* });
+* ```
+*/
+function useDataGrid(options) {
+	const [tableRef] = react.default.useState(() => ({ current: createDataGrid({
+		...options,
+		state: {},
+		onStateChange: () => {}
+	}) }));
+	const [state, setState] = react.default.useState(() => tableRef.current.initialState);
+	return react.default.useMemo(() => {
+		return createDataGrid({
+			...options,
+			state: {
+				...state,
+				...options.state
+			},
+			onStateChange: (updater) => {
+				setState((old) => {
+					return typeof updater === "function" ? updater(old) : updater;
+				});
+				options.onStateChange?.(updater);
+			},
+			onSortingChange: (updater) => {
+				setState((old) => ({
+					...old,
+					sorting: typeof updater === "function" ? updater(old.sorting) : updater
+				}));
+				options.onSortingChange?.(updater);
+			},
+			onColumnFiltersChange: (updater) => {
+				setState((old) => ({
+					...old,
+					columnFilters: typeof updater === "function" ? updater(old.columnFilters) : updater,
+					pagination: {
+						...old.pagination,
+						pageIndex: 0
+					}
+				}));
+				options.onColumnFiltersChange?.(updater);
+			},
+			onGlobalFilterChange: (updater) => {
+				setState((old) => ({
+					...old,
+					globalFilter: typeof updater === "function" ? updater(old.globalFilter) : updater,
+					pagination: {
+						...old.pagination,
+						pageIndex: 0
+					}
+				}));
+				options.onGlobalFilterChange?.(updater);
+			},
+			onPaginationChange: (updater) => {
+				setState((old) => ({
+					...old,
+					pagination: typeof updater === "function" ? updater(old.pagination) : updater
+				}));
+				options.onPaginationChange?.(updater);
+			},
+			onRowSelectionChange: (updater) => {
+				setState((old) => ({
+					...old,
+					rowSelection: typeof updater === "function" ? updater(old.rowSelection) : updater
+				}));
+				options.onRowSelectionChange?.(updater);
+			},
+			onColumnVisibilityChange: (updater) => {
+				setState((old) => ({
+					...old,
+					columnVisibility: typeof updater === "function" ? updater(old.columnVisibility) : updater
+				}));
+				options.onColumnVisibilityChange?.(updater);
+			},
+			onColumnSizingChange: (updater) => {
+				setState((old) => ({
+					...old,
+					columnSizing: typeof updater === "function" ? updater(old.columnSizing) : updater
+				}));
+				options.onColumnSizingChange?.(updater);
+			},
+			onColumnSizingInfoChange: (updater) => {
+				setState((old) => ({
+					...old,
+					columnSizingInfo: typeof updater === "function" ? updater(old.columnSizingInfo) : updater
+				}));
+				options.onColumnSizingInfoChange?.(updater);
+			},
+			onColumnOrderChange: (updater) => {
+				setState((old) => ({
+					...old,
+					columnOrder: typeof updater === "function" ? updater(old.columnOrder) : updater
+				}));
+				options.onColumnOrderChange?.(updater);
+			},
+			onExpandedChange: (updater) => {
+				setState((old) => ({
+					...old,
+					expanded: typeof updater === "function" ? updater(old.expanded) : updater
+				}));
+				options.onExpandedChange?.(updater);
+			},
+			onEditingChange: (updater) => {
+				setState((old) => ({
+					...old,
+					editing: typeof updater === "function" ? updater(old.editing) : updater
+				}));
+				options.onEditingChange?.(updater);
+			},
+			onGroupingChange: (updater) => {
+				setState((old) => ({
+					...old,
+					grouping: typeof updater === "function" ? updater(old.grouping) : updater
+				}));
+				options.onGroupingChange?.(updater);
+			}
+		});
+	}, [
+		options.columns,
+		options.data,
+		state,
+		options.state
+	]);
+}
+
+//#endregion
+//#region src/components/DataGrid/DataGrid.css.ts
+const gridContainer = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	width: "100%",
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	overflow: "hidden",
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	color: _hydrotik_tokens.vars.color.text
+});
+const toolbar = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	flexWrap: "wrap"
+});
+const toolbarLeft = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	flex: 1,
+	minWidth: 0
+});
+const toolbarRight = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"]
+});
+const searchInput = (0, _vanilla_extract_css.style)({
+	height: "32px",
+	minWidth: "180px",
+	maxWidth: "300px",
+	padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	backgroundColor: _hydrotik_tokens.vars.color.input,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	outline: "none",
+	transition: `border-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	"::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
+	":focus": {
+		borderColor: _hydrotik_tokens.vars.color.focusRing,
+		boxShadow: `0 0 0 1px ${_hydrotik_tokens.vars.color.focusRing}`
+	}
+});
+const toolbarButton = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	gap: _hydrotik_tokens.vars.space["1"],
+	height: "32px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2_5"]}`,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	backgroundColor: "transparent",
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	cursor: "pointer",
+	whiteSpace: "nowrap",
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+	":active": { transform: "scale(0.97)" }
+});
+const selectionInfo = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	whiteSpace: "nowrap"
+});
+const tableScrollArea = (0, _vanilla_extract_css.style)({
+	overflow: "auto",
+	position: "relative"
+});
+const table = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	borderCollapse: "collapse",
+	tableLayout: "fixed"
+});
+const thead = (0, _vanilla_extract_css.style)({
+	position: "sticky",
+	top: 0,
+	zIndex: 2,
+	backgroundColor: _hydrotik_tokens.vars.color.surface
+});
+const headerRow = (0, _vanilla_extract_css.style)({ borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}` });
+const headerCell = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	height: "40px",
+	padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
+	textAlign: "left",
+	verticalAlign: "middle",
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	whiteSpace: "nowrap",
+	userSelect: "none",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	backgroundColor: _hydrotik_tokens.vars.color.surface
+});
+const headerCellSortable = (0, _vanilla_extract_css.style)({
+	cursor: "pointer",
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover }
+});
+const headerCellContent = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["1"],
+	overflow: "hidden"
+});
+const headerCellText = (0, _vanilla_extract_css.style)({
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	flex: 1
+});
+const sortIcon = (0, _vanilla_extract_css.style)({
+	flexShrink: 0,
+	opacity: .5,
+	transition: `opacity ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
+});
+const sortIconActive = (0, _vanilla_extract_css.style)({
+	opacity: 1,
+	color: _hydrotik_tokens.vars.color.primary
+});
+const sortIndex = (0, _vanilla_extract_css.style)({
+	fontSize: "10px",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	marginLeft: "-2px"
+});
+const resizeHandle = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: 0,
+	right: 0,
+	width: "6px",
+	height: "100%",
+	cursor: "col-resize",
+	zIndex: 1,
+	touchAction: "none",
+	"::after": {
+		content: "\"\"",
+		position: "absolute",
+		top: "25%",
+		right: "2px",
+		width: "2px",
+		height: "50%",
+		borderRadius: "1px",
+		backgroundColor: _hydrotik_tokens.vars.color.border,
+		transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`
+	},
+	":hover::after": { backgroundColor: _hydrotik_tokens.vars.color.primary },
+	selectors: { "&[data-resizing=\"true\"]::after": { backgroundColor: _hydrotik_tokens.vars.color.primary } }
+});
+const columnFilterRow = (0, _vanilla_extract_css.style)({ borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}` });
+const columnFilterCell = (0, _vanilla_extract_css.style)({ padding: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["2"]}` });
+const columnFilterInput = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	height: "28px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	backgroundColor: _hydrotik_tokens.vars.color.input,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	outline: "none",
+	"::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
+	":focus": { borderColor: _hydrotik_tokens.vars.color.focusRing }
+});
+const tbody = (0, _vanilla_extract_css.style)({});
+const bodyRow = (0, _vanilla_extract_css.style)({
+	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
+	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+	selectors: {
+		"&[data-selected=\"true\"]": { backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 8%, transparent)` },
+		"&[data-selected=\"true\"]:hover": { backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 12%, transparent)` },
+		"&:last-child": { borderBottom: "none" }
+	}
+});
+const bodyCell = (0, _vanilla_extract_css.style)({
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	verticalAlign: "middle",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	whiteSpace: "nowrap"
+});
+const bodyCellEditing = (0, _vanilla_extract_css.style)({ padding: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["2"]}` });
+const cellAlignLeft = (0, _vanilla_extract_css.style)({ textAlign: "left" });
+const cellAlignCenter = (0, _vanilla_extract_css.style)({ textAlign: "center" });
+const cellAlignRight = (0, _vanilla_extract_css.style)({ textAlign: "right" });
+const checkboxCell = (0, _vanilla_extract_css.style)({
+	width: "40px",
+	maxWidth: "40px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
+	textAlign: "center"
+});
+const checkbox = (0, _vanilla_extract_css.style)({
+	width: "16px",
+	height: "16px",
+	appearance: "none",
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	backgroundColor: "transparent",
+	cursor: "pointer",
+	position: "relative",
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	":checked": {
+		backgroundColor: _hydrotik_tokens.vars.color.primary,
+		borderColor: _hydrotik_tokens.vars.color.primary
+	},
+	":focus-visible": {
+		outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
+		outlineOffset: "2px"
+	},
+	selectors: {
+		"&:checked::after": {
+			content: "\"\"",
+			position: "absolute",
+			left: "4px",
+			top: "1px",
+			width: "6px",
+			height: "10px",
+			border: `solid ${_hydrotik_tokens.vars.color.primaryForeground}`,
+			borderWidth: "0 2px 2px 0",
+			transform: "rotate(45deg)"
+		},
+		"&[data-indeterminate=\"true\"]": {
+			backgroundColor: _hydrotik_tokens.vars.color.primary,
+			borderColor: _hydrotik_tokens.vars.color.primary
+		},
+		"&[data-indeterminate=\"true\"]::after": {
+			content: "\"\"",
+			position: "absolute",
+			left: "3px",
+			top: "6px",
+			width: "8px",
+			height: "2px",
+			backgroundColor: _hydrotik_tokens.vars.color.primaryForeground
+		}
+	}
+});
+const expanderButton = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "20px",
+	height: "20px",
+	border: "none",
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	backgroundColor: "transparent",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	cursor: "pointer",
+	padding: 0,
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	":hover": {
+		backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
+		color: _hydrotik_tokens.vars.color.text
+	}
+});
+const expanderIcon = (0, _vanilla_extract_css.style)({
+	transition: `transform ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	selectors: { "&[data-expanded=\"true\"]": { transform: "rotate(90deg)" } }
+});
+const pinnedLeft = (0, _vanilla_extract_css.style)({
+	position: "sticky",
+	left: 0,
+	zIndex: 1,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	"::after": {
+		content: "\"\"",
+		position: "absolute",
+		top: 0,
+		right: "-4px",
+		width: "4px",
+		height: "100%",
+		background: `linear-gradient(to right, ${_hydrotik_tokens.vars.color.border}, transparent)`
+	}
+});
+const pinnedRight = (0, _vanilla_extract_css.style)({
+	position: "sticky",
+	right: 0,
+	zIndex: 1,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	"::before": {
+		content: "\"\"",
+		position: "absolute",
+		top: 0,
+		left: "-4px",
+		width: "4px",
+		height: "100%",
+		background: `linear-gradient(to left, ${_hydrotik_tokens.vars.color.border}, transparent)`
+	}
+});
+const emptyState = (0, _vanilla_extract_css.style)({
+	padding: `${_hydrotik_tokens.vars.space["12"]} ${_hydrotik_tokens.vars.space["4"]}`,
+	textAlign: "center",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	fontSize: _hydrotik_tokens.vars.font.size.sm
+});
+const shimmer = (0, _vanilla_extract_css.keyframes)({
+	"0%": { backgroundPosition: "-200% 0" },
+	"100%": { backgroundPosition: "200% 0" }
+});
+const loadingRow = (0, _vanilla_extract_css.style)({
+	height: "41px",
+	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`
+});
+const loadingCell = (0, _vanilla_extract_css.style)({ padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}` });
+const loadingSkeleton = (0, _vanilla_extract_css.style)({
+	height: "16px",
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	background: `linear-gradient(90deg, ${_hydrotik_tokens.vars.color.ghostHover} 25%, color-mix(in srgb, ${_hydrotik_tokens.vars.color.ghostHover} 50%, transparent) 50%, ${_hydrotik_tokens.vars.color.ghostHover} 75%)`,
+	backgroundSize: "200% 100%",
+	animation: `${shimmer} 1.5s infinite`
+});
+const footer = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	padding: `${_hydrotik_tokens.vars.space["2"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	borderTop: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	gap: _hydrotik_tokens.vars.space["3"],
+	flexWrap: "wrap"
+});
+const footerLeft = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted
+});
+const footerRight = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["1"]
+});
+const paginationButton = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "32px",
+	height: "32px",
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	backgroundColor: "transparent",
+	color: _hydrotik_tokens.vars.color.text,
+	cursor: "pointer",
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	transition: `all ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+	":disabled": {
+		opacity: .5,
+		cursor: "not-allowed",
+		pointerEvents: "none"
+	},
+	selectors: { "&[data-active=\"true\"]": {
+		backgroundColor: _hydrotik_tokens.vars.color.primary,
+		color: _hydrotik_tokens.vars.color.primaryForeground,
+		borderColor: _hydrotik_tokens.vars.color.primary
+	} }
+});
+const pageSizeSelect = (0, _vanilla_extract_css.style)({
+	height: "32px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	backgroundColor: _hydrotik_tokens.vars.color.input,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	cursor: "pointer",
+	outline: "none",
+	":focus": { borderColor: _hydrotik_tokens.vars.color.focusRing }
+});
+const paginationInfo = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	whiteSpace: "nowrap",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`
+});
+const editInput = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	height: "28px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
+	border: `1px solid ${_hydrotik_tokens.vars.color.focusRing}`,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	backgroundColor: _hydrotik_tokens.vars.color.input,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	outline: "none",
+	boxShadow: `0 0 0 1px ${_hydrotik_tokens.vars.color.focusRing}`
+});
+const visibilityPanel = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: "100%",
+	right: 0,
+	zIndex: 10,
+	minWidth: "180px",
+	padding: _hydrotik_tokens.vars.space["2"],
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
+	boxShadow: _hydrotik_tokens.vars.shadow.lg,
+	marginTop: _hydrotik_tokens.vars.space["1"]
+});
+const visibilityItem = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	cursor: "pointer",
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover }
+});
+const groupedRow = (0, _vanilla_extract_css.style)({
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.secondary} 30%, transparent)`
+});
+const depthIndent = (0, _vanilla_extract_css.style)({ display: "inline-block" });
+const statusBar = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["4"],
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["3"]}`,
+	borderTop: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.secondary} 20%, transparent)`
+});
+const statusBarItem = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["1"]
+});
+const statusBarLabel = (0, _vanilla_extract_css.style)({ fontWeight: _hydrotik_tokens.vars.font.weight.medium });
+
+//#endregion
+//#region src/components/DataGrid/DataGrid.tsx
+function SortIndicator({ direction, index, showIndex }) {
+	if (!direction) return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+		className: sortIcon,
+		width: "14",
+		height: "14",
+		viewBox: "0 0 14 14",
+		fill: "none",
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+			d: "M7 3L10 6.5H4L7 3Z",
+			fill: "currentColor",
+			opacity: "0.4"
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+			d: "M7 11L4 7.5H10L7 11Z",
+			fill: "currentColor",
+			opacity: "0.4"
+		})]
+	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+		style: {
+			display: "inline-flex",
+			alignItems: "center"
+		},
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+			className: `${sortIcon} ${sortIconActive}`,
+			width: "14",
+			height: "14",
+			viewBox: "0 0 14 14",
+			fill: "none",
+			children: direction === "asc" ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+				d: "M7 3L10 7.5H4L7 3Z",
+				fill: "currentColor"
+			}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+				d: "M7 11L4 6.5H10L7 11Z",
+				fill: "currentColor"
+			})
+		}), showIndex && index >= 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: sortIndex,
+			children: index + 1
+		})]
+	});
+}
+function ResizeHandle({ column, table }) {
+	const isResizing = table.getState().columnSizingInfo.isResizingColumn === column.id;
+	const onMouseDown = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		const startX = e.clientX;
+		const startSize = column.getSize();
+		const onMouseMove = (e) => {
+			const delta = e.clientX - startX;
+			table.setColumnSizing((old) => ({
+				...old,
+				[column.id]: Math.max(column.minSize ?? 40, startSize + delta)
+			}));
+		};
+		const onMouseUp = () => {
+			document.removeEventListener("mousemove", onMouseMove);
+			document.removeEventListener("mouseup", onMouseUp);
+			table.setColumnSizingInfo((old) => ({
+				...old,
+				isResizingColumn: false
+			}));
+		};
+		table.setColumnSizingInfo((old) => ({
+			...old,
+			isResizingColumn: column.id,
+			startOffset: startX,
+			startSize
+		}));
+		document.addEventListener("mousemove", onMouseMove);
+		document.addEventListener("mouseup", onMouseUp);
+	};
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: resizeHandle,
+		"data-resizing": isResizing,
+		onMouseDown
+	});
+}
+function SelectAllCheckbox({ table }) {
+	const isAll = table.getIsAllPageRowsSelected();
+	const isSome = table.getIsSomePageRowsSelected();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+		type: "checkbox",
+		className: checkbox,
+		checked: isAll,
+		"data-indeterminate": isSome && !isAll ? "true" : void 0,
+		onChange: () => table.toggleAllPageRowsSelected(),
+		"aria-label": "Select all rows"
+	});
+}
+function RowCheckbox({ row }) {
+	if (!row.getCanSelect()) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+		type: "checkbox",
+		className: checkbox,
+		checked: row.getIsSelected(),
+		onChange: () => row.toggleSelected(),
+		"aria-label": `Select row ${row.id}`
+	});
+}
+function ColumnVisibilityToggle({ table }) {
+	const [open, setOpen] = react.default.useState(false);
+	const ref = react.default.useRef(null);
+	react.default.useEffect(() => {
+		if (!open) return;
+		const handler = (e) => {
+			if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+		};
+		document.addEventListener("mousedown", handler);
+		return () => document.removeEventListener("mousedown", handler);
+	}, [open]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		style: { position: "relative" },
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+			type: "button",
+			className: toolbarButton,
+			onClick: () => setOpen(!open),
+			"aria-label": "Toggle column visibility",
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+				width: "14",
+				height: "14",
+				viewBox: "0 0 14 14",
+				fill: "none",
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+					d: "M1 3.5h12M1 7h12M1 10.5h12",
+					stroke: "currentColor",
+					strokeWidth: "1.5",
+					strokeLinecap: "round"
+				})
+			}), "Columns"]
+		}), open && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: visibilityPanel,
+			children: table.getAllLeafColumns().map((col) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
+				className: visibilityItem,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+					type: "checkbox",
+					className: checkbox,
+					checked: col.getIsVisible(),
+					onChange: () => col.toggleVisibility()
+				}), typeof col.header === "string" ? col.header : col.id]
+			}, col.id))
+		})]
+	});
+}
+function HeaderCell({ column, table, showMultiSortIndex }) {
+	const canSort = column.getCanSort();
+	const isSorted = column.getIsSorted();
+	const canResize = column.getCanResize();
+	const align = column.align ?? "left";
+	const headerContent = typeof column.header === "function" ? column.header({
+		column,
+		table
+	}) : column.header ?? column.id;
+	const alignClass = align === "center" ? cellAlignCenter : align === "right" ? cellAlignRight : cellAlignLeft;
+	const pinClass = column.pin === "left" ? pinnedLeft : column.pin === "right" ? pinnedRight : "";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("th", {
+		className: [
+			headerCell,
+			canSort ? headerCellSortable : "",
+			alignClass,
+			pinClass,
+			column.headerClassName ?? ""
+		].filter(Boolean).join(" "),
+		style: { width: column.getSize() },
+		onClick: canSort ? (e) => {
+			column.toggleSorting(void 0, e.shiftKey);
+		} : void 0,
+		role: canSort ? "button" : void 0,
+		"aria-sort": isSorted === "asc" ? "ascending" : isSorted === "desc" ? "descending" : "none",
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: headerCellContent,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				className: headerCellText,
+				children: headerContent
+			}), canSort && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SortIndicator, {
+				direction: isSorted,
+				index: column.getSortIndex(),
+				showIndex: showMultiSortIndex
+			})]
+		}), canResize && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ResizeHandle, {
+			column,
+			table
+		})]
+	});
+}
+function BodyCell({ row, column, table }) {
+	const value = row.getValue(column.id);
+	const isEditing = table.getState().editing.rowId === row.id && table.getState().editing.columnId === column.id;
+	const cellCtx = {
+		row,
+		column,
+		value,
+		table,
+		getValue: () => value,
+		renderValue: () => row.renderValue(column.id)
+	};
+	const align = column.align ?? "left";
+	const alignClass = align === "center" ? cellAlignCenter : align === "right" ? cellAlignRight : cellAlignLeft;
+	const pinClass = column.pin === "left" ? pinnedLeft : column.pin === "right" ? pinnedRight : "";
+	let content;
+	if (isEditing && column.editable) if (column.editor) content = column.editor(cellCtx);
+	else content = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DefaultCellEditor, {
+		value,
+		onSave: (newValue) => {
+			table.options.onCellEdit?.(row.id, column.id, newValue);
+			table.stopEditing();
+		},
+		onCancel: () => table.stopEditing()
+	});
+	else if (column.cell) content = column.cell(cellCtx);
+	else content = row.renderValue(column.id)?.toString() ?? "";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+		className: [
+			isEditing ? bodyCellEditing : bodyCell,
+			alignClass,
+			pinClass,
+			column.cellClassName ?? ""
+		].filter(Boolean).join(" "),
+		style: { width: column.getSize() },
+		onDoubleClick: column.editable && table.options.enableEditing ? () => table.startEditing(row.id, column.id) : void 0,
+		children: content
+	});
+}
+function DefaultCellEditor({ value, onSave, onCancel }) {
+	const [editValue, setEditValue] = react.default.useState(String(value ?? ""));
+	const inputRef = react.default.useRef(null);
+	react.default.useEffect(() => {
+		inputRef.current?.focus();
+		inputRef.current?.select();
+	}, []);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+		ref: inputRef,
+		className: editInput,
+		value: editValue,
+		onChange: (e) => setEditValue(e.target.value),
+		onKeyDown: (e) => {
+			if (e.key === "Enter") onSave(editValue);
+			if (e.key === "Escape") onCancel();
+		},
+		onBlur: () => onSave(editValue)
+	});
+}
+function ExpanderCell({ row }) {
+	if (!row.subRows.length) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+		type: "button",
+		className: expanderButton,
+		onClick: (e) => {
+			e.stopPropagation();
+			row.toggleExpanded();
+		},
+		"aria-label": row.getIsExpanded() ? "Collapse row" : "Expand row",
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+			className: expanderIcon,
+			"data-expanded": row.getIsExpanded(),
+			width: "12",
+			height: "12",
+			viewBox: "0 0 12 12",
+			fill: "none",
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+				d: "M4 2L8 6L4 10",
+				stroke: "currentColor",
+				strokeWidth: "1.5",
+				strokeLinecap: "round"
+			})
+		})
+	});
+}
+function LoadingRows({ columnCount, rowCount }) {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: Array.from({ length: rowCount }).map((_, rowIdx) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", {
+		className: loadingRow,
+		children: Array.from({ length: columnCount }).map((_, colIdx) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+			className: loadingCell,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: loadingSkeleton,
+				style: { width: `${40 + Math.random() * 40}%` }
+			})
+		}, colIdx))
+	}, rowIdx)) });
+}
+function StatusBar({ table }) {
+	const total = table.getPrePaginationRowModel().rows.length;
+	const filtered = table.getFilteredRowModel().rows.length;
+	const selected = Object.keys(table.getState().rowSelection).length;
+	const { pageSize } = table.getState().pagination;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		className: statusBar,
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: statusBarItem,
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: statusBarLabel,
+						children: "Rows:"
+					}),
+					" ",
+					total
+				]
+			}),
+			filtered !== total && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: statusBarItem,
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: statusBarLabel,
+						children: "Filtered:"
+					}),
+					" ",
+					filtered
+				]
+			}),
+			selected > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: statusBarItem,
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: statusBarLabel,
+						children: "Selected:"
+					}),
+					" ",
+					selected
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: statusBarItem,
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: statusBarLabel,
+						children: "Page Size:"
+					}),
+					" ",
+					pageSize
+				]
+			})
+		]
+	});
+}
+function PaginationFooter({ table }) {
+	const { pageIndex, pageSize } = table.getState().pagination;
+	const pageCount = table.getPageCount();
+	const totalRows = table.getPrePaginationRowModel().rows.length;
+	const selected = Object.keys(table.getState().rowSelection).length;
+	const pageSizeOptions = table.options.pageSizeOptions ?? [
+		10,
+		20,
+		50,
+		100
+	];
+	const maxButtons = 5;
+	let startPage = Math.max(0, pageIndex - Math.floor(maxButtons / 2));
+	const endPage = Math.min(pageCount, startPage + maxButtons);
+	startPage = Math.max(0, endPage - maxButtons);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		className: footer,
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: footerLeft,
+			children: [selected > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: [
+				selected,
+				" of ",
+				totalRows,
+				" row(s) selected"
+			] }), selected === 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", { children: [totalRows, " row(s)"] })]
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: footerRight,
+			children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+					className: paginationInfo,
+					children: "Rows per page:"
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("select", {
+					className: pageSizeSelect,
+					value: pageSize,
+					onChange: (e) => table.setPageSize(() => Number(e.target.value)),
+					children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
+						value: size,
+						children: size
+					}, size))
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+					className: paginationInfo,
+					children: [
+						"Page ",
+						pageIndex + 1,
+						" of ",
+						pageCount
+					]
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					className: paginationButton,
+					onClick: () => table.firstPage(),
+					disabled: !table.getCanPreviousPage(),
+					"aria-label": "First page",
+					children: "⟨⟨"
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					className: paginationButton,
+					onClick: () => table.previousPage(),
+					disabled: !table.getCanPreviousPage(),
+					"aria-label": "Previous page",
+					children: "⟨"
+				}),
+				Array.from({ length: endPage - startPage }).map((_, i) => {
+					const page = startPage + i;
+					return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+						className: paginationButton,
+						"data-active": page === pageIndex,
+						onClick: () => table.setPageIndex(() => page),
+						children: page + 1
+					}, page);
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					className: paginationButton,
+					onClick: () => table.nextPage(),
+					disabled: !table.getCanNextPage(),
+					"aria-label": "Next page",
+					children: "⟩"
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					className: paginationButton,
+					onClick: () => table.lastPage(),
+					disabled: !table.getCanNextPage(),
+					"aria-label": "Last page",
+					children: "⟩⟩"
+				})
+			]
+		})]
+	});
+}
+function DataGrid({ height, showToolbar = true, showStatusBar = false, showFooter, showColumnFilters = false, emptyMessage = "No data available", loading = false, loadingRows: loadingRowCount = 5, className, toolbarLeft: customToolbarLeft, toolbarRight: customToolbarRight, style: containerStyle, table: externalTable, onRowClick, onRowDoubleClick, ...options }) {
+	const internalTable = useDataGrid(options);
+	const table$2 = externalTable ?? internalTable;
+	const enableSelection = options.enableRowSelection !== false && options.enableRowSelection !== void 0;
+	const enablePagination = options.enablePagination ?? true;
+	const enableGlobalFilter = options.enableGlobalFilter ?? true;
+	const enableColumnVisibility = options.enableColumnVisibility ?? true;
+	const enableExpanding = options.enableExpanding ?? false;
+	const visibleColumns = table$2.getVisibleLeafColumns();
+	const headerGroups = table$2.getHeaderGroups();
+	const rowModel = table$2.getRowModel();
+	const hasMultiSort = table$2.getState().sorting.length > 1;
+	const showPaginationFooter = showFooter ?? enablePagination;
+	const totalColumnCount = visibleColumns.length + (enableSelection ? 1 : 0);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		className: [gridContainer, className].filter(Boolean).join(" "),
+		style: containerStyle,
+		children: [
+			showToolbar && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: toolbar,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: toolbarLeft,
+					children: [
+						customToolbarLeft,
+						enableGlobalFilter && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+							className: searchInput,
+							placeholder: "Search all columns…",
+							value: table$2.getState().globalFilter ?? "",
+							onChange: (e) => table$2.setGlobalFilter(e.target.value)
+						}),
+						enableSelection && Object.keys(table$2.getState().rowSelection).length > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+							className: selectionInfo,
+							children: [Object.keys(table$2.getState().rowSelection).length, " selected"]
+						})
+					]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: toolbarRight,
+					children: [customToolbarRight, enableColumnVisibility && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColumnVisibilityToggle, { table: table$2 })]
+				})]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: tableScrollArea,
+				style: height ? { maxHeight: height } : void 0,
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("table", {
+					className: table,
+					role: "grid",
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("thead", {
+						className: thead,
+						children: [headerGroups.map((headerGroup) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+							className: headerRow,
+							children: [enableSelection && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								className: `${headerCell} ${checkboxCell}`,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectAllCheckbox, { table: table$2 })
+							}), headerGroup.headers.filter((col) => col.getIsVisible()).map((column) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(HeaderCell, {
+								column,
+								table: table$2,
+								showMultiSortIndex: hasMultiSort
+							}, column.id))]
+						}, headerGroup.id)), showColumnFilters && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+							className: columnFilterRow,
+							children: [enableSelection && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", { className: checkboxCell }), visibleColumns.map((column) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								className: columnFilterCell,
+								children: column.getCanFilter() ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+									className: columnFilterInput,
+									placeholder: `Filter ${typeof column.header === "string" ? column.header : column.id}…`,
+									value: String(column.getFilterValue() ?? ""),
+									onChange: (e) => column.setFilterValue(e.target.value || void 0)
+								}) : null
+							}, column.id))]
+						})]
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tbody", {
+						className: tbody,
+						children: loading ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(LoadingRows, {
+							columnCount: totalColumnCount,
+							rowCount: loadingRowCount
+						}) : rowModel.rows.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+							className: emptyState,
+							colSpan: totalColumnCount,
+							children: emptyMessage
+						}) }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RenderRows, {
+							rows: rowModel.rows,
+							visibleColumns,
+							table: table$2,
+							enableSelection,
+							enableExpanding,
+							onRowClick,
+							onRowDoubleClick
+						})
+					})]
+				})
+			}),
+			showStatusBar && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(StatusBar, { table: table$2 }),
+			showPaginationFooter && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationFooter, { table: table$2 })
+		]
+	});
+}
+function RenderRows({ rows, visibleColumns, table, enableSelection, enableExpanding, onRowClick, onRowDoubleClick, depth = 0 }) {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: rows.map((row) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react.default.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+		className: bodyRow,
+		"data-selected": row.getIsSelected(),
+		onClick: onRowClick ? () => onRowClick(row) : void 0,
+		onDoubleClick: onRowDoubleClick ? () => onRowDoubleClick(row) : void 0,
+		style: onRowClick || onRowDoubleClick ? { cursor: "pointer" } : void 0,
+		children: [enableSelection && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+			className: `${bodyCell} ${checkboxCell}`,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RowCheckbox, { row })
+		}), visibleColumns.map((column, colIdx) => {
+			if (colIdx === 0 && enableExpanding) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+				className: [bodyCell, column.cellClassName ?? ""].filter(Boolean).join(" "),
+				style: { width: column.getSize() },
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					style: {
+						display: "flex",
+						alignItems: "center",
+						gap: "4px"
+					},
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							className: depthIndent,
+							style: { width: depth * 20 }
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ExpanderCell, { row }),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							style: {
+								overflow: "hidden",
+								textOverflow: "ellipsis"
+							},
+							children: column.cell ? column.cell({
+								row,
+								column,
+								value: row.getValue(column.id),
+								table,
+								getValue: () => row.getValue(column.id),
+								renderValue: () => row.renderValue(column.id)
+							}) : row.renderValue(column.id)?.toString() ?? ""
+						})
+					]
+				})
+			}, column.id);
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BodyCell, {
+				row,
+				column,
+				table
+			}, column.id);
+		})]
+	}), enableExpanding && row.getIsExpanded() && row.subRows.length > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RenderRows, {
+		rows: row.subRows,
+		visibleColumns,
+		table,
+		enableSelection,
+		enableExpanding,
+		onRowClick,
+		onRowDoubleClick,
+		depth: depth + 1
+	})] }, row.id)) });
+}
+DataGrid.displayName = "DataGrid";
+
+//#endregion
 exports.Accordion = Accordion;
 exports.AccordionContent = AccordionContent;
 exports.AccordionItem = AccordionItem;
@@ -4154,6 +5972,7 @@ exports.ContextMenuSub = ContextMenuSub;
 exports.ContextMenuSubContent = ContextMenuSubContent;
 exports.ContextMenuSubTrigger = ContextMenuSubTrigger;
 exports.ContextMenuTrigger = ContextMenuTrigger;
+exports.DataGrid = DataGrid;
 exports.Dialog = Dialog;
 exports.DialogClose = DialogClose;
 exports.DialogContent = DialogContent;
@@ -4304,5 +6123,7 @@ exports.TypographyOl = TypographyOl;
 exports.TypographyP = TypographyP;
 exports.TypographySmall = TypographySmall;
 exports.TypographyUl = TypographyUl;
+exports.createDataGrid = createDataGrid;
 exports.inputGroupInputClass = inputGroupInput;
+exports.useDataGrid = useDataGrid;
 //# sourceMappingURL=index.cjs.map

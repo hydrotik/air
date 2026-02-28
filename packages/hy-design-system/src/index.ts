@@ -319,5 +319,36 @@ export {
   TypographyHr,
 } from './components/Typography';
 
+// ─── DataGrid ────────────────────────────────────────────────────────────────
+export { DataGrid, useDataGrid, createDataGrid } from './components/DataGrid';
+export type {
+  DataGridOptions,
+  DataGridInstance,
+  DataGridState,
+  ColumnDef,
+  ResolvedColumn,
+  Row as DataGridRow,
+  RowModel,
+  HeaderGroup,
+  CellContext,
+  HeaderContext,
+  SortingState,
+  SortDirection,
+  ColumnSort,
+  ColumnFiltersState,
+  ColumnFilter,
+  PaginationState,
+  RowSelectionState,
+  ColumnVisibilityState,
+  ColumnSizingState,
+  ColumnOrderState,
+  ExpandedState,
+  EditingState,
+  GroupingState,
+  SortingFn,
+  FilterFn,
+  AggregateFn,
+} from './components/DataGrid';
+
 // ─── Icons (re-export lucide-react) ──────────────────────────────────────────
 export * as Icons from 'lucide-react';
