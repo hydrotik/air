@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@hydrotik/design-system';
 import { ArrowRight } from 'lucide-react';
 import {
@@ -30,6 +30,8 @@ function cx(...classes: string[]) {
 }
 
 export function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <>
       {/* ─── Hero ────────────────────────────────────────────────── */}
@@ -42,13 +44,11 @@ export function HomePage() {
           and Radix UI primitives. Dark theme first. Open source.
         </p>
         <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
-          <Button asChild>
-            <Link to="/sink">
-              View Components <ArrowRight size={14} />
-            </Link>
+          <Button onClick={() => navigate('/sink')}>
+            View Components <ArrowRight size={14} />
           </Button>
-          <Button variant="outline" asChild>
-            <Link to="/dashboard">Dashboard Example</Link>
+          <Button variant="outline" onClick={() => navigate('/dashboard')}>
+            Dashboard Example
           </Button>
         </div>
       </section>
