@@ -59,17 +59,17 @@ export const flagTagIcon = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  lineHeight: 1,
   flexShrink: 0,
+  lineHeight: 0,
   selectors: {
-    /* Size-aware icon sizing via parent data attribute */
-    '[data-flag-size="xs"] &': { fontSize: '10px' },
-    '[data-flag-size="sm"] &': { fontSize: '13px' },
-    '[data-flag-size="md"] &': { fontSize: '15px' },
-    '[data-flag-size="lg"] &': { fontSize: '17px' },
+    /* Size-aware: icon matches label font size for true vertical centering */
+    '[data-flag-size="xs"] &': { fontSize: '8px' },
+    '[data-flag-size="sm"] &': { fontSize: '9px' },
+    '[data-flag-size="md"] &': { fontSize: '11px' },
+    '[data-flag-size="lg"] &': { fontSize: '13px' },
   },
 });
 
 export const flagTagLabel = style({
-  lineHeight: 1,
+  lineHeight: 0,
 });
