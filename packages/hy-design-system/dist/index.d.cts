@@ -26,6 +26,8 @@ import * as ToastPrimitive from "@radix-ui/react-toast";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import * as _vanilla_extract_recipes0 from "@vanilla-extract/recipes";
+import { RecipeVariants } from "@vanilla-extract/recipes";
 import * as Icons from "lucide-react";
 
 //#region src/components/Accordion/Accordion.d.ts
@@ -602,6 +604,173 @@ declare const TypographyUl: React.ForwardRefExoticComponent<React.HTMLAttributes
 declare const TypographyOl: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>>;
 declare const TypographyHr: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>>;
 //#endregion
+//#region src/components/FlagTag/FlagTag.css.d.ts
+/**
+ * FlagTag — Inline status indicator with icon + label
+ *
+ * Used in forensic/editorial contexts to mark rows as flagged, reviewed,
+ * pending, etc. Intentionally minimal: no background, no border — just
+ * icon + monospace label in a status color.
+ *
+ * Design decisions:
+ * - No background or border (flat, ink-on-paper feel)
+ * - Monospace font with letter-spacing (forensic/editorial density)
+ * - Icon sits slightly above text baseline via translateY
+ * - Icon is larger than text (14px icon with 9px text) for scannability
+ * - Inline-flex so it flows naturally in text or table cells
+ */
+declare const flagTagRecipe: _vanilla_extract_recipes0.RuntimeFn<{
+  variant: {
+    destructive: {
+      color: `var(--${string})`;
+    };
+    warning: {
+      color: `var(--${string})`;
+    };
+    success: {
+      color: `var(--${string})`;
+    };
+    primary: {
+      color: `var(--${string})`;
+    };
+    muted: {
+      color: `var(--${string})`;
+    };
+  };
+  size: {
+    xs: {
+      fontSize: "8px";
+      gap: "3px";
+    };
+    sm: {
+      fontSize: "9px";
+      gap: "4px";
+    };
+    md: {
+      fontSize: "11px";
+      gap: "5px";
+    };
+    lg: {
+      fontSize: "13px";
+      gap: "6px";
+    };
+  };
+}>;
+type FlagTagVariants = RecipeVariants<typeof flagTagRecipe>;
+//#endregion
+//#region src/components/FlagTag/FlagTag.d.ts
+interface FlagTagProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>, NonNullable<FlagTagVariants> {
+  /**
+   * Icon element or string (emoji). Defaults to "⚠".
+   * Can also pass a Lucide icon: `<Icons.AlertTriangle size={14} />`
+   */
+  icon?: React.ReactNode;
+  /**
+   * Label text. Defaults to "FLAG".
+   */
+  label?: string;
+  /**
+   * Left margin from preceding content. Useful when placed inline
+   * after names or values. Defaults to '8px'.
+   */
+  marginLeft?: string | number;
+}
+/**
+ * FlagTag — Minimal inline status flag for forensic/editorial contexts.
+ *
+ * Renders an icon + label in a status color with no background or border.
+ * Monospace font with letter-spacing for data-dense environments.
+ *
+ * @example
+ * ```tsx
+ * // Default destructive flag
+ * <FlagTag />
+ *
+ * // Custom label + warning variant
+ * <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+ *
+ * // With Lucide icon
+ * <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+ *
+ * // Inline after a name
+ * <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
+ * ```
+ */
+declare const FlagTag: React.ForwardRefExoticComponent<FlagTagProps & React.RefAttributes<HTMLSpanElement>>;
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.css.d.ts
+/**
+ * SourceRatingBar — Segmented bar graph component
+ *
+ * A horizontal bar divided into N equal segments. Each segment is either
+ * "lit" (filled with the accent color) or "dim" (filled with a faint wash
+ * of the accent color). Together they form a continuous bar — no gaps —
+ * where lit segments indicate presence/coverage across data sources.
+ *
+ * Design decisions:
+ * - Segments are flush (gap: 0) forming one continuous bar
+ * - Dim segments use 12% opacity of chart2 color (visible but subtle)
+ * - Lit segments use chart2 at 80% opacity (punchy but not overpowering)
+ * - No border-radius on individual segments; radius on container only
+ * - Container border-radius is 1px (nearly square, forensic/editorial feel)
+ * - Sizes control segment dimensions; sm is default for inline data tables
+ */
+declare const sourceRatingBarRecipe: _vanilla_extract_recipes0.RuntimeFn<{
+  size: {
+    xs: {};
+    sm: {};
+    md: {};
+    lg: {};
+  }; /** Color variant — maps to token palette */
+  color: {
+    primary: {};
+    chart1: {};
+    chart2: {};
+    chart3: {};
+    chart4: {};
+    chart5: {};
+    destructive: {};
+    success: {};
+    warning: {};
+  };
+}>;
+type SourceRatingBarVariants = RecipeVariants<typeof sourceRatingBarRecipe>;
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.d.ts
+interface SourceRatingBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>, NonNullable<SourceRatingBarVariants> {
+  /**
+   * Array of booleans — each entry is one segment.
+   * `true` = lit (filled), `false` = dim (background).
+   * Length determines total segment count (typically 10).
+   */
+  sources: boolean[];
+  /**
+   * Alternatively, pass a numeric value + total to auto-generate.
+   * If `sources` is provided, these are ignored.
+   */
+  value?: number;
+  total?: number;
+}
+/**
+ * SourceRatingBar — A segmented bar graph showing coverage across data sources.
+ *
+ * Each segment is either "lit" (present in source) or "dim" (absent).
+ * Segments are flush with no gaps, forming a continuous bar.
+ *
+ * @example
+ * ```tsx
+ * // Boolean array mode (explicit control per segment)
+ * <SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+ *
+ * // Numeric mode (auto-fill left-to-right)
+ * <SourceRatingBar value={4} total={10} />
+ *
+ * // Custom color + size
+ * <SourceRatingBar sources={data} color="primary" size="md" />
+ * ```
+ */
+declare const SourceRatingBar: React.ForwardRefExoticComponent<SourceRatingBarProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
 //#region src/components/DataGrid/types.d.ts
 type Updater<T> = T | ((old: T) => T);
 type OnChangeFn<T> = (updaterOrValue: Updater<T>) => void;
@@ -1004,5 +1173,5 @@ declare function useDataGrid<TData>(options: DataGridOptions<TData>): DataGridIn
 //#region src/components/DataGrid/core.d.ts
 declare function createDataGrid<TData>(options: DataGridOptions<TData>): DataGridInstance<TData>;
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, type CellContext, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, type GroupingState, type HeaderContext, type HeaderGroup, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, type CellContext, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, type GroupingState, type HeaderContext, type HeaderGroup, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, SourceRatingBar, type SourceRatingBarProps, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
 //# sourceMappingURL=index.d.cts.map

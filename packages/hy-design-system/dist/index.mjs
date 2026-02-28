@@ -4035,6 +4035,264 @@ const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
 const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 
 //#endregion
+//#region src/components/FlagTag/FlagTag.css.ts
+/**
+* FlagTag — Inline status indicator with icon + label
+*
+* Used in forensic/editorial contexts to mark rows as flagged, reviewed,
+* pending, etc. Intentionally minimal: no background, no border — just
+* icon + monospace label in a status color.
+*
+* Design decisions:
+* - No background or border (flat, ink-on-paper feel)
+* - Monospace font with letter-spacing (forensic/editorial density)
+* - Icon sits slightly above text baseline via translateY
+* - Icon is larger than text (14px icon with 9px text) for scannability
+* - Inline-flex so it flows naturally in text or table cells
+*/
+const flagTagRecipe = recipe({
+	base: {
+		display: "inline-flex",
+		alignItems: "baseline",
+		fontFamily: vars.font.family.mono,
+		letterSpacing: "1px",
+		textTransform: "uppercase",
+		border: "none",
+		background: "none",
+		padding: 0,
+		lineHeight: 1,
+		whiteSpace: "nowrap",
+		flexShrink: 0
+	},
+	variants: {
+		variant: {
+			destructive: { color: vars.color.destructive },
+			warning: { color: vars.color.warning },
+			success: { color: vars.color.success },
+			primary: { color: vars.color.primary },
+			muted: { color: vars.color.textMuted }
+		},
+		size: {
+			xs: {
+				fontSize: "8px",
+				gap: "3px"
+			},
+			sm: {
+				fontSize: "9px",
+				gap: "4px"
+			},
+			md: {
+				fontSize: "11px",
+				gap: "5px"
+			},
+			lg: {
+				fontSize: "13px",
+				gap: "6px"
+			}
+		}
+	},
+	defaultVariants: {
+		variant: "destructive",
+		size: "sm"
+	}
+});
+const flagTagIcon = style({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	lineHeight: 1,
+	flexShrink: 0,
+	transform: "translateY(-1px)",
+	selectors: {
+		"[data-flag-size=\"xs\"] &": { fontSize: "10px" },
+		"[data-flag-size=\"sm\"] &": { fontSize: "14px" },
+		"[data-flag-size=\"md\"] &": { fontSize: "16px" },
+		"[data-flag-size=\"lg\"] &": { fontSize: "18px" }
+	}
+});
+const flagTagLabel = style({ lineHeight: 1 });
+
+//#endregion
+//#region src/components/FlagTag/FlagTag.tsx
+/**
+* FlagTag — Minimal inline status flag for forensic/editorial contexts.
+*
+* Renders an icon + label in a status color with no background or border.
+* Monospace font with letter-spacing for data-dense environments.
+*
+* @example
+* ```tsx
+* // Default destructive flag
+* <FlagTag />
+*
+* // Custom label + warning variant
+* <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+*
+* // With Lucide icon
+* <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+*
+* // Inline after a name
+* <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
+* ```
+*/
+const FlagTag = React.forwardRef(({ variant = "destructive", size = "sm", icon = "⚠", label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ jsxs("span", {
+	ref,
+	"data-flag-size": size,
+	className: [flagTagRecipe({
+		variant,
+		size
+	}), className].filter(Boolean).join(" "),
+	style: {
+		marginLeft,
+		...style
+	},
+	...props,
+	children: [/* @__PURE__ */ jsx("span", {
+		className: flagTagIcon,
+		children: icon
+	}), /* @__PURE__ */ jsx("span", {
+		className: flagTagLabel,
+		children: label
+	})]
+}));
+FlagTag.displayName = "FlagTag";
+
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.css.ts
+/**
+* SourceRatingBar — Segmented bar graph component
+*
+* A horizontal bar divided into N equal segments. Each segment is either
+* "lit" (filled with the accent color) or "dim" (filled with a faint wash
+* of the accent color). Together they form a continuous bar — no gaps —
+* where lit segments indicate presence/coverage across data sources.
+*
+* Design decisions:
+* - Segments are flush (gap: 0) forming one continuous bar
+* - Dim segments use 12% opacity of chart2 color (visible but subtle)
+* - Lit segments use chart2 at 80% opacity (punchy but not overpowering)
+* - No border-radius on individual segments; radius on container only
+* - Container border-radius is 1px (nearly square, forensic/editorial feel)
+* - Sizes control segment dimensions; sm is default for inline data tables
+*/
+const sourceRatingBarRecipe = recipe({
+	base: {
+		display: "inline-flex",
+		overflow: "hidden",
+		flexShrink: 0,
+		borderRadius: "1px"
+	},
+	variants: {
+		size: {
+			xs: {},
+			sm: {},
+			md: {},
+			lg: {}
+		},
+		color: {
+			primary: {},
+			chart1: {},
+			chart2: {},
+			chart3: {},
+			chart4: {},
+			chart5: {},
+			destructive: {},
+			success: {},
+			warning: {}
+		}
+	},
+	defaultVariants: {
+		size: "sm",
+		color: "chart2"
+	}
+});
+const segmentBase = style({
+	display: "block",
+	flexShrink: 0
+});
+globalStyle(`[data-rating-size="xs"] .${segmentBase}`, {
+	width: "4px",
+	height: "6px"
+});
+globalStyle(`[data-rating-size="sm"] .${segmentBase}`, {
+	width: "5px",
+	height: "8px"
+});
+globalStyle(`[data-rating-size="md"] .${segmentBase}`, {
+	width: "6px",
+	height: "10px"
+});
+globalStyle(`[data-rating-size="lg"] .${segmentBase}`, {
+	width: "8px",
+	height: "12px"
+});
+const colorMap = {
+	primary: vars.color.primary,
+	chart1: vars.color.chart1,
+	chart2: vars.color.chart2,
+	chart3: vars.color.chart3,
+	chart4: vars.color.chart4,
+	chart5: vars.color.chart5,
+	destructive: vars.color.destructive,
+	success: vars.color.success,
+	warning: vars.color.warning
+};
+for (const [name, token] of Object.entries(colorMap)) {
+	globalStyle(`[data-rating-color="${name}"] .${segmentBase}[data-lit="true"]`, {
+		backgroundColor: token,
+		opacity: .85
+	});
+	globalStyle(`[data-rating-color="${name}"] .${segmentBase}[data-lit="false"]`, {
+		backgroundColor: token,
+		opacity: .12
+	});
+}
+
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.tsx
+/**
+* SourceRatingBar — A segmented bar graph showing coverage across data sources.
+*
+* Each segment is either "lit" (present in source) or "dim" (absent).
+* Segments are flush with no gaps, forming a continuous bar.
+*
+* @example
+* ```tsx
+* // Boolean array mode (explicit control per segment)
+* <SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+*
+* // Numeric mode (auto-fill left-to-right)
+* <SourceRatingBar value={4} total={10} />
+*
+* // Custom color + size
+* <SourceRatingBar sources={data} color="primary" size="md" />
+* ```
+*/
+const SourceRatingBar = React.forwardRef(({ sources, value, total = 10, size = "sm", color = "chart2", className, ...props }, ref) => {
+	const segments = sources ?? Array.from({ length: total }, (_, i) => i < (value ?? 0));
+	return /* @__PURE__ */ jsx("div", {
+		ref,
+		role: "meter",
+		"aria-label": "Source coverage",
+		"aria-valuenow": segments.filter(Boolean).length,
+		"aria-valuemin": 0,
+		"aria-valuemax": segments.length,
+		"data-rating-size": size,
+		"data-rating-color": color,
+		className: [sourceRatingBarRecipe({
+			size,
+			color
+		}), className].filter(Boolean).join(" "),
+		...props,
+		children: segments.map((lit, i) => /* @__PURE__ */ jsx("span", {
+			className: segmentBase,
+			"data-lit": String(lit)
+		}, i))
+	});
+});
+SourceRatingBar.displayName = "SourceRatingBar";
+
+//#endregion
 //#region src/components/DataGrid/core.ts
 function functionalUpdate(updater, old) {
 	return typeof updater === "function" ? updater(old) : updater;
@@ -5933,5 +6191,5 @@ function RenderRows({ rows, visibleColumns, table, enableSelection, enableExpand
 DataGrid.displayName = "DataGrid";
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, SourceRatingBar, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
 //# sourceMappingURL=index.mjs.map

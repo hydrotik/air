@@ -319,6 +319,14 @@ export {
   TypographyHr,
 } from './components/Typography';
 
+// ─── FlagTag ─────────────────────────────────────────────────────────────────
+export { FlagTag } from './components/FlagTag';
+export type { FlagTagProps } from './components/FlagTag';
+
+// ─── SourceRatingBar ─────────────────────────────────────────────────────────
+export { SourceRatingBar } from './components/SourceRatingBar';
+export type { SourceRatingBarProps } from './components/SourceRatingBar';
+
 // ─── DataGrid ────────────────────────────────────────────────────────────────
 export { DataGrid, useDataGrid, createDataGrid } from './components/DataGrid';
 export type {

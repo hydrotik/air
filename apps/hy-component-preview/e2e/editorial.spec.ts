@@ -51,8 +51,8 @@ test.describe('Editorial Data Page', () => {
   });
 
   test('renders source rating pip bars', async ({ page }) => {
-    const pips = page.locator('[class*="rosterPip"]');
-    expect(await pips.count()).toBeGreaterThan(0);
+    const bars = page.locator('[role="meter"][aria-label="Source coverage"]');
+    expect(await bars.count()).toBeGreaterThan(0);
   });
 
   test('renders entity explorer DataGrid with pagination', async ({ page }) => {

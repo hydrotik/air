@@ -76,12 +76,12 @@ The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom
 
 | Route | Page | Description |
 |---|---|---|
-| `/` | Home | Hero + bento grid of 30+ interactive demo cards |
-| `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
+| `/` | DataGrid | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
 | `/ecommerce` | E-Commerce | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero, features, comparison, specs, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo — full featured, minimal, tree data, loading, empty |
+| `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SourceRatingBars, FlagTags, timeline chart, entity roster |
 
 - Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
 - Styles via vanilla-extract using design tokens
@@ -96,10 +96,75 @@ cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwr
 ```
 
 - Config: `apps/hy-component-preview/playwright.config.ts`
-- Tests: `apps/hy-component-preview/e2e/` (6 spec files, 49 tests)
+- Tests: `apps/hy-component-preview/e2e/` (6 spec files, 63 tests)
 - Auto-starts dev server on port 3100 via `webServer` config
 - Chromium only (add Firefox/WebKit projects as needed)
 - Artifacts: `playwright-report/`, `test-results/` (gitignored)
+
+## SourceRatingBar Component
+
+Segmented bar graph showing presence/coverage across data sources.
+Flush segments (no gaps) form one continuous bar — lit segments in accent color, dim segments at 12% opacity.
+
+```tsx
+import { SourceRatingBar } from '@hydrotik/design-system';
+
+// Boolean array mode
+<SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+
+// Numeric mode
+<SourceRatingBar value={4} total={10} />
+
+// Custom size + color
+<SourceRatingBar sources={data} size="md" color="primary" />
+```
+
+- Sizes: `xs` (4×6), `sm` (5×8), `md` (6×10), `lg` (8×12)
+- Colors: `primary`, `chart1`–`chart5`, `destructive`, `success`, `warning`
+- Has `role="meter"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
+- Segments are data-attribute-driven: `[data-rating-size]`, `[data-rating-color]`, `[data-lit]`
+- **Design rule**: No border-radius on segments — radius on container only (1px)
+
+## FlagTag Component
+
+Minimal inline status flag — icon + monospace label in a status color.
+No background, no border — flat forensic/editorial aesthetic.
+
+```tsx
+import { FlagTag } from '@hydrotik/design-system';
+
+<FlagTag />                                          // ⚠ FLAG (destructive)
+<FlagTag label="FLAGGED" marginLeft="0" />           // ⚠ FLAGGED
+<FlagTag variant="warning" label="REVIEW" icon="🔍" /> // custom variant/icon
+```
+
+- Variants: `destructive`, `warning`, `success`, `primary`, `muted`
+- Sizes: `xs` (8px), `sm` (9px), `md` (11px), `lg` (13px)
+- Icon is always slightly larger than text for scannability
+- `marginLeft` prop defaults to `'8px'` for inline-after-name placement
+
+## DataGrid Visual Variants
+
+The DataGrid supports editorial/compact density and visual customization:
+
+```tsx
+<DataGrid
+  density="editorial"        // 'default' | 'compact' | 'editorial'
+  borderless                 // removes outer border + radius
+  transparent                // transparent background
+  headerBorder="thick"       // 'thin' | 'thick' | 'none'
+  rowSeparator="subtle"      // 'full' | 'subtle' | 'none'
+  noRowHover                 // disables row hover highlight
+  showToolbar={false}        // hides search + column visibility
+/>
+```
+
+All variants are data-attribute-driven CSS (zero runtime overhead):
+- `[data-density="editorial"]` — mono uppercase headers, 10px header font, 6px body padding, 13px body font
+- `[data-borderless]` — no outer border or radius
+- `[data-transparent]` — transparent bg
+- `[data-header-border="thick"]` — 2px blue header separator
+- `[data-row-separator="subtle"]` — 4% opacity row lines
 
 ## InputGroup Component
 

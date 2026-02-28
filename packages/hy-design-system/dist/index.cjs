@@ -4090,6 +4090,264 @@ const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
 const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 
 //#endregion
+//#region src/components/FlagTag/FlagTag.css.ts
+/**
+* FlagTag — Inline status indicator with icon + label
+*
+* Used in forensic/editorial contexts to mark rows as flagged, reviewed,
+* pending, etc. Intentionally minimal: no background, no border — just
+* icon + monospace label in a status color.
+*
+* Design decisions:
+* - No background or border (flat, ink-on-paper feel)
+* - Monospace font with letter-spacing (forensic/editorial density)
+* - Icon sits slightly above text baseline via translateY
+* - Icon is larger than text (14px icon with 9px text) for scannability
+* - Inline-flex so it flows naturally in text or table cells
+*/
+const flagTagRecipe = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "inline-flex",
+		alignItems: "baseline",
+		fontFamily: _hydrotik_tokens.vars.font.family.mono,
+		letterSpacing: "1px",
+		textTransform: "uppercase",
+		border: "none",
+		background: "none",
+		padding: 0,
+		lineHeight: 1,
+		whiteSpace: "nowrap",
+		flexShrink: 0
+	},
+	variants: {
+		variant: {
+			destructive: { color: _hydrotik_tokens.vars.color.destructive },
+			warning: { color: _hydrotik_tokens.vars.color.warning },
+			success: { color: _hydrotik_tokens.vars.color.success },
+			primary: { color: _hydrotik_tokens.vars.color.primary },
+			muted: { color: _hydrotik_tokens.vars.color.textMuted }
+		},
+		size: {
+			xs: {
+				fontSize: "8px",
+				gap: "3px"
+			},
+			sm: {
+				fontSize: "9px",
+				gap: "4px"
+			},
+			md: {
+				fontSize: "11px",
+				gap: "5px"
+			},
+			lg: {
+				fontSize: "13px",
+				gap: "6px"
+			}
+		}
+	},
+	defaultVariants: {
+		variant: "destructive",
+		size: "sm"
+	}
+});
+const flagTagIcon = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	lineHeight: 1,
+	flexShrink: 0,
+	transform: "translateY(-1px)",
+	selectors: {
+		"[data-flag-size=\"xs\"] &": { fontSize: "10px" },
+		"[data-flag-size=\"sm\"] &": { fontSize: "14px" },
+		"[data-flag-size=\"md\"] &": { fontSize: "16px" },
+		"[data-flag-size=\"lg\"] &": { fontSize: "18px" }
+	}
+});
+const flagTagLabel = (0, _vanilla_extract_css.style)({ lineHeight: 1 });
+
+//#endregion
+//#region src/components/FlagTag/FlagTag.tsx
+/**
+* FlagTag — Minimal inline status flag for forensic/editorial contexts.
+*
+* Renders an icon + label in a status color with no background or border.
+* Monospace font with letter-spacing for data-dense environments.
+*
+* @example
+* ```tsx
+* // Default destructive flag
+* <FlagTag />
+*
+* // Custom label + warning variant
+* <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+*
+* // With Lucide icon
+* <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+*
+* // Inline after a name
+* <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
+* ```
+*/
+const FlagTag = react.default.forwardRef(({ variant = "destructive", size = "sm", icon = "⚠", label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+	ref,
+	"data-flag-size": size,
+	className: [flagTagRecipe({
+		variant,
+		size
+	}), className].filter(Boolean).join(" "),
+	style: {
+		marginLeft,
+		...style
+	},
+	...props,
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		className: flagTagIcon,
+		children: icon
+	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		className: flagTagLabel,
+		children: label
+	})]
+}));
+FlagTag.displayName = "FlagTag";
+
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.css.ts
+/**
+* SourceRatingBar — Segmented bar graph component
+*
+* A horizontal bar divided into N equal segments. Each segment is either
+* "lit" (filled with the accent color) or "dim" (filled with a faint wash
+* of the accent color). Together they form a continuous bar — no gaps —
+* where lit segments indicate presence/coverage across data sources.
+*
+* Design decisions:
+* - Segments are flush (gap: 0) forming one continuous bar
+* - Dim segments use 12% opacity of chart2 color (visible but subtle)
+* - Lit segments use chart2 at 80% opacity (punchy but not overpowering)
+* - No border-radius on individual segments; radius on container only
+* - Container border-radius is 1px (nearly square, forensic/editorial feel)
+* - Sizes control segment dimensions; sm is default for inline data tables
+*/
+const sourceRatingBarRecipe = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "inline-flex",
+		overflow: "hidden",
+		flexShrink: 0,
+		borderRadius: "1px"
+	},
+	variants: {
+		size: {
+			xs: {},
+			sm: {},
+			md: {},
+			lg: {}
+		},
+		color: {
+			primary: {},
+			chart1: {},
+			chart2: {},
+			chart3: {},
+			chart4: {},
+			chart5: {},
+			destructive: {},
+			success: {},
+			warning: {}
+		}
+	},
+	defaultVariants: {
+		size: "sm",
+		color: "chart2"
+	}
+});
+const segmentBase = (0, _vanilla_extract_css.style)({
+	display: "block",
+	flexShrink: 0
+});
+(0, _vanilla_extract_css.globalStyle)(`[data-rating-size="xs"] .${segmentBase}`, {
+	width: "4px",
+	height: "6px"
+});
+(0, _vanilla_extract_css.globalStyle)(`[data-rating-size="sm"] .${segmentBase}`, {
+	width: "5px",
+	height: "8px"
+});
+(0, _vanilla_extract_css.globalStyle)(`[data-rating-size="md"] .${segmentBase}`, {
+	width: "6px",
+	height: "10px"
+});
+(0, _vanilla_extract_css.globalStyle)(`[data-rating-size="lg"] .${segmentBase}`, {
+	width: "8px",
+	height: "12px"
+});
+const colorMap = {
+	primary: _hydrotik_tokens.vars.color.primary,
+	chart1: _hydrotik_tokens.vars.color.chart1,
+	chart2: _hydrotik_tokens.vars.color.chart2,
+	chart3: _hydrotik_tokens.vars.color.chart3,
+	chart4: _hydrotik_tokens.vars.color.chart4,
+	chart5: _hydrotik_tokens.vars.color.chart5,
+	destructive: _hydrotik_tokens.vars.color.destructive,
+	success: _hydrotik_tokens.vars.color.success,
+	warning: _hydrotik_tokens.vars.color.warning
+};
+for (const [name, token] of Object.entries(colorMap)) {
+	(0, _vanilla_extract_css.globalStyle)(`[data-rating-color="${name}"] .${segmentBase}[data-lit="true"]`, {
+		backgroundColor: token,
+		opacity: .85
+	});
+	(0, _vanilla_extract_css.globalStyle)(`[data-rating-color="${name}"] .${segmentBase}[data-lit="false"]`, {
+		backgroundColor: token,
+		opacity: .12
+	});
+}
+
+//#endregion
+//#region src/components/SourceRatingBar/SourceRatingBar.tsx
+/**
+* SourceRatingBar — A segmented bar graph showing coverage across data sources.
+*
+* Each segment is either "lit" (present in source) or "dim" (absent).
+* Segments are flush with no gaps, forming a continuous bar.
+*
+* @example
+* ```tsx
+* // Boolean array mode (explicit control per segment)
+* <SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+*
+* // Numeric mode (auto-fill left-to-right)
+* <SourceRatingBar value={4} total={10} />
+*
+* // Custom color + size
+* <SourceRatingBar sources={data} color="primary" size="md" />
+* ```
+*/
+const SourceRatingBar = react.default.forwardRef(({ sources, value, total = 10, size = "sm", color = "chart2", className, ...props }, ref) => {
+	const segments = sources ?? Array.from({ length: total }, (_, i) => i < (value ?? 0));
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		ref,
+		role: "meter",
+		"aria-label": "Source coverage",
+		"aria-valuenow": segments.filter(Boolean).length,
+		"aria-valuemin": 0,
+		"aria-valuemax": segments.length,
+		"data-rating-size": size,
+		"data-rating-color": color,
+		className: [sourceRatingBarRecipe({
+			size,
+			color
+		}), className].filter(Boolean).join(" "),
+		...props,
+		children: segments.map((lit, i) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: segmentBase,
+			"data-lit": String(lit)
+		}, i))
+	});
+});
+SourceRatingBar.displayName = "SourceRatingBar";
+
+//#endregion
 //#region src/components/DataGrid/core.ts
 function functionalUpdate(updater, old) {
 	return typeof updater === "function" ? updater(old) : updater;
@@ -6079,6 +6337,7 @@ exports.DropdownMenuSubContent = DropdownMenuSubContent;
 exports.DropdownMenuSubTrigger = DropdownMenuSubTrigger;
 exports.DropdownMenuTrigger = DropdownMenuTrigger;
 exports.FieldMessage = FieldMessage;
+exports.FlagTag = FlagTag;
 exports.HoverCard = HoverCard;
 exports.HoverCardContent = HoverCardContent;
 exports.HoverCardTrigger = HoverCardTrigger;
@@ -6159,6 +6418,7 @@ exports.SheetTitle = SheetTitle;
 exports.SheetTrigger = SheetTrigger;
 exports.Skeleton = Skeleton;
 exports.Slider = Slider;
+exports.SourceRatingBar = SourceRatingBar;
 exports.Spinner = Spinner;
 exports.Switch = Switch;
 exports.Table = Table;

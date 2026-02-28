@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hydrotik design system is a **CSS-in-TypeScript** component library with **44 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope plus enterprise-grade additions. Built on:
+The Hydrotik design system is a **CSS-in-TypeScript** component library with **46 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope plus enterprise-grade additions. Built on:
 
 | Layer | Technology |
 |---|---|
@@ -158,7 +158,7 @@ const { theme, setTheme } = useTheme();
 
 ---
 
-## Component Catalog (43 components)
+## Component Catalog (46 components)
 
 ### Layout & Structure
 
@@ -237,6 +237,8 @@ const { theme, setTheme } = useTheme();
 |---|---|
 | **Table** | Wrapper, Header, Body, Footer, Row, Head, Cell, Caption |
 | **Alert** | Feedback banner — default, destructive, success, warning |
+| **SourceRatingBar** | Segmented bar graph — shows coverage across N data sources. Boolean array or value/total. Sizes: xs, sm, md, lg. Colors: all chart tokens + primary, destructive, success, warning. `role="meter"` with ARIA. |
+| **FlagTag** | Inline status flag — icon + mono label, no background/border. Variants: destructive, warning, success, primary, muted. Sizes: xs, sm, md, lg. Default: ⚠ FLAG in destructive red. |
 
 ---
 

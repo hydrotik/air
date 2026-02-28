@@ -24,6 +24,8 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
+  SourceRatingBar,
+  FlagTag,
 } from '@hydrotik/design-system';
 import type { ColumnDef } from '@hydrotik/design-system';
 import * as s from './EditorialPage.css';
@@ -34,23 +36,6 @@ function fmt(n: number): string {
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
   if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
   return '$' + n.toFixed(0);
-}
-
-/* ═══════════════════════════════════════════════════════════════════════ */
-/* SOURCE RATING BAR — Super Component                                    */
-/* 10-pip bar showing presence across data sources                        */
-/* ═══════════════════════════════════════════════════════════════════════ */
-function SourceRatingBar({ sources }: { sources: boolean[] }) {
-  return (
-    <div className={s.rosterSourceBar}>
-      {sources.map((on, i) => (
-        <div
-          key={i}
-          className={`${s.rosterPip} ${on ? s.rosterPipOn : s.rosterPipOff}`}
-        />
-      ))}
-    </div>
-  );
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */
@@ -345,7 +330,7 @@ function EntityRosterSection() {
                   <span className={s.rosterRank}>{ent.rank}</span>
                   <span className={`${s.rosterName} ${ent.clickable ? s.rosterNameClickable : ''} ${ent.flagged ? s.rosterNameHighlight : ''}`}>
                     {ent.name}
-                    {ent.flagged && <span className={s.sarTag}><span className={s.sarIcon}>⚠</span> FLAG</span>}
+                    {ent.flagged && <FlagTag label="FLAG" />}
                   </span>
                   <span className={s.rosterDollars}>{fmt(ent.dollars)}</span>
                   <SourceRatingBar sources={ent.sources} />
@@ -390,7 +375,7 @@ function EntityDataGrid() {
         }}>
           {row.original.name}
           {row.original.flagged && (
-            <span className={s.sarTag} style={{ marginLeft: '6px' }}><span className={s.sarIcon}>⚠</span> FLAG</span>
+            <FlagTag label="FLAG" marginLeft="6px" />
           )}
         </span>
       ),
@@ -628,7 +613,7 @@ function KeyPersonsGrid() {
     {
       id: 'flagged', header: 'Report', accessorKey: 'flagged', width: 100,
       cell: ({ value }) => value ? (
-        <span className={s.sarTag}><span className={s.sarIcon}>⚠</span> FLAGGED</span>
+        <FlagTag label="FLAGGED" marginLeft="0" />
       ) : null,
     },
   ], []);
