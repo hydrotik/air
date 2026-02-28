@@ -1,4 +1,4 @@
-import { style, globalStyle, keyframes, createVar } from '@vanilla-extract/css';
+import { style, globalStyle, keyframes, createVar, GlobalStyleRule } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
@@ -187,9 +187,9 @@ export const sectionTitle = style({
 export const sectionRule = style({
   width: '60px',
   height: '1px',
-  background: vars.color.textMuted,
+  background: vars.color.primary,
   margin: `${vars.space['4']} auto 0`,
-  opacity: 0.4,
+  opacity: 0.5,
 });
 
 /* ═══════════════════════════════════════════════════════════════════════ */
@@ -326,7 +326,7 @@ export const timelineBox = style({
   padding: `${vars.space['5']} ${vars.space['4']} ${vars.space['4']}`,
   marginBottom: vars.space['6'],
   overflow: 'hidden',
-  borderRadius: vars.radii.md,
+  borderRadius: vars.radii.sm,
 });
 
 export const timelineCtrl = style({
@@ -558,10 +558,10 @@ export const rosterSub = style({
 export const rosterLegend = style({
   background: `rgba(59,130,246,0.04)`,
   border: `1px solid ${vars.color.borderSubtle}`,
-  padding: `${vars.space['2']} ${vars.space['4']}`,
+  padding: `8px 14px`,
   margin: `${vars.space['3']} auto ${vars.space['7']}`,
   maxWidth: '620px',
-  borderRadius: vars.radii.sm,
+  borderRadius: '2px',
 });
 
 export const rosterLegendTitle = style({
@@ -619,9 +619,9 @@ export const rosterGrid = style({
 
 export const rosterRow = style({
   display: 'grid',
-  gridTemplateColumns: '38px 1fr 80px 72px',
-  gap: vars.space['1'],
-  padding: `${vars.space['1_5']} ${vars.space['2']}`,
+  gridTemplateColumns: '38px 1fr 80px 60px',
+  gap: '4px',
+  padding: `5px ${vars.space['2']}`,
   background: 'rgba(255,255,255,0.012)',
   borderLeft: '2px solid transparent',
   transition: `all ${vars.motion.duration.fast}`,
@@ -638,15 +638,15 @@ export const rosterRowHighlight = style({
 
 export const rosterRank = style({
   fontFamily: vars.font.family.mono,
-  fontSize: `calc(10px + 1px)`,
+  fontSize: '10px',
   color: vars.color.textMuted,
   textAlign: 'right',
-  paddingRight: vars.space['1_5'],
+  paddingRight: '6px',
 });
 
 export const rosterName = style({
   fontFamily: vars.font.family.mono,
-  fontSize: `calc(${vars.font.size.xs} + ${densityShift})`,
+  fontSize: '11px',
   color: vars.color.text,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -670,7 +670,7 @@ export const rosterNameHighlight = style({
 
 export const rosterDollars = style({
   fontFamily: vars.font.family.mono,
-  fontSize: `calc(10px + 1px)`,
+  fontSize: '10px',
   color: vars.color.primary,
   textAlign: 'right',
 });
@@ -685,7 +685,7 @@ export const rosterSourceBar = style({
 export const rosterPip = style({
   width: '5px',
   height: '8px',
-  borderRadius: '1px',
+  borderRadius: 0,
 });
 
 export const rosterPipOn = style({
@@ -700,15 +700,15 @@ export const rosterPipOff = style({
 /* ── Column Headers for roster ── */
 export const rosterColHeaders = style({
   fontFamily: vars.font.family.mono,
-  fontSize: `calc(8px + 1px)`,
+  fontSize: '8px',
   letterSpacing: '1px',
   textTransform: 'uppercase',
   color: vars.color.textMuted,
   opacity: 0.4,
-  padding: `0 ${vars.space['2']} ${vars.space['1']}`,
+  padding: `0 ${vars.space['2']} 4px`,
   display: 'grid',
-  gridTemplateColumns: '38px 1fr 80px 72px',
-  gap: vars.space['1'],
+  gridTemplateColumns: '38px 1fr 80px 60px',
+  gap: '4px',
 });
 
 /* ═══════════════════════════════════════════════════════════════════════ */
@@ -836,16 +836,23 @@ export const footerDisclaimer = style({
 /* SAR TAG                                                                */
 /* ═══════════════════════════════════════════════════════════════════════ */
 export const sarTag = style({
-  display: 'inline-block',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '3px',
   fontFamily: vars.font.family.mono,
-  fontSize: `calc(9px + 1px)`,
+  fontSize: '9px',
   letterSpacing: '1px',
   color: vars.color.destructive,
-  border: `1px solid ${vars.color.destructive}`,
-  padding: '1px 6px',
+  border: 'none',
+  background: 'none',
+  padding: 0,
   verticalAlign: 'middle',
   marginLeft: vars.space['1'],
-  borderRadius: vars.radii.sm,
+});
+
+export const sarIcon = style({
+  fontSize: '14px',
+  lineHeight: 1,
 });
 
 /* ═══════════════════════════════════════════════════════════════════════ */
@@ -932,3 +939,30 @@ export const dataTableCode = style({
   fontSize: `calc(10px + 1px)`,
   fontFamily: vars.font.family.mono,
 });
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* globalStyle overrides for pseudo-elements and deep selectors           */
+/* ═══════════════════════════════════════════════════════════════════════ */
+
+/* Timeline scrollbar */
+globalStyle(`${timelineScroll}::-webkit-scrollbar`, { height: '6px' });
+globalStyle(`${timelineScroll}::-webkit-scrollbar-track`, {
+  background: vars.color.background,
+  borderRadius: '3px',
+});
+globalStyle(`${timelineScroll}::-webkit-scrollbar-thumb`, {
+  background: vars.color.primary,
+  borderRadius: '3px',
+});
+
+/* Roster legend tighter */
+globalStyle(`${rosterLegend} > *`, { lineHeight: '1.4' });
+
+/* Year card tighter corners */
+globalStyle(`${yearCard}`, { borderRadius: '2px' });
+
+/* Viz link tighter corners */
+globalStyle(`${vizLink}`, { borderRadius: '2px' });
+
+/* Callout tighter corners */
+globalStyle(`${callout}`, { borderRadius: '2px' });

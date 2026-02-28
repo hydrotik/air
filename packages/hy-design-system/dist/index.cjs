@@ -4888,7 +4888,16 @@ const gridContainer = (0, _vanilla_extract_css.style)({
 	overflow: "hidden",
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
-	color: _hydrotik_tokens.vars.color.text
+	color: _hydrotik_tokens.vars.color.text,
+	selectors: {
+		"&[data-borderless]": {
+			border: "none",
+			borderRadius: 0
+		},
+		"&[data-transparent]": { backgroundColor: "transparent" },
+		"&[data-density=\"compact\"]": { fontSize: _hydrotik_tokens.vars.font.size.xs },
+		"&[data-density=\"editorial\"]": { fontSize: "13px" }
+	}
 });
 const toolbar = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -5312,6 +5321,76 @@ const statusBarItem = (0, _vanilla_extract_css.style)({
 	gap: _hydrotik_tokens.vars.space["1"]
 });
 const statusBarLabel = (0, _vanilla_extract_css.style)({ fontWeight: _hydrotik_tokens.vars.font.weight.medium });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-header-border="thick"] ${headerRow}`, {
+	borderBottomWidth: "2px",
+	borderBottomColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 25%, transparent)`
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-header-border="none"] ${headerRow}`, { borderBottom: "none" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-row-separator="subtle"] ${bodyRow}`, { borderBottomColor: "rgba(255,255,255,0.04)" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-row-separator="none"] ${bodyRow}`, { borderBottom: "none" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-no-row-hover] ${bodyRow}:hover`, { backgroundColor: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${thead}`, { backgroundColor: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${headerCell}`, { backgroundColor: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${toolbar}`, { borderBottom: "none" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${footer}`, { borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}` });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${statusBar}`, {
+	borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}`,
+	backgroundColor: "transparent"
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="compact"] ${headerCell}`, {
+	height: "32px",
+	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="compact"] ${bodyCell}`, { padding: `${_hydrotik_tokens.vars.space["1"]} ${_hydrotik_tokens.vars.space["2"]}` });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="compact"] ${checkboxCell}`, {
+	width: "32px",
+	maxWidth: "32px"
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${headerCell}`, {
+	height: "32px",
+	padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	fontSize: "10px",
+	letterSpacing: "1px",
+	textTransform: "uppercase",
+	color: _hydrotik_tokens.vars.color.chart2,
+	fontWeight: _hydrotik_tokens.vars.font.weight.normal
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${bodyCell}`, {
+	padding: `6px ${_hydrotik_tokens.vars.space["3"]}`,
+	fontSize: "13px",
+	color: _hydrotik_tokens.vars.color.textMuted
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${bodyRow}`, { borderBottomColor: "rgba(255,255,255,0.04)" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${bodyRow}:hover`, { backgroundColor: "rgba(59,130,246,0.04)" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${footer}`, { fontSize: _hydrotik_tokens.vars.font.size.xs });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${paginationButton}`, {
+	width: "28px",
+	height: "28px",
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${pageSizeSelect}`, {
+	height: "28px",
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${paginationInfo}`, { fontSize: _hydrotik_tokens.vars.font.size.xs });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${searchInput}`, {
+	height: "28px",
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${toolbarButton}`, {
+	height: "28px",
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${checkbox}`, {
+	width: "14px",
+	height: "14px"
+});
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-density="editorial"] ${checkboxCell}`, {
+	width: "32px",
+	maxWidth: "32px"
+});
 
 //#endregion
 //#region src/components/DataGrid/DataGrid.tsx
@@ -5744,7 +5823,7 @@ function PaginationFooter({ table }) {
 		})]
 	});
 }
-function DataGrid({ height, showToolbar = true, showStatusBar = false, showFooter, showColumnFilters = false, emptyMessage = "No data available", loading = false, loadingRows: loadingRowCount = 5, className, toolbarLeft: customToolbarLeft, toolbarRight: customToolbarRight, style: containerStyle, table: externalTable, onRowClick, onRowDoubleClick, ...options }) {
+function DataGrid({ height, showToolbar = true, showStatusBar = false, showFooter, showColumnFilters = false, emptyMessage = "No data available", loading = false, loadingRows: loadingRowCount = 5, className, toolbarLeft: customToolbarLeft, toolbarRight: customToolbarRight, style: containerStyle, table: externalTable, onRowClick, onRowDoubleClick, borderless = false, density = "default", headerBorder = "thin", rowSeparator = "full", transparent = false, noRowHover = false, ...options }) {
 	const internalTable = useDataGrid(options);
 	const table$2 = externalTable ?? internalTable;
 	const enableSelection = options.enableRowSelection !== false && options.enableRowSelection !== void 0;
@@ -5761,6 +5840,12 @@ function DataGrid({ height, showToolbar = true, showStatusBar = false, showFoote
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: [gridContainer, className].filter(Boolean).join(" "),
 		style: containerStyle,
+		"data-borderless": borderless || void 0,
+		"data-density": density !== "default" ? density : void 0,
+		"data-header-border": headerBorder !== "thin" ? headerBorder : void 0,
+		"data-row-separator": rowSeparator !== "full" ? rowSeparator : void 0,
+		"data-transparent": transparent || void 0,
+		"data-no-row-hover": noRowHover || void 0,
 		children: [
 			showToolbar && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: toolbar,

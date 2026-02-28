@@ -941,6 +941,18 @@ interface DataGridProps<TData = any> extends DataGridOptions<TData> {
   onRowClick?: (row: Row<TData>) => void;
   /** Callback when a row is double-clicked */
   onRowDoubleClick?: (row: Row<TData>) => void;
+  /** Remove outer border and border-radius. Default: false */
+  borderless?: boolean;
+  /** Density: 'default' (standard), 'compact' (tighter rows/fonts), 'editorial' (high-density data journalism) */
+  density?: 'default' | 'compact' | 'editorial';
+  /** Header border style: 'thin' (1px), 'thick' (2px), 'none' */
+  headerBorder?: 'thin' | 'thick' | 'none';
+  /** Row separator style: 'full' (default), 'subtle' (barely visible), 'none' */
+  rowSeparator?: 'full' | 'subtle' | 'none';
+  /** Remove background fill from container (transparent). Default: false */
+  transparent?: boolean;
+  /** Disable hover highlight on rows. Default: false */
+  noRowHover?: boolean;
 }
 declare function DataGrid<TData = any>({
   height,
@@ -958,6 +970,12 @@ declare function DataGrid<TData = any>({
   table: externalTable,
   onRowClick,
   onRowDoubleClick,
+  borderless,
+  density,
+  headerBorder,
+  rowSeparator,
+  transparent,
+  noRowHover,
   ...options
 }: DataGridProps<TData>): react_jsx_runtime0.JSX.Element;
 declare namespace DataGrid {

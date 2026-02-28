@@ -138,10 +138,10 @@ function TimelineChart() {
           value={view}
           onValueChange={(v) => { if (v) setView(v as 'monthly' | 'annual'); }}
         >
-          <ToggleGroupItem value="monthly" style={{ fontSize: '11px', padding: '4px 12px', letterSpacing: '1px' }}>
+          <ToggleGroupItem value="monthly" style={{ fontSize: '10px', padding: '3px 10px', letterSpacing: '1px', height: '26px', borderRadius: '2px' }}>
             MONTHLY
           </ToggleGroupItem>
-          <ToggleGroupItem value="annual" style={{ fontSize: '11px', padding: '4px 12px', letterSpacing: '1px' }}>
+          <ToggleGroupItem value="annual" style={{ fontSize: '10px', padding: '3px 10px', letterSpacing: '1px', height: '26px', borderRadius: '2px' }}>
             ANNUAL
           </ToggleGroupItem>
         </ToggleGroup>
@@ -345,7 +345,7 @@ function EntityRosterSection() {
                   <span className={s.rosterRank}>{ent.rank}</span>
                   <span className={`${s.rosterName} ${ent.clickable ? s.rosterNameClickable : ''} ${ent.flagged ? s.rosterNameHighlight : ''}`}>
                     {ent.name}
-                    {ent.flagged && <span className={s.sarTag}>⚠ FLAG</span>}
+                    {ent.flagged && <span className={s.sarTag}><span className={s.sarIcon}>⚠</span> FLAG</span>}
                   </span>
                   <span className={s.rosterDollars}>{fmt(ent.dollars)}</span>
                   <SourceRatingBar sources={ent.sources} />
@@ -390,7 +390,7 @@ function EntityDataGrid() {
         }}>
           {row.original.name}
           {row.original.flagged && (
-            <span className={s.sarTag} style={{ marginLeft: '6px' }}>⚠ FLAG</span>
+            <span className={s.sarTag} style={{ marginLeft: '6px' }}><span className={s.sarIcon}>⚠</span> FLAG</span>
           )}
         </span>
       ),
@@ -447,7 +447,9 @@ function EntityDataGrid() {
       enableRowSelection
       enableGlobalFilter
       enableColumnResizing
+      enableColumnVisibility
       showColumnFilters
+      density="compact"
       height={480}
       pageSizeOptions={[15, 30, 50, 69]}
       initialState={{
@@ -592,7 +594,12 @@ function ShellEntityGrid() {
         columns={columns}
         enableSorting
         enablePagination={false}
-        height={320}
+        borderless
+        density="editorial"
+        headerBorder="thick"
+        rowSeparator="subtle"
+        transparent
+        showToolbar={false}
       />
     </div>
   );
@@ -621,7 +628,7 @@ function KeyPersonsGrid() {
     {
       id: 'flagged', header: 'Report', accessorKey: 'flagged', width: 100,
       cell: ({ value }) => value ? (
-        <span className={s.sarTag}>⚠ FLAGGED</span>
+        <span className={s.sarTag}><span className={s.sarIcon}>⚠</span> FLAGGED</span>
       ) : null,
     },
   ], []);
@@ -633,7 +640,12 @@ function KeyPersonsGrid() {
         columns={columns}
         enableSorting
         enablePagination={false}
-        height={360}
+        borderless
+        density="editorial"
+        headerBorder="thick"
+        rowSeparator="subtle"
+        transparent
+        showToolbar={false}
       />
       <p className={s.dataTableNote}>
         Flags derived from <code className={s.dataTableCode}>compliance_match</code> column

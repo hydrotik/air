@@ -56,6 +56,21 @@ interface DataGridProps<TData = any> extends DataGridOptions<TData> {
   onRowClick?: (row: Row<TData>) => void;
   /** Callback when a row is double-clicked */
   onRowDoubleClick?: (row: Row<TData>) => void;
+
+  /* ── Visual configuration ─────────────────────────────────── */
+
+  /** Remove outer border and border-radius. Default: false */
+  borderless?: boolean;
+  /** Density: 'default' (standard), 'compact' (tighter rows/fonts), 'editorial' (high-density data journalism) */
+  density?: 'default' | 'compact' | 'editorial';
+  /** Header border style: 'thin' (1px), 'thick' (2px), 'none' */
+  headerBorder?: 'thin' | 'thick' | 'none';
+  /** Row separator style: 'full' (default), 'subtle' (barely visible), 'none' */
+  rowSeparator?: 'full' | 'subtle' | 'none';
+  /** Remove background fill from container (transparent). Default: false */
+  transparent?: boolean;
+  /** Disable hover highlight on rows. Default: false */
+  noRowHover?: boolean;
 }
 
 // ─── Sort Icon ──────────────────────────────────────────────────────────────
@@ -595,6 +610,13 @@ export function DataGrid<TData = any>({
   table: externalTable,
   onRowClick,
   onRowDoubleClick,
+  // Visual configuration
+  borderless = false,
+  density = 'default',
+  headerBorder = 'thin',
+  rowSeparator = 'full',
+  transparent = false,
+  noRowHover = false,
   ...options
 }: DataGridProps<TData>) {
   // Use external table or create internal one
@@ -619,6 +641,12 @@ export function DataGrid<TData = any>({
     <div
       className={[s.gridContainer, className].filter(Boolean).join(' ')}
       style={containerStyle}
+      data-borderless={borderless || undefined}
+      data-density={density !== 'default' ? density : undefined}
+      data-header-border={headerBorder !== 'thin' ? headerBorder : undefined}
+      data-row-separator={rowSeparator !== 'full' ? rowSeparator : undefined}
+      data-transparent={transparent || undefined}
+      data-no-row-hover={noRowHover || undefined}
     >
       {/* ─── Toolbar ─── */}
       {showToolbar && (
