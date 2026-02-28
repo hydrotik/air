@@ -145,9 +145,14 @@ import { FlagTag } from '@hydrotik/design-system';
 ```
 
 - Variants: `destructive`, `warning`, `success`, `primary`, `muted`
-- Sizes: `xs` (8px), `sm` (9px), `md` (11px), `lg` (13px)
-- Icon is always slightly larger than text for scannability
+- Label sizes: `xs` (8px), `sm` (9px), `md` (11px), `lg` (13px)
 - `marginLeft` prop defaults to `'8px'` for inline-after-name placement
+- **Design rules**:
+  - Icon is +6px taller than label (xs: 14px, sm: 15px, md: 17px, lg: 19px)
+  - Icon nudged up 2px (`translateY(-2px)`) for optical alignment
+  - `lineHeight: 0` on both icon and label spans, `alignItems: center` on container
+  - No background, no border — flat ink-on-paper aesthetic
+  - Monospace font with 1px letter-spacing (forensic/editorial density)
 
 ## DataGrid Visual Variants
 

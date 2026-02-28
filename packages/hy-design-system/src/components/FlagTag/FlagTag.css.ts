@@ -11,9 +11,10 @@ import { vars } from '@hydrotik/tokens';
  *
  * Design decisions:
  * - No background or border (flat, ink-on-paper feel)
- * - Monospace font with letter-spacing (forensic/editorial density)
- * - Icon sits slightly above text baseline via translateY
- * - Icon is larger than text (14px icon with 9px text) for scannability
+ * - Monospace font with 1px letter-spacing (forensic/editorial density)
+ * - Icon is +6px taller than label (xs:14, sm:15, md:17, lg:19)
+ * - Icon nudged up 2px (translateY(-2px)) for optical alignment
+ * - lineHeight:0 on both spans, alignItems:center on container
  * - Inline-flex so it flows naturally in text or table cells
  */
 
