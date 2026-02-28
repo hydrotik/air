@@ -32,6 +32,11 @@ export const lightThemeClass = createTheme(vars, {
     ghostHover: 'rgba(0, 0, 0, 0.04)',
     input: '#ffffff',
     placeholder: '#9ca3af',
+    chart1: '#2563eb',
+    chart2: '#60a5fa',
+    chart3: '#34d399',
+    chart4: '#facc15',
+    chart5: '#fb923c',
   },
   space: {
     px: '1px',

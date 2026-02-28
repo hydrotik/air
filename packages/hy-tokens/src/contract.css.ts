@@ -58,6 +58,16 @@ export const vars = createThemeContract({
     input: null,
     /** Placeholder text */
     placeholder: null,
+    /** Chart color 1 */
+    chart1: null,
+    /** Chart color 2 */
+    chart2: null,
+    /** Chart color 3 */
+    chart3: null,
+    /** Chart color 4 */
+    chart4: null,
+    /** Chart color 5 */
+    chart5: null,
   },
   space: {
     px: null,

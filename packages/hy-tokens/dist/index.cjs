@@ -34,7 +34,12 @@ const vars = (0, _vanilla_extract_css.createThemeContract)({
 		overlay: null,
 		ghostHover: null,
 		input: null,
-		placeholder: null
+		placeholder: null,
+		chart1: null,
+		chart2: null,
+		chart3: null,
+		chart4: null,
+		chart5: null
 	},
 	space: {
 		px: null,
@@ -164,7 +169,12 @@ const darkThemeClass = (0, _vanilla_extract_css.createTheme)(vars, {
 		overlay: "rgba(0, 0, 0, 0.7)",
 		ghostHover: "rgba(255, 255, 255, 0.05)",
 		input: "#1f2025",
-		placeholder: "#5c5e6b"
+		placeholder: "#5c5e6b",
+		chart1: "#2563eb",
+		chart2: "#60a5fa",
+		chart3: "#34d399",
+		chart4: "#facc15",
+		chart5: "#fb923c"
 	},
 	space: {
 		px: "1px",
@@ -294,7 +304,12 @@ const lightThemeClass = (0, _vanilla_extract_css.createTheme)(vars, {
 		overlay: "rgba(0, 0, 0, 0.4)",
 		ghostHover: "rgba(0, 0, 0, 0.04)",
 		input: "#ffffff",
-		placeholder: "#9ca3af"
+		placeholder: "#9ca3af",
+		chart1: "#2563eb",
+		chart2: "#60a5fa",
+		chart3: "#34d399",
+		chart4: "#facc15",
+		chart5: "#fb923c"
 	},
 	space: {
 		px: "1px",

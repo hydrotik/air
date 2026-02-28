@@ -32,6 +32,11 @@ declare const vars: {
     ghostHover: `var(--${string})`;
     input: `var(--${string})`;
     placeholder: `var(--${string})`;
+    chart1: `var(--${string})`;
+    chart2: `var(--${string})`;
+    chart3: `var(--${string})`;
+    chart4: `var(--${string})`;
+    chart5: `var(--${string})`;
   };
   space: {
     px: `var(--${string})`;

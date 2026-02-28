@@ -97,3 +97,35 @@ export const tableFooter = style({
   justifyContent: 'space-between',
   paddingTop: vars.space['3'],
 });
+
+/* ─── Chart tooltip ─── */
+export const tooltip = style({
+  backgroundColor: vars.color.surfaceElevated,
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radii.lg,
+  padding: `${vars.space['2']} ${vars.space['3']}`,
+  boxShadow: vars.shadow.md,
+  fontSize: vars.font.size.sm,
+  minWidth: '140px',
+});
+
+export const tooltipLabel = style({
+  fontWeight: 600,
+  marginBottom: vars.space['1'],
+  color: vars.color.text,
+});
+
+export const tooltipRow = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space['2'],
+  color: vars.color.textMuted,
+  padding: `${vars.space['0_5']} 0`,
+});
+
+export const tooltipDot = style({
+  width: '8px',
+  height: '8px',
+  borderRadius: vars.radii.full,
+  flexShrink: 0,
+});

@@ -32,6 +32,11 @@ export const darkThemeClass = createTheme(vars, {
     ghostHover: 'rgba(255, 255, 255, 0.05)',
     input: '#1f2025',
     placeholder: '#5c5e6b',
+    chart1: '#2563eb',
+    chart2: '#60a5fa',
+    chart3: '#34d399',
+    chart4: '#facc15',
+    chart5: '#fb923c',
   },
   space: {
     px: '1px',

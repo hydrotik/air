@@ -1,5 +1,11 @@
 import React from 'react';
 import {
+  Bar, BarChart, CartesianGrid, XAxis, YAxis,
+  Pie, PieChart, Sector, Label as RechartsLabel,
+  ResponsiveContainer, Tooltip as RechartsTooltip, Cell,
+} from 'recharts';
+import type { PieSectorDataItem } from 'recharts/types/polar/Pie';
+import {
   Badge, Button, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter,
   Checkbox,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
@@ -15,6 +21,7 @@ import {
 } from 'lucide-react';
 import * as s from './DashboardPage.css';
 
+/* ── Data ── */
 const products = [
   { id: '1', name: 'BJÖRKSNÄS Dining Table', price: 599.99, stock: 12, dateAdded: '2023-06-15', status: 'In Stock' },
   { id: '2', name: 'POÄNG Armchair', price: 249.99, stock: 28, dateAdded: '2023-07-22', status: 'In Stock' },
@@ -33,11 +40,211 @@ const kpis = [
   { label: 'Growth Rate', value: '4.5%', trend: '+4.5%', up: true, desc: '+12.5% increase per month' },
 ];
 
+const revenueData = [
+  { month: 'Jan', desktop: 186, mobile: 80 },
+  { month: 'Feb', desktop: 305, mobile: 200 },
+  { month: 'Mar', desktop: 237, mobile: 120 },
+  { month: 'Apr', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'Jun', desktop: 346, mobile: 140 },
+  { month: 'Jul', desktop: 321, mobile: 275 },
+  { month: 'Aug', desktop: 132, mobile: 95 },
+  { month: 'Sep', desktop: 189, mobile: 225 },
+  { month: 'Oct', desktop: 302, mobile: 248 },
+  { month: 'Nov', desktop: 342, mobile: 285 },
+  { month: 'Dec', desktop: 328, mobile: 290 },
+];
+
+const CHART_COLORS = [
+  'var(--color-chart1)',
+  'var(--color-chart2)',
+  'var(--color-chart3)',
+  'var(--color-chart4)',
+  'var(--color-chart5)',
+];
+
+const visitorData = [
+  { month: 'January', visitors: 186 },
+  { month: 'February', visitors: 305 },
+  { month: 'March', visitors: 237 },
+  { month: 'April', visitors: 173 },
+  { month: 'May', visitors: 209 },
+];
+
+/* ── Custom Tooltip ── */
+function ChartTooltipContent({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className={s.tooltip}>
+      <div className={s.tooltipLabel}>{label}</div>
+      {payload.map((entry: any, i: number) => (
+        <div key={i} className={s.tooltipRow}>
+          <span className={s.tooltipDot} style={{ backgroundColor: entry.color }} />
+          <span>{entry.name}</span>
+          <span style={{ fontWeight: 600, marginLeft: 'auto' }}>{entry.value.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Pie sector shape (v3 API) ── */
+function PieSectorShape(props: PieSectorDataItem & { isActive: boolean }) {
+  const { isActive, outerRadius = 0, ...rest } = props;
+  if (isActive) {
+    return (
+      <g>
+        <Sector {...rest} outerRadius={outerRadius + 8} />
+        <Sector {...rest} outerRadius={outerRadius + 20} innerRadius={outerRadius + 10} />
+      </g>
+    );
+  }
+  return <Sector {...rest} outerRadius={outerRadius} />;
+}
+
+/* ── Revenue Bar Chart ── */
+function ChartRevenue() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardDescription>January – December 2024</CardDescription>
+        <CardTitle style={{ fontSize: '24px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+          $45,231.89
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={280}>
+          <BarChart data={revenueData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke="var(--color-border)" strokeOpacity={0.5} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 12, fill: 'var(--color-textMuted)' }}
+              tickMargin={8}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 12, fill: 'var(--color-textMuted)' }}
+              tickMargin={8}
+              tickFormatter={(v) => v.toLocaleString()}
+            />
+            <RechartsTooltip
+              cursor={{ fill: 'var(--color-ghostHover)' }}
+              content={<ChartTooltipContent />}
+            />
+            <Bar dataKey="desktop" name="Desktop" fill="var(--color-chart1)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="mobile" name="Mobile" fill="var(--color-chart2)" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </CardContent>
+      <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+        <span className={`${s.kpiTrend} ${s.trendUp}`}>
+          Trending up by 5.2% this month <TrendingUp size={14} />
+        </span>
+        <span className={s.kpiDesc}>Showing total visitors for the last 12 months</span>
+      </CardFooter>
+    </Card>
+  );
+}
+
+/* ── Visitors Pie Chart ── */
+function ChartVisitors() {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  return (
+    <Card style={{ display: 'flex', flexDirection: 'column' }}>
+      <CardHeader>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div>
+            <CardDescription>January – June 2024</CardDescription>
+            <CardTitle style={{ fontSize: '24px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+              {visitorData[activeIndex].visitors.toLocaleString()} visitors
+            </CardTitle>
+          </div>
+          <Select
+            value={visitorData[activeIndex].month.toLowerCase()}
+            onValueChange={(v) => {
+              const idx = visitorData.findIndex((d) => d.month.toLowerCase() === v);
+              if (idx >= 0) setActiveIndex(idx);
+            }}
+          >
+            <SelectTrigger style={{ width: '130px', height: '28px' }}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {visitorData.map((d, i) => (
+                <SelectItem key={d.month} value={d.month.toLowerCase()}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                    <span style={{
+                      width: '12px', height: '12px', borderRadius: '3px',
+                      backgroundColor: CHART_COLORS[i],
+                      flexShrink: 0,
+                    }} />
+                    {d.month}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </CardHeader>
+      <CardContent style={{ flex: 1, display: 'flex', justifyContent: 'center', paddingBottom: 0 }}>
+        <ResponsiveContainer width="100%" height={280}>
+          <PieChart>
+            <RechartsTooltip content={<ChartTooltipContent />} />
+            <Pie
+              data={visitorData.map((d, i) => ({ ...d, isActive: i === activeIndex }))}
+              dataKey="visitors"
+              nameKey="month"
+              innerRadius={60}
+              strokeWidth={5}
+              stroke="var(--color-surface)"
+              shape={PieSectorShape as any}
+              onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
+            >
+              {visitorData.map((_, i) => (
+                <Cell key={i} fill={CHART_COLORS[i]} />
+              ))}
+              <RechartsLabel
+                content={({ viewBox }) => {
+                  if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                    return (
+                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          style={{ fontSize: '28px', fontWeight: 700, fill: 'var(--color-text)' }}
+                        >
+                          {visitorData[activeIndex].visitors.toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 24}
+                          style={{ fontSize: '12px', fill: 'var(--color-textMuted)' }}
+                        >
+                          Visitors
+                        </tspan>
+                      </text>
+                    );
+                  }
+                  return null;
+                }}
+              />
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+/* ── Main Dashboard Page ── */
 export function DashboardPage() {
   return (
     <TooltipProvider>
       <div className={s.dashboardContainer}>
-        {/* ─── Tabs ──────────────────────────────── */}
         <Tabs defaultValue="overview">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
             <TabsList>
@@ -56,7 +263,7 @@ export function DashboardPage() {
           </div>
 
           <TabsContent value="overview" style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingTop: '16px' }}>
-            {/* ─── KPI Cards ──────────────────────── */}
+            {/* KPI Cards */}
             <div className={s.kpiGrid}>
               {kpis.map((kpi) => (
                 <Card key={kpi.label}>
@@ -75,39 +282,13 @@ export function DashboardPage() {
               ))}
             </div>
 
-            {/* ─── Charts (placeholders) ─────────── */}
+            {/* Charts */}
             <div className={s.chartsGrid}>
-              <Card>
-                <CardHeader>
-                  <CardDescription>January – December 2024</CardDescription>
-                  <CardTitle className={s.kpiValue}>$45,231.89</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className={s.chartPlaceholder}>
-                    Bar Chart — requires recharts
-                  </div>
-                </CardContent>
-                <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
-                  <span className={`${s.kpiTrend} ${s.trendUp}`}>
-                    Trending up by 5.2% this month <TrendingUp size={14} />
-                  </span>
-                  <span className={s.kpiDesc}>Showing total visitors for the last 6 months</span>
-                </CardFooter>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardDescription>January – June 2024</CardDescription>
-                  <CardTitle className={s.kpiValue}>1,234 visitors</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className={s.chartPlaceholder}>
-                    Pie Chart — requires recharts
-                  </div>
-                </CardContent>
-              </Card>
+              <ChartRevenue />
+              <ChartVisitors />
             </div>
 
-            {/* ─── Products Table ─────────────────── */}
+            {/* Products Table */}
             <Card>
               <CardHeader>
                 <div className={s.tableHeader}>
