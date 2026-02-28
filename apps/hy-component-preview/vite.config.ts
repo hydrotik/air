@@ -12,6 +12,7 @@ export default defineConfig({
     port: ports.componentPreview,
     fs: { allow: [workspaceRoot] },
   },
+  appType: 'spa',
   resolve: {
     alias: {
       '@hydrotik/design-system': path.resolve(workspaceRoot, 'packages/hy-design-system/src'),

@@ -116,3 +116,29 @@ export const sectionLabel = style({
   alignItems: 'center',
   padding: `${vars.space['2']} 0`,
 });
+
+/* ─── Nav links ─── */
+export const navLinks = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space['1'],
+});
+
+export const navLink = style({
+  fontSize: vars.font.size.sm,
+  fontWeight: 500,
+  color: vars.color.textMuted,
+  textDecoration: 'none',
+  padding: `${vars.space['1']} ${vars.space['3']}`,
+  borderRadius: vars.radii.md,
+  transition: 'color 0.15s, background-color 0.15s',
+  ':hover': {
+    color: vars.color.text,
+    backgroundColor: vars.color.secondary,
+  },
+});
+
+export const navLinkActive = style({
+  color: vars.color.text,
+  backgroundColor: vars.color.secondary,
+});
