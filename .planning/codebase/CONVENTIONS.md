@@ -71,9 +71,12 @@ MyComponent.displayName = 'MyComponent';
 ## Git Conventions
 
 - Conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `rename:`
-- Pre-commit: lint-staged (ESLint + Prettier) + desloppify scan
+- Pre-commit (`.husky/pre-commit`):
+  1. `pnpm exec lint-staged` — ESLint `--fix` + Prettier on staged `.ts`/`.tsx`/`.js`/`.json`/`.md`
+  2. `desloppify --lang typescript scan` — 14 detectors, score tracking, state in `.desloppify/`
 - Atomic commits — one logical change per commit
 - `--no-verify` escape hatch when needed
+- Desloppify state: `.desloppify/state-typescript.json` (tracked in git)
 
 ## Import Order
 

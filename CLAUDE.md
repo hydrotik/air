@@ -26,7 +26,6 @@ Turbo handles dependency ordering and caching.
 ## Port Configuration
 
 All ports managed in `@hydrotik/config` (`packages/hy-config/`):
-
 - 3100 — Component Preview
 - 4000 — BFF Fastify
 - 5100 — Design MCP
@@ -77,37 +76,6 @@ desloppify scan --path .
 desloppify status
 desloppify next
 ```
-
-## Component Preview App
-
-The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom):
-
-| Route        | Page      | Description                                                                                                                            |
-| ------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`          | DataGrid  | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty                                               |
-| `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table                                                                       |
-| `/inventory` | Inventory | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table                                                      |
-| `/plugin`    | Plugin    | TectraScope marketing landing page — hero, features, comparison, specs, CTA                                                            |
-| `/datagrid`  | DataGrid  | Enterprise data grid demo — full featured, minimal, tree data, loading, empty                                                          |
-| `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SegmentedRatingBars, FlagTags, timeline chart, entity roster |
-
-- Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
-- Styles via vanilla-extract using design tokens
-- 12-column responsive CSS Grid for bento layout
-
-## E2E Testing (Playwright)
-
-```bash
-pnpm turbo run e2e                                          # run all E2E tests
-pnpm turbo run e2e --filter=@hydrotik/component-preview     # run preview E2E only
-cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwright UI
-```
-
-- Config: `apps/hy-component-preview/playwright.config.ts`
-- Tests: `apps/hy-component-preview/e2e/` (6 spec files, 63 tests)
-- Auto-starts dev server on port 3100 via `webServer` config
-- Chromium only (add Firefox/WebKit projects as needed)
-- Artifacts: `playwright-report/`, `test-results/` (gitignored)
 
 ## SegmentedRatingBar Component
 
@@ -179,7 +147,6 @@ The DataGrid supports editorial/compact density and visual customization:
 ```
 
 All variants are data-attribute-driven CSS (zero runtime overhead):
-
 - `[data-density="editorial"]` — mono uppercase headers, 10px header font, 6px body padding, 13px body font
 - `[data-borderless]` — no outer border or radius
 - `[data-transparent]` — transparent bg
@@ -190,45 +157,18 @@ All variants are data-attribute-driven CSS (zero runtime overhead):
 
 The design system exports `InputGroup`, `InputGroupAddon`, `InputGroupToolbar`, and `inputGroupInputClass`.
 Uses the **wrapper pattern** (not per-element border hacks):
-
 - `<InputGroup>` owns border, shadow, radius, bg, focus-within ring
 - `<InputGroupAddon>` for text/icon slots
 - `<InputGroupToolbar>` for bottom toolbar rows (textarea combos)
 - `inputGroupInputClass` strips chrome from child `<Input>`/`<Textarea>`
 
-## Pre-Commit Hooks (Husky + Desloppify)
+## Deep Reference
 
-`.husky/pre-commit` runs two tasks on every commit:
-
-1. **lint-staged** — ESLint fix + Prettier on staged `.ts`/`.tsx`/`.js`/`.json`/`.md` files
-2. **desloppify scan** — Runs all TypeScript detectors, updates state, shows score diff
-
-Desloppify state: `.desloppify/state-typescript.json` (tracked).
-Config: `desloppify config` to view/set thresholds.
-
-## Visual Capture Tool (Playwright)
-
-`scripts/visual-capture.ts` — Headless Chromium screenshot tool for visual validation.
-No macOS Screen Recording permission needed. Retina (2× device scale).
-
-```bash
-# Full page
-pnpm capture --route /editorial
-
-# Viewport at scroll offset
-pnpm capture --route /editorial --scroll 2000
-
-# Element-level (captures every match)
-pnpm capture --route /editorial --element "[role='meter']" --padding 20
-
-# All routes
-pnpm capture:all
-
-# Light theme
-pnpm capture --route /editorial --theme light
-
-# Custom viewport
-pnpm capture --route /editorial --viewport 1920x1080
-```
-
-Output: `/tmp/hydrotik-captures/<route>-<timestamp>.png`
+For architecture, testing, directory structure, and tooling details, read on-demand:
+- `.planning/codebase/STACK.md` — Full technology inventory
+- `.planning/codebase/ARCHITECTURE.md` — Layers, data flow, key abstractions
+- `.planning/codebase/STRUCTURE.md` — Directory layout, file patterns, naming
+- `.planning/codebase/CONVENTIONS.md` — Code style, imports, git, TypeScript rules
+- `.planning/codebase/TESTING.md` — Jest, Playwright, visual capture, Storybook
+- `.planning/codebase/INTEGRATIONS.md` — MCP, GSD, desloppify, fonts, CI/CD
+- `.planning/codebase/CONCERNS.md` — Tech debt, security, performance, fragile areas
