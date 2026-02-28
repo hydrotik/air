@@ -193,6 +193,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 | `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
 | `/ecommerce` | E-Commerce | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
+| `/plugin` | Plugin | TectraScope marketing landing page — hero with gradient tagline + plugin screenshot, feature cards, comparison table, use cases, specs, DAW hosts, CTA |
 
 **Features:**
 - Dark theme default with theme toggle
@@ -200,7 +201,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 - recharts v3 for charts (area, bar, pie/donut)
 - Port `3100` via `@hydrotik/config`
 - SPA fallback configured (`appType: 'spa'` in vite.config.ts)
-- **Playwright E2E tests** — 36 tests across 5 spec files (navigation, home cards, sink, ecommerce, theme)
+- **Playwright E2E tests** — 49 tests across 6 spec files (navigation, home cards, sink, ecommerce, plugin, theme)
 
 Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
 Test: `pnpm turbo run e2e --filter=@hydrotik/component-preview`

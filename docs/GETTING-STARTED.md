@@ -93,6 +93,7 @@ Opens at `http://localhost:3100`. Pages:
 - **Components** (`/sink`) — Kitchen sink with all 42 components
 - **Dashboard** (`/dashboard`) — KPI cards, charts, products table
 - **E-Commerce** (`/ecommerce`) — Sidebar layout with orders, category charts, product management
+- **Plugin** (`/plugin`) — TectraScope marketing landing page with hero, features, specs, pricing CTA
 
 ---
 
