@@ -194,6 +194,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
 | `/ecommerce` | E-Commerce | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero with gradient tagline + plugin screenshot, feature cards, comparison table, use cases, specs, DAW hosts, CTA |
+| `/datagrid` | DataGrid | Enterprise data grid demo with 5 variants: full-featured (200 rows, sorting, filtering, selection, resizing, pagination), minimal, tree data, loading skeleton, empty state |
 
 **Features:**
 - Dark theme default with theme toggle

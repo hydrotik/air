@@ -94,6 +94,7 @@ Opens at `http://localhost:3100`. Pages:
 - **Dashboard** (`/dashboard`) — KPI cards, charts, products table
 - **E-Commerce** (`/ecommerce`) — Sidebar layout with orders, category charts, product management
 - **Plugin** (`/plugin`) — TectraScope marketing landing page with hero, features, specs, pricing CTA
+- **DataGrid** (`/datagrid`) — Enterprise data grid demo with sorting, filtering, pagination, selection, tree data
 
 ---
 

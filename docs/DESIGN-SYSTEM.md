@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hydrotik design system is a **CSS-in-TypeScript** component library with **43 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope. Built on:
+The Hydrotik design system is a **CSS-in-TypeScript** component library with **44 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope plus enterprise-grade additions. Built on:
 
 | Layer | Technology |
 |---|---|
