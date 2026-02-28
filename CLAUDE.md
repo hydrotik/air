@@ -76,10 +76,12 @@ The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom
 
 | Route | Page | Description |
 |---|---|---|
-| `/` | Components | DataGrid demo — full featured (200 rows), minimal, tree data, loading, empty state |
+| `/` | Home | Hero + bento grid of 30+ interactive demo cards |
+| `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
 | `/ecommerce` | E-Commerce | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero, features, comparison, specs, CTA |
+| `/datagrid` | DataGrid | Enterprise data grid demo — full featured, minimal, tree data, loading, empty |
 
 - Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
 - Styles via vanilla-extract using design tokens
@@ -94,7 +96,7 @@ cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwr
 ```
 
 - Config: `apps/hy-component-preview/playwright.config.ts`
-- Tests: `apps/hy-component-preview/e2e/` (5 spec files, 47 tests)
+- Tests: `apps/hy-component-preview/e2e/` (6 spec files, 49 tests)
 - Auto-starts dev server on port 3100 via `webServer` config
 - Chromium only (add Firefox/WebKit projects as needed)
 - Artifacts: `playwright-report/`, `test-results/` (gitignored)
