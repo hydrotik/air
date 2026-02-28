@@ -274,7 +274,8 @@ const ROSTER_DATA: RosterEntity[] = (() => {
     const cat = categories[Math.min(Math.floor(i / 14), 4)];
     const dollars = Math.round((srand() * 800 + 0.5) * 1e6 * (i < 10 ? 1 : i < 25 ? 0.4 : i < 45 ? 0.15 : 0.03));
     const flagged = srand() > 0.65;
-    const sources = Array.from({ length: 10 }, () => srand() > (i < 15 ? 0.25 : i < 35 ? 0.45 : 0.65));
+    const sourceCount = Math.round(srand() * (i < 15 ? 7 : i < 35 ? 5 : i < 45 ? 4 : 2)) + (i < 15 ? 3 : 1);
+    const sources = Array.from({ length: 10 }, (_, j) => j < Math.min(sourceCount, 10));
     return {
       rank: i + 1,
       name: `${fn} ${lastNames[i]}`,
