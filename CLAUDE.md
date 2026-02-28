@@ -10,6 +10,12 @@ pnpm turbo run build                                       # all packages
 pnpm turbo run build --filter=@hydrotik/design-system      # single package
 pnpm turbo run typecheck
 pnpm turbo run test --filter=@hydrotik/design-system
+
+# Visual captures (headless Playwright — no macOS permissions needed)
+pnpm capture --route /editorial                            # single route full page
+pnpm capture --route /editorial --scroll 2000              # viewport at scroll offset
+pnpm capture --route /editorial --element "[role='meter']" # element-level captures
+pnpm capture:all                                           # all routes full page
 ```
 
 ## CLI Convention
@@ -185,3 +191,39 @@ Uses the **wrapper pattern** (not per-element border hacks):
 - `<InputGroupAddon>` for text/icon slots
 - `<InputGroupToolbar>` for bottom toolbar rows (textarea combos)
 - `inputGroupInputClass` strips chrome from child `<Input>`/`<Textarea>`
+
+## Pre-Commit Hooks (Husky + Desloppify)
+
+`.husky/pre-commit` runs two tasks on every commit:
+1. **lint-staged** — ESLint fix + Prettier on staged `.ts`/`.tsx`/`.js`/`.json`/`.md` files
+2. **desloppify scan** — Runs all TypeScript detectors, updates state, shows score diff
+
+Desloppify state: `.desloppify/state-typescript.json` (tracked).
+Config: `desloppify config` to view/set thresholds.
+
+## Visual Capture Tool (Playwright)
+
+`scripts/visual-capture.ts` — Headless Chromium screenshot tool for visual validation.
+No macOS Screen Recording permission needed. Retina (2× device scale).
+
+```bash
+# Full page
+pnpm capture --route /editorial
+
+# Viewport at scroll offset
+pnpm capture --route /editorial --scroll 2000
+
+# Element-level (captures every match)
+pnpm capture --route /editorial --element "[role='meter']" --padding 20
+
+# All routes
+pnpm capture:all
+
+# Light theme
+pnpm capture --route /editorial --theme light
+
+# Custom viewport
+pnpm capture --route /editorial --viewport 1920x1080
+```
+
+Output: `/tmp/hydrotik-captures/<route>-<timestamp>.png`

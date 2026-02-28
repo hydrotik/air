@@ -45,6 +45,9 @@ importers:
       tsdown:
         specifier: ^0.21.0-beta.2
         version: 0.21.0-beta.2(synckit@0.11.12)(typescript@5.9.3)
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
       turbo:
         specifier: ^2.8.11
         version: 2.8.11

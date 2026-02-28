@@ -1,0 +1,2 @@
+pnpm exec lint-staged
+desloppify scan --lang typescript

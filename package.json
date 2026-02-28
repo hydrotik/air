@@ -18,7 +18,10 @@
     "llm:validate": "hy-ai validate",
     "llm:check": "hy-ai all",
     "llm:all": "hy-ai salt --fetch && hy-ai registry && hy-ai validate",
-    "llm:init": "hy-ai init"
+    "llm:init": "hy-ai init",
+    "capture": "npx tsx scripts/visual-capture.ts",
+    "capture:all": "npx tsx scripts/visual-capture.ts --all",
+    "capture:editorial": "npx tsx scripts/visual-capture.ts --route /editorial --full-page"
   },
   "private": true,
   "packageManager": "pnpm@10.30.3",
@@ -33,6 +36,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tsdown": "^0.21.0-beta.2",
+    "tsx": "^4.21.0",
     "turbo": "^2.8.11",
     "typescript": "~5.9.3"
   },

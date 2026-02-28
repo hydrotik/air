@@ -168,8 +168,30 @@ Run: `pnpm turbo run e2e`
 |---|---|---|
 | **ESLint 10** | `@hydrotik/eslint-config` | Lint JS/TS/React |
 | **Prettier 3** | `@hydrotik/prettify-config` | Code formatting |
-| **Husky** | `.husky/` | Pre-commit hooks |
-| **lint-staged** | root `package.json` | Run checks on staged files only |
+| **Husky 9** | `.husky/pre-commit` | Pre-commit hooks |
+| **lint-staged 16** | root `package.json` | Run checks on staged files only |
+| **Desloppify** | `.desloppify/` state | Codebase health scanner — runs on every commit |
+
+### Pre-Commit Pipeline (`.husky/pre-commit`)
+
+```sh
+pnpm exec lint-staged        # ESLint --fix + Prettier on staged files
+desloppify scan --lang typescript  # health score diff + detector sweep
+```
+
+### Visual Capture Tool
+
+`scripts/visual-capture.ts` — Headless Playwright screenshot utility for visual validation.
+Runs Chromium headless with 2× device scale (Retina). No macOS permissions needed.
+
+```bash
+pnpm capture --route /editorial                      # full page screenshot
+pnpm capture --route /editorial --scroll 2000        # viewport at scroll Y
+pnpm capture --route /editorial --element "[role='meter']"  # element captures
+pnpm capture:all                                     # all routes
+```
+
+Output: `/tmp/hydrotik-captures/`
 
 ---
 
