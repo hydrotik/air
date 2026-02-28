@@ -26,6 +26,7 @@ Turbo handles dependency ordering and caching.
 ## Port Configuration
 
 All ports managed in `@hydrotik/config` (`packages/hy-config/`):
+
 - 3100 — Component Preview
 - 4000 — BFF Fastify
 - 5100 — Design MCP
@@ -70,6 +71,7 @@ State is persistent across sessions in `.desloppify/`.
 > "Want me to run a desloppify scan before we push?"
 
 If yes:
+
 ```bash
 desloppify scan --path .
 desloppify status
@@ -80,13 +82,13 @@ desloppify next
 
 The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom):
 
-| Route | Page | Description |
-|---|---|---|
-| `/` | DataGrid | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty |
-| `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
-| `/inventory` | Inventory | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
-| `/plugin` | Plugin | TectraScope marketing landing page — hero, features, comparison, specs, CTA |
-| `/datagrid` | DataGrid | Enterprise data grid demo — full featured, minimal, tree data, loading, empty |
+| Route        | Page      | Description                                                                                                                            |
+| ------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`          | DataGrid  | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty                                               |
+| `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table                                                                       |
+| `/inventory` | Inventory | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table                                                      |
+| `/plugin`    | Plugin    | TectraScope marketing landing page — hero, features, comparison, specs, CTA                                                            |
+| `/datagrid`  | DataGrid  | Enterprise data grid demo — full featured, minimal, tree data, loading, empty                                                          |
 | `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SegmentedRatingBars, FlagTags, timeline chart, entity roster |
 
 - Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
@@ -166,17 +168,18 @@ The DataGrid supports editorial/compact density and visual customization:
 
 ```tsx
 <DataGrid
-  density="editorial"        // 'default' | 'compact' | 'editorial'
-  borderless                 // removes outer border + radius
-  transparent                // transparent background
-  headerBorder="thick"       // 'thin' | 'thick' | 'none'
-  rowSeparator="subtle"      // 'full' | 'subtle' | 'none'
-  noRowHover                 // disables row hover highlight
-  showToolbar={false}        // hides search + column visibility
+  density="editorial" // 'default' | 'compact' | 'editorial'
+  borderless // removes outer border + radius
+  transparent // transparent background
+  headerBorder="thick" // 'thin' | 'thick' | 'none'
+  rowSeparator="subtle" // 'full' | 'subtle' | 'none'
+  noRowHover // disables row hover highlight
+  showToolbar={false} // hides search + column visibility
 />
 ```
 
 All variants are data-attribute-driven CSS (zero runtime overhead):
+
 - `[data-density="editorial"]` — mono uppercase headers, 10px header font, 6px body padding, 13px body font
 - `[data-borderless]` — no outer border or radius
 - `[data-transparent]` — transparent bg
@@ -187,6 +190,7 @@ All variants are data-attribute-driven CSS (zero runtime overhead):
 
 The design system exports `InputGroup`, `InputGroupAddon`, `InputGroupToolbar`, and `inputGroupInputClass`.
 Uses the **wrapper pattern** (not per-element border hacks):
+
 - `<InputGroup>` owns border, shadow, radius, bg, focus-within ring
 - `<InputGroupAddon>` for text/icon slots
 - `<InputGroupToolbar>` for bottom toolbar rows (textarea combos)
@@ -195,6 +199,7 @@ Uses the **wrapper pattern** (not per-element border hacks):
 ## Pre-Commit Hooks (Husky + Desloppify)
 
 `.husky/pre-commit` runs two tasks on every commit:
+
 1. **lint-staged** — ESLint fix + Prettier on staged `.ts`/`.tsx`/`.js`/`.json`/`.md` files
 2. **desloppify scan** — Runs all TypeScript detectors, updates state, shows score diff
 

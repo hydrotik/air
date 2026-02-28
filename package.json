@@ -26,6 +26,7 @@
   "private": true,
   "packageManager": "pnpm@10.30.3",
   "devDependencies": {
+    "@hydrotik/prettify-config": "workspace:^",
     "@playwright/test": "^1.58.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
