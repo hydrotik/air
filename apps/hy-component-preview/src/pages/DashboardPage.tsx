@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ColumnDef } from '@hydrotik/design-system';
 import {
   Bar, BarChart, CartesianGrid, XAxis, YAxis,
   Pie, PieChart, Sector, Label as RechartsLabel,
@@ -7,12 +8,11 @@ import {
 import type { PieSectorDataItem } from 'recharts/types/polar/Pie';
 import {
   Badge, Button, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter,
-  Checkbox,
+
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
-  Pagination, PaginationContent, PaginationItem, PaginationLink,
-  PaginationPrevious, PaginationNext, PaginationEllipsis,
+
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
-  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
+  DataGrid,
   Tabs, TabsList, TabsTrigger, TabsContent,
   TooltipProvider,
 } from '@hydrotik/design-system';
@@ -328,67 +328,37 @@ export function DashboardPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead style={{ width: '32px' }}><Checkbox /></TableHead>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Stock</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Date Added</TableHead>
-                      <TableHead style={{ width: '32px' }} />
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {products.map((p) => (
-                      <TableRow key={p.id}>
-                        <TableCell><Checkbox /></TableCell>
-                        <TableCell style={{ fontWeight: 500 }}>{p.name}</TableCell>
-                        <TableCell>${p.price.toFixed(2)}</TableCell>
-                        <TableCell>{p.stock}</TableCell>
-                        <TableCell>
-                          <Badge variant={p.status === 'In Stock' ? 'default' : 'secondary'}>
-                            {p.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(p.dateAdded).toLocaleDateString('en-US', {
-                            month: 'long', day: 'numeric', year: 'numeric',
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon-sm">
-                                <MoreVertical size={14} />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <CardContent style={{ padding: 0 }}>
+                <DataGrid
+                  data={products}
+                  columns={[
+                    { id: 'name', header: 'Product', accessorKey: 'name', size: 220, cell: ({ value }) => <span style={{ fontWeight: 500 }}>{value}</span> } as ColumnDef,
+                    { id: 'price', header: 'Price', accessorKey: 'price', align: 'right', size: 100, cell: ({ value }) => `$${Number(value).toFixed(2)}` } as ColumnDef,
+                    { id: 'stock', header: 'Stock', accessorKey: 'stock', align: 'right', size: 80 } as ColumnDef,
+                    { id: 'status', header: 'Status', accessorKey: 'status', size: 120, cell: ({ value }) => <Badge variant={value === 'In Stock' ? 'default' : 'secondary'}>{value}</Badge> } as ColumnDef,
+                    { id: 'dateAdded', header: 'Date Added', accessorKey: 'dateAdded', size: 160, cell: ({ value }) => new Date(value).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) } as ColumnDef,
+                    { id: 'actions', header: '', size: 48, enableSorting: false, enableFiltering: false, cell: ({ row }) => (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon-sm"><MoreVertical size={14} /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )} as ColumnDef,
+                  ]}
+                  enableSorting
+                  enableRowSelection
+                  enablePagination
+                  showToolbar={false}
+                  showFooter
+                  getRowId={(row) => row.id}
+                  initialState={{ pagination: { pageIndex: 0, pageSize: 8 } }}
+                  style={{ border: 'none', borderRadius: 0 }}
+                />
               </CardContent>
-              <CardFooter className={s.tableFooter}>
-                <span className={s.kpiDesc}>Showing 1–8 of 100 products</span>
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
-                    <PaginationItem><PaginationLink href="#" isActive>1</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink href="#">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationEllipsis /></PaginationItem>
-                    <PaginationItem><PaginationNext href="#" /></PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>

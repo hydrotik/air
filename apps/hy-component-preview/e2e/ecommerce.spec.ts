@@ -61,7 +61,8 @@ test.describe('E-Commerce Page', () => {
   });
 
   test('renders pagination', async ({ page }) => {
-    await expect(page.getByText('Showing 1–10 of 156 products')).toBeAttached();
+    await expect(page.getByText('10 row(s)')).toBeAttached();
+    await expect(page.getByText('Page 1 of 1')).toBeAttached();
   });
 
   test('sidebar nav changes breadcrumb', async ({ page }) => {

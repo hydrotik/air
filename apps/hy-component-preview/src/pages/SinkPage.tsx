@@ -1,5 +1,6 @@
 import React from 'react';
 import { vars } from '@hydrotik/tokens';
+import type { ColumnDef } from '@hydrotik/design-system';
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
   Alert, AlertTitle, AlertDescription,
@@ -38,6 +39,7 @@ import {
   Slider,
   Spinner,
   Switch,
+  DataGrid,
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
   Tabs, TabsList, TabsTrigger, TabsContent,
   Textarea,
@@ -617,36 +619,22 @@ export function SinkPage() {
         {/* ─── Table ─── */}
         <Section name="Table">
           <div className={s.demoWide}>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Invoice</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead style={{ textAlign: 'right' }}>Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={{ fontWeight: 500 }}>INV001</TableCell>
-                  <TableCell>Paid</TableCell>
-                  <TableCell>Credit Card</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>$250.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={{ fontWeight: 500 }}>INV002</TableCell>
-                  <TableCell>Pending</TableCell>
-                  <TableCell>PayPal</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>$150.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={{ fontWeight: 500 }}>INV003</TableCell>
-                  <TableCell>Unpaid</TableCell>
-                  <TableCell>Bank Transfer</TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>$350.00</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <DataGrid
+              data={[
+                { invoice: 'INV001', status: 'Paid', method: 'Credit Card', amount: 250.00 },
+                { invoice: 'INV002', status: 'Pending', method: 'PayPal', amount: 150.00 },
+                { invoice: 'INV003', status: 'Unpaid', method: 'Bank Transfer', amount: 350.00 },
+              ]}
+              columns={[
+                { id: 'invoice', header: 'Invoice', accessorKey: 'invoice', cell: ({ value }) => <span style={{ fontWeight: 500 }}>{value}</span> } as ColumnDef,
+                { id: 'status', header: 'Status', accessorKey: 'status' } as ColumnDef,
+                { id: 'method', header: 'Method', accessorKey: 'method' } as ColumnDef,
+                { id: 'amount', header: 'Amount', accessorKey: 'amount', align: 'right', cell: ({ value }) => `$${Number(value).toFixed(2)}` } as ColumnDef,
+              ]}
+              enableSorting
+              enablePagination={false}
+              showToolbar={false}
+            />
           </div>
         </Section>
 
