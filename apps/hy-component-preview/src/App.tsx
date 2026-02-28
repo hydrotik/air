@@ -48,10 +48,10 @@ export default function App() {
               Dashboard
             </NavLink>
             <NavLink
-              to="/ecommerce"
+              to="/inventory"
               className={({ isActive }) => cx(s.navLink, isActive && s.navLinkActive)}
             >
-              E-Commerce
+              Inventory
             </NavLink>
             <NavLink
               to="/plugin"
@@ -99,7 +99,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/sink" element={<SinkPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/ecommerce" element={<EcommercePage />} />
+        <Route path="/inventory" element={<EcommercePage />} />
         <Route path="/plugin" element={<PluginPage />} />
         <Route path="/datagrid" element={<DataGridPage />} />
         <Route path="/editorial" element={<EditorialPage />} />

@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('E-Commerce Page', () => {
+test.describe('Inventory Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ecommerce');
+    await page.goto('/inventory');
   });
 
   test('renders sidebar navigation', async ({ page }) => {
@@ -70,10 +70,10 @@ test.describe('E-Commerce Page', () => {
     await expect(page.getByText('Products').first()).toBeVisible();
   });
 
-  test('navigates to ecommerce via navbar', async ({ page }) => {
+  test('navigates to inventory via navbar', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: 'E-Commerce' }).click();
-    await expect(page).toHaveURL('/ecommerce');
+    await page.getByRole('link', { name: 'Inventory' }).click();
+    await expect(page).toHaveURL('/inventory');
     await expect(page.getByText('Total Revenue')).toBeAttached();
   });
 });

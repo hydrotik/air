@@ -78,7 +78,7 @@ The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom
 |---|---|---|
 | `/` | DataGrid | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
-| `/ecommerce` | E-Commerce | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
+| `/inventory` | Inventory | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero, features, comparison, specs, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo — full featured, minimal, tree data, loading, empty |
 | `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SourceRatingBars, FlagTags, timeline chart, entity roster |

@@ -191,7 +191,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 |---|---|---|
 | `/` | DataGrid | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
-| `/ecommerce` | E-Commerce | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
+| `/inventory` | Inventory | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero with gradient tagline + plugin screenshot, feature cards, comparison table, use cases, specs, DAW hosts, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo with 5 variants: full-featured (200 rows, sorting, filtering, selection, resizing, pagination), minimal, tree data, loading skeleton, empty state |
 | `/editorial` | Editorial | High-density data journalism page — forensic finance narrative with 5 narrative sections, SourceRatingBars, FlagTags, interactive timeline chart, 69-entity roster, shell entity + key persons DataGrids (editorial density), vehicle section, source corpus |
@@ -202,7 +202,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 - recharts v3 for charts (area, bar, pie/donut)
 - Port `3100` via `@hydrotik/config`
 - SPA fallback configured (`appType: 'spa'` in vite.config.ts)
-- **Playwright E2E tests** — 63 tests across 6 spec files (navigation, datagrid, editorial, ecommerce, plugin, theme)
+- **Playwright E2E tests** — 63 tests across 6 spec files (navigation, datagrid, editorial, inventory, plugin, theme)
 
 Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
 Test: `pnpm turbo run e2e --filter=@hydrotik/component-preview`
