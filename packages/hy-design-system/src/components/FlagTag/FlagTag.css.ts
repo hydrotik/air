@@ -61,13 +61,13 @@ export const flagTagIcon = style({
   justifyContent: 'center',
   flexShrink: 0,
   lineHeight: 0,
-  transform: 'translateY(-1px)',
+  transform: 'translateY(-2px)',
   selectors: {
-    /* Size-aware: icon matches label font size for true vertical centering */
-    '[data-flag-size="xs"] &': { fontSize: '8px' },
-    '[data-flag-size="sm"] &': { fontSize: '9px' },
-    '[data-flag-size="md"] &': { fontSize: '11px' },
-    '[data-flag-size="lg"] &': { fontSize: '13px' },
+    /* Size-aware: icon is 2px taller than label for scannability */
+    '[data-flag-size="xs"] &': { fontSize: '10px' },
+    '[data-flag-size="sm"] &': { fontSize: '11px' },
+    '[data-flag-size="md"] &': { fontSize: '13px' },
+    '[data-flag-size="lg"] &': { fontSize: '15px' },
   },
 });
 
