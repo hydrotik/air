@@ -323,9 +323,9 @@ export {
 export { FlagTag } from './components/FlagTag';
 export type { FlagTagProps } from './components/FlagTag';
 
-// ─── SourceRatingBar ─────────────────────────────────────────────────────────
-export { SourceRatingBar } from './components/SourceRatingBar';
-export type { SourceRatingBarProps } from './components/SourceRatingBar';
+// ─── SegmentedRatingBar ─────────────────────────────────────────────────────────
+export { SegmentedRatingBar } from './components/SegmentedRatingBar';
+export type { SegmentedRatingBarProps } from './components/SegmentedRatingBar';
 
 // ─── DataGrid ────────────────────────────────────────────────────────────────
 export { DataGrid, useDataGrid, createDataGrid } from './components/DataGrid';

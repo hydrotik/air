@@ -1,10 +1,10 @@
 import React from 'react';
-import { sourceRatingBarRecipe, segmentBase } from './SourceRatingBar.css';
-import type { SourceRatingBarVariants } from './SourceRatingBar.css';
+import { segmentedRatingBarRecipe, segmentBase } from './SegmentedRatingBar.css';
+import type { SegmentedRatingBarVariants } from './SegmentedRatingBar.css';
 
-export interface SourceRatingBarProps
+export interface SegmentedRatingBarProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
-    NonNullable<SourceRatingBarVariants> {
+    NonNullable<SegmentedRatingBarVariants> {
   /**
    * Array of booleans — each entry is one segment.
    * `true` = lit (filled), `false` = dim (background).
@@ -21,7 +21,7 @@ export interface SourceRatingBarProps
 }
 
 /**
- * SourceRatingBar — A segmented bar graph showing coverage across data sources.
+ * SegmentedRatingBar — A segmented bar graph showing coverage across data sources.
  *
  * Each segment is either "lit" (present in source) or "dim" (absent).
  * Segments are flush with no gaps, forming a continuous bar.
@@ -29,16 +29,16 @@ export interface SourceRatingBarProps
  * @example
  * ```tsx
  * // Boolean array mode (explicit control per segment)
- * <SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+ * <SegmentedRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
  *
  * // Numeric mode (auto-fill left-to-right)
- * <SourceRatingBar value={4} total={10} />
+ * <SegmentedRatingBar value={4} total={10} />
  *
  * // Custom color + size
- * <SourceRatingBar sources={data} color="primary" size="md" />
+ * <SegmentedRatingBar sources={data} color="primary" size="md" />
  * ```
  */
-export const SourceRatingBar = React.forwardRef<HTMLDivElement, SourceRatingBarProps>(
+export const SegmentedRatingBar = React.forwardRef<HTMLDivElement, SegmentedRatingBarProps>(
   (
     {
       sources,
@@ -66,7 +66,7 @@ export const SourceRatingBar = React.forwardRef<HTMLDivElement, SourceRatingBarP
         aria-valuemax={segments.length}
         data-rating-size={size}
         data-rating-color={color}
-        className={[sourceRatingBarRecipe({ size, color }), className]
+        className={[segmentedRatingBarRecipe({ size, color }), className]
           .filter(Boolean)
           .join(' ')}
         {...props}
@@ -83,4 +83,4 @@ export const SourceRatingBar = React.forwardRef<HTMLDivElement, SourceRatingBarP
   },
 );
 
-SourceRatingBar.displayName = 'SourceRatingBar';
+SegmentedRatingBar.displayName = 'SegmentedRatingBar';

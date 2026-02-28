@@ -24,7 +24,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-  SourceRatingBar,
+  SegmentedRatingBar,
   FlagTag,
 } from '@hydrotik/design-system';
 import type { ColumnDef } from '@hydrotik/design-system';
@@ -334,7 +334,7 @@ function EntityRosterSection() {
                     {ent.flagged && <FlagTag label="FLAG" />}
                   </span>
                   <span className={s.rosterDollars}>{fmt(ent.dollars)}</span>
-                  <SourceRatingBar sources={ent.sources} />
+                  <SegmentedRatingBar sources={ent.sources} />
                 </div>
               ))}
             </div>
@@ -408,7 +408,7 @@ function EntityDataGrid() {
       header: 'Sources',
       accessorKey: 'sources',
       width: 90,
-      cell: ({ row }) => <SourceRatingBar sources={row.original.sources} />,
+      cell: ({ row }) => <SegmentedRatingBar sources={row.original.sources} />,
     },
     {
       id: 'flagged',

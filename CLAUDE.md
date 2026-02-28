@@ -81,7 +81,7 @@ The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom
 | `/inventory` | Inventory | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero, features, comparison, specs, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo — full featured, minimal, tree data, loading, empty |
-| `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SourceRatingBars, FlagTags, timeline chart, entity roster |
+| `/editorial` | Editorial | High-density data journalism — forensic finance narrative with DataGrids, SegmentedRatingBars, FlagTags, timeline chart, entity roster |
 
 - Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
 - Styles via vanilla-extract using design tokens
@@ -101,23 +101,23 @@ cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwr
 - Chromium only (add Firefox/WebKit projects as needed)
 - Artifacts: `playwright-report/`, `test-results/` (gitignored)
 
-## SourceRatingBar Component
+## SegmentedRatingBar Component
 
 Segmented bar graph showing presence/coverage across data sources.
 Each segment is a small rectangle with 1px gaps between them and 1px border-radius.
 Lit segments fill from left to right (like a bar graph). Dim segments show the remaining capacity.
 
 ```tsx
-import { SourceRatingBar } from '@hydrotik/design-system';
+import { SegmentedRatingBar } from '@hydrotik/design-system';
 
 // Boolean array mode (contiguous left-to-right for bar graph behavior)
-<SourceRatingBar sources={[true, true, true, true, false, false, false, false, false, false]} />
+<SegmentedRatingBar sources={[true, true, true, true, false, false, false, false, false, false]} />
 
 // Numeric mode (preferred — auto-fills left-to-right)
-<SourceRatingBar value={4} total={10} />
+<SegmentedRatingBar value={4} total={10} />
 
 // Custom size + color
-<SourceRatingBar value={7} total={10} size="md" color="primary" />
+<SegmentedRatingBar value={7} total={10} size="md" color="primary" />
 ```
 
 - Sizes: `xs` (4×6), `sm` (5×8), `md` (6×10), `lg` (8×12)

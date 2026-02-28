@@ -3,7 +3,7 @@ import { style, globalStyle } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
 /**
- * SourceRatingBar — Segmented bar graph component
+ * SegmentedRatingBar — Segmented bar graph component
  *
  * A horizontal bar divided into N equal segments. Each segment is either
  * "lit" (filled with the accent color) or "dim" (filled with a faint wash
@@ -19,7 +19,7 @@ import { vars } from '@hydrotik/tokens';
  * - Sizes control segment dimensions; sm is default for inline data tables
  */
 
-export const sourceRatingBarRecipe = recipe({
+export const segmentedRatingBarRecipe = recipe({
   base: {
     display: 'inline-flex',
     gap: '1px',
@@ -51,7 +51,7 @@ export const sourceRatingBarRecipe = recipe({
   },
 });
 
-export type SourceRatingBarVariants = RecipeVariants<typeof sourceRatingBarRecipe>;
+export type SegmentedRatingBarVariants = RecipeVariants<typeof segmentedRatingBarRecipe>;
 
 /* ── Individual segment (base) ── */
 export const segmentBase = style({

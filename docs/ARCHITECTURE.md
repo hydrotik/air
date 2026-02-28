@@ -194,7 +194,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 | `/inventory` | Inventory | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero with gradient tagline + plugin screenshot, feature cards, comparison table, use cases, specs, DAW hosts, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo with 5 variants: full-featured (200 rows, sorting, filtering, selection, resizing, pagination), minimal, tree data, loading skeleton, empty state |
-| `/editorial` | Editorial | High-density data journalism page — forensic finance narrative with 5 narrative sections, SourceRatingBars, FlagTags, interactive timeline chart, 69-entity roster, shell entity + key persons DataGrids (editorial density), vehicle section, source corpus |
+| `/editorial` | Editorial | High-density data journalism page — forensic finance narrative with 5 narrative sections, SegmentedRatingBars, FlagTags, interactive timeline chart, 69-entity roster, shell entity + key persons DataGrids (editorial density), vehicle section, source corpus |
 
 **Features:**
 - Dark theme default with theme toggle
@@ -212,4 +212,4 @@ Storybook 8 powered by `@storybook/react-vite`. Includes:
 - `@storybook/addon-essentials` (controls, actions, docs)
 - `@storybook/addon-a11y` (accessibility panel)
 - Dark/Light theme toggle via `ThemeProvider`
-- Stories for: Button, Input, Badge, Card, Dialog, Tabs, Select, Tooltip, Toast, Table, DataGrid, SourceRatingBar, FlagTag, and 30+ more
+- Stories for: Button, Input, Badge, Card, Dialog, Tabs, Select, Tooltip, Toast, Table, DataGrid, SegmentedRatingBar, FlagTag, and 30+ more

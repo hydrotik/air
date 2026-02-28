@@ -4100,9 +4100,10 @@ const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 *
 * Design decisions:
 * - No background or border (flat, ink-on-paper feel)
-* - Monospace font with letter-spacing (forensic/editorial density)
-* - Icon sits slightly above text baseline via translateY
-* - Icon is larger than text (14px icon with 9px text) for scannability
+* - Monospace font with 1px letter-spacing (forensic/editorial density)
+* - Icon is +6px taller than label (xs:14, sm:15, md:17, lg:19)
+* - Icon nudged up 2px (translateY(-2px)) for optical alignment
+* - lineHeight:0 on both spans, alignItems:center on container
 * - Inline-flex so it flows naturally in text or table cells
 */
 const flagTagRecipe = (0, _vanilla_extract_recipes.recipe)({
@@ -4158,12 +4159,12 @@ const flagTagIcon = (0, _vanilla_extract_css.style)({
 	justifyContent: "center",
 	flexShrink: 0,
 	lineHeight: 0,
-	transform: "translateY(-1px)",
+	transform: "translateY(-2px)",
 	selectors: {
-		"[data-flag-size=\"xs\"] &": { fontSize: "8px" },
-		"[data-flag-size=\"sm\"] &": { fontSize: "9px" },
-		"[data-flag-size=\"md\"] &": { fontSize: "11px" },
-		"[data-flag-size=\"lg\"] &": { fontSize: "13px" }
+		"[data-flag-size=\"xs\"] &": { fontSize: "14px" },
+		"[data-flag-size=\"sm\"] &": { fontSize: "15px" },
+		"[data-flag-size=\"md\"] &": { fontSize: "17px" },
+		"[data-flag-size=\"lg\"] &": { fontSize: "19px" }
 	}
 });
 const flagTagLabel = (0, _vanilla_extract_css.style)({ lineHeight: 0 });
@@ -4214,9 +4215,9 @@ const FlagTag = react.default.forwardRef(({ variant = "destructive", size = "sm"
 FlagTag.displayName = "FlagTag";
 
 //#endregion
-//#region src/components/SourceRatingBar/SourceRatingBar.css.ts
+//#region src/components/SegmentedRatingBar/SegmentedRatingBar.css.ts
 /**
-* SourceRatingBar — Segmented bar graph component
+* SegmentedRatingBar — Segmented bar graph component
 *
 * A horizontal bar divided into N equal segments. Each segment is either
 * "lit" (filled with the accent color) or "dim" (filled with a faint wash
@@ -4231,7 +4232,7 @@ FlagTag.displayName = "FlagTag";
 * - Bar grows left-to-right: lit segments first, dim segments after
 * - Sizes control segment dimensions; sm is default for inline data tables
 */
-const sourceRatingBarRecipe = (0, _vanilla_extract_recipes.recipe)({
+const segmentedRatingBarRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-flex",
 		gap: "1px",
@@ -4305,9 +4306,9 @@ for (const [name, token] of Object.entries(colorMap)) {
 }
 
 //#endregion
-//#region src/components/SourceRatingBar/SourceRatingBar.tsx
+//#region src/components/SegmentedRatingBar/SegmentedRatingBar.tsx
 /**
-* SourceRatingBar — A segmented bar graph showing coverage across data sources.
+* SegmentedRatingBar — A segmented bar graph showing coverage across data sources.
 *
 * Each segment is either "lit" (present in source) or "dim" (absent).
 * Segments are flush with no gaps, forming a continuous bar.
@@ -4315,16 +4316,16 @@ for (const [name, token] of Object.entries(colorMap)) {
 * @example
 * ```tsx
 * // Boolean array mode (explicit control per segment)
-* <SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+* <SegmentedRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
 *
 * // Numeric mode (auto-fill left-to-right)
-* <SourceRatingBar value={4} total={10} />
+* <SegmentedRatingBar value={4} total={10} />
 *
 * // Custom color + size
-* <SourceRatingBar sources={data} color="primary" size="md" />
+* <SegmentedRatingBar sources={data} color="primary" size="md" />
 * ```
 */
-const SourceRatingBar = react.default.forwardRef(({ sources, value, total = 10, size = "sm", color = "chart2", className, ...props }, ref) => {
+const SegmentedRatingBar = react.default.forwardRef(({ sources, value, total = 10, size = "sm", color = "chart2", className, ...props }, ref) => {
 	const segments = sources ?? Array.from({ length: total }, (_, i) => i < (value ?? 0));
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		ref,
@@ -4335,7 +4336,7 @@ const SourceRatingBar = react.default.forwardRef(({ sources, value, total = 10, 
 		"aria-valuemax": segments.length,
 		"data-rating-size": size,
 		"data-rating-color": color,
-		className: [sourceRatingBarRecipe({
+		className: [segmentedRatingBarRecipe({
 			size,
 			color
 		}), className].filter(Boolean).join(" "),
@@ -4346,7 +4347,7 @@ const SourceRatingBar = react.default.forwardRef(({ sources, value, total = 10, 
 		}, i))
 	});
 });
-SourceRatingBar.displayName = "SourceRatingBar";
+SegmentedRatingBar.displayName = "SegmentedRatingBar";
 
 //#endregion
 //#region src/components/DataGrid/core.ts
@@ -6395,6 +6396,7 @@ exports.RadioGroup = RadioGroup;
 exports.RadioGroupItem = RadioGroupItem;
 exports.ScrollArea = ScrollArea;
 exports.ScrollBar = ScrollBar;
+exports.SegmentedRatingBar = SegmentedRatingBar;
 exports.Select = Select;
 exports.SelectContent = SelectContent;
 exports.SelectGroup = SelectGroup;
@@ -6419,7 +6421,6 @@ exports.SheetTitle = SheetTitle;
 exports.SheetTrigger = SheetTrigger;
 exports.Skeleton = Skeleton;
 exports.Slider = Slider;
-exports.SourceRatingBar = SourceRatingBar;
 exports.Spinner = Spinner;
 exports.Switch = Switch;
 exports.Table = Table;
