@@ -5191,16 +5191,9 @@ const paginationButton = style({
 });
 const pageSizeSelect = style({
 	height: "32px",
-	padding: `0 ${vars.space["2"]}`,
-	border: `1px solid ${vars.color.border}`,
-	borderRadius: vars.radii.md,
-	backgroundColor: vars.color.input,
-	color: vars.color.text,
-	fontSize: vars.font.size.sm,
-	fontFamily: vars.font.family.sans,
-	cursor: "pointer",
-	outline: "none",
-	":focus": { borderColor: vars.color.focusRing }
+	width: "auto",
+	minWidth: "64px",
+	fontSize: vars.font.size.sm
 });
 const paginationInfo = style({
 	fontSize: vars.font.size.sm,
@@ -5635,14 +5628,16 @@ function PaginationFooter({ table }) {
 					className: paginationInfo,
 					children: "Rows per page:"
 				}),
-				/* @__PURE__ */ jsx("select", {
-					className: pageSizeSelect,
-					value: pageSize,
-					onChange: (e) => table.setPageSize(() => Number(e.target.value)),
-					children: pageSizeOptions.map((size) => /* @__PURE__ */ jsx("option", {
-						value: size,
+				/* @__PURE__ */ jsxs(Select, {
+					value: String(pageSize),
+					onValueChange: (val) => table.setPageSize(() => Number(val)),
+					children: [/* @__PURE__ */ jsx(SelectTrigger, {
+						className: pageSizeSelect,
+						children: /* @__PURE__ */ jsx(SelectValue, {})
+					}), /* @__PURE__ */ jsx(SelectContent, { children: pageSizeOptions.map((size) => /* @__PURE__ */ jsx(SelectItem, {
+						value: String(size),
 						children: size
-					}, size))
+					}, size)) })]
 				}),
 				/* @__PURE__ */ jsxs("span", {
 					className: paginationInfo,

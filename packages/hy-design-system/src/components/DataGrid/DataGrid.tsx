@@ -15,6 +15,13 @@ import type {
   ColumnDef,
 } from './types';
 import * as s from './DataGrid.css';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '../Select/Select';
 
 // ─── Sub-Components ─────────────────────────────────────────────────────────
 
@@ -500,15 +507,19 @@ function PaginationFooter({ table }: { table: DataGridInstance }) {
         <span className={s.paginationInfo}>
           Rows per page:
         </span>
-        <select
-          className={s.pageSizeSelect}
-          value={pageSize}
-          onChange={(e) => table.setPageSize(() => Number(e.target.value))}
+        <Select
+          value={String(pageSize)}
+          onValueChange={(val) => table.setPageSize(() => Number(val))}
         >
-          {pageSizeOptions.map((size) => (
-            <option key={size} value={size}>{size}</option>
-          ))}
-        </select>
+          <SelectTrigger className={s.pageSizeSelect}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {pageSizeOptions.map((size) => (
+              <SelectItem key={size} value={String(size)}>{size}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <span className={s.paginationInfo}>
           Page {pageIndex + 1} of {pageCount}

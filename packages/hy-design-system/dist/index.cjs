@@ -5246,16 +5246,9 @@ const paginationButton = (0, _vanilla_extract_css.style)({
 });
 const pageSizeSelect = (0, _vanilla_extract_css.style)({
 	height: "32px",
-	padding: `0 ${_hydrotik_tokens.vars.space["2"]}`,
-	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
-	borderRadius: _hydrotik_tokens.vars.radii.md,
-	backgroundColor: _hydrotik_tokens.vars.color.input,
-	color: _hydrotik_tokens.vars.color.text,
-	fontSize: _hydrotik_tokens.vars.font.size.sm,
-	fontFamily: _hydrotik_tokens.vars.font.family.sans,
-	cursor: "pointer",
-	outline: "none",
-	":focus": { borderColor: _hydrotik_tokens.vars.color.focusRing }
+	width: "auto",
+	minWidth: "64px",
+	fontSize: _hydrotik_tokens.vars.font.size.sm
 });
 const paginationInfo = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
@@ -5690,14 +5683,16 @@ function PaginationFooter({ table }) {
 					className: paginationInfo,
 					children: "Rows per page:"
 				}),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("select", {
-					className: pageSizeSelect,
-					value: pageSize,
-					onChange: (e) => table.setPageSize(() => Number(e.target.value)),
-					children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("option", {
-						value: size,
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Select, {
+					value: String(pageSize),
+					onValueChange: (val) => table.setPageSize(() => Number(val)),
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectTrigger, {
+						className: pageSizeSelect,
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectValue, {})
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectContent, { children: pageSizeOptions.map((size) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectItem, {
+						value: String(size),
 						children: size
-					}, size))
+					}, size)) })]
 				}),
 				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 					className: paginationInfo,

@@ -485,18 +485,9 @@ export const paginationButton = style({
 
 export const pageSizeSelect = style({
   height: '32px',
-  padding: `0 ${vars.space['2']}`,
-  border: `1px solid ${vars.color.border}`,
-  borderRadius: vars.radii.md,
-  backgroundColor: vars.color.input,
-  color: vars.color.text,
+  width: 'auto',
+  minWidth: '64px',
   fontSize: vars.font.size.sm,
-  fontFamily: vars.font.family.sans,
-  cursor: 'pointer',
-  outline: 'none',
-  ':focus': {
-    borderColor: vars.color.focusRing,
-  },
 });
 
 export const paginationInfo = style({
