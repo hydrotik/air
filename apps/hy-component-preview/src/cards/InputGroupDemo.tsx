@@ -16,12 +16,10 @@ export function InputGroupDemo() {
         <Badge variant="secondary">12 results</Badge>
       </div>
 
-      {/* URL prefix input */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span className={cx(s.inputAddon, s.inputAddonStart)}>https://</span>
-        <div style={{ flex: 1 }}>
-          <Input className={s.inputGroupEnd} fullWidth />
-        </div>
+      {/* URL prefix input — group wrapper owns border/shadow */}
+      <div className={s.inputGroup}>
+        <span className={s.inputGroupAddon}>https://</span>
+        <Input className={s.inputGroupInput} fullWidth />
       </div>
 
       <Separator />

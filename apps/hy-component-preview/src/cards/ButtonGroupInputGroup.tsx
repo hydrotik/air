@@ -8,32 +8,30 @@ export function ButtonGroupInputGroup() {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div className={s.inputGroup}>
       <Button
         variant="ghost"
         size="icon-sm"
         aria-label="Add"
-        className={s.inputAddonStart}
+        style={{ flexShrink: 0, borderRadius: 0 }}
       >
         <Plus size={14} />
       </Button>
-      <div style={{ flex: 1 }}>
-        <Input placeholder="" className={s.inputGroupMiddle} fullWidth />
-      </div>
+      <Input placeholder="" className={s.inputGroupInput} fullWidth />
       <Button
         variant={voiceEnabled ? 'default' : 'ghost'}
         size="icon-sm"
         onClick={() => setVoiceEnabled(!voiceEnabled)}
         aria-label="Voice Mode"
         aria-pressed={voiceEnabled}
-        style={{ borderRadius: 0 }}
+        style={{ flexShrink: 0, borderRadius: 0 }}
       >
         <AudioLines size={14} />
       </Button>
       <Button
         size="icon-sm"
         aria-label="Send"
-        className={s.inputAddonEnd}
+        style={{ flexShrink: 0, borderRadius: '0 5px 5px 0' }}
       >
         <ArrowUp size={14} />
       </Button>

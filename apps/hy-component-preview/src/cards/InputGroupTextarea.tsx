@@ -3,19 +3,24 @@ import { Textarea, Button } from '@hydrotik/design-system';
 import { Play, Copy } from 'lucide-react';
 import * as s from '../App.css';
 
+function cx(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /** Code editor textarea — matches shadcn input-group-textarea.tsx */
 export function InputGroupTextarea() {
   return (
-    <div className={s.fieldContainer}>
+    <div className={cx(s.inputGroup, s.inputGroupColumn)}>
       <Textarea
         rows={3}
         defaultValue={`console.log("Hello, world!");`}
+        className={s.inputGroupInput}
         style={{
-          border: 'none', borderRadius: 0, resize: 'none',
+          resize: 'none',
           fontFamily: 'var(--font-mono, monospace)', fontSize: '13px',
         }}
       />
-      <div className={s.fieldToolbar}>
+      <div className={s.inputGroupToolbar}>
         <span>Line 1, Column 1</span>
         <div style={{ flex: 1 }} />
         <Button variant="ghost" size="icon-sm" aria-label="Run">

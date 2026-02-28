@@ -3,20 +3,25 @@ import { Textarea, Button, Badge } from '@hydrotik/design-system';
 import { Paperclip, ArrowUp, Plus, Globe } from 'lucide-react';
 import * as s from '../App.css';
 
+function cx(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /** Simplified prompt form — inspired by shadcn notion-prompt-form.tsx */
 export function NotionPromptForm() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <div style={{ fontSize: '14px', fontWeight: 600 }}>Prompt</div>
 
-      {/* Textarea with toolbar */}
-      <div className={s.fieldContainer}>
+      {/* Textarea with toolbar — group wrapper owns border */}
+      <div className={cx(s.inputGroup, s.inputGroupColumn)}>
         <Textarea
           placeholder="Add context"
           rows={3}
-          style={{ border: 'none', borderRadius: '8px 8px 0 0', resize: 'none' }}
+          className={s.inputGroupInput}
+          style={{ resize: 'none' }}
         />
-        <div className={s.fieldToolbar}>
+        <div className={s.inputGroupToolbar}>
           <Button variant="ghost" size="icon-sm" aria-label="Mention">
             <Plus size={14} />
           </Button>

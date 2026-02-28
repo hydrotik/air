@@ -3,10 +3,6 @@ import { Input, Label, Button } from '@hydrotik/design-system';
 import { Lock, Star } from 'lucide-react';
 import * as s from '../App.css';
 
-function cx(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 /** Input variants with secure indicator — matches shadcn input-group-button.tsx */
 export function InputGroupButton() {
   return (
@@ -19,17 +15,15 @@ export function InputGroupButton() {
         </span>
       </div>
 
-      {/* URL prefix input with star button */}
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span className={cx(s.inputAddon, s.inputAddonStart)}>https://</span>
-        <div style={{ flex: 1 }}>
-          <Input className={s.inputGroupMiddle} fullWidth />
-        </div>
+      {/* URL prefix input with star button — group wrapper owns border */}
+      <div className={s.inputGroup}>
+        <span className={s.inputGroupAddon}>https://</span>
+        <Input className={s.inputGroupInput} fullWidth />
         <Button
           variant="ghost"
           size="icon-sm"
-          className={s.inputAddonEnd}
           aria-label="Favorite"
+          style={{ flexShrink: 0, borderRadius: 0 }}
         >
           <Star size={14} />
         </Button>

@@ -143,67 +143,84 @@ export const navLinkActive = style({
   backgroundColor: vars.color.secondary,
 });
 
-/* ─── Input group helpers ─── */
+/* ─── Input group helpers (shadcn InputGroup pattern) ─── */
 
 /**
- * Prefix/suffix addon that sits flush next to an Input.
- * Matches Input token values: height, border, bg, font, shadow.
+ * InputGroup wrapper — owns the border, shadow, and border-radius.
+ * Child inputs/textareas should use `inputGroupInput` to strip their own chrome.
+ * Matches shadcn: border-input dark:bg-input/30 rounded-md border shadow-xs h-9.
  */
-export const inputAddon = style({
+export const inputGroup = style({
+  position: 'relative',
+  display: 'flex',
+  width: '100%',
+  alignItems: 'center',
+  borderRadius: vars.radii.md,
+  border: `1px solid ${vars.color.border}`,
+  backgroundColor: vars.color.input,
+  boxShadow: vars.shadow.xs,
+  height: vars.space['8'],
+  minWidth: 0,
+  transition: 'color 0.15s, box-shadow 0.15s',
+  selectors: {
+    '&:focus-within': {
+      borderColor: vars.color.focusRing,
+      boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
+    },
+  },
+});
+
+/** InputGroup variant for textarea (auto height, column layout) */
+export const inputGroupAuto = style({
+  height: 'auto',
+});
+
+/** InputGroup variant for column (block-end addon like toolbar) */
+export const inputGroupColumn = style({
+  flexDirection: 'column',
+  height: 'auto',
+});
+
+/**
+ * Addon — sits beside the input inside the group wrapper.
+ * Text, icons, or buttons that label the input.
+ */
+export const inputGroupAddon = style({
   display: 'flex',
   alignItems: 'center',
-  whiteSpace: 'nowrap',
-  height: vars.space['8'],
-  padding: `0 ${vars.space['2_5']}`,
+  justifyContent: 'center',
+  gap: vars.space['1'],
+  padding: `0 ${vars.space['3']}`,
   fontSize: vars.font.size.sm,
+  fontWeight: '500',
   color: vars.color.textMuted,
-  backgroundColor: vars.color.input,
-  border: `1px solid ${vars.color.border}`,
-  boxSizing: 'border-box',
+  whiteSpace: 'nowrap',
+  userSelect: 'none',
+  flexShrink: 0,
 });
 
-export const inputAddonStart = style({
-  borderRadius: `${vars.radii.md} 0 0 ${vars.radii.md}`,
-  borderRight: 'none',
-});
-
-export const inputAddonEnd = style({
-  borderRadius: `0 ${vars.radii.md} ${vars.radii.md} 0`,
-  borderLeft: 'none',
-});
-
-/** Input that sits in the middle of a group (no border-radius) */
-export const inputGroupMiddle = style({
-  borderRadius: '0 !important',
-  flex: 1,
-});
-
-/** Input that starts a group (right side flush) */
-export const inputGroupStart = style({
-  borderRadius: `${vars.radii.md} 0 0 ${vars.radii.md} !important`,
-  flex: 1,
-});
-
-/** Input that ends a group (left side flush) */
-export const inputGroupEnd = style({
-  borderRadius: `0 ${vars.radii.md} ${vars.radii.md} 0 !important`,
-  flex: 1,
-});
-
-/** Wrapper border that contains a textarea + toolbar */
-export const fieldContainer = style({
-  borderRadius: vars.radii.lg,
-  border: `1px solid ${vars.color.border}`,
-  overflow: 'hidden',
-});
-
-/** Toolbar row below a textarea in a field container */
-export const fieldToolbar = style({
+/** Toolbar row at the bottom of a column input group */
+export const inputGroupToolbar = style({
   display: 'flex',
   alignItems: 'center',
   gap: vars.space['1'],
+  width: '100%',
   padding: `${vars.space['1_5']} ${vars.space['2']}`,
   borderTop: `1px solid color-mix(in srgb, ${vars.color.border} 50%, transparent)`,
   fontSize: vars.font.size.xs,
   color: vars.color.textMuted,
+});
+
+/**
+ * Strip all chrome from an Input/Textarea sitting inside an InputGroup.
+ * The group wrapper provides the border/shadow/radius.
+ */
+export const inputGroupInput = style({
+  border: 'none !important',
+  borderRadius: '0 !important',
+  backgroundColor: 'transparent !important',
+  boxShadow: 'none !important',
+  outline: 'none !important',
+  flex: 1,
+  minWidth: 0,
 });
