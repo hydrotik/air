@@ -1794,6 +1794,127 @@ const Input = (0, react.forwardRef)(({ inputSize = "md", label, message, error =
 Input.displayName = "Input";
 
 //#endregion
+//#region src/components/InputGroup/InputGroup.css.ts
+/**
+* InputGroup — shadcn v4 aligned.
+*
+* The wrapper div owns border, shadow, border-radius, and background.
+* Child inputs/textareas strip their own chrome via `inputGroupInput`.
+*/
+const inputGroupRoot = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	display: "flex",
+	width: "100%",
+	alignItems: "center",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: _hydrotik_tokens.vars.color.input,
+	boxShadow: _hydrotik_tokens.vars.shadow.xs,
+	height: _hydrotik_tokens.vars.space["8"],
+	minWidth: 0,
+	transition: "color 0.15s, box-shadow 0.15s",
+	selectors: { "&:focus-within": {
+		borderColor: _hydrotik_tokens.vars.color.focusRing,
+		boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+	} }
+});
+/** Auto-height variant (for textareas) */
+const inputGroupColumn = (0, _vanilla_extract_css.style)({
+	flexDirection: "column",
+	height: "auto"
+});
+/**
+* Addon — text, icon, or button slot next to the input.
+*/
+const inputGroupAddon = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	gap: _hydrotik_tokens.vars.space["1"],
+	padding: `0 ${_hydrotik_tokens.vars.space["3"]}`,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: "500",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	whiteSpace: "nowrap",
+	userSelect: "none",
+	flexShrink: 0
+});
+/**
+* Toolbar — row at the end of a column-layout group (below textarea).
+*/
+const inputGroupToolbar = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	flexWrap: "wrap",
+	gap: _hydrotik_tokens.vars.space["1"],
+	width: "100%",
+	padding: `${_hydrotik_tokens.vars.space["1_5"]} ${_hydrotik_tokens.vars.space["2"]}`,
+	borderTop: `1px solid color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 50%, transparent)`,
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted
+});
+/**
+* Strip all chrome from an Input or Textarea inside an InputGroup.
+* The group wrapper provides the visual container.
+*/
+const inputGroupInput = (0, _vanilla_extract_css.style)({
+	border: "none !important",
+	borderRadius: "0 !important",
+	backgroundColor: "transparent !important",
+	boxShadow: "none !important",
+	outline: "none !important",
+	flex: 1,
+	minWidth: 0
+});
+
+//#endregion
+//#region src/components/InputGroup/InputGroup.tsx
+/**
+* InputGroup — wrapper that provides a unified border, shadow, and
+* border-radius for a group of input-related elements.
+*
+* Children should use `InputGroupInput` for the text field and
+* `InputGroupAddon` / `InputGroupToolbar` for decorations.
+*
+* @example
+* ```tsx
+* <InputGroup>
+*   <InputGroupAddon>https://</InputGroupAddon>
+*   <InputGroupInput><Input fullWidth /></InputGroupInput>
+* </InputGroup>
+* ```
+*/
+const InputGroup = (0, react.forwardRef)(({ className, column = false, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	role: "group",
+	className: [
+		inputGroupRoot,
+		column && inputGroupColumn,
+		className
+	].filter(Boolean).join(" "),
+	...props
+}));
+InputGroup.displayName = "InputGroup";
+/**
+* InputGroupAddon — non-interactive text / icon slot inside a group.
+*/
+const InputGroupAddon = (0, react.forwardRef)(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+	ref,
+	className: [inputGroupAddon, className].filter(Boolean).join(" "),
+	...props
+}));
+InputGroupAddon.displayName = "InputGroupAddon";
+/**
+* InputGroupToolbar — row at the bottom of a column InputGroup.
+*/
+const InputGroupToolbar = (0, react.forwardRef)(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	className: [inputGroupToolbar, className].filter(Boolean).join(" "),
+	...props
+}));
+InputGroupToolbar.displayName = "InputGroupToolbar";
+
+//#endregion
 //#region src/components/Kbd/Kbd.css.ts
 const kbdRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
@@ -4069,6 +4190,9 @@ Object.defineProperty(exports, 'Icons', {
   }
 });
 exports.Input = Input;
+exports.InputGroup = InputGroup;
+exports.InputGroupAddon = InputGroupAddon;
+exports.InputGroupToolbar = InputGroupToolbar;
 exports.Kbd = Kbd;
 exports.Label = Label;
 exports.Menubar = Menubar;
@@ -4180,4 +4304,5 @@ exports.TypographyOl = TypographyOl;
 exports.TypographyP = TypographyP;
 exports.TypographySmall = TypographySmall;
 exports.TypographyUl = TypographyUl;
+exports.inputGroupInputClass = inputGroupInput;
 //# sourceMappingURL=index.cjs.map

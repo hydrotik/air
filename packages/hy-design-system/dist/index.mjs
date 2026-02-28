@@ -1739,6 +1739,127 @@ const Input = forwardRef(({ inputSize = "md", label, message, error = false, ful
 Input.displayName = "Input";
 
 //#endregion
+//#region src/components/InputGroup/InputGroup.css.ts
+/**
+* InputGroup — shadcn v4 aligned.
+*
+* The wrapper div owns border, shadow, border-radius, and background.
+* Child inputs/textareas strip their own chrome via `inputGroupInput`.
+*/
+const inputGroupRoot = style({
+	position: "relative",
+	display: "flex",
+	width: "100%",
+	alignItems: "center",
+	borderRadius: vars.radii.md,
+	border: `1px solid ${vars.color.border}`,
+	backgroundColor: vars.color.input,
+	boxShadow: vars.shadow.xs,
+	height: vars.space["8"],
+	minWidth: 0,
+	transition: "color 0.15s, box-shadow 0.15s",
+	selectors: { "&:focus-within": {
+		borderColor: vars.color.focusRing,
+		boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+	} }
+});
+/** Auto-height variant (for textareas) */
+const inputGroupColumn = style({
+	flexDirection: "column",
+	height: "auto"
+});
+/**
+* Addon — text, icon, or button slot next to the input.
+*/
+const inputGroupAddon = style({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	gap: vars.space["1"],
+	padding: `0 ${vars.space["3"]}`,
+	fontSize: vars.font.size.sm,
+	fontWeight: "500",
+	color: vars.color.textMuted,
+	whiteSpace: "nowrap",
+	userSelect: "none",
+	flexShrink: 0
+});
+/**
+* Toolbar — row at the end of a column-layout group (below textarea).
+*/
+const inputGroupToolbar = style({
+	display: "flex",
+	alignItems: "center",
+	flexWrap: "wrap",
+	gap: vars.space["1"],
+	width: "100%",
+	padding: `${vars.space["1_5"]} ${vars.space["2"]}`,
+	borderTop: `1px solid color-mix(in srgb, ${vars.color.border} 50%, transparent)`,
+	fontSize: vars.font.size.xs,
+	color: vars.color.textMuted
+});
+/**
+* Strip all chrome from an Input or Textarea inside an InputGroup.
+* The group wrapper provides the visual container.
+*/
+const inputGroupInput = style({
+	border: "none !important",
+	borderRadius: "0 !important",
+	backgroundColor: "transparent !important",
+	boxShadow: "none !important",
+	outline: "none !important",
+	flex: 1,
+	minWidth: 0
+});
+
+//#endregion
+//#region src/components/InputGroup/InputGroup.tsx
+/**
+* InputGroup — wrapper that provides a unified border, shadow, and
+* border-radius for a group of input-related elements.
+*
+* Children should use `InputGroupInput` for the text field and
+* `InputGroupAddon` / `InputGroupToolbar` for decorations.
+*
+* @example
+* ```tsx
+* <InputGroup>
+*   <InputGroupAddon>https://</InputGroupAddon>
+*   <InputGroupInput><Input fullWidth /></InputGroupInput>
+* </InputGroup>
+* ```
+*/
+const InputGroup = forwardRef(({ className, column = false, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	role: "group",
+	className: [
+		inputGroupRoot,
+		column && inputGroupColumn,
+		className
+	].filter(Boolean).join(" "),
+	...props
+}));
+InputGroup.displayName = "InputGroup";
+/**
+* InputGroupAddon — non-interactive text / icon slot inside a group.
+*/
+const InputGroupAddon = forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("span", {
+	ref,
+	className: [inputGroupAddon, className].filter(Boolean).join(" "),
+	...props
+}));
+InputGroupAddon.displayName = "InputGroupAddon";
+/**
+* InputGroupToolbar — row at the bottom of a column InputGroup.
+*/
+const InputGroupToolbar = forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	className: [inputGroupToolbar, className].filter(Boolean).join(" "),
+	...props
+}));
+InputGroupToolbar.displayName = "InputGroupToolbar";
+
+//#endregion
 //#region src/components/Kbd/Kbd.css.ts
 const kbdRecipe = recipe({
 	base: {
@@ -3914,5 +4035,5 @@ const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
 const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, inputGroupInput as inputGroupInputClass };
 //# sourceMappingURL=index.mjs.map
