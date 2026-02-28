@@ -1,6 +1,4 @@
-export { HomePage } from './HomePage';
-export { SinkPage } from './SinkPage';
+export { DataGridPage } from './DataGridPage';
 export { DashboardPage } from './DashboardPage';
 export { EcommercePage } from './EcommercePage';
 export { PluginPage } from './PluginPage';
-export { DataGridPage } from './DataGridPage';
