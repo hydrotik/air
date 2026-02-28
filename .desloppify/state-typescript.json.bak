@@ -1,38 +1,24 @@
 {
   "version": 1,
   "created": "2026-02-27T15:28:44+00:00",
-  "last_scan": "2026-02-27T15:44:21+00:00",
-  "scan_count": 3,
-  "overall_score": 34.3,
-  "objective_score": 85.7,
-  "strict_score": 34.0,
-  "verified_strict_score": 84.9,
+  "last_scan": "2026-02-28T22:33:38+00:00",
+  "scan_count": 4,
+  "overall_score": 100.0,
+  "objective_score": 100.0,
+  "strict_score": 100.0,
+  "verified_strict_score": 100.0,
   "stats": {
-    "total": 232,
-    "open": 170,
+    "total": 1,
+    "open": 1,
     "fixed": 0,
-    "auto_resolved": 17,
-    "wontfix": 45,
+    "auto_resolved": 0,
+    "wontfix": 0,
     "false_positive": 0,
     "by_tier": {
-      "2": {
-        "open": 0,
-        "fixed": 0,
-        "auto_resolved": 4,
-        "wontfix": 36,
-        "false_positive": 0
-      },
-      "3": {
-        "open": 81,
-        "fixed": 0,
-        "auto_resolved": 12,
-        "wontfix": 9,
-        "false_positive": 0
-      },
       "4": {
-        "open": 89,
+        "open": 1,
         "fixed": 0,
-        "auto_resolved": 1,
+        "auto_resolved": 0,
         "wontfix": 0,
         "false_positive": 0
       }
@@ -7201,7 +7187,7 @@
         }
       },
       "warnings": [],
-      "updated_at": "2026-02-27T15:44:21+00:00"
+      "updated_at": "2026-02-28T22:33:38+00:00"
     }
   },
   "score_confidence": {
@@ -7231,11 +7217,7 @@
       "typecheck_cmd": "npx tsc --noEmit"
     }
   },
-  "zone_distribution": {
-    "production": 153,
-    "config": 1,
-    "test": 45
-  },
+  "zone_distribution": {},
   "scan_history": [
     {
       "timestamp": "2026-02-27T15:31:52+00:00",
@@ -7539,506 +7521,79 @@
           "strict": 0.0
         }
       }
+    },
+    {
+      "timestamp": "2026-02-28T22:33:38+00:00",
+      "lang": "typescript",
+      "strict_score": 100.0,
+      "verified_strict_score": 100.0,
+      "objective_score": 100.0,
+      "overall_score": 100.0,
+      "open": 1,
+      "diff_new": 0,
+      "diff_resolved": 0,
+      "ignored": 0,
+      "raw_findings": 0,
+      "suppressed_pct": 0.0,
+      "ignore_patterns": 0,
+      "subjective_integrity": {
+        "status": "pass",
+        "matched_count": 0,
+        "reset_count": 0,
+        "target_score": 95.0
+      },
+      "score_confidence": {
+        "status": "full",
+        "confidence": 1.0,
+        "detector_count": 0,
+        "dimension_count": 0
+      },
+      "dimension_scores": null
     }
   ],
   "tool_hash": "e073c6da67fa",
-  "scan_path": ".",
+  "scan_path": "src",
   "scan_completeness": {
     "typescript": "full"
   },
   "potentials": {
     "typescript": {
-      "logs": 153,
-      "unused": 153,
-      "exports": 4,
+      "logs": 0,
+      "unused": 0,
+      "exports": 0,
       "deprecated": 0,
-      "structural": 153,
-      "flat_dirs": 51,
-      "props": 3,
-      "single_use": 5,
+      "structural": 0,
+      "flat_dirs": 0,
+      "props": 0,
+      "single_use": 0,
       "coupling": 0,
-      "cycles": 153,
-      "orphaned": 153,
-      "patterns": 2,
-      "naming": 49,
-      "facade": 153,
-      "test_coverage": 798,
-      "smells": 196,
-      "react": 2,
-      "security": 153,
-      "subjective_review": 88,
-      "boilerplate_duplication": 20,
-      "dupes": 22,
-      "stale_wontfix": 45
+      "cycles": 0,
+      "orphaned": 0,
+      "patterns": 0,
+      "naming": 0,
+      "facade": 0,
+      "test_coverage": 0,
+      "smells": 0,
+      "react": 0,
+      "security": 0,
+      "subjective_review": 0,
+      "boilerplate_duplication": 0,
+      "dupes": 0,
+      "stale_wontfix": 0
     }
   },
   "codebase_metrics": {
     "typescript": {
-      "total_files": 199,
-      "total_loc": 10542,
-      "total_directories": 51
+      "total_files": 0,
+      "total_loc": 0,
+      "total_directories": 0
     }
   },
-  "dimension_scores": {
-    "File health": {
-      "score": 99.5,
-      "strict_score": 99.5,
-      "verified_strict_score": 99.5,
-      "checks": 153,
-      "issues": 1,
-      "tier": 3,
-      "detectors": {
-        "structural": {
-          "potential": 153,
-          "pass_rate": 0.9954248366013073,
-          "issues": 1,
-          "weighted_failures": 0.7
-        }
-      },
-      "strict": 99.5
-    },
-    "Code quality": {
-      "score": 100.0,
-      "strict_score": 96.6,
-      "verified_strict_score": 96.6,
-      "checks": 924,
-      "issues": 0,
-      "tier": 3,
-      "detectors": {
-        "unused": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "logs": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "exports": {
-          "potential": 4,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "props": {
-          "potential": 3,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "smells": {
-          "potential": 196,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "react": {
-          "potential": 2,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "orphaned": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "flat_dirs": {
-          "potential": 51,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "naming": {
-          "potential": 49,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "facade": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "patterns": {
-          "potential": 2,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "single_use": {
-          "potential": 5,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        }
-      },
-      "strict": 96.6
-    },
-    "Duplication": {
-      "score": 71.7,
-      "strict_score": 71.7,
-      "verified_strict_score": 71.7,
-      "checks": 42,
-      "issues": 17,
-      "tier": 3,
-      "detectors": {
-        "dupes": {
-          "potential": 22,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "boilerplate_duplication": {
-          "potential": 20,
-          "pass_rate": 0.40500000000000014,
-          "issues": 17,
-          "weighted_failures": 11.899999999999997
-        }
-      },
-      "strict": 71.7
-    },
-    "Test health": {
-      "score": 38.8,
-      "strict_score": 38.8,
-      "verified_strict_score": 38.8,
-      "checks": 886,
-      "issues": 152,
-      "tier": 4,
-      "detectors": {
-        "test_coverage": {
-          "potential": 798,
-          "pass_rate": 0.3538067005868421,
-          "issues": 63,
-          "weighted_failures": 515.6622529317
-        },
-        "subjective_review": {
-          "potential": 88,
-          "pass_rate": 0.696590909090909,
-          "issues": 89,
-          "weighted_failures": 26.7
-        }
-      },
-      "strict": 38.8
-    },
-    "Security": {
-      "score": 100.0,
-      "strict_score": 99.8,
-      "verified_strict_score": 99.8,
-      "checks": 306,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "security": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        },
-        "cycles": {
-          "potential": 153,
-          "pass_rate": 1.0,
-          "issues": 0,
-          "weighted_failures": 0.0
-        }
-      },
-      "strict": 99.8
-    },
-    "Error consistency": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "error_consistency",
-          "configured_weight": 3.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Abstraction fit": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "abstraction_fitness",
-          "configured_weight": 8.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "AI generated debt": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "ai_generated_debt",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "High elegance": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "high_level_elegance",
-          "configured_weight": 22.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Mid elegance": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "mid_level_elegance",
-          "configured_weight": 22.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Low elegance": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "low_level_elegance",
-          "configured_weight": 12.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Cross-module arch": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "cross_module_architecture",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Convention drift": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "convention_outlier",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "API coherence": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "api_surface_coherence",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Auth consistency": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "authorization_consistency",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Stale migration": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "incomplete_migration",
-          "configured_weight": 1.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Structure nav": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "package_organization",
-          "configured_weight": 5.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    },
-    "Design coherence": {
-      "score": 0.0,
-      "strict_score": 0.0,
-      "verified_strict_score": 0.0,
-      "checks": 10,
-      "issues": 0,
-      "tier": 4,
-      "detectors": {
-        "subjective_assessment": {
-          "potential": 10,
-          "pass_rate": 0.0,
-          "issues": 0,
-          "weighted_failures": 10.0,
-          "assessment_score": 0.0,
-          "placeholder": true,
-          "dimension_key": "design_coherence",
-          "configured_weight": 10.0,
-          "components": []
-        }
-      },
-      "strict": 0.0
-    }
-  },
+  "dimension_scores": {},
   "reminder_history": {
-    "zone_classification": 2,
-    "report_scores": 2,
-    "feedback_nudge": 1
+    "zone_classification": 3,
+    "report_scores": 3,
+    "feedback_nudge": 2,
+    "stagnant_nudge": 16
   }
 }

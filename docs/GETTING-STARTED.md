@@ -2,13 +2,14 @@
 
 ## Prerequisites
 
-| Requirement | Version |
-|---|---|
-| Node.js | ≥ 20.0.0 |
-| pnpm | 10.30.3 (see note) |
+| Requirement         | Version                                                                           |
+| ------------------- | --------------------------------------------------------------------------------- |
+| Node.js             | ≥ 20.0.0                                                                          |
+| pnpm                | 10.30.3 (see note)                                                                |
 | macOS Apple Silicon | `@rolldown/binding-darwin-arm64` is a required devDep — already in `package.json` |
 
 **Install pnpm at the required version:**
+
 ```bash
 corepack enable
 corepack prepare pnpm@10.30.3 --activate
@@ -69,12 +70,12 @@ See [STORYBOOK.md](./STORYBOOK.md) for full setup details and troubleshooting.
 
 ### Dev Server Ports (centralized in `@hydrotik/config`)
 
-| App | Port | Command |
-|-----|------|---------|
+| App               | Port | Command                                                   |
+| ----------------- | ---- | --------------------------------------------------------- |
 | Component Preview | 3100 | `pnpm turbo run dev --filter=@hydrotik/component-preview` |
-| BFF Fastify | 4000 | `pnpm turbo run dev --filter=@hydrotik/bff-fastify` |
-| Design MCP | 5100 | (auto-started via `.mcp.json`) |
-| Storybook | 6006 | `pnpm turbo run dev --filter=@hydrotik/storybook` |
+| BFF Fastify       | 4000 | `pnpm turbo run dev --filter=@hydrotik/bff-fastify`       |
+| Design MCP        | 5100 | (auto-started via `.mcp.json`)                            |
+| Storybook         | 6006 | `pnpm turbo run dev --filter=@hydrotik/storybook`         |
 
 Port ranges: 3xxx=frontend, 4xxx=backend, 5xxx=tooling, 6xxx=docs.
 
@@ -89,12 +90,13 @@ pnpm turbo run dev --filter=@hydrotik/component-preview
 ```
 
 Opens at `http://localhost:3100`. Pages:
-- **Home** (`/`) — Hero + bento grid of 30+ interactive demo cards
-- **Components** (`/sink`) — Kitchen sink with all 42 components
+
+- **DataGrid** (`/`) — Enterprise data grid as default home (full featured, minimal, tree data, loading, empty)
 - **Dashboard** (`/dashboard`) — KPI cards, charts, products table
 - **Inventory** (`/inventory`) — Sidebar layout with orders, category charts, product management
 - **Plugin** (`/plugin`) — TectraScope marketing landing page with hero, features, specs, pricing CTA
-- **DataGrid** (`/datagrid`) — Enterprise data grid demo with sorting, filtering, pagination, selection, tree data
+- **DataGrid** (`/datagrid`) — DataGrid demo with sorting, filtering, pagination, selection, tree data
+- **Editorial** (`/editorial`) — High-density data journalism page with forensic finance narrative, SegmentedRatingBars, FlagTags, timeline chart, 69-entity roster, DataGrids
 
 ---
 
@@ -140,8 +142,31 @@ cd apps/hy-component-preview && pnpm e2e:ui
 npx playwright install chromium
 ```
 
-E2E tests cover: navigation, home bento cards, component sink, e-commerce dashboard, dark theme.
+63 E2E tests across 6 spec files: navigation, datagrid, editorial, inventory, plugin, theme.
 Config at `apps/hy-component-preview/playwright.config.ts`.
+
+### Visual Capture (Playwright)
+
+Headless Chromium screenshot tool for visual validation — no macOS permissions needed:
+
+```bash
+# Full page screenshot of a route
+pnpm capture --route /editorial
+
+# Viewport at a specific scroll position
+pnpm capture --route /editorial --scroll 5500
+
+# Element-level captures (every matching element)
+pnpm capture --route /editorial --element "[role='meter']" --padding 20
+
+# All routes
+pnpm capture:all
+
+# Custom viewport + theme
+pnpm capture --route /editorial --viewport 1920x1080 --theme light
+```
+
+Output: `/tmp/hydrotik-captures/`. 2× Retina device scale.
 
 ---
 
@@ -157,6 +182,15 @@ pnpm format
 # Check formatting without writing
 pnpm format:check
 ```
+
+### Pre-Commit Hooks (Husky)
+
+Every `git commit` automatically runs:
+
+1. **lint-staged** — ESLint `--fix` + Prettier on staged files
+2. **desloppify scan** — TypeScript codebase health scan (14 detectors, score tracking)
+
+To bypass (escape hatch): `git commit --no-verify`
 
 ---
 
@@ -262,15 +296,17 @@ pnpm --filter @hydrotik/design-system test
 ## Adding a New Design Token
 
 1. **Define in the contract** (`packages/hy-tokens/src/contract.css.ts`):
+
 ```ts
 export const contract = createThemeContract({
   color: {
-    myNewToken: null,  // add here
+    myNewToken: null, // add here
   },
 });
 ```
 
 2. **Add values to both themes** (`dark.css.ts` and `light.css.ts`):
+
 ```ts
 // In both files, add inside the appropriate section:
 color: {
@@ -279,6 +315,7 @@ color: {
 ```
 
 3. **Rebuild tokens**:
+
 ```bash
 pnpm build --filter @hydrotik/tokens
 ```
@@ -289,12 +326,12 @@ Now `vars.color.myNewToken` is available across all components with full TypeScr
 
 ## Package Naming Conventions
 
-| Pattern | Example |
-|---|---|
-| Package directory | `packages/hy-my-package/` |
-| `package.json` name | `@hydrotik/my-package` |
-| pnpm filter flag | `--filter @hydrotik/my-package` |
-| Turbo task cache | keyed to `name` in `package.json` |
+| Pattern             | Example                           |
+| ------------------- | --------------------------------- |
+| Package directory   | `packages/hy-my-package/`         |
+| `package.json` name | `@hydrotik/my-package`            |
+| pnpm filter flag    | `--filter @hydrotik/my-package`   |
+| Turbo task cache    | keyed to `name` in `package.json` |
 
 ---
 
@@ -324,6 +361,7 @@ pnpm -r run build
 The workspace uses **self-contained tsconfig files** (no `extends` from workspace packages). This ensures Pylance and TypeScript Language Server resolve all types correctly without additional configuration.
 
 Recommended extensions:
+
 - **ESLint** — `dbaeumer.vscode-eslint`
 - **Prettier** — `esbenp.prettier-vscode`
 - **Tailwind CSS IntelliSense** — not used in this project
