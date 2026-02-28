@@ -3,7 +3,7 @@ import { Routes, Route, NavLink } from 'react-router-dom';
 import { useTheme } from '@hydrotik/theme-provider';
 import { Button, Separator } from '@hydrotik/design-system';
 import { Sun, Moon, Github } from 'lucide-react';
-import { HomePage, SinkPage, DashboardPage, EcommercePage, PluginPage, DataGridPage } from './pages';
+import { HomePage, SinkPage, DashboardPage, EcommercePage, PluginPage, DataGridPage, EditorialPage } from './pages';
 import * as s from './App.css';
 
 function cx(...classes: (string | false | undefined)[]) {
@@ -65,6 +65,12 @@ export default function App() {
             >
               DataGrid
             </NavLink>
+            <NavLink
+              to="/editorial"
+              className={({ isActive }) => cx(s.navLink, isActive && s.navLinkActive)}
+            >
+              Editorial
+            </NavLink>
           </nav>
         </div>
 
@@ -96,6 +102,7 @@ export default function App() {
         <Route path="/ecommerce" element={<EcommercePage />} />
         <Route path="/plugin" element={<PluginPage />} />
         <Route path="/datagrid" element={<DataGridPage />} />
+        <Route path="/editorial" element={<EditorialPage />} />
       </Routes>
     </div>
   );
