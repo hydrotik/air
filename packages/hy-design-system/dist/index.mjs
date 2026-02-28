@@ -4053,7 +4053,7 @@ const TypographyHr = createTypographyComponent("hr", hr, "TypographyHr");
 const flagTagRecipe = recipe({
 	base: {
 		display: "inline-flex",
-		alignItems: "baseline",
+		alignItems: "center",
 		fontFamily: vars.font.family.mono,
 		letterSpacing: "1px",
 		textTransform: "uppercase",
@@ -4062,7 +4062,8 @@ const flagTagRecipe = recipe({
 		padding: 0,
 		lineHeight: 1,
 		whiteSpace: "nowrap",
-		flexShrink: 0
+		flexShrink: 0,
+		verticalAlign: "middle"
 	},
 	variants: {
 		variant: {
@@ -4100,17 +4101,17 @@ const flagTagIcon = style({
 	display: "inline-flex",
 	alignItems: "center",
 	justifyContent: "center",
-	lineHeight: 1,
 	flexShrink: 0,
+	lineHeight: 0,
 	transform: "translateY(-1px)",
 	selectors: {
-		"[data-flag-size=\"xs\"] &": { fontSize: "10px" },
-		"[data-flag-size=\"sm\"] &": { fontSize: "14px" },
-		"[data-flag-size=\"md\"] &": { fontSize: "16px" },
-		"[data-flag-size=\"lg\"] &": { fontSize: "18px" }
+		"[data-flag-size=\"xs\"] &": { fontSize: "8px" },
+		"[data-flag-size=\"sm\"] &": { fontSize: "9px" },
+		"[data-flag-size=\"md\"] &": { fontSize: "11px" },
+		"[data-flag-size=\"lg\"] &": { fontSize: "13px" }
 	}
 });
-const flagTagLabel = style({ lineHeight: 1 });
+const flagTagLabel = style({ lineHeight: 0 });
 
 //#endregion
 //#region src/components/FlagTag/FlagTag.tsx
@@ -4168,19 +4169,18 @@ FlagTag.displayName = "FlagTag";
 * where lit segments indicate presence/coverage across data sources.
 *
 * Design decisions:
-* - Segments are flush (gap: 0) forming one continuous bar
-* - Dim segments use 12% opacity of chart2 color (visible but subtle)
-* - Lit segments use chart2 at 80% opacity (punchy but not overpowering)
-* - No border-radius on individual segments; radius on container only
-* - Container border-radius is 1px (nearly square, forensic/editorial feel)
+* - Segments have 1px gap between them (visible separation)
+* - Each segment has 1px border-radius (slight curve)
+* - Dim segments use 12% opacity of accent color (visible background)
+* - Lit segments use accent at 85% opacity (punchy but not overpowering)
+* - Bar grows left-to-right: lit segments first, dim segments after
 * - Sizes control segment dimensions; sm is default for inline data tables
 */
 const sourceRatingBarRecipe = recipe({
 	base: {
 		display: "inline-flex",
-		overflow: "hidden",
-		flexShrink: 0,
-		borderRadius: "1px"
+		gap: "1px",
+		flexShrink: 0
 	},
 	variants: {
 		size: {
@@ -4208,7 +4208,8 @@ const sourceRatingBarRecipe = recipe({
 });
 const segmentBase = style({
 	display: "block",
-	flexShrink: 0
+	flexShrink: 0,
+	borderRadius: "1px"
 });
 globalStyle(`[data-rating-size="xs"] .${segmentBase}`, {
 	width: "4px",

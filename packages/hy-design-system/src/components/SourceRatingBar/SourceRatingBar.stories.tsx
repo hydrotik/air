@@ -35,7 +35,7 @@ type Story = StoryObj<typeof meta>;
 /* ── Basic: boolean array ── */
 export const Default: Story = {
   args: {
-    sources: [true, true, true, false, true, false, false, true, false, false],
+    sources: [true, true, true, true, true, false, false, false, false, false],
     size: 'sm',
     color: 'chart2',
   },
@@ -80,17 +80,19 @@ export const AllColors: Story = {
   ),
 };
 
-/* ── Scatter pattern ── */
-export const ScatterPattern: Story = {
+/* ── Fill levels ── */
+export const FillLevels: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
-      <SourceRatingBar sources={[true, false, true, false, true, false, true, false, true, false]} size="md" />
-      <SourceRatingBar sources={[false, true, false, true, false, true, false, true, false, true]} size="md" />
-      <SourceRatingBar sources={[true, true, true, true, true, false, false, false, false, false]} size="md" />
-      <SourceRatingBar sources={[false, false, false, false, false, true, true, true, true, true]} size="md" />
+      {[2, 4, 6, 8, 10].map((v) => (
+        <div key={v} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontFamily: 'monospace', fontSize: '10px', width: '36px', color: '#888' }}>{v}/10</span>
+          <SourceRatingBar value={v} total={10} size="md" />
+        </div>
+      ))}
     </div>
   ),
-  name: 'Scatter Patterns',
+  name: 'Fill Levels',
 };
 
 /* ── Full / Empty ── */
@@ -118,9 +120,9 @@ export const TableContext: Story = {
   render: () => {
     const data = [
       { name: 'Aldric Ashworth', dollars: '$957K', sources: [true,true,true,true,true,true,true,false,false,false] },
-      { name: 'Belen Blackstone', dollars: '$419.5M', sources: [true,true,true,true,true,true,false,true,true,false] },
-      { name: 'Cassian Carrington', dollars: '$571.2M', sources: [true,false,true,false,true,true,false,false,false,false] },
-      { name: 'Delphine Drexel', dollars: '$328.5M', sources: [true,true,false,false,true,false,false,false,false,false] },
+      { name: 'Belen Blackstone', dollars: '$419.5M', sources: [true,true,true,true,true,true,true,true,false,false] },
+      { name: 'Cassian Carrington', dollars: '$571.2M', sources: [true,true,true,false,false,false,false,false,false,false] },
+      { name: 'Delphine Drexel', dollars: '$328.5M', sources: [true,true,true,true,true,true,true,true,true,true] },
       { name: 'Emeric Enright', dollars: '$250.8M', sources: [true,true,true,true,false,false,false,false,false,false] },
     ];
     return (

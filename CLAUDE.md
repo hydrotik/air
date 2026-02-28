@@ -104,26 +104,32 @@ cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwr
 ## SourceRatingBar Component
 
 Segmented bar graph showing presence/coverage across data sources.
-Flush segments (no gaps) form one continuous bar — lit segments in accent color, dim segments at 12% opacity.
+Each segment is a small rectangle with 1px gaps between them and 1px border-radius.
+Lit segments fill from left to right (like a bar graph). Dim segments show the remaining capacity.
 
 ```tsx
 import { SourceRatingBar } from '@hydrotik/design-system';
 
-// Boolean array mode
-<SourceRatingBar sources={[true, true, false, true, false, false, true, false, false, false]} />
+// Boolean array mode (contiguous left-to-right for bar graph behavior)
+<SourceRatingBar sources={[true, true, true, true, false, false, false, false, false, false]} />
 
-// Numeric mode
+// Numeric mode (preferred — auto-fills left-to-right)
 <SourceRatingBar value={4} total={10} />
 
 // Custom size + color
-<SourceRatingBar sources={data} size="md" color="primary" />
+<SourceRatingBar value={7} total={10} size="md" color="primary" />
 ```
 
 - Sizes: `xs` (4×6), `sm` (5×8), `md` (6×10), `lg` (8×12)
 - Colors: `primary`, `chart1`–`chart5`, `destructive`, `success`, `warning`
 - Has `role="meter"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`
 - Segments are data-attribute-driven: `[data-rating-size]`, `[data-rating-color]`, `[data-lit]`
-- **Design rule**: No border-radius on segments — radius on container only (1px)
+- **Design rules**:
+  - 1px gap between segments (visible separation)
+  - 1px border-radius on each segment (slight curve)
+  - Lit segments at 85% accent opacity, dim at 12% (visible background wash)
+  - Bar grows left-to-right: lit first, dim after (bar graph, not scatter)
+  - Reference: epstein-forensic-finance narratives page source bars
 
 ## FlagTag Component
 

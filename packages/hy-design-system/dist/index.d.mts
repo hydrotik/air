@@ -708,11 +708,11 @@ declare const FlagTag: React.ForwardRefExoticComponent<FlagTagProps & React.RefA
  * where lit segments indicate presence/coverage across data sources.
  *
  * Design decisions:
- * - Segments are flush (gap: 0) forming one continuous bar
- * - Dim segments use 12% opacity of chart2 color (visible but subtle)
- * - Lit segments use chart2 at 80% opacity (punchy but not overpowering)
- * - No border-radius on individual segments; radius on container only
- * - Container border-radius is 1px (nearly square, forensic/editorial feel)
+ * - Segments have 1px gap between them (visible separation)
+ * - Each segment has 1px border-radius (slight curve)
+ * - Dim segments use 12% opacity of accent color (visible background)
+ * - Lit segments use accent at 85% opacity (punchy but not overpowering)
+ * - Bar grows left-to-right: lit segments first, dim segments after
  * - Sizes control segment dimensions; sm is default for inline data tables
  */
 declare const sourceRatingBarRecipe: _vanilla_extract_recipes0.RuntimeFn<{

@@ -13,7 +13,7 @@ hydrotik/
 │
 ├── packages/
 │   ├── hy-config/               # Cross-project configuration (ports, shared constants)
-│   ├── hy-design-system/        # Core UI component library — 42 components (Radix + vanilla-extract)
+│   ├── hy-design-system/        # Core UI component library — 46 components (Radix + vanilla-extract)
 │   ├── hy-tokens/               # Design token system (vanilla-extract theme contract)
 │   ├── hy-theme-provider/       # React ThemeProvider + useTheme + ThemeScript (no-FOUC)
 │   ├── hy-design-mcp/           # MCP server with RAG for design decisions & conventions
@@ -189,12 +189,12 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 
 | Route | Page | Description |
 |---|---|---|
-| `/` | Home | Hero + bento grid of 30+ interactive demo cards (12-col CSS Grid) |
-| `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
+| `/` | DataGrid | Enterprise data grid as default home — full featured, minimal, tree data, loading, empty |
 | `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
 | `/ecommerce` | E-Commerce | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
 | `/plugin` | Plugin | TectraScope marketing landing page — hero with gradient tagline + plugin screenshot, feature cards, comparison table, use cases, specs, DAW hosts, CTA |
 | `/datagrid` | DataGrid | Enterprise data grid demo with 5 variants: full-featured (200 rows, sorting, filtering, selection, resizing, pagination), minimal, tree data, loading skeleton, empty state |
+| `/editorial` | Editorial | High-density data journalism page — forensic finance narrative with 5 narrative sections, SourceRatingBars, FlagTags, interactive timeline chart, 69-entity roster, shell entity + key persons DataGrids (editorial density), vehicle section, source corpus |
 
 **Features:**
 - Dark theme default with theme toggle
@@ -202,7 +202,7 @@ A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.
 - recharts v3 for charts (area, bar, pie/donut)
 - Port `3100` via `@hydrotik/config`
 - SPA fallback configured (`appType: 'spa'` in vite.config.ts)
-- **Playwright E2E tests** — 49 tests across 6 spec files (navigation, home cards, sink, ecommerce, plugin, theme)
+- **Playwright E2E tests** — 63 tests across 6 spec files (navigation, datagrid, editorial, ecommerce, plugin, theme)
 
 Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
 Test: `pnpm turbo run e2e --filter=@hydrotik/component-preview`
@@ -212,4 +212,4 @@ Storybook 8 powered by `@storybook/react-vite`. Includes:
 - `@storybook/addon-essentials` (controls, actions, docs)
 - `@storybook/addon-a11y` (accessibility panel)
 - Dark/Light theme toggle via `ThemeProvider`
-- Stories for: Button, Input, Badge, Card, Dialog, Tabs, Select, Tooltip, Toast, Table
+- Stories for: Button, Input, Badge, Card, Dialog, Tabs, Select, Tooltip, Toast, Table, DataGrid, SourceRatingBar, FlagTag, and 30+ more

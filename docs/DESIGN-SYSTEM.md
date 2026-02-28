@@ -237,7 +237,7 @@ const { theme, setTheme } = useTheme();
 |---|---|
 | **Table** | Wrapper, Header, Body, Footer, Row, Head, Cell, Caption |
 | **Alert** | Feedback banner — default, destructive, success, warning |
-| **SourceRatingBar** | Segmented bar graph — shows coverage across N data sources. Boolean array or value/total. Sizes: xs, sm, md, lg. Colors: all chart tokens + primary, destructive, success, warning. `role="meter"` with ARIA. |
+| **SourceRatingBar** | Segmented bar graph — left-to-right fill showing coverage across N data sources. 1px gap between segments, 1px border-radius per segment. Lit segments at 85% accent, dim at 12%. Boolean array or value/total. Sizes: xs, sm, md, lg. Colors: all chart tokens + primary, destructive, success, warning. `role="meter"` with ARIA. |
 | **FlagTag** | Inline status flag — icon + mono label, no background/border. Variants: destructive, warning, success, primary, muted. Sizes: xs, sm, md, lg. Default: ⚠ FLAG in destructive red. |
 
 ---
