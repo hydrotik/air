@@ -4,10 +4,10 @@
   "objective_score": 100.0,
   "strict_score": 100.0,
   "verified_strict_score": 100.0,
-  "prev_overall_score": null,
-  "prev_objective_score": null,
-  "prev_strict_score": null,
-  "prev_verified_strict_score": null,
+  "prev_overall_score": 100.0,
+  "prev_objective_score": 100.0,
+  "prev_strict_score": 100.0,
+  "prev_verified_strict_score": 100.0,
   "profile": "full",
   "noise_budget": 10,
   "noise_global_budget": 0,
@@ -115,13 +115,13 @@
         }
       },
       "warnings": [],
-      "updated_at": "2026-02-28T22:33:38+00:00"
+      "updated_at": "2026-02-28T22:36:55+00:00"
     }
   },
   "zone_distribution": {},
   "narrative": {
     "phase": "early_momentum",
-    "headline": "Crossed 90% strict!",
+    "headline": "Score 100.0/100 with 1 findings open. Keep the momentum going.",
     "dimensions": {},
     "actions": [
       {
@@ -146,7 +146,9 @@
       },
       "lanes": {
         "refactor": {
-          "actions": [1],
+          "actions": [
+            1
+          ],
           "file_count": 1,
           "total_impact": 0.0,
           "automation": "manual",
@@ -182,7 +184,7 @@
       "worst_gap": 0.0,
       "trend": "stable"
     },
-    "milestone": "Crossed 90% strict!",
+    "milestone": null,
     "primary_action": {
       "command": "desloppify fix review",
       "description": "1 files need design review \u2014 run design review with dimension templates"
@@ -209,13 +211,6 @@
         "severity": "low"
       },
       {
-        "type": "feedback_nudge",
-        "message": "If you notice patterns desloppify doesn't detect, false positives, or findings that seem off, file an issue at https://github.com/peteromalley/desloppify/issues \u2014 include the file and what you expected. It helps improve the tool.",
-        "command": null,
-        "priority": 3,
-        "severity": "low"
-      },
-      {
         "type": "report_scores",
         "message": "ALWAYS share ALL scores with the user: overall, objective, and strict, plus every dimension score (lenient + strict), including subjective dimensions. The goal is to maximize strict scores.",
         "command": null,
@@ -233,11 +228,11 @@
     ],
     "reminder_history": {
       "zone_classification": 3,
-      "report_scores": 4,
+      "report_scores": 5,
       "feedback_nudge": 3,
       "stagnant_nudge": 16,
-      "badge_recommendation": 1,
-      "review_not_run": 1
+      "badge_recommendation": 2,
+      "review_not_run": 2
     }
   },
   "config": {
