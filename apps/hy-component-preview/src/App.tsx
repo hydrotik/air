@@ -1,27 +1,33 @@
 import React from 'react';
 import { useTheme } from '@hydrotik/theme-provider';
-import { Button, TooltipProvider } from '@hydrotik/design-system';
+import { Button, Separator, TooltipProvider } from '@hydrotik/design-system';
 import { Sun, Moon, Github, ArrowRight } from 'lucide-react';
 import {
-  PaymentCard,
-  TeamCard,
-  LoadingCard,
-  PriceRangeCard,
-  UrlInputCard,
-  ProgressCard,
-  InputStatesCard,
-  TwoFactorCard,
-  AlertCard,
-  SettingsCard,
-  PromptCard,
-  SourceCard,
-  ActionButtonsCard,
-  TermsCard,
-  CopilotCard,
-  SurveyCard,
-  ProcessingCard,
+  FieldDemo,
+  EmptyAvatarGroup,
+  SpinnerBadge,
+  FieldSlider,
+  InputGroupDemo,
+  ItemDemo,
+  InputGroupButton,
+  ButtonGroupDemo,
+  NotionPromptForm,
+  AppearanceSettings,
+  FieldHear,
+  FieldCheckbox,
+  ButtonGroupNested,
+  ButtonGroupPopover,
+  InputGroupTextarea,
+  ButtonGroupInputGroup,
+  ItemAvatar,
+  EmptyInputGroup,
+  SpinnerEmpty,
 } from './cards';
 import * as s from './App.css';
+
+function cx(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}
 
 export default function App() {
   const { theme, setTheme } = useTheme();
@@ -74,65 +80,91 @@ export default function App() {
           </div>
         </section>
 
-        {/* ─── Bento Grid ──────────────────────────────────────────── */}
+        {/* ─── Bento Grid (3-col, matching shadcn/ui homepage) ─────── */}
         <main className={s.bentoGrid}>
-          {/* Row 1: Payment (wide) + Team & Loading (narrow) */}
-          <div className={s.span8}>
-            <PaymentCard />
-          </div>
-          <div className={`${s.span4} ${s.stackColumn}`}>
-            <TeamCard />
-            <LoadingCard />
+          {/* Row 1-2: FieldDemo (payment) spans 2 cols × 2 rows */}
+          <div className={cx(s.cell, s.colSpan2, s.rowSpan2)}>
+            <FieldDemo />
           </div>
 
-          {/* Row 2: Price Range + URL Input + Progress */}
-          <div className={s.span4}>
-            <PriceRangeCard />
-          </div>
-          <div className={s.span4}>
-            <UrlInputCard />
-          </div>
-          <div className={s.span4}>
-            <ProgressCard />
+          {/* Col 3 row 1: Empty avatar group */}
+          <div className={s.cell}>
+            <EmptyAvatarGroup />
           </div>
 
-          {/* Row 3: Input States + 2FA + Alert */}
-          <div className={s.span4}>
-            <InputStatesCard />
-          </div>
-          <div className={s.span4}>
-            <TwoFactorCard />
-          </div>
-          <div className={`${s.span4} ${s.centerContent}`}>
-            <AlertCard />
+          {/* Col 3 row 2: Spinner badges */}
+          <div className={s.cell}>
+            <SpinnerBadge />
           </div>
 
-          {/* Row 4: Settings (wide) + Survey (narrow) */}
-          <div className={s.span8}>
-            <SettingsCard />
+          {/* Row 3: Field slider (col 3 carries over from row 2) */}
+          {/* Actually per shadcn: FieldSlider is after SpinnerBadge in col 3, InputGroupDemo spans cols 1-2 */}
+          <div className={cx(s.cell, s.colSpan2)}>
+            <InputGroupDemo />
           </div>
-          <div className={s.span4}>
-            <SurveyCard />
-          </div>
-
-          {/* Row 5: Prompt + Source/Actions + Terms/Copilot */}
-          <div className={s.span4}>
-            <PromptCard />
-          </div>
-          <div className={`${s.span4} ${s.stackColumn}`}>
-            <SourceCard />
-            <ActionButtonsCard />
-          </div>
-          <div className={`${s.span4} ${s.stackColumn}`}>
-            <TermsCard />
-            <div className={s.centerPad}>
-              <CopilotCard />
-            </div>
+          <div className={s.cell}>
+            <FieldSlider />
           </div>
 
-          {/* Row 6: Processing (centered) */}
-          <div className={s.span6Center}>
-            <ProcessingCard />
+          {/* Row 4: InputGroupButton + ItemDemo */}
+          <div className={s.cell}>
+            <InputGroupButton />
+          </div>
+          <div className={cx(s.cell, s.colSpan2)}>
+            <ItemDemo />
+          </div>
+
+          {/* Row 5: ButtonGroupDemo (span 2) + separator */}
+          <div className={cx(s.cell, s.colSpan2)}>
+            <ButtonGroupDemo />
+          </div>
+
+          {/* NotionPromptForm spans col 3, rows 5-7 */}
+          <div className={cx(s.cell, s.rowSpan3)}>
+            <NotionPromptForm />
+          </div>
+
+          {/* Row 6: Appearance Settings label + component */}
+          <div className={s.sectionLabel}>Appearance Settings</div>
+          <div className={cx(s.cell, s.rowSpan2)}>
+            <AppearanceSettings />
+          </div>
+
+          {/* Row 7: FieldHear (survey) */}
+          <div className={s.cell}>
+            <FieldHear />
+          </div>
+
+          {/* Row 8: FieldCheckbox + ButtonGroupNested + ButtonGroupPopover */}
+          <div className={s.cell}>
+            <FieldCheckbox />
+          </div>
+          <div className={s.cell}>
+            <ButtonGroupNested />
+          </div>
+          <div className={s.cell}>
+            <ButtonGroupPopover />
+          </div>
+
+          {/* Row 9: InputGroupTextarea + ButtonGroupInputGroup + ItemAvatar */}
+          <div className={s.cell}>
+            <InputGroupTextarea />
+          </div>
+          <div className={s.cell}>
+            <ButtonGroupInputGroup />
+          </div>
+          <div className={s.cell}>
+            <ItemAvatar />
+          </div>
+
+          {/* Row 10: EmptyInputGroup (single) */}
+          <div className={s.cell}>
+            <EmptyInputGroup />
+          </div>
+
+          {/* Row 11: SpinnerEmpty (full width) */}
+          <div className={cx(s.cell, s.colSpan3)}>
+            <SpinnerEmpty />
           </div>
         </main>
       </div>

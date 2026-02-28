@@ -1,4 +1,4 @@
-import { style, globalStyle } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
 export const page = style({
@@ -35,9 +35,9 @@ export const hero = style({
 });
 
 export const heroTitle = style({
-  fontSize: 'clamp(32px, 5vw, 52px)',
-  fontWeight: 800,
-  letterSpacing: '-0.035em',
+  fontSize: 'clamp(32px, 5vw, 48px)',
+  fontWeight: 700,
+  letterSpacing: '-0.025em',
   lineHeight: 1.1,
   margin: 0,
   color: vars.color.text,
@@ -51,45 +51,68 @@ export const heroSubtitle = style({
   maxWidth: '540px',
 });
 
+/* 3-column grid matching shadcn: grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl */
 export const bentoGrid = style({
   display: 'grid',
-  gridTemplateColumns: 'repeat(12, 1fr)',
+  gridTemplateColumns: '1fr',
   gap: vars.space['4'],
   padding: `0 ${vars.space['6']} 80px`,
-  maxWidth: '1200px',
+  maxWidth: '56rem', /* max-w-4xl = 896px */
   width: '100%',
   margin: '0 auto',
   '@media': {
-    '(max-width: 1024px)': {
-      gridTemplateColumns: 'repeat(6, 1fr)',
-    },
-    '(max-width: 640px)': {
-      gridTemplateColumns: '1fr',
+    '(min-width: 768px)': {
+      gridTemplateColumns: 'repeat(3, 1fr)',
     },
   },
 });
 
-/* Grid span helpers */
-export const span12 = style({ gridColumn: 'span 12', '@media': { '(max-width: 1024px)': { gridColumn: 'span 6' }, '(max-width: 640px)': { gridColumn: 'span 1' } } });
-export const span8 = style({ gridColumn: 'span 8', '@media': { '(max-width: 1024px)': { gridColumn: 'span 6' }, '(max-width: 640px)': { gridColumn: 'span 1' } } });
-export const span6 = style({ gridColumn: 'span 6', '@media': { '(max-width: 1024px)': { gridColumn: 'span 3' }, '(max-width: 640px)': { gridColumn: 'span 1' } } });
-export const span4 = style({ gridColumn: 'span 4', '@media': { '(max-width: 1024px)': { gridColumn: 'span 3' }, '(max-width: 640px)': { gridColumn: 'span 1' } } });
-export const span6Center = style({ gridColumn: '4 / span 6', '@media': { '(max-width: 1024px)': { gridColumn: 'span 6' }, '(max-width: 640px)': { gridColumn: 'span 1' } } });
-
-export const stackColumn = style({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: vars.space['4'],
+/* Cell base: rounded-lg border bg-card text-card-foreground shadow-sm */
+export const cell = style({
+  borderRadius: vars.radii.lg,
+  border: `1px solid ${vars.color.border}`,
+  backgroundColor: vars.color.surface,
+  boxShadow: vars.shadow.sm,
+  padding: vars.space['4'],
+  overflow: 'hidden',
 });
 
-export const centerContent = style({
-  display: 'flex',
-  alignItems: 'center',
+export const cellNoBorder = style({
+  padding: vars.space['4'],
+  overflow: 'hidden',
 });
 
-export const centerPad = style({
+/* Span helpers */
+export const colSpan2 = style({
+  '@media': {
+    '(min-width: 768px)': { gridColumn: 'span 2' },
+  },
+});
+
+export const colSpan3 = style({
+  '@media': {
+    '(min-width: 768px)': { gridColumn: 'span 3' },
+  },
+});
+
+export const rowSpan2 = style({
+  '@media': {
+    '(min-width: 768px)': { gridRow: 'span 2' },
+  },
+});
+
+export const rowSpan3 = style({
+  '@media': {
+    '(min-width: 768px)': { gridRow: 'span 3' },
+  },
+});
+
+/* Section label */
+export const sectionLabel = style({
+  fontSize: vars.font.size.sm,
+  fontWeight: 500,
+  color: vars.color.textMuted,
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: vars.space['3'],
+  padding: `${vars.space['2']} 0`,
 });
