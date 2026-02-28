@@ -1,4 +1,5 @@
 import React from 'react';
+import { vars } from '@hydrotik/tokens';
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
   Alert, AlertTitle, AlertDescription,
@@ -256,15 +257,15 @@ export function SinkPage() {
                   </Button>
                 </CollapsibleTrigger>
               </div>
-              <div style={{ borderRadius: '6px', border: '1px solid var(--color-border)', padding: '8px 12px', fontSize: '14px', marginTop: '8px' }}>
+              <div style={{ borderRadius: '6px', border: `1px solid ${vars.color.border}`, padding: '8px 12px', fontSize: '14px', marginTop: '8px' }}>
                 @radix-ui/primitives
               </div>
               <CollapsibleContent>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-                  <div style={{ borderRadius: '6px', border: '1px solid var(--color-border)', padding: '8px 12px', fontSize: '14px' }}>
+                  <div style={{ borderRadius: '6px', border: `1px solid ${vars.color.border}`, padding: '8px 12px', fontSize: '14px' }}>
                     @radix-ui/colors
                   </div>
-                  <div style={{ borderRadius: '6px', border: '1px solid var(--color-border)', padding: '8px 12px', fontSize: '14px' }}>
+                  <div style={{ borderRadius: '6px', border: `1px solid ${vars.color.border}`, padding: '8px 12px', fontSize: '14px' }}>
                     @stitches/react
                   </div>
                 </div>
@@ -343,7 +344,7 @@ export function SinkPage() {
         {/* ─── Hover Card ─── */}
         <Section name="Hover Card">
           <div className={s.demoRow}>
-            <p style={{ fontSize: '14px', color: 'var(--color-textMuted)' }}>
+            <p style={{ fontSize: '14px', color: vars.color.textMuted }}>
               Hover over a trigger to see the card (uses Popover for demo).
             </p>
           </div>
@@ -443,7 +444,7 @@ export function SinkPage() {
               <PopoverContent>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <h4 style={{ fontSize: '14px', fontWeight: 600, margin: 0 }}>Dimensions</h4>
-                  <p style={{ fontSize: '13px', color: 'var(--color-textMuted)', margin: 0 }}>
+                  <p style={{ fontSize: '13px', color: vars.color.textMuted, margin: 0 }}>
                     Set the dimensions for the layer.
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -490,11 +491,11 @@ export function SinkPage() {
         {/* ─── Scroll Area ─── */}
         <Section name="Scroll Area">
           <div style={{ maxWidth: '24rem' }}>
-            <ScrollArea style={{ height: '200px', borderRadius: '8px', border: '1px solid var(--color-border)', padding: '16px' }}>
+            <ScrollArea style={{ height: '200px', borderRadius: '8px', border: `1px solid ${vars.color.border}`, padding: '16px' }}>
               <div style={{ fontSize: '14px' }}>
                 <h4 style={{ marginBottom: '16px', fontWeight: 600 }}>Tags</h4>
                 {Array.from({ length: 50 }, (_, i) => (
-                  <div key={i} style={{ padding: '4px 0', borderBottom: '1px solid var(--color-border)' }}>
+                  <div key={i} style={{ padding: '4px 0', borderBottom: `1px solid ${vars.color.border}` }}>
                     v1.2.0-beta.{i}
                   </div>
                 ))}
@@ -526,7 +527,7 @@ export function SinkPage() {
           <div className={s.demoBox}>
             <div>
               <h4 style={{ fontSize: '14px', fontWeight: 600, margin: '0 0 4px' }}>Radix Primitives</h4>
-              <p style={{ fontSize: '13px', color: 'var(--color-textMuted)', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: vars.color.textMuted, margin: 0 }}>
                 An open-source UI component library.
               </p>
             </div>
@@ -586,7 +587,7 @@ export function SinkPage() {
         <Section name="Slider">
           <div className={s.demoBox}>
             <Slider value={sliderVal} onValueChange={setSliderVal} max={100} step={1} />
-            <span style={{ fontSize: '13px', color: 'var(--color-textMuted)' }}>Value: {sliderVal[0]}</span>
+            <span style={{ fontSize: '13px', color: vars.color.textMuted }}>Value: {sliderVal[0]}</span>
           </div>
         </Section>
 

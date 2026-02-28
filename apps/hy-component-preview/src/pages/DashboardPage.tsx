@@ -19,6 +19,7 @@ import {
 import {
   TrendingUp, TrendingDown, Download, Filter, Plus, MoreVertical,
 } from 'lucide-react';
+import { vars } from '@hydrotik/tokens';
 import * as s from './DashboardPage.css';
 
 /* ── Data ── */
@@ -56,11 +57,11 @@ const revenueData = [
 ];
 
 const CHART_COLORS = [
-  'var(--color-chart1)',
-  'var(--color-chart2)',
-  'var(--color-chart3)',
-  'var(--color-chart4)',
-  'var(--color-chart5)',
+  vars.color.chart1,
+  vars.color.chart2,
+  vars.color.chart3,
+  vars.color.chart4,
+  vars.color.chart5,
 ];
 
 const visitorData = [
@@ -115,27 +116,27 @@ function ChartRevenue() {
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={revenueData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <CartesianGrid vertical={false} stroke="var(--color-border)" strokeOpacity={0.5} />
+            <CartesianGrid vertical={false} stroke={vars.color.border} strokeOpacity={0.5} />
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12, fill: 'var(--color-textMuted)' }}
+              tick={{ fontSize: 12, fill: vars.color.textMuted }}
               tickMargin={8}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12, fill: 'var(--color-textMuted)' }}
+              tick={{ fontSize: 12, fill: vars.color.textMuted }}
               tickMargin={8}
               tickFormatter={(v) => v.toLocaleString()}
             />
             <RechartsTooltip
-              cursor={{ fill: 'var(--color-ghostHover)' }}
+              cursor={{ fill: vars.color.ghostHover }}
               content={<ChartTooltipContent />}
             />
-            <Bar dataKey="desktop" name="Desktop" fill="var(--color-chart1)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="mobile" name="Mobile" fill="var(--color-chart2)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="desktop" name="Desktop" fill={vars.color.chart1} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="mobile" name="Mobile" fill={vars.color.chart2} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -200,7 +201,7 @@ function ChartVisitors() {
               nameKey="month"
               innerRadius={60}
               strokeWidth={5}
-              stroke="var(--color-surface)"
+              stroke={vars.color.surface}
               shape={PieSectorShape as any}
               onMouseEnter={(_: any, index: number) => setActiveIndex(index)}
             >
@@ -215,14 +216,14 @@ function ChartVisitors() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          style={{ fontSize: '28px', fontWeight: 700, fill: 'var(--color-text)' }}
+                          style={{ fontSize: '28px', fontWeight: 700, fill: vars.color.text }}
                         >
                           {visitorData[activeIndex].visitors.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          style={{ fontSize: '12px', fill: 'var(--color-textMuted)' }}
+                          style={{ fontSize: '12px', fill: vars.color.textMuted }}
                         >
                           Visitors
                         </tspan>
@@ -302,7 +303,7 @@ export function DashboardPage() {
                   <div className={s.tableFilters}>
                     <Select defaultValue="all">
                       <SelectTrigger style={{ width: 'auto' }}>
-                        <span style={{ color: 'var(--color-textMuted)' }}>Category:&nbsp;</span>
+                        <span style={{ color: vars.color.textMuted }}>Category:&nbsp;</span>
                         <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
@@ -313,7 +314,7 @@ export function DashboardPage() {
                     </Select>
                     <Select>
                       <SelectTrigger style={{ width: 'auto' }}>
-                        <span style={{ color: 'var(--color-textMuted)' }}>Status:&nbsp;</span>
+                        <span style={{ color: vars.color.textMuted }}>Status:&nbsp;</span>
                         <SelectValue placeholder="All" />
                       </SelectTrigger>
                       <SelectContent>
