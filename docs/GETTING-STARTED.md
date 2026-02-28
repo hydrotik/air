@@ -82,13 +82,17 @@ Port ranges: 3xxx=frontend, 4xxx=backend, 5xxx=tooling, 6xxx=docs.
 
 ## Running Component Preview
 
-The preview app is a shadcn-style bento grid showcasing every design system component in interactive demo cards.
+The preview app is a multi-page SPA showcasing every design system component:
 
 ```bash
 pnpm turbo run dev --filter=@hydrotik/component-preview
 ```
 
-Opens at `http://localhost:3100`. Uses centralized port from `@hydrotik/config`.
+Opens at `http://localhost:3100`. Pages:
+- **Home** (`/`) — Hero + bento grid of 30+ interactive demo cards
+- **Components** (`/sink`) — Kitchen sink with all 42 components
+- **Dashboard** (`/dashboard`) — KPI cards, charts, products table
+- **E-Commerce** (`/ecommerce`) — Sidebar layout with orders, category charts, product management
 
 ---
 
@@ -106,21 +110,36 @@ pnpm --filter @hydrotik/design-system typecheck
 
 ## Running Tests
 
+### Unit Tests (Jest)
+
 ```bash
-# Run all tests
+# Run all unit tests
 pnpm test
 
 # Run tests for a specific package
-pnpm --filter @hydrotik/design-system test
+pnpm turbo run test --filter=@hydrotik/design-system
 
 # Run with coverage
-pnpm --filter @hydrotik/design-system test -- --coverage
-
-# Watch mode
-pnpm --filter @hydrotik/design-system test -- --watch
+pnpm turbo run test --filter=@hydrotik/design-system -- --coverage
 ```
 
 Tests use Jest 30 + Testing Library 16 + jest-axe for accessibility assertions.
+
+### E2E Tests (Playwright)
+
+```bash
+# Run all E2E tests (auto-starts dev server)
+pnpm turbo run e2e
+
+# Run with interactive UI
+cd apps/hy-component-preview && pnpm e2e:ui
+
+# Install browsers (first time only)
+npx playwright install chromium
+```
+
+E2E tests cover: navigation, home bento cards, component sink, e-commerce dashboard, dark theme.
+Config at `apps/hy-component-preview/playwright.config.ts`.
 
 ---
 

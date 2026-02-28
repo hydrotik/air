@@ -139,6 +139,8 @@ All library and app `tsconfig.json` files **inline** the compiler options direct
 
 ## Testing Strategy
 
+### Unit Tests (Jest)
+
 Tests use **Jest 30** with `jest-environment-jsdom` and **Testing Library 16**:
 
 - `@hydrotik/jest-config/base` — Node environment (utilities)
@@ -146,6 +148,17 @@ Tests use **Jest 30** with `jest-environment-jsdom` and **Testing Library 16**:
 - **jest-axe** — automated accessibility assertions (`toHaveNoViolations`)
 
 Test files live alongside components: `Component/Component.test.tsx`
+
+### E2E Tests (Playwright)
+
+End-to-end tests use **Playwright** with Chromium:
+
+- Config: `apps/hy-component-preview/playwright.config.ts`
+- Tests: `apps/hy-component-preview/e2e/*.spec.ts`
+- Auto-starts Vite dev server on port 3100
+- Turbo task: `e2e` (depends on `build`)
+
+Run: `pnpm turbo run e2e`
 
 ---
 
@@ -170,15 +183,27 @@ A Fastify 5 backend-for-frontend API server. Configured with:
 - Environment validation via `dotenv`
 
 ### `hy-component-preview`
-A Vite + React app modeled after the [shadcn/ui homepage](https://ui.shadcn.com) — a **bento grid** of self-contained interactive component demo cards. Features:
-- Hero section with CTA buttons
-- 17 bento cards showcasing all major components (Payment form, Team, Settings, Sliders, Inputs, etc.)
-- 12-column responsive CSS Grid (12→6→1 cols at desktop→tablet→mobile)
+A Vite + React multi-page SPA modeled after the [shadcn/ui homepage](https://ui.shadcn.com) and [shadcn dashboard-03](https://ui.shadcn.com/examples/dashboard-03). Uses react-router-dom for client-side routing.
+
+**Pages:**
+
+| Route | Page | Description |
+|---|---|---|
+| `/` | Home | Hero + bento grid of 30+ interactive demo cards (12-col CSS Grid) |
+| `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
+| `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
+| `/ecommerce` | E-Commerce | Sidebar layout matching dashboard-03: nav + breadcrumbs + KPIs + area chart + category donut + recent orders + products table with filters/pagination |
+
+**Features:**
 - Dark theme default with theme toggle
-- Styles via vanilla-extract (`App.css.ts`) using design tokens
+- Styles via vanilla-extract using design tokens
+- recharts v3 for charts (area, bar, pie/donut)
 - Port `3100` via `@hydrotik/config`
+- SPA fallback configured (`appType: 'spa'` in vite.config.ts)
+- **Playwright E2E tests** — 36 tests across 5 spec files (navigation, home cards, sink, ecommerce, theme)
 
 Run: `pnpm turbo run dev --filter=@hydrotik/component-preview`
+Test: `pnpm turbo run e2e --filter=@hydrotik/component-preview`
 
 ### `hy-storybook`
 Storybook 8 powered by `@storybook/react-vite`. Includes:

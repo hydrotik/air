@@ -72,11 +72,38 @@ desloppify next
 
 ## Component Preview App
 
-The preview at `apps/hy-component-preview` uses a **bento grid layout** modeled after shadcn.com:
-- Hero section with title + CTAs
-- 17 interactive demo cards in a 12-column responsive CSS Grid
-- Cards: PaymentCard, TeamCard, LoadingCard, PriceRangeCard, UrlInputCard, ProgressCard,
-  InputStatesCard, TwoFactorCard, AlertCard, SettingsCard, PromptCard, SourceCard,
-  ActionButtonsCard, TermsCard, CopilotCard, SurveyCard, ProcessingCard
-- Styles in `App.css.ts` using design tokens
-- Card components in `src/cards/`
+The preview at `apps/hy-component-preview` is a multi-page SPA (react-router-dom):
+
+| Route | Page | Description |
+|---|---|---|
+| `/` | Home | Hero + bento grid of 30+ interactive demo cards |
+| `/sink` | Components | Kitchen sink with all 42 components in labeled sections |
+| `/dashboard` | Dashboard | KPI cards, revenue bar chart, visitors pie chart, products table |
+| `/ecommerce` | E-Commerce | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table |
+
+- Cards in `src/cards/`, pages in `src/pages/`, sections in `src/sections/`
+- Styles via vanilla-extract using design tokens
+- 12-column responsive CSS Grid for bento layout
+
+## E2E Testing (Playwright)
+
+```bash
+pnpm turbo run e2e                                          # run all E2E tests
+pnpm turbo run e2e --filter=@hydrotik/component-preview     # run preview E2E only
+cd apps/hy-component-preview && pnpm e2e:ui                 # interactive Playwright UI
+```
+
+- Config: `apps/hy-component-preview/playwright.config.ts`
+- Tests: `apps/hy-component-preview/e2e/` (5 spec files, 36 tests)
+- Auto-starts dev server on port 3100 via `webServer` config
+- Chromium only (add Firefox/WebKit projects as needed)
+- Artifacts: `playwright-report/`, `test-results/` (gitignored)
+
+## InputGroup Component
+
+The design system exports `InputGroup`, `InputGroupAddon`, `InputGroupToolbar`, and `inputGroupInputClass`.
+Uses the **wrapper pattern** (not per-element border hacks):
+- `<InputGroup>` owns border, shadow, radius, bg, focus-within ring
+- `<InputGroupAddon>` for text/icon slots
+- `<InputGroupToolbar>` for bottom toolbar rows (textarea combos)
+- `inputGroupInputClass` strips chrome from child `<Input>`/`<Textarea>`

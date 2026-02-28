@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hydrotik design system is a **CSS-in-TypeScript** component library with **42 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope. Built on:
+The Hydrotik design system is a **CSS-in-TypeScript** component library with **43 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope. Built on:
 
 | Layer | Technology |
 |---|---|
@@ -158,7 +158,7 @@ const { theme, setTheme } = useTheme();
 
 ---
 
-## Component Catalog (42 components)
+## Component Catalog (43 components)
 
 ### Layout & Structure
 
@@ -187,6 +187,7 @@ const { theme, setTheme } = useTheme();
 |---|---|---|
 | **Button** | Native + Slot | primary, secondary, outline, ghost, destructive × sm, md, lg |
 | **Input** | Native | Text input with focus ring |
+| **InputGroup** | Native | Wrapper pattern: group owns border/shadow/radius; children stripped of chrome |
 | **Textarea** | Native | Multi-line text input |
 | **Checkbox** | `@radix-ui/react-checkbox` | Check/uncheck with indicator |
 | **RadioGroup** | `@radix-ui/react-radio-group` | Radio button group |
