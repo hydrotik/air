@@ -10,6 +10,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yaml,yml}\" --ignore-path .gitignore",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "e2e": "turbo run e2e",
     "storybook": "turbo run storybook --filter=@hydrotik/storybook",
     "build-storybook": "turbo run build-storybook --filter=@hydrotik/storybook",
     "prepare": "husky",
@@ -22,6 +23,7 @@
   "private": true,
   "packageManager": "pnpm@10.30.3",
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^10.0.2",

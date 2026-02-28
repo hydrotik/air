@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Input, Button } from '@hydrotik/design-system';
+import { Input, Button, InputGroup, inputGroupInputClass } from '@hydrotik/design-system';
 import { AudioLines, Plus, ArrowUp } from 'lucide-react';
-import * as s from '../App.css';
 
 /** Prompt with voice toggle — matches shadcn button-group-input-group.tsx */
 export function ButtonGroupInputGroup() {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
 
   return (
-    <div className={s.inputGroup}>
+    <InputGroup>
       <Button
         variant="ghost"
         size="icon-sm"
@@ -17,7 +16,7 @@ export function ButtonGroupInputGroup() {
       >
         <Plus size={14} />
       </Button>
-      <Input placeholder="" className={s.inputGroupInput} fullWidth />
+      <Input placeholder="" className={inputGroupInputClass} fullWidth />
       <Button
         variant={voiceEnabled ? 'default' : 'ghost'}
         size="icon-sm"
@@ -35,6 +34,6 @@ export function ButtonGroupInputGroup() {
       >
         <ArrowUp size={14} />
       </Button>
-    </div>
+    </InputGroup>
   );
 }

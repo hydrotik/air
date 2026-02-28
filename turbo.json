@@ -25,7 +25,8 @@
       "outputs": ["coverage/**"]
     },
     "e2e": {
-      "outputs": []
+      "dependsOn": ["^build", "build"],
+      "outputs": ["playwright-report/**", "test-results/**"]
     },
     "build-storybook": {
       "dependsOn": ["^build"],

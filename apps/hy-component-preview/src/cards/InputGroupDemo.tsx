@@ -1,11 +1,9 @@
 import React from 'react';
-import { Input, Badge, Progress, Button, Separator } from '@hydrotik/design-system';
+import {
+  Input, Badge, Progress, Button, Separator,
+  InputGroup, InputGroupAddon, inputGroupInputClass,
+} from '@hydrotik/design-system';
 import { ArrowUp } from 'lucide-react';
-import * as s from '../App.css';
-
-function cx(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 /** Input group demos — matches shadcn input-group-demo.tsx */
 export function InputGroupDemo() {
@@ -16,11 +14,11 @@ export function InputGroupDemo() {
         <Badge variant="secondary">12 results</Badge>
       </div>
 
-      {/* URL prefix input — group wrapper owns border/shadow */}
-      <div className={s.inputGroup}>
-        <span className={s.inputGroupAddon}>https://</span>
-        <Input className={s.inputGroupInput} fullWidth />
-      </div>
+      {/* URL prefix input */}
+      <InputGroup>
+        <InputGroupAddon>https://</InputGroupAddon>
+        <Input className={inputGroupInputClass} fullWidth />
+      </InputGroup>
 
       <Separator />
 

@@ -1,11 +1,9 @@
 import React from 'react';
-import { Textarea, Button, Badge } from '@hydrotik/design-system';
+import {
+  Textarea, Button, Badge,
+  InputGroup, InputGroupToolbar, inputGroupInputClass,
+} from '@hydrotik/design-system';
 import { Paperclip, ArrowUp, Plus, Globe } from 'lucide-react';
-import * as s from '../App.css';
-
-function cx(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 /** Simplified prompt form — inspired by shadcn notion-prompt-form.tsx */
 export function NotionPromptForm() {
@@ -13,15 +11,15 @@ export function NotionPromptForm() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <div style={{ fontSize: '14px', fontWeight: 600 }}>Prompt</div>
 
-      {/* Textarea with toolbar — group wrapper owns border */}
-      <div className={cx(s.inputGroup, s.inputGroupColumn)}>
+      {/* Textarea with toolbar */}
+      <InputGroup column>
         <Textarea
           placeholder="Add context"
           rows={3}
-          className={s.inputGroupInput}
+          className={inputGroupInputClass}
           style={{ resize: 'none' }}
         />
-        <div className={s.inputGroupToolbar}>
+        <InputGroupToolbar>
           <Button variant="ghost" size="icon-sm" aria-label="Mention">
             <Plus size={14} />
           </Button>
@@ -29,17 +27,15 @@ export function NotionPromptForm() {
             <Paperclip size={14} />
           </Button>
           <div style={{ flex: 1 }} />
-          <Badge variant="secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            Auto
-          </Badge>
+          <Badge variant="secondary">Auto</Badge>
           <Badge variant="outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
             <Globe size={12} /> All Sources
           </Badge>
           <Button size="icon-sm" aria-label="Send">
             <ArrowUp size={14} />
           </Button>
-        </div>
-      </div>
+        </InputGroupToolbar>
+      </InputGroup>
     </div>
   );
 }

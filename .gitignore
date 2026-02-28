@@ -36,3 +36,8 @@ rag-store.json
 
 # Misc
 .cache
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/

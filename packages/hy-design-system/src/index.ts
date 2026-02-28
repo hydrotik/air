@@ -144,6 +144,10 @@ export { HoverCard, HoverCardTrigger, HoverCardContent } from './components/Hove
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
+// ─── InputGroup ──────────────────────────────────────────────────────────────
+export { InputGroup, InputGroupAddon, InputGroupToolbar, inputGroupInputClass } from './components/InputGroup';
+export type { InputGroupProps, InputGroupAddonProps, InputGroupToolbarProps } from './components/InputGroup';
+
 // ─── Kbd ─────────────────────────────────────────────────────────────────────
 export { Kbd } from './components/Kbd';
 export type { KbdProps } from './components/Kbd';

@@ -1,7 +1,9 @@
 import React from 'react';
-import { Input, Kbd } from '@hydrotik/design-system';
+import {
+  Input, Kbd,
+  InputGroup, InputGroupAddon, inputGroupInputClass,
+} from '@hydrotik/design-system';
 import { Search } from 'lucide-react';
-import * as s from '../App.css';
 
 /** 404 search — matches shadcn empty-input-group.tsx */
 export function EmptyInputGroup() {
@@ -13,16 +15,15 @@ export function EmptyInputGroup() {
           The page you&apos;re looking for doesn&apos;t exist. Try searching for what you need below.
         </div>
       </div>
-      {/* Search input group — wrapper owns border/shadow */}
-      <div className={s.inputGroup} style={{ width: '100%' }}>
-        <span className={s.inputGroupAddon}>
+      <InputGroup style={{ width: '100%' }}>
+        <InputGroupAddon>
           <Search size={14} />
-        </span>
-        <Input placeholder="" className={s.inputGroupInput} fullWidth />
-        <span className={s.inputGroupAddon}>
+        </InputGroupAddon>
+        <Input placeholder="" className={inputGroupInputClass} fullWidth />
+        <InputGroupAddon>
           <Kbd>/</Kbd>
-        </span>
-      </div>
+        </InputGroupAddon>
+      </InputGroup>
       <a href="#" style={{ fontSize: '12px', opacity: 0.5, textDecoration: 'underline' }}>
         Need help? Contact support
       </a>
