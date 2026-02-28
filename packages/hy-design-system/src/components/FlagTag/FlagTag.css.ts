@@ -64,10 +64,10 @@ export const flagTagIcon = style({
   transform: 'translateY(-2px)',
   selectors: {
     /* Size-aware: icon is 2px taller than label for scannability */
-    '[data-flag-size="xs"] &': { fontSize: '10px' },
-    '[data-flag-size="sm"] &': { fontSize: '11px' },
-    '[data-flag-size="md"] &': { fontSize: '13px' },
-    '[data-flag-size="lg"] &': { fontSize: '15px' },
+    '[data-flag-size="xs"] &': { fontSize: '12px' },
+    '[data-flag-size="sm"] &': { fontSize: '13px' },
+    '[data-flag-size="md"] &': { fontSize: '15px' },
+    '[data-flag-size="lg"] &': { fontSize: '17px' },
   },
 });
 
