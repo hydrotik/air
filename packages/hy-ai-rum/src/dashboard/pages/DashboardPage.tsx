@@ -108,11 +108,15 @@ export const DashboardPage: React.FC = () => {
         turns: '—',
         compactions: '—',
         contextPct: '—',
+        contextColor: '#ec4899',
       };
     }
     // Use latest context snapshot tokens (real context window usage) instead of marginal API tokens
     const latestCtx = contextSnapshots.length > 0 ? contextSnapshots[contextSnapshots.length - 1] : null;
     const ctxTokens = latestCtx?.tokens_used ?? 0;
+
+    const ctxPct = activeSession.contextUtilizationPct;
+    const ctxColor = ctxPct >= 90 ? '#ef4444' : ctxPct >= 80 ? '#f59e0b' : '#ec4899';
 
     return {
       totalTokens: formatTokens(ctxTokens),
@@ -120,7 +124,8 @@ export const DashboardPage: React.FC = () => {
       toolCalls: String(activeSession.toolCallCount),
       turns: String(activeSession.turnCount),
       compactions: String(activeSession.compactionCount),
-      contextPct: `${activeSession.contextUtilizationPct.toFixed(1)}%`,
+      contextPct: `${ctxPct.toFixed(1)}%`,
+      contextColor: ctxColor,
     };
   }, [activeSession, contextSnapshots]);
 
@@ -152,7 +157,7 @@ export const DashboardPage: React.FC = () => {
           <KpiCard label="Tool Calls" value={kpis.toolCalls} sub="executions" color="#f59e0b" />
           <KpiCard label="Turns" value={kpis.turns} sub="LLM roundtrips" color="#8b5cf6" />
           <KpiCard label="Compactions" value={kpis.compactions} sub="context resets" color="#ef4444" />
-          <KpiCard label="Context" value={kpis.contextPct} sub="window used" color="#ec4899" />
+          <KpiCard label="Context" value={kpis.contextPct} sub="window used" color={kpis.contextColor} />
         </div>
 
         {/* Context Window Section */}
