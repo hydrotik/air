@@ -1,4 +1,6 @@
 import React from 'react';
+import { DataGrid } from '@hydrotik/design-system';
+import type { ColumnDef } from '@hydrotik/design-system';
 
 interface DriftEventRow {
   id: number;
@@ -29,6 +31,8 @@ interface DriftSummaryRow {
 interface Props {
   events: DriftEventRow[];
   summary: DriftSummaryRow[];
+  /** Max visible event rows before scrolling (default: 4) */
+  maxVisibleRows?: number;
 }
 
 const font = "'JetBrains Mono', monospace";
@@ -66,7 +70,120 @@ function formatValue(metric: string, value: number): string {
   return String(Math.round(value * 100) / 100);
 }
 
-export const DriftPanel: React.FC<Props> = ({ events, summary }) => {
+/** editorial row height (6px padding top + 6px bottom + ~13px font + 1px border ≈ 26px) */
+const EDITORIAL_ROW_HEIGHT = 26;
+/** editorial header height (~10px font + padding + 2px border) */
+const EDITORIAL_HEADER_HEIGHT = 28;
+
+const columns: ColumnDef<DriftEventRow>[] = [
+  {
+    id: 'direction',
+    header: '',
+    accessorKey: 'direction',
+    size: 28,
+    minSize: 28,
+    maxSize: 28,
+    enableSorting: false,
+    enableResizing: false,
+    cell: ({ value }) => (
+      <span style={{ fontSize: 12 }}>{value === 'increase' ? '↑' : '↓'}</span>
+    ),
+  },
+  {
+    id: 'metric',
+    header: 'Metric',
+    accessorKey: 'metric',
+    size: 120,
+    cell: ({ value }) => (
+      <span style={{ fontWeight: 600 }}>
+        {METRIC_ICONS[value as string] ?? ''} {value as string}
+      </span>
+    ),
+  },
+  {
+    id: 'severity',
+    header: 'Severity',
+    accessorKey: 'severity',
+    size: 80,
+    cell: ({ value }) => {
+      const sev = value as string;
+      return (
+        <span style={{
+          color: SEVERITY_COLORS[sev],
+          fontWeight: 600,
+          fontSize: 8,
+          textTransform: 'uppercase',
+          letterSpacing: '0.3px',
+          padding: '1px 4px',
+          borderRadius: 3,
+          background: `${SEVERITY_COLORS[sev]}15`,
+        }}>
+          {sev}
+        </span>
+      );
+    },
+  },
+  {
+    id: 'baseline',
+    header: 'Baseline',
+    accessorKey: 'baseline',
+    size: 80,
+    align: 'right',
+    cell: ({ row }) => (
+      <span style={{ color: 'rgba(255,255,255,0.5)' }}>
+        {formatValue(row.original.metric, row.original.baseline)}
+      </span>
+    ),
+  },
+  {
+    id: 'current_val',
+    header: 'Current',
+    accessorKey: 'current_val',
+    size: 80,
+    align: 'right',
+    cell: ({ row }) => (
+      <span style={{ color: '#fff', fontWeight: 500 }}>
+        {formatValue(row.original.metric, row.original.current_val)}
+      </span>
+    ),
+  },
+  {
+    id: 'deviation_pct',
+    header: 'Deviation',
+    accessorKey: 'deviation_pct',
+    size: 80,
+    align: 'right',
+    cell: ({ row }) => (
+      <span style={{
+        fontWeight: 600,
+        color: SEVERITY_COLORS[row.original.severity],
+      }}>
+        {row.original.direction === 'increase' ? '+' : ''}{Math.round(row.original.deviation_pct)}%
+      </span>
+    ),
+  },
+  {
+    id: 'model',
+    header: 'Model',
+    accessorKey: 'model',
+    size: 100,
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.5)' }}>{value as string}</span>
+    ),
+  },
+  {
+    id: 'when',
+    header: 'When',
+    accessorKey: 'timestamp',
+    size: 70,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.4)' }}>{timeAgo(value as number)}</span>
+    ),
+  },
+];
+
+export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 4 }) => {
   if (events.length === 0 && summary.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
@@ -74,6 +191,15 @@ export const DriftPanel: React.FC<Props> = ({ events, summary }) => {
       </div>
     );
   }
+
+  // Newest first — DB returns DESC but enforce here as a safety net
+  const sortedEvents = React.useMemo(
+    () => [...events].sort((a, b) => b.timestamp - a.timestamp).slice(0, 20),
+    [events],
+  );
+
+  // Fixed grid height: header + maxVisibleRows rows
+  const gridHeight = EDITORIAL_HEADER_HEIGHT + EDITORIAL_ROW_HEIGHT * maxVisibleRows;
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
@@ -97,56 +223,28 @@ export const DriftPanel: React.FC<Props> = ({ events, summary }) => {
         </div>
       )}
 
-      {/* Recent drift events */}
-      {events.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              {['', 'Metric', 'Severity', 'Baseline', 'Current', 'Deviation', 'Model', 'When'].map((h) => (
-                <th key={h} style={{
-                  textAlign: 'left', padding: '3px 6px', fontSize: 8, fontWeight: 600,
-                  textTransform: 'uppercase', letterSpacing: '0.5px', color: 'rgba(255,255,255,0.4)',
-                }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {events.slice(0, 20).map((e, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '3px 4px', fontSize: 12 }}>
-                  {e.direction === 'increase' ? '↑' : '↓'}
-                </td>
-                <td style={{ padding: '3px 6px' }}>
-                  <span style={{ fontWeight: 600 }}>{METRIC_ICONS[e.metric] ?? ''} {e.metric}</span>
-                </td>
-                <td style={{ padding: '3px 6px' }}>
-                  <span style={{
-                    color: SEVERITY_COLORS[e.severity], fontWeight: 600, fontSize: 8,
-                    textTransform: 'uppercase', letterSpacing: '0.3px',
-                    padding: '1px 4px', borderRadius: 3,
-                    background: `${SEVERITY_COLORS[e.severity]}15`,
-                  }}>
-                    {e.severity}
-                  </span>
-                </td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>
-                  {formatValue(e.metric, e.baseline)}
-                </td>
-                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>
-                  {formatValue(e.metric, e.current_val)}
-                </td>
-                <td style={{
-                  padding: '3px 6px', fontWeight: 600,
-                  color: SEVERITY_COLORS[e.severity],
-                }}>
-                  {e.direction === 'increase' ? '+' : ''}{Math.round(e.deviation_pct)}%
-                </td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>{e.model}</td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.4)' }}>{timeAgo(e.timestamp)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Drift events — DataGrid with fixed scroll height */}
+      {sortedEvents.length > 0 && (
+        <DataGrid<DriftEventRow>
+          data={sortedEvents}
+          columns={columns}
+          height={gridHeight}
+          density="editorial"
+          borderless
+          transparent
+          noRowHover
+          headerBorder="thick"
+          rowSeparator="subtle"
+          showToolbar={false}
+          showFooter={false}
+          showStatusBar={false}
+          enablePagination={false}
+          enableSorting={false}
+          enableGlobalFilter={false}
+          enableColumnVisibility={false}
+          enableRowSelection={false}
+          enableResizing={false}
+        />
       )}
     </div>
   );
