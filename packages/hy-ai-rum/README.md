@@ -358,4 +358,4 @@ Check that `npm install` was run inside `.pi/extensions/ai-rum-collector/` (the 
 
 ## License
 
-MIT — Part of the [Hydrotik](https://github.com/hydrotik/hydrotik) monorepo.
+MIT
