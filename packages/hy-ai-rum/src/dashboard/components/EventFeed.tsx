@@ -83,28 +83,20 @@ function formatTime(ts: number): string {
 
 export const EventFeed: React.FC<Props> = ({ events, maxItems = 100 }) => {
   const feedRef = useRef<HTMLDivElement>(null);
-  const isAutoScrollRef = useRef(true);
 
   useEffect(() => {
-    if (feedRef.current && isAutoScrollRef.current) {
-      feedRef.current.scrollTop = feedRef.current.scrollHeight;
+    if (feedRef.current) {
+      feedRef.current.scrollTop = 0;
     }
   }, [events]);
 
   const visibleEvents = events
     .filter((e) => e.type !== 'heartbeat')
-    .slice(-maxItems);
+    .slice(-maxItems)
+    .reverse();
 
   return (
-    <div
-      ref={feedRef}
-      className={eventFeed}
-      onScroll={() => {
-        if (!feedRef.current) return;
-        const { scrollTop, scrollHeight, clientHeight } = feedRef.current;
-        isAutoScrollRef.current = scrollHeight - scrollTop - clientHeight < 40;
-      }}
-    >
+    <div ref={feedRef} className={eventFeed}>
       {visibleEvents.length === 0 ? (
         <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontSize: 11 }}>
           Waiting for events…
