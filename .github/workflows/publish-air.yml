@@ -1,0 +1,93 @@
+name: Publish AIr to npm
+
+on:
+  # Trigger manually or on version tag
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version bump type (patch, minor, major) or exact version (e.g. 0.2.0)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+  push:
+    tags:
+      - 'air-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/hy-ai-rum
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Version bump (manual dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Get version (tag push)
+        if: startsWith(github.ref, 'refs/tags/air-v')
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/air-v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create git tag + push (manual dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cd ../..
+          git add packages/hy-ai-rum/package.json
+          git commit -m "release(air): v$VERSION"
+          git tag "air-v$VERSION"
+          git push origin main --tags
+
+      - name: Sync to public repo
+        env:
+          DEPLOY_KEY: ${{ secrets.AIR_DEPLOY_KEY }}
+        run: |
+          cd ../..
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git remote add air-public git@github.com:hydrotik/air.git || true
+          git subtree push --prefix=packages/hy-ai-rum air-public main
