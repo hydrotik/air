@@ -4,6 +4,9 @@
   "description": "Real-time AI observability — monitor context windows, tool calls, token costs, and compaction for coding agents.",
   "license": "MIT",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "air": "./dist/server/cli.js",
     "air-install-claude-code": "./src/collectors/claude-code/install.js",
@@ -27,8 +30,10 @@
   "files": [
     "dist",
     "docs",
+    "scripts",
     "src/collectors",
     "README.md",
+    "INTEGRATION_PROMPT_README.md",
     "LICENSE"
   ],
   "keywords": [
@@ -41,8 +46,18 @@
     "llm",
     "coding-agent",
     "context-window",
-    "token-usage"
+    "token-usage",
+    "claude",
+    "codex",
+    "pi",
+    "dashboard",
+    "drift-detection",
+    "cost-tracking"
   ],
+  "homepage": "https://github.com/hydrotik/air#readme",
+  "bugs": {
+    "url": "https://github.com/hydrotik/air/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hydrotik/air.git"
@@ -60,7 +75,8 @@
     "stop": "node scripts/start-detached.mjs --stop",
     "test": "jest --config jest.config.mjs",
     "test:watch": "jest --config jest.config.mjs --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build && pnpm run test"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.2",
@@ -77,7 +93,6 @@
     "@hydrotik/theme-provider": "workspace:*",
     "@hydrotik/tokens": "workspace:*",
     "@hydrotik/typescript-config": "workspace:*",
-    "@mariozechner/pi-coding-agent": "*",
     "@sinclair/typebox": "^0.34.33",
     "@types/better-sqlite3": "^7.6.13",
     "@types/d3": "^7.4.3",
