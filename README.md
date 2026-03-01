@@ -141,7 +141,7 @@ pnpm capture:all                                           # all routes
 
 ## ⚡ AIr — AI Observability
 
-Real-time monitoring for AI coding agents. Like New Relic, but for your LLM workflow.
+Real-time monitoring for AI coding agents — context windows, tool calls, token costs, and compaction events.
 
 ![AIr Dashboard](packages/hy-ai-rum/docs/dash.png)
 

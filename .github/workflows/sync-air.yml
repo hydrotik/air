@@ -1,0 +1,27 @@
+name: Sync AIr to public repo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/hy-ai-rum/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for subtree
+
+      - name: Push subtree to public repo
+        env:
+          DEPLOY_KEY: ${{ secrets.AIR_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+          git remote add air-public git@github.com:hydrotik/air.git || true
+          git subtree push --prefix=packages/hy-ai-rum air-public main
