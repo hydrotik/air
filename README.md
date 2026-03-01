@@ -60,22 +60,22 @@ That's it. Every tool call, turn, and context change streams to the dashboard in
 ## What You See
 
 ### KPI Cards
-Total tokens in context window, session cost, tool call count, turn count, compactions, and context utilization percentage — all updating live.
+Total tokens in context window, session cost, tool call count, turn count, compactions, and context utilization percentage — all updating live. Context % changes color dynamically: **pink** (<80%), **yellow/amber** (≥80%), **red** (≥90%).
 
 ### Context Window Treemap
-D3 treemap showing what fills your context — system prompt, user messages, assistant responses, tool results, thinking blocks. Like a webpack bundle analyzer for your LLM context.
+D3 treemap showing what fills your context — system prompt, user messages, assistant responses, tool results, thinking blocks. Like a webpack bundle analyzer for your LLM context. Hover any segment for a tooltip with token count and percentage.
 
 ### Context Utilization Over Time
-Area chart tracking context window fill percentage with 80%/95% warning thresholds. Know when you're approaching compaction.
+Area chart tracking context window fill percentage with 80%/95% warning thresholds. Know when you're approaching compaction. Charts fill their full panel height via flex layout.
 
 ### Token Flow
-Input / output / cache read tokens per turn. See cache efficiency and cost drivers.
+Cache read / output / input tokens per turn as stacked area chart with gradient fills. See cache efficiency, cost drivers, and compaction sawtooth patterns. Auto-scales Y-axis, hidden X-axis labels for maximum data density.
 
 ### Tool Call Waterfall
 DevTools-style timeline of tool executions with durations. Spot slow reads, long builds, and error patterns.
 
 ### Live Event Feed
-Scrolling log of all telemetry events — color-coded by type, auto-scrolling, with inline summaries.
+Scrolling log of all telemetry events — color-coded by type, newest-first, with inline summaries.
 
 ---
 
