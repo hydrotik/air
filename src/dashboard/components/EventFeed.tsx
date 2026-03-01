@@ -28,6 +28,11 @@ const TYPE_COLORS: Record<string, string> = {
   rag_embedding: '#a3e635',
   rag_index: '#65a30d',
   custom: '#94a3b8',
+  latency: '#0ea5e9',
+  cost: '#10b981',
+  output_eval: '#eab308',
+  prompt_rating: '#a855f7',
+  drift: '#ef4444',
 };
 
 function getEventSummary(event: TelemetryEvent): string {
@@ -72,6 +77,16 @@ function getEventSummary(event: TelemetryEvent): string {
       return `${event.source} ${event.documentCount} docs ${formatTokens(event.totalTokens)} tokens ${event.durationMs}ms`;
     case 'custom':
       return `${event.provider}:${event.eventName}${event.durationMs ? ` ${event.durationMs}ms` : ''}${event.isError ? ' ✗' : ''}`;
+    case 'latency':
+      return `${event.operation} ${event.totalMs}ms${event.ttftMs ? ` (TTFT: ${event.ttftMs}ms)` : ''}${event.model ? ` [${event.model}]` : ''}`;
+    case 'cost':
+      return `$${event.totalCost.toFixed(4)} (cumulative: $${event.cumulativeCost.toFixed(4)})${event.budgetExceeded ? ' ⚠ BUDGET EXCEEDED' : ''} [${event.model}]`;
+    case 'output_eval':
+      return `turn #${event.turnIndex} success:${(event.metrics.toolSuccessRate * 100).toFixed(0)}% cache:${(event.metrics.cacheHitRate * 100).toFixed(0)}%${event.userRating ? ` ★${event.userRating}` : ''}`;
+    case 'prompt_rating':
+      return `${event.variant} (${event.category}) goal:${event.metrics.goalAchieved ? '✓' : '✗'} turns:${event.metrics.turnsToComplete}${event.rating ? ` ★${event.rating}` : ''}`;
+    case 'drift':
+      return `${event.severity.toUpperCase()} ${event.metric} ${event.direction} ${Math.round(Math.abs(event.deviationPct))}% (${event.baseline.toFixed(2)} → ${event.current.toFixed(2)}) [${event.model}]`;
     default:
       return (event as TelemetryEvent).type;
   }

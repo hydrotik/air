@@ -7,6 +7,7 @@ export function useTelemetry() {
   const [events, setEvents] = useState<TelemetryEvent[]>([]);
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
+  const [redactionLevel, setRedactionLevel] = useState<string>('preview');
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -44,7 +45,8 @@ export function useTelemetry() {
     wsRef.current = ws;
   }, []);
 
-  // Fetch initial data
+  // ─── Fetch helpers ──────────────────────────────────────────────────────
+
   const fetchSessions = useCallback(async () => {
     try {
       const res = await fetch('/api/sessions');
@@ -52,6 +54,16 @@ export function useTelemetry() {
       setSessions(data);
     } catch {
       // server not ready
+    }
+  }, []);
+
+  const fetchConfig = useCallback(async () => {
+    try {
+      const res = await fetch('/api/health');
+      const data = await res.json();
+      if (data.redactionLevel) setRedactionLevel(data.redactionLevel);
+    } catch {
+      // ignore
     }
   }, []);
 
@@ -127,21 +139,111 @@ export function useTelemetry() {
     }
   }, []);
 
+  // ─── New fetch functions ──────────────────────────────────────────────
+
+  const fetchLatencyStats = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/latency`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchLatencyTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/latency/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchCostBreakdown = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/cost`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchCostTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/cost/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchEvalStats = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/evals`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchEvalTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/evals/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchPromptVariants = useCallback(async () => {
+    try {
+      const res = await fetch('/api/prompts');
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchDriftEvents = useCallback(async (sessionId?: string) => {
+    try {
+      const url = sessionId ? `/api/drift?session=${sessionId}` : '/api/drift';
+      const res = await fetch(url);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchDriftSummary = useCallback(async (sessionId?: string) => {
+    try {
+      const url = sessionId ? `/api/drift/summary?session=${sessionId}` : '/api/drift/summary';
+      const res = await fetch(url);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  // ─── Lifecycle ────────────────────────────────────────────────────────
+
   useEffect(() => {
     connect();
     fetchSessions();
+    fetchConfig();
     const interval = setInterval(fetchSessions, 5000);
     return () => {
       clearInterval(interval);
       if (reconnectRef.current) clearTimeout(reconnectRef.current);
       wsRef.current?.close();
     };
-  }, [connect, fetchSessions]);
+  }, [connect, fetchSessions, fetchConfig]);
 
   return {
     events,
     sessions,
     connected,
+    redactionLevel,
+    // Core fetches
     fetchSessionEvents,
     fetchToolStats,
     fetchToolCalls,
@@ -151,5 +253,15 @@ export function useTelemetry() {
     fetchRagStats,
     fetchProviderSummary,
     refreshSessions: fetchSessions,
+    // New fetches
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchEvalStats,
+    fetchEvalTimeseries,
+    fetchPromptVariants,
+    fetchDriftEvents,
+    fetchDriftSummary,
   };
 }
