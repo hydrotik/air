@@ -18,6 +18,12 @@ export const ports = {
   /** Design MCP server (stdio, not HTTP — listed for reference) */
   designMcp: 5100,
 
+  /** AI-RUM telemetry server (Fastify + WebSocket) */
+  aiRum: 5200,
+
+  /** AI-RUM dashboard dev server (Vite, proxies to aiRum) */
+  aiRumDashboard: 5201,
+
   /** Storybook */
   storybook: 6006,
 } as const;

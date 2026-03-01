@@ -14,7 +14,10 @@ packages:
   - packages/hy-typescript-config
   - packages/hy-config
   - packages/hy-design-mcp
+  - packages/hy-ai-rum
 
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
+  - better-sqlite3
+  - koffi
