@@ -117,7 +117,7 @@ export const DashboardPage: React.FC = () => {
       {/* Header */}
       <div className={header}>
         <div className={headerLeft}>
-          <span className={logo}>⚡ AI-RUM</span>
+          <span className={logo}>⚡ AIr</span>
           <span
             className={statusDot}
             style={{ background: connected ? '#22c55e' : '#ef4444' }}
@@ -224,7 +224,7 @@ export const DashboardPage: React.FC = () => {
             <div style={{ fontSize: 32 }}>🔬</div>
             <div>No telemetry data yet</div>
             <div style={{ opacity: 0.5 }}>
-              Start a pi session with the AI-RUM collector extension to see data here
+              Start a pi session with the AIr collector extension to see data here
             </div>
           </div>
         )}

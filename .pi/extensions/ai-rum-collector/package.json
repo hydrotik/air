@@ -1,5 +1,5 @@
 {
-  "name": "ai-rum-collector",
+  "name": "air-collector",
   "private": true,
   "type": "module",
   "dependencies": {

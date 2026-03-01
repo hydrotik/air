@@ -29,8 +29,8 @@ All ports managed in `@hydrotik/config` (`packages/hy-config/`):
 - 3100 — Component Preview
 - 4000 — BFF Fastify
 - 5100 — Design MCP
-- 5200 — AI-RUM Server (Fastify + WebSocket)
-- 5201 — AI-RUM Dashboard (Vite dev)
+- 5200 — AIr Server (Fastify + WebSocket)
+- 5201 — AIr Dashboard (Vite dev)
 - 6006 — Storybook
 
 ## Vite App Setup

@@ -1,15 +1,15 @@
 /**
- * AI-RUM Collector — Pi Extension
+ * AIr Collector — Pi Extension
  *
- * Streams telemetry to the AI-RUM server for real-time observability.
+ * Streams telemetry to the AIr server for real-time AI observability.
  * Hooks into pi's tool calls, turns, context usage, compaction, and model events.
  *
- * Requires: AI-RUM server running on ws://localhost:5200
- * Start with: pnpm turbo run dev --filter=@hydrotik/ai-rum
+ * Requires: AIr server running on ws://localhost:5200
+ * Start with: pnpm turbo run dev --filter=@hydrotik/air
  *
  * Config env vars:
- *   AI_RUM_URL     — WebSocket endpoint (default: ws://localhost:5200/ws/collector)
- *   AI_RUM_ENABLED — set to "false" to disable (default: true)
+ *   AIR_URL     — WebSocket endpoint (default: ws://localhost:5200/ws/collector)
+ *   AIR_ENABLED — set to "false" to disable (default: true)
  */
 
 import type { ExtensionAPI } from '@mariozechner/pi-coding-agent';
@@ -40,9 +40,9 @@ function contentToString(content: any): string {
   return '';
 }
 
-export default function aiRumCollector(pi: ExtensionAPI) {
-  const url = process.env.AI_RUM_URL ?? 'ws://localhost:5200/ws/collector';
-  const enabled = process.env.AI_RUM_ENABLED !== 'false';
+export default function airCollector(pi: ExtensionAPI) {
+  const url = process.env.AIR_URL ?? 'ws://localhost:5200/ws/collector';
+  const enabled = process.env.AIR_ENABLED !== 'false';
   if (!enabled) return;
 
   let ws: WebSocket | null = null;

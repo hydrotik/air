@@ -16,7 +16,7 @@ export function useTelemetry() {
 
     ws.onopen = () => {
       setConnected(true);
-      console.log('[AI-RUM Dashboard] Connected');
+      console.log('[AIr] Dashboard connected');
     };
 
     ws.onmessage = (e) => {
