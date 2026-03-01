@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'packages/hy-ai-rum/**'
+  workflow_dispatch:
 
 jobs:
   sync:

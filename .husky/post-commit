@@ -1,0 +1,5 @@
+# Sync AIr subtree to public repo when hy-ai-rum files change
+if git diff-tree --no-commit-id --name-only -r HEAD | grep -q '^packages/hy-ai-rum/'; then
+  echo "⚡ AIr files changed — syncing to hydrotik/air..."
+  git subtree push --prefix=packages/hy-ai-rum air-public main 2>&1 | tail -1
+fi
