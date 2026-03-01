@@ -103,6 +103,106 @@ Ports are configured in `@hydrotik/config` (`packages/hy-config/src/ports.ts`).
 
 ---
 
+## SDK — Instrument MCP, RAG, and Custom Tools
+
+AIr ships a lightweight SDK for instrumenting anything that talks to an LLM — MCP servers, RAG pipelines, custom tools, or your own agent framework.
+
+### MCP Instrumentation
+
+Wrap an MCP client to auto-instrument all `callTool`, `readResource`, and `getPrompt` calls:
+
+```ts
+import { Client } from '@modelcontextprotocol/sdk/client';
+import { instrumentMcp } from '@hydrotik/air/sdk';
+
+const client = new Client({ name: 'my-app', version: '1.0' });
+
+// Proxy wraps all MCP methods with telemetry
+const instrumented = instrumentMcp(client, 'my-mcp-server', {
+  sessionId: 'my-session',
+});
+
+// All calls are now auto-traced in the AIr dashboard
+const result = await instrumented.callTool('search', { query: 'hello' });
+```
+
+Or use the manual tracer for more control:
+
+```ts
+import { createMcpTracer } from '@hydrotik/air/sdk';
+
+const mcp = createMcpTracer('my-server');
+const result = await mcp.traceToolCall('search', { query: 'hello' }, async () => {
+  return await myMcpClient.callTool('search', { query: 'hello' });
+});
+```
+
+### RAG Instrumentation
+
+Instrument vector DB queries, embedding generation, and document indexing:
+
+```ts
+import { createRagTracer } from '@hydrotik/air/sdk';
+
+const rag = createRagTracer('pinecone', { sessionId: 'my-session' });
+
+// Trace a retrieval with result extraction
+const results = await rag.traceRetrieval('search query', async () => {
+  return await pinecone.query({ vector, topK: 5 });
+}, {
+  extractResults: (r) => ({
+    count: r.matches.length,
+    topScore: r.matches[0]?.score,
+    chunkSizes: r.matches.map(m => m.metadata.tokenCount),
+  }),
+});
+
+// Trace embedding generation
+const embedding = await rag.traceEmbedding('text-embedding-3-small', 150, async () => {
+  return await openai.embeddings.create({ model: 'text-embedding-3-small', input: text });
+}, { dimensions: 1536 });
+
+// Trace document indexing
+await rag.traceIndex(100, 50000, async () => {
+  return await pinecone.upsert(vectors);
+});
+```
+
+### Generic Client — Any Custom Tool
+
+For anything not covered by MCP or RAG helpers, use the base `AirClient`:
+
+```ts
+import { AirClient } from '@hydrotik/air/sdk';
+
+const air = new AirClient({
+  sessionId: 'my-session',
+  provider: 'my-custom-tool',
+});
+
+// Trace any async operation
+const result = await air.trace('database_query', { table: 'users', filter: 'active' }, async () => {
+  return await db.query('SELECT * FROM users WHERE active = true');
+});
+
+// Or emit raw events
+air.emit({
+  type: 'custom',
+  provider: 'my-tool',
+  eventName: 'cache_hit',
+  data: { key: 'user:123', ttl: 300 },
+});
+```
+
+### Dashboard Auto-Detection
+
+MCP and RAG panels appear automatically in the dashboard when data from those providers flows in. No configuration needed — the dashboard detects event types and renders the appropriate panels:
+
+- **MCP Servers** — table of server/method/tool stats with call counts, avg/min/max latency, error rates
+- **RAG Pipeline** — table of source/type stats with retrieval counts, avg relevance scores, token volumes
+
+---
+
 ## REST API
 
 All endpoints return JSON.
@@ -117,6 +217,9 @@ All endpoints return JSON.
 | `GET /api/sessions/:id/tool-stats` | Per-tool aggregate stats (count, avg/min/max ms, errors) |
 | `GET /api/sessions/:id/context` | Context utilization snapshots over time |
 | `GET /api/sessions/:id/context/latest` | Latest context breakdown with segments |
+| `GET /api/sessions/:id/mcp-stats` | MCP call stats grouped by server/method/tool |
+| `GET /api/sessions/:id/rag-stats` | RAG stats grouped by source/type |
+| `GET /api/sessions/:id/providers` | Event type summary for all connected providers |
 | `GET /api/events/recent` | Recent events across all sessions |
 
 ---

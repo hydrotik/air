@@ -86,7 +86,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .attr('fill-opacity', (d: any) => (d.data.category === 'unused' ? 0.3 : 0.8))
       .attr('stroke', (d: any) => (d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'))
       .style('cursor', 'pointer')
-      .on('mouseover', function (event, d: any) {
+      .on('mouseover', function (_event, d: any) {
         d3.select(this).attr('fill-opacity', 1);
         const cat = d.data.category;
         const color = cat === 'unused' ? 'rgba(255,255,255,0.5)' : (CATEGORY_COLORS[cat] ?? '#64748b');
@@ -102,7 +102,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
         `;
         tooltip.style.opacity = '1';
       })
-      .on('mousemove', function (event) {
+      .on('mousemove', function (event: MouseEvent) {
         const rect = container.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;

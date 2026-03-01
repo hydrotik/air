@@ -100,6 +100,33 @@ export function useTelemetry() {
     }
   }, []);
 
+  const fetchMcpStats = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/mcp-stats`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchRagStats = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/rag-stats`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchProviderSummary = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/providers`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
   useEffect(() => {
     connect();
     fetchSessions();
@@ -120,6 +147,9 @@ export function useTelemetry() {
     fetchToolCalls,
     fetchContextSnapshots,
     fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
+    fetchProviderSummary,
     refreshSessions: fetchSessions,
   };
 }
