@@ -137,6 +137,7 @@ export default function airCollector(pi: ExtensionAPI) {
       cwd: ctx.cwd,
       model: model?.id ?? 'unknown',
       provider: model?.provider ?? 'unknown',
+      agent: 'pi',
     };
     send(evt);
   });

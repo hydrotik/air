@@ -75,4 +75,12 @@ function migrate(db: Database.Database): void {
 
     CREATE INDEX IF NOT EXISTS idx_ctx_session ON context_snapshots(session_id, timestamp);
   `);
+
+  // ─── Additive migrations (safe for existing DBs) ─────────────────────
+  // Add agent column — defaults to 'pi' for backward compat
+  try {
+    db.exec(`ALTER TABLE sessions ADD COLUMN agent TEXT NOT NULL DEFAULT 'pi'`);
+  } catch {
+    // Column already exists — ignore
+  }
 }

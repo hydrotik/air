@@ -21,8 +21,8 @@ export class TelemetryStore {
   private prepareStatements() {
     return {
       upsertSession: this.db.prepare(`
-        INSERT INTO sessions (session_id, start_time, last_event, cwd, model, provider)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO sessions (session_id, start_time, last_event, cwd, model, provider, agent)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(session_id) DO UPDATE SET last_event = excluded.last_event
       `),
       updateSessionModel: this.db.prepare(`
@@ -98,10 +98,10 @@ export class TelemetryStore {
     // Ensure session row exists before inserting event (FK constraint)
     if (event.type === 'session_start') {
       const e = event as SessionStartEvent;
-      this.stmts.upsertSession.run(e.sessionId, e.timestamp, e.timestamp, e.cwd, e.model, e.provider);
+      this.stmts.upsertSession.run(e.sessionId, e.timestamp, e.timestamp, e.cwd, e.model, e.provider, e.agent ?? 'pi');
     } else {
       // Auto-create session if we see events without a session_start
-      this.stmts.upsertSession.run(event.sessionId, event.timestamp, event.timestamp, '', '', '');
+      this.stmts.upsertSession.run(event.sessionId, event.timestamp, event.timestamp, '', '', '', 'unknown');
     }
 
     // Store raw event
@@ -279,6 +279,7 @@ export class TelemetryStore {
       compactionCount: row.compactions,
       avgToolDurationMs: 0, // computed on demand
       contextUtilizationPct: row.context_pct,
+      agent: row.agent ?? 'pi',
     };
   }
 }

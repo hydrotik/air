@@ -1,5 +1,5 @@
 // ─── Telemetry Events ───────────────────────────────────────────────────────
-// Sent from pi extension collector → RUM server via WebSocket
+// Sent from collectors (pi, Claude Code, Codex, SDK) → AIr server via WebSocket or HTTP
 
 export interface BaseEvent {
   id: string;
@@ -129,6 +129,8 @@ export interface SessionStartEvent extends BaseEvent {
   cwd: string;
   model: string;
   provider: string;
+  /** Which CLI/agent emitted this session: 'pi' | 'claude-code' | 'codex' | 'sdk' */
+  agent?: string;
 }
 
 export interface SessionEndEvent extends BaseEvent {
@@ -268,4 +270,6 @@ export interface SessionSummary {
   compactionCount: number;
   avgToolDurationMs: number;
   contextUtilizationPct: number;
+  /** Which CLI/agent: 'pi' | 'claude-code' | 'codex' | 'sdk' */
+  agent: string;
 }

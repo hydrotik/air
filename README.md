@@ -44,40 +44,148 @@ Opens:
 - **Dashboard** → [http://localhost:5200](http://localhost:5200) (production) or [http://localhost:5201](http://localhost:5201) (dev)
 - **API** → [http://localhost:5200/api/health](http://localhost:5200/api/health)
 
-### 2. Install the collector extension
+### 2. Connect your coding agent
 
-The collector is a [pi](https://github.com/mariozechner/pi-coding-agent) extension that hooks into your agent's event system — tool calls, turns, token usage, context breakdown, compaction, and model changes.
+AIr works with multiple AI coding agents. Pick your setup:
 
-**Project-local** (auto-discovered when pi runs from this repo):
-
-```
-.pi/extensions/ai-rum-collector/
-├── index.ts        ← Extension entry point
-├── package.json    ← Declares ws dependency
-└── node_modules/   ← npm install (gitignored)
-```
-
-Already set up if you cloned this repo. Just run:
+#### Pi
 
 ```bash
 cd .pi/extensions/ai-rum-collector && npm install
 ```
 
-**Global** (available in all projects):
+Then `/reload` in pi. The extension auto-discovers and streams tool calls, turns, token usage, context breakdown, and compaction events via WebSocket. See [Pi collector docs](src/collectors/pi/README.md).
+
+#### Claude Code
+
+One command installs the hooks:
 
 ```bash
-# Copy the extension directory to pi's global extensions
-cp -r .pi/extensions/ai-rum-collector ~/.pi/agent/extensions/air-collector
-cd ~/.pi/agent/extensions/air-collector && npm install
+npx air-install-claude-code
 ```
 
-### 3. Reload pi
+This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/settings.json`:
 
 ```
-/reload
+.claude/hooks/
+├── air-session-start.js     ← SessionStart hook
+└── air-post-tool-use.js     ← PostToolUse hook
 ```
+
+**What happens automatically:**
+- When Claude Code starts a session, `air-session-start.js` checks if the AIr server is running and starts it if needed
+- Every tool call triggers `air-post-tool-use.js`, which POSTs the event to AIr via HTTP
+- Session IDs are persisted to a temp file so events from the same session are correlated
+
+**Manual install** (if you prefer not to use the installer):
+
+1. Copy `session-start.js` and `post-tool-use.js` from `src/collectors/claude-code/` into `.claude/hooks/`
+2. Add to `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node .claude/hooks/air-session-start.js"
+      }]
+    }],
+    "PostToolUse": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node .claude/hooks/air-post-tool-use.js"
+      }]
+    }]
+  }
+}
+```
+
+**Configuration:**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `AIR_URL` | `http://localhost:5200` | AIr server HTTP endpoint |
+| `AIR_PORT` | `5200` | Server port (used by auto-start) |
+| `AIR_ENABLED` | `true` | Set to `"false"` to disable collection |
+| `AIR_AUTOSTART` | `true` | Set to `"false"` to skip auto-starting the server |
+
+**What it collects vs Pi:**
+
+| Feature | Pi | Claude Code |
+|---------|-----|-------------|
+| Tool call events | ✅ With precise timing | ✅ No duration (PostToolUse only) |
+| Token usage per turn | ✅ From API response | ❌ Not exposed in hooks |
+| Context breakdown | ✅ Full treemap | ⚠️ Total % only (via statusline bridge) |
+| Compaction events | ✅ Direct hook | ❌ Not exposed |
+| Connection | WebSocket (persistent) | HTTP POST (per-event) |
+
+See [Claude Code collector docs](src/collectors/claude-code/README.md).
+
+#### Codex CLI
+
+Run the watcher alongside Codex — it tails session files in real time:
+
+```bash
+# Terminal 1: Start the AIr server
+npx air
+
+# Terminal 2: Start the Codex watcher
+npx air-codex-watcher
+```
+
+The watcher monitors `~/.codex/sessions/` for new and updated `.jsonl` files, maps Codex events to AIr telemetry, and POSTs them to the server.
+
+**Options:**
+
+```bash
+# Watch all sessions (live + new)
+npx air-codex-watcher
+
+# Watch a specific session ID
+npx air-codex-watcher --session 019c7e7f
+
+# Replay a past session into AIr (backfill)
+npx air-codex-watcher --replay ~/.codex/sessions/2026/02/20/rollout-2026-02-20T23-39-53-019c7e7f.jsonl
+```
+
+**What it collects:**
+
+| Codex Event | AIr Event | Data |
+|-------------|-----------|------|
+| `session_meta` | `session_start` | session_id, model, cwd |
+| `event_msg:task_started` | `turn_start` | turn index |
+| `event_msg:task_complete` | `turn_end` | tool call count |
+| `event_msg:token_count` | `token_usage` | input/output tokens |
+| `response_item:function_call` | `tool_call_start` | tool name, call_id, input preview |
+| `response_item:function_call_output` | `tool_call_end` | call_id, output, duration, errors |
+| `response_item:custom_tool_call` | `tool_call_start/end` | apply_patch, etc. |
+| `compacted` | `compaction` | summary length |
+
+**Configuration:**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `AIR_URL` | `http://localhost:5200` | AIr server HTTP endpoint |
+| `AIR_ENABLED` | `true` | Set to `"false"` to disable |
+| `CODEX_HOME` | `~/.codex` | Codex home directory |
+
+See [Codex collector docs](src/collectors/codex/README.md).
+
+#### Any Agent (SDK)
+
+```ts
+import { AirClient } from '@hydrotik/air/sdk';
+
+const air = new AirClient({ url: 'ws://localhost:5200/ws/collector' });
+air.trace('my_tool', { input: 'data' }, async () => doWork());
+```
+
+### 3. Open the dashboard
 
 That's it. Every tool call, turn, and context change streams to the dashboard in real-time.
+
+Sessions from different agents are labeled — the dashboard shows whether each session came from Pi, Claude Code, or Codex.
 
 ---
 
@@ -245,6 +353,8 @@ All endpoints return JSON.
 | `GET /api/sessions/:id/rag-stats` | RAG stats grouped by source/type |
 | `GET /api/sessions/:id/providers` | Event type summary for all connected providers |
 | `GET /api/events/recent` | Recent events across all sessions |
+| `POST /api/ingest` | Ingest a single event (for HTTP-based collectors) |
+| `POST /api/ingest/batch` | Ingest multiple events at once |
 
 ---
 
@@ -252,16 +362,31 @@ All endpoints return JSON.
 
 ```
  ┌──────────────┐   WebSocket    ┌──────────────┐   WebSocket    ┌──────────────┐
- │  Pi Agent    │ ─────────────→ │  AIr Server  │ ─────────────→ │  Dashboard   │
- │  + Extension │  /ws/collector │  (Fastify)   │  /ws/dashboard │  (React+D3)  │
- └──────────────┘                └──────┬───────┘                └──────────────┘
-                                        │
+ │  Pi Agent    │ ─────────────→ │              │ ─────────────→ │              │
+ │  + Extension │  /ws/collector │              │  /ws/dashboard │              │
+ └──────────────┘                │              │                │              │
+ ┌──────────────┐   HTTP POST    │  AIr Server  │                │  Dashboard   │
+ │  Claude Code │ ─────────────→ │  (Fastify)   │                │  (React+D3)  │
+ │  + Hooks     │  /api/ingest   │              │                │              │
+ └──────────────┘                │              │                │              │
+ ┌──────────────┐   HTTP POST    │              │                │              │
+ │  Codex CLI   │ ─────────────→ │              │                │              │
+ │  + Watcher   │  /api/ingest   └──────┬───────┘                └──────────────┘
+ └──────────────┘                       │
                                    SQLite DB
                                  ~/.hydrotik/air/
                                   telemetry.db
 ```
 
-### Collector (Pi Extension)
+### Ingestion Paths
+
+AIr accepts telemetry via two protocols:
+- **WebSocket** (`/ws/collector`) — persistent connection for long-lived processes (Pi extension, SDK clients)
+- **HTTP POST** (`/api/ingest`, `/api/ingest/batch`) — fire-and-forget for short-lived processes (Claude Code hooks, Codex watcher)
+
+Both paths go through the same `TelemetryStore.ingestEvent()` — same DB, same broadcast to dashboard clients.
+
+### Pi Collector (WebSocket)
 Hooks into pi's event system via `ExtensionAPI`:
 - `tool_execution_start` / `tool_execution_end` — tool call timing and I/O sizes
 - `turn_start` / `turn_end` — LLM roundtrip tracking + token usage from response
@@ -273,6 +398,21 @@ Hooks into pi's event system via `ExtensionAPI`:
 - `ctx.getSystemPrompt()` — system prompt size
 
 The collector is **silent and non-blocking** — if the AIr server isn't running, events are dropped without disrupting pi. Reconnects automatically every 5 seconds.
+
+### Claude Code Collector (HTTP)
+Two Node.js hook scripts that run as short-lived processes on each Claude Code event:
+- **SessionStart** — auto-starts AIr server, emits `session_start`, persists session ID to temp file
+- **PostToolUse** — emits `tool_call_start` + `tool_call_end` with correlated IDs, reads context metrics from statusline bridge
+
+Hooks use HTTP POST because they're ephemeral processes — no time to establish a WebSocket.
+
+### Codex CLI Collector (HTTP)
+A long-running watcher that tails `~/.codex/sessions/*.jsonl`:
+- Watches for file changes via `fs.watch` (falls back to 2s polling)
+- Tracks byte offsets per file to avoid re-processing
+- Maps Codex JSONL entries (`session_meta`, `function_call`, `task_started`, etc.) to AIr events
+- Extracts wall-time duration from Codex output metadata
+- Supports `--replay` mode for backfilling historical sessions
 
 ### Server (Fastify + SQLite)
 - Ingests events via WebSocket, persists to SQLite with WAL mode
@@ -297,7 +437,10 @@ The collector is **silent and non-blocking** — if the AIr server isn't running
 @hydrotik/air/server   → createServer() for programmatic use
 ```
 
-**bin:** `air` → starts server + serves built dashboard on a single port
+**bin:**
+- `air` → starts server + serves built dashboard on a single port
+- `air-install-claude-code` → installs Claude Code hooks into `.claude/`
+- `air-codex-watcher` → tails Codex session files and streams to AIr
 
 ---
 
@@ -334,7 +477,7 @@ Dashboard (React, D3, Recharts, vanilla-extract) is pre-built at publish time �
 | Server | Fastify 5, better-sqlite3, @fastify/websocket |
 | Dashboard | React 19, Vite 6, D3.js 7, Recharts 2 (pre-built) |
 | Styling | vanilla-extract, @hydrotik/tokens (compiled to CSS) |
-| Collector | Pi ExtensionAPI, WebSocket (ws) |
+| Collectors | Pi ExtensionAPI (WebSocket), Claude Code hooks (HTTP), Codex watcher (HTTP) |
 | SDK | WebSocket (ws), zero other deps |
 | Storage | SQLite 3 (WAL mode), `~/.hydrotik/air/telemetry.db` |
 
@@ -351,8 +494,20 @@ The collector connects to the server async. Send a message in pi — the first t
 **Context % doesn't match pi footer**
 Delete `~/.hydrotik/air/telemetry.db` to clear stale data, restart the server, then `/reload` in pi.
 
-**Extension not loading**
+**Pi extension not loading**
 Check that `npm install` was run inside `.pi/extensions/ai-rum-collector/` (the `ws` package must be in `node_modules`). Run `/reload` in pi after fixing.
+
+**Claude Code hooks not firing**
+Verify `.claude/settings.json` has the hook entries under `hooks.SessionStart` and `hooks.PostToolUse`. Run `npx air-install-claude-code` again to re-install. Check that the hook scripts exist at `.claude/hooks/air-session-start.js` and `.claude/hooks/air-post-tool-use.js`.
+
+**Claude Code sessions not correlating**
+The SessionStart hook persists a session ID to `$TMPDIR/air-claude-code/session.json`. If PostToolUse events show up as separate sessions, check that the temp directory is writable and both hooks run in the same OS user context.
+
+**Codex watcher not seeing sessions**
+Verify `~/.codex/sessions/` exists and contains `.jsonl` files. Run `npx air-codex-watcher --replay <file>` on a specific file to test the pipeline. Check `AIR_URL` if the server is on a non-default port.
+
+**Codex watcher missing events**
+The watcher processes the 3 most recent files on startup. Older sessions need `--replay` to backfill. If `fs.watch` isn't working (some network filesystems), the watcher falls back to 2s polling automatically.
 
 ---
 
