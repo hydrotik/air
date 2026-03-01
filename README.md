@@ -1,68 +1,83 @@
-# @hydrotik/ai-rum
+# ⚡ AIr
 
-**Real-time AI Observability** — like New Relic for your AI development workflow.
+**Real-time AI observability for coding agents.**
 
-Monitor coding agents, context window usage, tool call performance, MCP servers, and token costs in real-time with a live dashboard built on the Hydrotik design system.
+AIr monitors your AI coding sessions — context window usage, tool call performance, token costs, and compaction events — streaming everything to a live dashboard. Think New Relic, but for your LLM workflow.
 
-## Architecture
+![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green)
 
-```
-┌─────────────────────┐     WebSocket      ┌─────────────────────┐     WebSocket      ┌─────────────────────┐
-│   Pi Extension      │ ─────────────────→ │   RUM Server        │ ─────────────────→ │   Dashboard         │
-│   (Collector)       │   :5200/ws/collector│   (Fastify + SQLite)│   :5200/ws/dashboard│   (React + D3)      │
-│                     │                    │                     │                    │                     │
-│ • Tool calls        │                    │ • Event ingestion   │                    │ • Context treemap   │
-│ • Token usage       │                    │ • SQLite storage    │                    │ • Tool waterfall    │
-│ • Context breakdown │                    │ • REST API          │                    │ • Token flow chart  │
-│ • Compaction events │                    │ • Live broadcast    │                    │ • Live event feed   │
-│ • Model changes     │                    │                     │                    │ • Session KPIs      │
-└─────────────────────┘                    └─────────────────────┘                    └─────────────────────┘
-```
+---
 
 ## Quick Start
 
-### 1. Start the RUM server
+### 1. Start the AIr server + dashboard
 
 ```bash
-pnpm turbo run dev --filter=@hydrotik/ai-rum
+pnpm turbo run dev --filter=@hydrotik/air
 ```
 
-This starts:
-- **Server** on `http://localhost:5200` (Fastify + WebSocket + SQLite)
-- **Dashboard** on `http://localhost:5201` (Vite dev server, proxies API to :5200)
+Opens:
+- **Dashboard** → [http://localhost:5201](http://localhost:5201)
+- **API** → [http://localhost:5200/api/health](http://localhost:5200/api/health)
 
-### 2. Install the pi collector extension
+### 2. Install the collector extension
 
-The collector extension is auto-discovered from `.pi/extensions/ai-rum-collector.ts`.
+The collector is a [pi](https://github.com/mariozechner/pi-coding-agent) extension that hooks into your agent's event system — tool calls, turns, token usage, context breakdown, compaction, and model changes.
 
-Or copy to global extensions for all projects:
+**Project-local** (auto-discovered when pi runs from this repo):
+
+```
+.pi/extensions/ai-rum-collector/
+├── index.ts        ← Extension entry point
+├── package.json    ← Declares ws dependency
+└── node_modules/   ← npm install (gitignored)
+```
+
+Already set up if you cloned this repo. Just run:
+
 ```bash
-cp .pi/extensions/ai-rum-collector.ts ~/.pi/agent/extensions/
+cd .pi/extensions/ai-rum-collector && npm install
 ```
 
-### 3. Use pi normally
+**Global** (available in all projects):
 
-The collector hooks into pi's event system transparently. No workflow changes needed.
+```bash
+# Copy the extension directory to pi's global extensions
+cp -r .pi/extensions/ai-rum-collector ~/.pi/agent/extensions/air-collector
+cd ~/.pi/agent/extensions/air-collector && npm install
+```
 
-## Dashboard Visualizations
+### 3. Reload pi
+
+```
+/reload
+```
+
+That's it. Every tool call, turn, and context change streams to the dashboard in real-time.
+
+---
+
+## What You See
+
+### KPI Cards
+Total tokens in context window, session cost, tool call count, turn count, compactions, and context utilization percentage — all updating live.
 
 ### Context Window Treemap
-D3 treemap showing what's consuming the context window — system prompt, user messages, assistant responses, tool results, compaction summaries. Like a bundle analyzer but for your LLM context.
-
-### Tool Call Waterfall
-D3 timeline visualization of tool executions (read, bash, edit, write) with durations — like Chrome DevTools network waterfall.
-
-### Token Flow Chart
-Recharts area chart showing input/output/cache token usage per turn, with cost tracking.
+D3 treemap showing what fills your context — system prompt, user messages, assistant responses, tool results, thinking blocks. Like a webpack bundle analyzer for your LLM context.
 
 ### Context Utilization Over Time
-Real-time chart of context window utilization percentage with 80%/95% warning lines.
+Area chart tracking context window fill percentage with 80%/95% warning thresholds. Know when you're approaching compaction.
+
+### Token Flow
+Input / output / cache read tokens per turn. See cache efficiency and cost drivers.
+
+### Tool Call Waterfall
+DevTools-style timeline of tool executions with durations. Spot slow reads, long builds, and error patterns.
 
 ### Live Event Feed
-Scrolling log of all telemetry events with color-coded type badges and auto-scroll.
+Scrolling log of all telemetry events — color-coded by type, auto-scrolling, with inline summaries.
 
-### Session KPI Cards
-Total tokens, cost, tool calls, turns, compactions, context utilization.
+---
 
 ## Configuration
 
@@ -70,35 +85,111 @@ Total tokens, cost, tool calls, turns, compactions, context utilization.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `AI_RUM_URL` | `ws://localhost:5200/ws/collector` | RUM server WebSocket endpoint |
-| `AI_RUM_ENABLED` | `true` | Set to `false` to disable collection |
+| `AIR_URL` | `ws://localhost:5200/ws/collector` | AIr server WebSocket endpoint |
+| `AIR_ENABLED` | `true` | Set to `"false"` to disable collection |
 
-### SQLite Database
+### Database
 
-Telemetry data is stored in `~/.hydrotik/ai-rum/telemetry.db` (WAL mode for concurrent access).
+Telemetry persists to SQLite at `~/.hydrotik/air/telemetry.db` (WAL mode). Delete the file to reset.
+
+### Ports
+
+| Port | Service |
+|------|---------|
+| 5200 | AIr server (Fastify + WebSocket + REST API) |
+| 5201 | AIr dashboard (Vite dev server, proxies to 5200) |
+
+Ports are configured in `@hydrotik/config` (`packages/hy-config/src/ports.ts`).
+
+---
 
 ## REST API
 
+All endpoints return JSON.
+
 | Endpoint | Description |
 |----------|-------------|
-| `GET /api/sessions` | List all sessions |
-| `GET /api/sessions/:id` | Session summary |
-| `GET /api/sessions/:id/events` | All events for session |
-| `GET /api/sessions/:id/tool-calls` | Tool call records |
-| `GET /api/sessions/:id/tool-stats` | Tool statistics (avg/min/max duration) |
-| `GET /api/sessions/:id/context` | Context usage snapshots |
-| `GET /api/sessions/:id/context/latest` | Latest context breakdown |
+| `GET /api/health` | Server uptime + connected clients |
+| `GET /api/sessions` | List all sessions with summary stats |
+| `GET /api/sessions/:id` | Single session summary |
+| `GET /api/sessions/:id/events` | All events for a session |
+| `GET /api/sessions/:id/tool-calls` | Tool call records with timing |
+| `GET /api/sessions/:id/tool-stats` | Per-tool aggregate stats (count, avg/min/max ms, errors) |
+| `GET /api/sessions/:id/context` | Context utilization snapshots over time |
+| `GET /api/sessions/:id/context/latest` | Latest context breakdown with segments |
 | `GET /api/events/recent` | Recent events across all sessions |
-| `GET /api/health` | Server health check |
 
-## Ports
+---
 
-- **5200** — RUM server (Fastify + WebSocket)
-- **5201** — Dashboard dev server (Vite, proxies to 5200)
+## Architecture
+
+```
+ ┌──────────────┐   WebSocket    ┌──────────────┐   WebSocket    ┌──────────────┐
+ │  Pi Agent    │ ─────────────→ │  AIr Server  │ ─────────────→ │  Dashboard   │
+ │  + Extension │  /ws/collector │  (Fastify)   │  /ws/dashboard │  (React+D3)  │
+ └──────────────┘                └──────┬───────┘                └──────────────┘
+                                        │
+                                   SQLite DB
+                                 ~/.hydrotik/air/
+                                  telemetry.db
+```
+
+### Collector (Pi Extension)
+Hooks into pi's event system via `ExtensionAPI`:
+- `tool_execution_start` / `tool_execution_end` — tool call timing and I/O sizes
+- `turn_start` / `turn_end` — LLM roundtrip tracking + token usage from response
+- `agent_start` / `agent_end` — session lifecycle
+- `session_compact` — compaction events
+- `model_select` — model changes
+- `ctx.getContextUsage()` — real token count from pi
+- `ctx.sessionManager.getBranch()` — context breakdown by message category
+- `ctx.getSystemPrompt()` — system prompt size
+
+The collector is **silent and non-blocking** — if the AIr server isn't running, events are dropped without disrupting pi. Reconnects automatically every 5 seconds.
+
+### Server (Fastify + SQLite)
+- Ingests events via WebSocket, persists to SQLite with WAL mode
+- Broadcasts events to connected dashboard clients in real-time
+- Serves REST API for historical queries
+- Four tables: `sessions`, `events`, `tool_calls`, `context_snapshots`
+
+### Dashboard (React + Vite)
+- Connects to server via WebSocket for live updates
+- Falls back to REST API for historical data on session switch
+- D3.js for treemap and waterfall visualizations
+- Recharts for time-series charts
+- Styled with `@hydrotik/tokens` via vanilla-extract (dark theme)
+
+---
 
 ## Tech Stack
 
-- **Server**: Fastify, better-sqlite3, @fastify/websocket
-- **Dashboard**: React, Vite, vanilla-extract, D3.js, Recharts
-- **Collector**: Pi extension API, WebSocket client
-- **Design**: @hydrotik/design-system tokens and conventions
+| Layer | Technology |
+|-------|-----------|
+| Server | Fastify 5, better-sqlite3, @fastify/websocket |
+| Dashboard | React 19, Vite 6, D3.js 7, Recharts 2 |
+| Styling | vanilla-extract, @hydrotik/tokens |
+| Collector | Pi ExtensionAPI, WebSocket (ws) |
+| Storage | SQLite 3 (WAL mode) |
+
+---
+
+## Troubleshooting
+
+**Dashboard shows "Reconnecting…"**
+The AIr server isn't running. Start it with `pnpm turbo run dev --filter=@hydrotik/air`.
+
+**"0 sessions" after reload**
+The collector connects to the server async. Send a message in pi — the first tool call or turn will create a session.
+
+**Context % doesn't match pi footer**
+Delete `~/.hydrotik/air/telemetry.db` to clear stale data, restart the server, then `/reload` in pi.
+
+**Extension not loading**
+Check that `npm install` was run inside `.pi/extensions/ai-rum-collector/` (the `ws` package must be in `node_modules`). Run `/reload` in pi after fixing.
+
+---
+
+## License
+
+MIT — Part of the [Hydrotik](https://github.com/hydrotik/hydrotik) monorepo.

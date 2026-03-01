@@ -3,7 +3,7 @@ import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
 
-const DB_DIR = path.join(os.homedir(), '.hydrotik', 'ai-rum');
+const DB_DIR = path.join(os.homedir(), '.hydrotik', 'air');
 const DB_PATH = path.join(DB_DIR, 'telemetry.db');
 
 export function getDb(): Database.Database {

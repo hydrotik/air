@@ -36,7 +36,7 @@ export async function createServer(port = 5200) {
   // ─── Collector WebSocket (pi extension → server) ─────────────────────────
   app.register(async (fastify) => {
     fastify.get('/ws/collector', { websocket: true }, (socket) => {
-      console.log('[AI-RUM] Collector connected');
+      console.log('[AIr] Collector connected');
 
       socket.on('message', (raw) => {
         try {
@@ -52,12 +52,12 @@ export async function createServer(port = 5200) {
             }
           }
         } catch (err) {
-          console.error('[AI-RUM] Failed to parse collector event:', err);
+          console.error('[AIr] Failed to parse collector event:', err);
         }
       });
 
       socket.on('close', () => {
-        console.log('[AI-RUM] Collector disconnected');
+        console.log('[AIr] Collector disconnected');
       });
     });
   });
@@ -65,12 +65,12 @@ export async function createServer(port = 5200) {
   // ─── Dashboard WebSocket (server → dashboard live feed) ──────────────────
   app.register(async (fastify) => {
     fastify.get('/ws/dashboard', { websocket: true }, (socket) => {
-      console.log('[AI-RUM] Dashboard client connected');
+      console.log('[AIr] Dashboard client connected');
       dashboardClients.add(socket);
 
       socket.on('close', () => {
         dashboardClients.delete(socket);
-        console.log('[AI-RUM] Dashboard client disconnected');
+        console.log('[AIr] Dashboard client disconnected');
       });
     });
   });
