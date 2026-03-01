@@ -39,7 +39,7 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 2, right: 2, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id="inputGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.6} />
@@ -55,19 +55,14 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-        <XAxis
-          dataKey="index"
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
-          axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-          tickLine={false}
-        />
+        <XAxis dataKey="index" hide />
         <YAxis
           domain={[0, 'auto']}
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
-          axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+          tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
+          axisLine={false}
           tickLine={false}
           tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v))}
-          width={40}
+          width={36}
         />
         <Tooltip
           contentStyle={{
