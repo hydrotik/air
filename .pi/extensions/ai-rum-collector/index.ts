@@ -53,11 +53,17 @@ export default function aiRumCollector(pi: ExtensionAPI) {
 
   // ─── Connection Management ───────────────────────────────────────────
 
+  let pendingSessionStart: Record<string, any> | null = null;
+
   function connect() {
     try {
       ws = new WebSocket(url);
       ws.on('open', () => {
-        // silent connect — don't spam pi console
+        // If we have a pending session_start (from before WS connected), send it now
+        if (pendingSessionStart) {
+          send(pendingSessionStart);
+          pendingSessionStart = null;
+        }
       });
       ws.on('close', () => {
         ws = null;
@@ -103,7 +109,7 @@ export default function aiRumCollector(pi: ExtensionAPI) {
   pi.on('session_start', async (_event, ctx) => {
     sessionId = (ctx.sessionManager as any).getSessionId?.() ?? uid();
     const model = ctx.model;
-    send({
+    const startEvent = {
       id: uid(),
       sessionId,
       timestamp: Date.now(),
@@ -111,7 +117,13 @@ export default function aiRumCollector(pi: ExtensionAPI) {
       cwd: ctx.cwd,
       model: model?.id ?? 'unknown',
       provider: (model as any)?.provider ?? 'unknown',
-    });
+    };
+    if (ws?.readyState === WebSocket.OPEN) {
+      send(startEvent);
+    } else {
+      // WS not ready yet — queue it for when connection opens
+      pendingSessionStart = startEvent;
+    }
   });
 
   pi.on('session_shutdown', async () => {
@@ -264,18 +276,27 @@ export default function aiRumCollector(pi: ExtensionAPI) {
         custom_messages: 'Extension Messages',
       };
 
+      // Use real token count from getContextUsage() and distribute proportionally
+      const realUsage = ctx.getContextUsage?.();
+      const realTokens = realUsage?.tokens ?? 0;
+      const model = ctx.model;
+      const contextWindow = (model as any)?.contextWindow ?? 200_000;
+
+      const totalChars = Object.values(charsByCategory).reduce((sum, c) => sum + c, 0);
+
       const segments = Object.entries(charsByCategory)
         .filter(([, chars]) => chars > 0)
         .map(([category, chars]) => ({
           category,
           label: labels[category] ?? category,
-          estimatedTokens: estimateTokens('x'.repeat(chars)),
+          // Distribute real tokens proportionally by char count
+          estimatedTokens: totalChars > 0
+            ? Math.round((chars / totalChars) * realTokens)
+            : estimateTokens('x'.repeat(chars)),
           charCount: chars,
         }));
 
-      const totalTokens = segments.reduce((sum, s) => sum + s.estimatedTokens, 0);
-      const model = ctx.model;
-      const contextWindow = (model as any)?.contextWindow ?? 200_000;
+      const totalTokens = realTokens > 0 ? realTokens : segments.reduce((sum, s) => sum + s.estimatedTokens, 0);
 
       send({
         id: uid(),
