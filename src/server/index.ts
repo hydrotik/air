@@ -226,6 +226,22 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
     return store.getRagStats(id);
   });
 
+  // ─── Timeseries (sparkline data) ──────────────────────────────────────
+  app.get('/api/sessions/:id/mcp-stats/timeseries', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getMcpTimeseries(id);
+  });
+
+  app.get('/api/sessions/:id/rag-stats/timeseries', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getRagTimeseries(id);
+  });
+
+  app.get('/api/sessions/:id/tool-calls/timeseries', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getToolCallTimeseries(id);
+  });
+
   // ─── Provider Events ──────────────────────────────────────────────────
   app.get('/api/sessions/:id/providers', async (req) => {
     const { id } = req.params as { id: string };

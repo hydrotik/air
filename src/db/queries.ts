@@ -380,6 +380,58 @@ export class TelemetryStore {
     return stmt.all(sessionId);
   }
 
+  /** MCP call timeseries — each event with timestamp and duration */
+  getMcpTimeseries(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        timestamp,
+        json_extract(data, '$.serverName') as server_name,
+        json_extract(data, '$.method') as method,
+        json_extract(data, '$.toolName') as tool_name,
+        json_extract(data, '$.durationMs') as duration_ms,
+        json_extract(data, '$.isError') as is_error
+      FROM events
+      WHERE session_id = ? AND type = 'mcp_response'
+      ORDER BY timestamp ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** RAG event timeseries — each event with timestamp, duration, and type-specific fields */
+  getRagTimeseries(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        timestamp,
+        type,
+        json_extract(data, '$.source') as source,
+        json_extract(data, '$.durationMs') as duration_ms,
+        json_extract(data, '$.resultCount') as result_count,
+        json_extract(data, '$.topScore') as top_score,
+        json_extract(data, '$.documentCount') as document_count,
+        json_extract(data, '$.inputTokens') as input_tokens
+      FROM events
+      WHERE session_id = ? AND type IN ('rag_retrieval', 'rag_embedding', 'rag_index')
+      ORDER BY timestamp ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Tool call timeseries from tool_calls table */
+  getToolCallTimeseries(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        start_time as timestamp,
+        tool_name,
+        duration_ms,
+        is_error,
+        output_bytes
+      FROM tool_calls
+      WHERE session_id = ? AND duration_ms IS NOT NULL
+      ORDER BY start_time ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
   // ─── Provider Summary ─────────────────────────────────────────────
 
   /** Summary of all providers that have sent events */
