@@ -26,7 +26,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
+    outDir: 'dist/dashboard',
+    emptyOutDir: false, // tsup writes to dist/ too — don't wipe it
   },
 });
