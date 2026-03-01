@@ -29,7 +29,11 @@ import type {
   SessionEndEvent,
   HeartbeatEvent,
   ContextSegment,
+  LatencyEvent,
+  CostEvent,
+  OutputEvalEvent,
 } from '../shared/events';
+import { computeCost } from '../shared/events';
 
 function uid(): string {
   return randomBytes(8).toString('hex');
@@ -67,6 +71,10 @@ export default function airCollector(pi: ExtensionAPI) {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   const pendingToolStarts = new Map<string, number>(); // toolCallId → startTime
+  const turnStartTimes = new Map<number, number>(); // turnIndex → startTime
+  let cumulativeCost = 0;
+  let turnToolErrors = 0;
+  let turnToolCount = 0;
 
   // ─── WebSocket Connection ──────────────────────────────────────────────
 
@@ -189,6 +197,10 @@ export default function airCollector(pi: ExtensionAPI) {
   // ─── Turn Events ────────────────────────────────────────────────────
 
   pi.on('turn_start', async (event) => {
+    turnStartTimes.set(event.turnIndex, Date.now());
+    turnToolErrors = 0;
+    turnToolCount = 0;
+
     const evt: TurnStartEvent = {
       id: uid(),
       sessionId,
@@ -210,6 +222,24 @@ export default function airCollector(pi: ExtensionAPI) {
     };
     send(turnEvt);
 
+    // ─── Turn latency ─────────────────────────────────────────────────
+    const turnStart = turnStartTimes.get(event.turnIndex);
+    if (turnStart) {
+      const turnDuration = Date.now() - turnStart;
+      turnStartTimes.delete(event.turnIndex);
+      const latEvt: LatencyEvent = {
+        id: uid(),
+        sessionId,
+        timestamp: Date.now(),
+        type: 'latency',
+        operation: 'turn',
+        totalMs: turnDuration,
+        model: ctx.model?.id,
+        provider: ctx.model?.provider,
+      };
+      send(latEvt);
+    }
+
     // Extract token usage from the assistant message
     const msg = event.message;
     if (msg?.role === 'assistant' && msg.usage) {
@@ -229,6 +259,54 @@ export default function airCollector(pi: ExtensionAPI) {
         provider: msg.provider ?? 'unknown',
       };
       send(tokenEvt);
+
+      // ─── Auto-compute cost if not provided by API ─────────────────
+      const costData = u.cost?.total > 0
+        ? u.cost
+        : computeCost(msg.model ?? '', u.input, u.output, u.cacheRead, u.cacheWrite);
+
+      if (costData && costData.total > 0) {
+        cumulativeCost += costData.total;
+        const costEvt: CostEvent = {
+          id: uid(),
+          sessionId,
+          timestamp: Date.now(),
+          type: 'cost',
+          model: msg.model ?? 'unknown',
+          provider: msg.provider ?? 'unknown',
+          inputCost: costData.input,
+          outputCost: costData.output,
+          cacheReadCost: costData.cacheRead,
+          cacheWriteCost: costData.cacheWrite,
+          totalCost: costData.total,
+          cumulativeCost,
+          currency: 'USD',
+        };
+        send(costEvt);
+      }
+
+      // ─── Output evaluation ────────────────────────────────────────
+      const toolCount = event.toolResults?.length ?? 0;
+      const evalEvt: OutputEvalEvent = {
+        id: uid(),
+        sessionId,
+        timestamp: Date.now(),
+        type: 'output_eval',
+        turnIndex: event.turnIndex,
+        model: msg.model ?? 'unknown',
+        provider: msg.provider ?? 'unknown',
+        metrics: {
+          responseTokens: u.output,
+          toolCallCount: toolCount,
+          toolErrorCount: turnToolErrors,
+          toolSuccessRate: toolCount > 0 ? (toolCount - turnToolErrors) / toolCount : 1,
+          hadRetry: false, // Would need turn-over-turn analysis
+          hadImmediateFollowUp: false,
+          responseLatencyMs: turnStart ? Date.now() - turnStart : 0,
+          cacheHitRate: u.totalTokens > 0 ? u.cacheRead / u.totalTokens : 0,
+        },
+      };
+      send(evalEvt);
     }
 
     // Context usage snapshot
@@ -349,6 +427,10 @@ export default function airCollector(pi: ExtensionAPI) {
     const startTime = pendingToolStarts.get(event.toolCallId) ?? Date.now();
     pendingToolStarts.delete(event.toolCallId);
     const endTime = Date.now();
+
+    // Track tool errors for output evaluation
+    turnToolCount++;
+    if (event.isError) turnToolErrors++;
 
     const outputStr = event.result
       ? JSON.stringify(event.result)

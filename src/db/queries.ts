@@ -9,6 +9,11 @@ import type {
   ContextBreakdownEvent,
   SessionStartEvent,
   AgentStartEvent,
+  LatencyEvent,
+  CostEvent,
+  OutputEvalEvent,
+  PromptRatingEvent,
+  DriftEvent,
 } from '../shared/events';
 
 export class TelemetryStore {
@@ -60,6 +65,48 @@ export class TelemetryStore {
         INSERT INTO context_snapshots (session_id, timestamp, tokens_used, context_window, utilization, breakdown)
         VALUES (?, ?, ?, ?, ?, ?)
       `),
+
+      // ─── Latency ───────────────────────────────────────────────────
+      insertLatency: this.db.prepare(`
+        INSERT INTO latency_snapshots (session_id, timestamp, operation, total_ms, ttft_ms, phases, model, provider)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+
+      // ─── Cost ─────────────────────────────────────────────────────
+      insertCost: this.db.prepare(`
+        INSERT INTO cost_snapshots (session_id, timestamp, model, provider, input_cost, output_cost,
+          cache_read_cost, cache_write_cost, total_cost, cumulative_cost, budget_limit, budget_exceeded)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+      getSessionCumulativeCost: this.db.prepare(`
+        SELECT COALESCE(MAX(cumulative_cost), 0) as cumulative FROM cost_snapshots WHERE session_id = ?
+      `),
+
+      // ─── Output Evaluation ────────────────────────────────────────
+      insertOutputEval: this.db.prepare(`
+        INSERT INTO output_evals (session_id, timestamp, turn_index, model, provider,
+          response_tokens, tool_call_count, tool_error_count, tool_success_rate,
+          had_retry, had_immediate_follow_up, response_latency_ms, cache_hit_rate,
+          user_rating, tags)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+
+      // ─── Prompt Rating ────────────────────────────────────────────
+      insertPromptRating: this.db.prepare(`
+        INSERT INTO prompt_ratings (session_id, timestamp, prompt_hash, variant, category,
+          model, provider, goal_achieved, turns_to_complete, total_tokens, total_cost,
+          total_latency_ms, tool_error_rate, required_compaction, rating, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+
+      // ─── Drift ────────────────────────────────────────────────────
+      insertDrift: this.db.prepare(`
+        INSERT INTO drift_events (session_id, timestamp, metric, model, provider,
+          baseline, current_val, deviation_pct, direction, severity, window_size, threshold)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `),
+
+      // ─── Queries ──────────────────────────────────────────────────
       getSessions: this.db.prepare(`
         SELECT * FROM sessions ORDER BY last_event DESC LIMIT ?
       `),
@@ -155,10 +202,72 @@ export class TelemetryStore {
         this.stmts.incrCompactions.run(event.sessionId);
         break;
       }
+
+      // ─── New event types ────────────────────────────────────────────
+
+      case 'latency': {
+        const e = event as LatencyEvent;
+        this.stmts.insertLatency.run(
+          e.sessionId, e.timestamp, e.operation, e.totalMs, e.ttftMs ?? null,
+          e.phases ? JSON.stringify(e.phases) : null, e.model ?? null, e.provider ?? null,
+        );
+        break;
+      }
+
+      case 'cost': {
+        const e = event as CostEvent;
+        this.stmts.insertCost.run(
+          e.sessionId, e.timestamp, e.model, e.provider,
+          e.inputCost, e.outputCost, e.cacheReadCost, e.cacheWriteCost,
+          e.totalCost, e.cumulativeCost, e.budgetLimit ?? null, e.budgetExceeded ? 1 : 0,
+        );
+        // Also update session total cost
+        this.stmts.addTokens.run(0, 0, e.totalCost, e.sessionId);
+        break;
+      }
+
+      case 'output_eval': {
+        const e = event as OutputEvalEvent;
+        const m = e.metrics;
+        this.stmts.insertOutputEval.run(
+          e.sessionId, e.timestamp, e.turnIndex, e.model, e.provider,
+          m.responseTokens, m.toolCallCount, m.toolErrorCount, m.toolSuccessRate,
+          m.hadRetry ? 1 : 0, m.hadImmediateFollowUp ? 1 : 0,
+          m.responseLatencyMs, m.cacheHitRate,
+          e.userRating ?? null, e.tags ? JSON.stringify(e.tags) : null,
+        );
+        break;
+      }
+
+      case 'prompt_rating': {
+        const e = event as PromptRatingEvent;
+        const m = e.metrics;
+        this.stmts.insertPromptRating.run(
+          e.sessionId, e.timestamp, e.promptHash, e.variant, e.category,
+          e.model, e.provider,
+          m.goalAchieved ? 1 : 0, m.turnsToComplete, m.totalTokens, m.totalCost,
+          m.totalLatencyMs, m.toolErrorRate, m.requiredCompaction ? 1 : 0,
+          e.rating ?? null, e.notes ?? null,
+        );
+        break;
+      }
+
+      case 'drift': {
+        const e = event as DriftEvent;
+        this.stmts.insertDrift.run(
+          e.sessionId, e.timestamp, e.metric, e.model, e.provider,
+          e.baseline, e.current, e.deviationPct, e.direction, e.severity,
+          e.windowSize, e.threshold,
+        );
+        break;
+      }
+
       default:
         break;
     }
   }
+
+  // ─── Session Queries ─────────────────────────────────────────────────
 
   getSessions(limit = 50): SessionSummary[] {
     const rows = this.stmts.getSessions.all(limit) as any[];
@@ -206,6 +315,8 @@ export class TelemetryStore {
     return rows.map((r) => JSON.parse(r.data)).reverse();
   }
 
+  // ─── MCP Stats ──────────────────────────────────────────────────────
+
   /** MCP call stats grouped by server + method */
   getMcpStats(sessionId: string) {
     const stmt = this.db.prepare(`
@@ -225,6 +336,8 @@ export class TelemetryStore {
     `);
     return stmt.all(sessionId);
   }
+
+  // ─── RAG Stats ─────────────────────────────────────────────────────
 
   /** RAG retrieval stats grouped by source */
   getRagStats(sessionId: string) {
@@ -247,6 +360,8 @@ export class TelemetryStore {
     return stmt.all(sessionId);
   }
 
+  // ─── Provider Summary ─────────────────────────────────────────────
+
   /** Summary of all providers that have sent events */
   getProviderSummary(sessionId: string) {
     const stmt = this.db.prepare(`
@@ -262,6 +377,206 @@ export class TelemetryStore {
     `);
     return stmt.all(sessionId);
   }
+
+  // ─── Latency Stats ────────────────────────────────────────────────
+
+  /** Latency percentiles by operation */
+  getLatencyStats(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        operation,
+        COUNT(*) as sample_count,
+        AVG(total_ms) as avg_ms,
+        MIN(total_ms) as min_ms,
+        MAX(total_ms) as max_ms,
+        AVG(ttft_ms) as avg_ttft_ms,
+        model, provider
+      FROM latency_snapshots
+      WHERE session_id = ?
+      GROUP BY operation, model
+      ORDER BY avg_ms DESC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Latency time series for a specific operation */
+  getLatencyTimeSeries(sessionId: string, operation?: string) {
+    if (operation) {
+      const stmt = this.db.prepare(`
+        SELECT timestamp, total_ms, ttft_ms, operation, model
+        FROM latency_snapshots
+        WHERE session_id = ? AND operation = ?
+        ORDER BY timestamp ASC
+      `);
+      return stmt.all(sessionId, operation);
+    }
+    const stmt = this.db.prepare(`
+      SELECT timestamp, total_ms, ttft_ms, operation, model
+      FROM latency_snapshots WHERE session_id = ?
+      ORDER BY timestamp ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  // ─── Cost Stats ───────────────────────────────────────────────────
+
+  /** Cost breakdown by model */
+  getCostBreakdown(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        model, provider,
+        COUNT(*) as event_count,
+        SUM(input_cost) as total_input_cost,
+        SUM(output_cost) as total_output_cost,
+        SUM(cache_read_cost) as total_cache_read_cost,
+        SUM(cache_write_cost) as total_cache_write_cost,
+        SUM(total_cost) as total_cost,
+        MAX(cumulative_cost) as cumulative_cost,
+        MAX(budget_limit) as budget_limit,
+        MAX(budget_exceeded) as budget_exceeded
+      FROM cost_snapshots
+      WHERE session_id = ?
+      GROUP BY model, provider
+      ORDER BY total_cost DESC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Cost time series */
+  getCostTimeSeries(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT timestamp, total_cost, cumulative_cost, model, budget_limit
+      FROM cost_snapshots WHERE session_id = ?
+      ORDER BY timestamp ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Get current cumulative cost for a session */
+  getCumulativeCost(sessionId: string): number {
+    const row = this.stmts.getSessionCumulativeCost.get(sessionId) as any;
+    return row?.cumulative ?? 0;
+  }
+
+  // ─── Output Evaluation Stats ──────────────────────────────────────
+
+  /** Aggregate quality metrics */
+  getOutputEvalStats(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        model, provider,
+        COUNT(*) as eval_count,
+        AVG(response_tokens) as avg_response_tokens,
+        AVG(tool_success_rate) as avg_tool_success_rate,
+        SUM(had_retry) as total_retries,
+        SUM(had_immediate_follow_up) as total_follow_ups,
+        AVG(response_latency_ms) as avg_response_latency_ms,
+        AVG(cache_hit_rate) as avg_cache_hit_rate,
+        AVG(user_rating) as avg_user_rating,
+        COUNT(user_rating) as rated_count
+      FROM output_evals
+      WHERE session_id = ?
+      GROUP BY model, provider
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Output eval time series */
+  getOutputEvalTimeSeries(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT timestamp, turn_index, tool_success_rate, response_latency_ms,
+             cache_hit_rate, user_rating, had_retry, had_immediate_follow_up
+      FROM output_evals WHERE session_id = ?
+      ORDER BY timestamp ASC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  // ─── Prompt Rating Stats ──────────────────────────────────────────
+
+  /** Compare prompt variants (A/B testing) */
+  getPromptVariantComparison(promptHash?: string) {
+    const sql = promptHash
+      ? `SELECT
+          prompt_hash, variant, category, model,
+          COUNT(*) as sample_count,
+          AVG(goal_achieved) as goal_rate,
+          AVG(turns_to_complete) as avg_turns,
+          AVG(total_tokens) as avg_tokens,
+          AVG(total_cost) as avg_cost,
+          AVG(total_latency_ms) as avg_latency_ms,
+          AVG(tool_error_rate) as avg_tool_error_rate,
+          AVG(required_compaction) as compaction_rate,
+          AVG(rating) as avg_rating,
+          COUNT(rating) as rated_count
+        FROM prompt_ratings
+        WHERE prompt_hash = ?
+        GROUP BY variant, model
+        ORDER BY goal_rate DESC, avg_cost ASC`
+      : `SELECT
+          prompt_hash, variant, category, model,
+          COUNT(*) as sample_count,
+          AVG(goal_achieved) as goal_rate,
+          AVG(turns_to_complete) as avg_turns,
+          AVG(total_tokens) as avg_tokens,
+          AVG(total_cost) as avg_cost,
+          AVG(total_latency_ms) as avg_latency_ms,
+          AVG(tool_error_rate) as avg_tool_error_rate,
+          AVG(required_compaction) as compaction_rate,
+          AVG(rating) as avg_rating,
+          COUNT(rating) as rated_count
+        FROM prompt_ratings
+        GROUP BY prompt_hash, variant, model
+        ORDER BY goal_rate DESC, avg_cost ASC`;
+
+    const stmt = this.db.prepare(sql);
+    return promptHash ? stmt.all(promptHash) : stmt.all();
+  }
+
+  /** Get all ratings for a specific prompt variant */
+  getPromptRatings(variant: string) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM prompt_ratings WHERE variant = ? ORDER BY timestamp DESC
+    `);
+    return stmt.all(variant);
+  }
+
+  // ─── Drift Stats ──────────────────────────────────────────────────
+
+  /** Recent drift events */
+  getDriftEvents(sessionId?: string, limit = 50) {
+    if (sessionId) {
+      const stmt = this.db.prepare(`
+        SELECT * FROM drift_events WHERE session_id = ? ORDER BY timestamp DESC LIMIT ?
+      `);
+      return stmt.all(sessionId, limit);
+    }
+    const stmt = this.db.prepare(`
+      SELECT * FROM drift_events ORDER BY timestamp DESC LIMIT ?
+    `);
+    return stmt.all(limit);
+  }
+
+  /** Drift summary by metric */
+  getDriftSummary(sessionId?: string) {
+    const whereClause = sessionId ? 'WHERE session_id = ?' : '';
+    const stmt = this.db.prepare(`
+      SELECT
+        metric, severity,
+        COUNT(*) as event_count,
+        AVG(deviation_pct) as avg_deviation_pct,
+        MAX(ABS(deviation_pct)) as max_deviation_pct,
+        MIN(timestamp) as first_seen,
+        MAX(timestamp) as last_seen
+      FROM drift_events
+      ${whereClause}
+      GROUP BY metric, severity
+      ORDER BY event_count DESC
+    `);
+    return sessionId ? stmt.all(sessionId) : stmt.all();
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────
 
   private rowToSummary(row: any): SessionSummary {
     return {
