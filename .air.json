@@ -1,0 +1,25 @@
+{
+  "$schema": "https://github.com/hydrotik/air#config",
+  "providers": {
+    "rag": [
+      {
+        "name": "design-mcp",
+        "type": "custom",
+        "description": "Design system knowledge base — TF-IDF over tokens, conventions, components, architecture",
+        "metadata": {
+          "store": "packages/hy-design-mcp/rag-store.json",
+          "tools": ["rag_sync", "rag_search", "rag_get", "rag_list"],
+          "categories": ["tokens", "conventions", "components", "architecture", "docs"]
+        }
+      }
+    ],
+    "mcp": [
+      {
+        "name": "hydrotik-design",
+        "description": "MCP server for design decisions, token lookup, component introspection, and RAG search"
+      }
+    ]
+  },
+  "redaction": "preview",
+  "budgetLimit": 25.00
+}

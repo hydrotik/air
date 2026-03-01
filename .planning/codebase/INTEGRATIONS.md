@@ -24,9 +24,31 @@
 ### MCP Server (`packages/hy-design-mcp`)
 - Model Context Protocol server for design decision RAG
 - Reads design system source files and docs
-- Exposes component information to LLM tools
+- TF-IDF search over chunked knowledge base (`rag-store.json`)
+- Tools: `rag_sync`, `rag_search`, `rag_get`, `rag_list`, `get_tokens`, `get_component`, `check_token_usage`
 - Port 5100 (configured in `.mcp.json`)
 - Auto-started by Claude Code via `.mcp.json` config
+- **AIr instrumented**: emits RAG telemetry via HTTP to `POST /api/rag/*`
+  - `rag_search` → retrieval events (query, result count, duration, corpus size)
+  - `rag_sync` → index events (chunk count, estimated tokens, duration)
+  - `rag_get` → retrieval events (direct chunk lookup)
+  - Telemetry is fire-and-forget (never blocks MCP responses)
+  - Controlled via `AIR_ENABLED=false` to disable
+
+### AIr Observability (`packages/hy-ai-rum`)
+- Real-time AI agent telemetry: token tracking, cost, latency, output quality, drift detection
+- Dashboard: React 19 + Vite 6 + Recharts + D3
+- Server: Fastify + SQLite (WAL mode) + WebSocket
+- Collectors: Pi, Claude Code, Codex CLI, SDK
+- Config: `.air.json` at monorepo root
+- Subtree-synced to public repo: `hydrotik/air` via post-commit hook
+- Port 5200 (configured in `@hydrotik/config`)
+- **BYORAG integration**: `.air.json` declares providers, HTTP API for any language, SDK for TypeScript
+  - Provider registry with auto-discovery
+  - Simplified endpoints: `POST /api/rag/retrieval`, `/api/rag/embedding`, `/api/rag/index`
+  - Dashboard: Integrations panel, RAG Pipeline stats, live event feed
+- **Security**: 3-level redaction (none/preview/full), SHA-256 prompt hashing, no raw content storage
+- **Drift detection**: auto-alerts when latency, cost, or quality shifts from baseline
 
 ### GSD (Get Shit Done) v1.22.0
 - Installed locally at `.claude/`
@@ -55,8 +77,13 @@ Self-hosted via `@fontsource-variable`:
 
 ## CI/CD
 
-**Currently: None configured.**
-- No GitHub Actions, Vercel, or deployment pipelines
+### GitHub Actions
+- **`sync-air.yml`** — Syncs `packages/hy-ai-rum/` to public `hydrotik/air` repo
+  - Triggers: `workflow_dispatch` (manual) + post-commit hook via `git subtree push`
+  - Uses `SUBTREE_PUSH_TOKEN` secret for auth
+
+### Not Yet Configured
+- No Vercel or deployment pipelines
 - Turborepo supports remote caching but not configured
 - `turbo.json` has CI-aware settings (`forbidOnly`, `retries`, `workers`)
 

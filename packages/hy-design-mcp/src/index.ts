@@ -16,6 +16,27 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
 // ---------------------------------------------------------------------------
+// AIr Telemetry — lightweight HTTP reporter (zero dependencies)
+// ---------------------------------------------------------------------------
+const AIR_URL = process.env.AIR_URL ?? 'http://localhost:5200';
+const AIR_ENABLED = process.env.AIR_ENABLED !== 'false';
+
+/** Fire-and-forget telemetry POST — never throws, never blocks */
+function airReport(endpoint: string, data: Record<string, unknown>): void {
+  if (!AIR_ENABLED) return;
+  const url = `${AIR_URL}/api/rag/${endpoint}`;
+  const body = JSON.stringify({ source: 'design-mcp', ...data });
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+    signal: AbortSignal.timeout(2000),
+  }).catch(() => {
+    // AIr server not running — silently ignore
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Paths
 // ---------------------------------------------------------------------------
 const __filename = fileURLToPath(import.meta.url);
@@ -938,7 +959,23 @@ server.tool(
   'Sync the RAG knowledge base from live repo state. Reads tokens, components, docs, and conventions into searchable chunks. Run this after making changes to tokens, components, or docs.',
   {},
   async () => {
+    const t0 = Date.now();
     const result = syncRagStore();
+    const durationMs = Date.now() - t0;
+
+    // Estimate total tokens (rough: ~0.75 tokens per character)
+    const store = loadRagStore();
+    const totalChars = store.chunks.reduce((s, c) => s + c.content.length, 0);
+    const estimatedTokens = Math.round(totalChars * 0.75);
+
+    // Report indexing to AIr
+    airReport('index', {
+      documentCount: result.total,
+      totalTokens: estimatedTokens,
+      durationMs,
+      metadata: { added: result.added, updated: result.updated },
+    });
+
     return {
       content: [
         {
@@ -964,6 +1001,7 @@ server.tool(
     topK: z.number().optional().default(5).describe('Number of results to return. Default: 5'),
   },
   async ({ query, category, topK }) => {
+    const t0 = Date.now();
     let store = loadRagStore();
     if (store.chunks.length === 0) {
       // Auto-sync on first use
@@ -977,6 +1015,16 @@ server.tool(
     }
 
     const results = tfidfSearch(query, chunks, topK);
+    const durationMs = Date.now() - t0;
+
+    // Report to AIr
+    airReport('retrieval', {
+      query: query.slice(0, 50), // truncated for privacy
+      resultCount: results.length,
+      topScore: results.length > 0 ? 1.0 : 0, // TF-IDF scores are relative
+      durationMs,
+      metadata: { category, topK, corpusSize: chunks.length },
+    });
 
     if (results.length === 0) {
       return {
@@ -1009,8 +1057,20 @@ server.tool(
     id: z.string().describe('Chunk ID (e.g. "conventions::component-file-structure", "components::component:-button")'),
   },
   async ({ id }) => {
+    const t0 = Date.now();
     const store = loadRagStore();
     const chunk = store.chunks.find((c) => c.id === id);
+    const durationMs = Date.now() - t0;
+
+    // Report to AIr
+    airReport('retrieval', {
+      query: id.slice(0, 50),
+      resultCount: chunk ? 1 : 0,
+      topScore: chunk ? 1.0 : 0,
+      durationMs,
+      metadata: { tool: 'rag_get', directLookup: true },
+    });
+
     if (!chunk) {
       const ids = store.chunks.map((c) => c.id).join('\n  ');
       return { content: [{ type: 'text', text: `Chunk "${id}" not found.\n\nAvailable IDs:\n  ${ids}` }] };
