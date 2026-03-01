@@ -83,16 +83,12 @@ export interface ContextUsageEvent extends BaseEvent {
 // Detailed breakdown of what's consuming the context window
 
 export interface ContextSegment {
-  category:
-    | 'system_prompt'
-    | 'context_files' // CLAUDE.md, AGENTS.md
-    | 'skills'
-    | 'user_messages'
-    | 'assistant_messages'
-    | 'tool_results'
-    | 'compaction_summary'
-    | 'custom_messages'
-    | 'thinking';
+  category: string;
+  // Known categories:
+  // System prompt sub-sections: sp_base, sp_claude_md, sp_skills, sp_tools, sp_prompt_templates, sp_extensions, sp_other
+  // Messages: user_messages, assistant_messages, tool_results, thinking, compaction_summary, custom_messages
+  // File-level tool results: tr_gsd, tr_desloppify, tr_source_code, tr_config, tr_docs, tr_tests, tr_styles, tool_results_other
+  // Legacy: system_prompt, context_files, skills
   label: string;
   estimatedTokens: number;
   charCount: number;
