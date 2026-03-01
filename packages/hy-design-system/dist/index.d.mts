@@ -141,7 +141,23 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
  * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
  * ```
  */
-declare const Button: React.ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLButtonElement>>;
+declare const Button: {
+  ({
+    ref,
+    variant,
+    size,
+    loading,
+    fullWidth,
+    asChild,
+    className,
+    children,
+    disabled,
+    ...props
+  }: ButtonProps & {
+    ref?: React.RefObject<HTMLButtonElement | null>;
+  }): react_jsx_runtime0.JSX.Element;
+  displayName: string;
+};
 //#endregion
 //#region src/components/Card/Card.d.ts
 declare const Card: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>>;

@@ -28,20 +28,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
  * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
  * ```
  */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      variant = 'default',
-      size = 'md',
-      loading = false,
-      fullWidth = false,
-      asChild = false,
-      className,
-      children,
-      disabled,
-      ...props
-    },
-    ref,
+export const Button = (
+    { ref, variant = 'default', size = 'md', loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }: ButtonProps & { ref?: React.RefObject<HTMLButtonElement | null> },
   ) => {
     const Comp = asChild ? Slot : 'button';
     const classes = buttonRecipe({ variant, size, loading, fullWidth });
@@ -58,7 +46,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </Comp>
     );
-  },
-);
+  };
 
 Button.displayName = 'Button';

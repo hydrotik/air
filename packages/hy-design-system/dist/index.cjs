@@ -859,7 +859,7 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
 * ```
 */
-const Button = (0, react.forwardRef)(({ variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
+const Button = ({ ref, variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }) => {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(asChild ? _radix_ui_react_slot.Slot : "button", {
 		ref,
 		className: [buttonRecipe({
@@ -876,7 +876,7 @@ const Button = (0, react.forwardRef)(({ variant = "default", size = "md", loadin
 			"aria-hidden": "true"
 		}), children]
 	});
-});
+};
 Button.displayName = "Button";
 
 //#endregion

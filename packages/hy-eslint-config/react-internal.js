@@ -1,41 +1,28 @@
-import js from '@eslint/js';
-import eslintConfigPrettier from 'eslint-config-prettier';
-import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
+import eslintReact from '@eslint-react/eslint-plugin';
 import { config as baseConfig } from './base.js';
 
 /**
- * A custom ESLint configuration for libs that use React
+ * ESLint flat config for React packages (design system, apps, Storybook).
+ *
+ * Extends base config with @eslint-react (ESLint 10 compatible).
+ *
  * @type {import('eslint').Linter.Config[]}
  */
 export const config = [
   ...baseConfig,
-  js.configs.recommended,
-  eslintConfigPrettier,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
+
+  // ── React (eslint-react — supports ESLint 10) ───────────────────────
+  eslintReact.configs['recommended-typescript'],
+
+  // ── React rule tuning ────────────────────────────────────────────────
   {
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
     rules: {
-      'react/react-in-jsx-scope': 'off',
-    },
-  },
-  {
-    files: [
-      '**/*.test.js',
-      '**/*.test.jsx',
-      '**/*.stories.jsx',
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      '**/*.stories.tsx',
-    ],
-    rules: {
-      '@typescript-eslint/no-namespace': ['off'],
-      '@typescript-eslint/no-require-imports': ['off'],
+      // We use TypeScript for prop validation
+      '@eslint-react/no-prop-types': 'off',
+      // Allow array index keys in static lists (common in design system demos)
+      '@eslint-react/no-array-index-key': 'warn',
+      // Display name is set explicitly on all forwardRef components
+      '@eslint-react/no-missing-component-display-name': 'warn',
     },
   },
 ];

@@ -804,7 +804,7 @@ const buttonRecipe = recipe({
 * <Button asChild><a href="/dashboard">Go to dashboard</a></Button>
 * ```
 */
-const Button = forwardRef(({ variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }, ref) => {
+const Button = ({ ref, variant = "default", size = "md", loading = false, fullWidth = false, asChild = false, className, children, disabled, ...props }) => {
 	return /* @__PURE__ */ jsxs(asChild ? Slot : "button", {
 		ref,
 		className: [buttonRecipe({
@@ -821,7 +821,7 @@ const Button = forwardRef(({ variant = "default", size = "md", loading = false, 
 			"aria-hidden": "true"
 		}), children]
 	});
-});
+};
 Button.displayName = "Button";
 
 //#endregion
