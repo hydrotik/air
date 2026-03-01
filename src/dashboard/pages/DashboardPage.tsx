@@ -14,6 +14,7 @@ import { CostPanel } from '../visualizations/CostPanel';
 import { QualityPanel } from '../visualizations/QualityPanel';
 import { PromptPanel } from '../visualizations/PromptPanel';
 import { DriftPanel } from '../visualizations/DriftPanel';
+import { ProviderRegistryPanel } from '../visualizations/ProviderRegistryPanel';
 import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
 import {
   shell,
@@ -44,6 +45,7 @@ export const DashboardPage: React.FC = () => {
     sessions,
     connected,
     redactionLevel,
+    providers,
     fetchSessionEvents,
     fetchToolCalls,
     fetchContextSnapshots,
@@ -205,6 +207,7 @@ export const DashboardPage: React.FC = () => {
   const hasRagData = ragStats.length > 0;
   const hasPromptData = promptVariants.length > 0;
   const hasDriftData = driftEvents.length > 0 || driftSummary.length > 0;
+  const hasProviders = providers.rag.length > 0 || providers.mcp.length > 0;
 
   return (
     <div className={shell}>
@@ -376,33 +379,53 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* MCP + RAG Stats (conditional) */}
-        {(hasMcpData || hasRagData) && (
-          <div className={gridRow}>
-            <div className={panel}>
-              <div className={panelHeader}>
-                <span>MCP Servers</span>
-                <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                  {hasMcpData ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls` : 'no data'}
-                </span>
+        {/* Integrations: Provider Registry + MCP + RAG */}
+        {(hasProviders || hasMcpData || hasRagData) && (
+          <>
+            {/* Provider registry (always show when providers configured) */}
+            {hasProviders && (
+              <div className={panel}>
+                <div className={panelHeader}>
+                  <span>Integrations</span>
+                  <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                    {providers.rag.length} RAG · {providers.mcp.length} MCP
+                  </span>
+                </div>
+                <div className={panelBody} style={{ overflow: 'auto', maxHeight: 220 }}>
+                  <ProviderRegistryPanel rag={providers.rag} mcp={providers.mcp} />
+                </div>
               </div>
-              <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
-                <McpStatsPanel stats={mcpStats} />
-              </div>
-            </div>
+            )}
 
-            <div className={panel}>
-              <div className={panelHeader}>
-                <span>RAG Pipeline</span>
-                <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                  {hasRagData ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops` : 'no data'}
-                </span>
+            {/* MCP + RAG stats (when data flows) */}
+            {(hasMcpData || hasRagData) && (
+              <div className={gridRow}>
+                <div className={panel}>
+                  <div className={panelHeader}>
+                    <span>MCP Servers</span>
+                    <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                      {hasMcpData ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls` : 'no data'}
+                    </span>
+                  </div>
+                  <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
+                    <McpStatsPanel stats={mcpStats} />
+                  </div>
+                </div>
+
+                <div className={panel}>
+                  <div className={panelHeader}>
+                    <span>RAG Pipeline</span>
+                    <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                      {hasRagData ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops` : 'no data'}
+                    </span>
+                  </div>
+                  <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
+                    <RagStatsPanel stats={ragStats} />
+                  </div>
+                </div>
               </div>
-              <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
-                <RagStatsPanel stats={ragStats} />
-              </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
 
         {/* Sessions + Live Feed */}

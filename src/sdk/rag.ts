@@ -31,6 +31,7 @@
  */
 
 import { AirClient, type AirClientOptions } from './client';
+import { loadConfig, type RagProviderConfig } from '../shared/config';
 
 export interface CreateRagTracerOptions extends AirClientOptions {
   /** Default embedding model name */
@@ -119,4 +120,67 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
     /** Close the connection */
     close: () => air.close(),
   };
+}
+
+// ─── Config-Driven Factory ──────────────────────────────────────────────
+
+export type RagTracerMap = Record<string, ReturnType<typeof createRagTracer>>;
+
+/**
+ * Create RAG tracers for all providers defined in .air.json.
+ *
+ * Returns a map of { providerName: ragTracer } so you can use them by name:
+ *
+ * @example
+ * ```ts
+ * import { createRagTracersFromConfig } from '@hydrotik/air/sdk';
+ *
+ * const rag = createRagTracersFromConfig();
+ * // Uses providers from .air.json:
+ * // { "providers": { "rag": [{ "name": "product-search", "type": "qdrant", ... }] } }
+ *
+ * const results = await rag['product-search'].traceRetrieval('shoes', async () => {
+ *   return await qdrant.search({ vector, limit: 10 });
+ * });
+ * ```
+ *
+ * Or with overrides:
+ * ```ts
+ * const rag = createRagTracersFromConfig({
+ *   sessionId: 'my-session',
+ *   url: 'ws://custom-air:5200/ws/collector',
+ * });
+ * ```
+ */
+export function createRagTracersFromConfig(
+  options?: AirClientOptions,
+): RagTracerMap {
+  const config = loadConfig();
+  const providers = config.providers?.rag ?? [];
+  const tracers: RagTracerMap = {};
+
+  for (const provider of providers) {
+    tracers[provider.name] = createRagTracer(provider.name, {
+      ...options,
+      defaultEmbeddingModel: provider.embeddingModel,
+      defaultDimensions: provider.dimensions,
+    });
+  }
+
+  return tracers;
+}
+
+/**
+ * Create a single RAG tracer from a provider config object.
+ * Useful when you have the config but not the file.
+ */
+export function createRagTracerFromProvider(
+  provider: RagProviderConfig,
+  options?: AirClientOptions,
+): ReturnType<typeof createRagTracer> {
+  return createRagTracer(provider.name, {
+    ...options,
+    defaultEmbeddingModel: provider.embeddingModel,
+    defaultDimensions: provider.dimensions,
+  });
 }
