@@ -5589,8 +5589,8 @@ const statusBarLabel = (0, _vanilla_extract_css.style)({ fontWeight: _hydrotik_t
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-row-separator="subtle"] ${bodyRow}`, { borderBottomColor: "rgba(255,255,255,0.04)" });
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-row-separator="none"] ${bodyRow}`, { borderBottom: "none" });
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-no-row-hover] ${bodyRow}:hover`, { backgroundColor: "transparent" });
-(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${thead}`, { backgroundColor: "transparent" });
-(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${headerCell}`, { backgroundColor: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${thead}`, { backgroundColor: _hydrotik_tokens.vars.color.surface });
+(0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-transparent] ${headerCell}`, { backgroundColor: _hydrotik_tokens.vars.color.surface });
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${toolbar}`, { borderBottom: "none" });
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${footer}`, { borderTop: `1px solid ${_hydrotik_tokens.vars.color.borderSubtle}` });
 (0, _vanilla_extract_css.globalStyle)(`${gridContainer}[data-borderless] ${statusBar}`, {

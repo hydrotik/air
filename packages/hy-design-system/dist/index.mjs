@@ -5534,8 +5534,8 @@ globalStyle(`${gridContainer}[data-header-border="none"] ${headerRow}`, { border
 globalStyle(`${gridContainer}[data-row-separator="subtle"] ${bodyRow}`, { borderBottomColor: "rgba(255,255,255,0.04)" });
 globalStyle(`${gridContainer}[data-row-separator="none"] ${bodyRow}`, { borderBottom: "none" });
 globalStyle(`${gridContainer}[data-no-row-hover] ${bodyRow}:hover`, { backgroundColor: "transparent" });
-globalStyle(`${gridContainer}[data-transparent] ${thead}`, { backgroundColor: "transparent" });
-globalStyle(`${gridContainer}[data-transparent] ${headerCell}`, { backgroundColor: "transparent" });
+globalStyle(`${gridContainer}[data-transparent] ${thead}`, { backgroundColor: vars.color.surface });
+globalStyle(`${gridContainer}[data-transparent] ${headerCell}`, { backgroundColor: vars.color.surface });
 globalStyle(`${gridContainer}[data-borderless] ${toolbar}`, { borderBottom: "none" });
 globalStyle(`${gridContainer}[data-borderless] ${footer}`, { borderTop: `1px solid ${vars.color.borderSubtle}` });
 globalStyle(`${gridContainer}[data-borderless] ${statusBar}`, {

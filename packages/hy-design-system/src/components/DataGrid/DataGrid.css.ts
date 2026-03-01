@@ -621,11 +621,13 @@ globalStyle(`${gridContainer}[data-no-row-hover] ${bodyRow}:hover`, {
 });
 
 /* ── Transparent bg propagation ── */
+/* NOTE: thead keeps surface color even in transparent mode so the sticky    */
+/* header occludes scrolled row content beneath it.                          */
 globalStyle(`${gridContainer}[data-transparent] ${thead}`, {
-  backgroundColor: 'transparent',
+  backgroundColor: vars.color.surface,
 });
 globalStyle(`${gridContainer}[data-transparent] ${headerCell}`, {
-  backgroundColor: 'transparent',
+  backgroundColor: vars.color.surface,
 });
 
 /* ── Borderless: remove internal section borders ── */
