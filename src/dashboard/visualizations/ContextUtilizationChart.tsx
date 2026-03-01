@@ -40,7 +40,7 @@ export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+      <AreaChart data={data} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
         <defs>
           <linearGradient id="ctxGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
@@ -50,16 +50,17 @@ export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
         <XAxis
           dataKey="index"
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
           axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
           tickLine={false}
         />
         <YAxis
           domain={[0, 100]}
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
           axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
           tickLine={false}
           tickFormatter={(v: number) => `${v}%`}
+          width={35}
         />
         <Tooltip
           contentStyle={{
