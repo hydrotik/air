@@ -8,6 +8,7 @@ export function useTelemetry() {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
   const [redactionLevel, setRedactionLevel] = useState<string>('preview');
+  const [providers, setProviders] = useState<{ rag: any[]; mcp: any[] }>({ rag: [], mcp: [] });
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -59,11 +60,17 @@ export function useTelemetry() {
 
   const fetchConfig = useCallback(async () => {
     try {
-      const res = await fetch('/api/health');
+      const res = await fetch('/api/config');
       const data = await res.json();
       if (data.redactionLevel) setRedactionLevel(data.redactionLevel);
+      if (data.providers) setProviders(data.providers);
     } catch {
-      // ignore
+      // try health endpoint as fallback
+      try {
+        const res = await fetch('/api/health');
+        const data = await res.json();
+        if (data.redactionLevel) setRedactionLevel(data.redactionLevel);
+      } catch { /* ignore */ }
     }
   }, []);
 
@@ -243,6 +250,7 @@ export function useTelemetry() {
     sessions,
     connected,
     redactionLevel,
+    providers,
     // Core fetches
     fetchSessionEvents,
     fetchToolStats,

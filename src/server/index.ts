@@ -9,15 +9,35 @@ import { getDb, TelemetryStore } from '../db';
 import type { TelemetryEvent, DashboardMessage, RedactionConfig } from '../shared/events';
 import { redactEvent, createRedactionConfig } from '../shared/redaction';
 import { DriftDetector } from '../shared/drift';
+import { loadConfig, type AirConfig, type RagProviderConfig, type McpProviderConfig } from '../shared/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export async function createServer(port = 5200, options?: { redaction?: RedactionConfig }) {
+function uid(): string {
+  return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+}
+
+export async function createServer(port = 5200, options?: { redaction?: RedactionConfig; config?: AirConfig }) {
   const app = Fastify({ logger: false });
   const db = getDb();
   const store = new TelemetryStore(db);
+  const airConfig = options?.config ?? loadConfig();
   const redactionConfig = options?.redaction ?? createRedactionConfig();
   const driftDetector = new DriftDetector();
+
+  // ─── Provider Registry ──────────────────────────────────────────────────
+  // Tracks registered RAG/MCP providers from config + runtime registration
+  const ragProviders = new Map<string, RagProviderConfig & { lastSeen?: number; eventCount: number }>();
+  const mcpProviders = new Map<string, McpProviderConfig & { lastSeen?: number; eventCount: number }>();
+
+  // Seed from config file
+  for (const p of airConfig.providers?.rag ?? []) {
+    ragProviders.set(p.name, { ...p, eventCount: 0 });
+  }
+  for (const p of airConfig.providers?.mcp ?? []) {
+    mcpProviders.set(p.name, { ...p, eventCount: 0 });
+  }
+  if (ragProviders.size > 0) console.log(`[AIr] Registered RAG providers: ${[...ragProviders.keys()].join(', ')}`);
 
   // Track connected dashboard clients for live broadcast
   const dashboardClients = new Set<WebSocket>();
@@ -64,7 +84,45 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
       broadcast({ type: 'event', data: drift });
     }
 
-    // Step 4: Broadcast to dashboard
+    // Step 4: Track provider activity
+    if (event.type === 'rag_retrieval' || event.type === 'rag_embedding' || event.type === 'rag_index') {
+      const source = (event as any).source;
+      if (source) {
+        const existing = ragProviders.get(source);
+        if (existing) {
+          existing.lastSeen = Date.now();
+          existing.eventCount++;
+        } else {
+          // Auto-register unknown RAG providers on first event
+          ragProviders.set(source, {
+            name: source,
+            type: 'auto-detected',
+            description: 'Auto-registered from incoming events',
+            eventCount: 1,
+            lastSeen: Date.now(),
+          });
+        }
+      }
+    }
+    if (event.type === 'mcp_request' || event.type === 'mcp_response') {
+      const serverName = (event as any).serverName;
+      if (serverName) {
+        const existing = mcpProviders.get(serverName);
+        if (existing) {
+          existing.lastSeen = Date.now();
+          existing.eventCount++;
+        } else {
+          mcpProviders.set(serverName, {
+            name: serverName,
+            description: 'Auto-registered from incoming events',
+            eventCount: 1,
+            lastSeen: Date.now(),
+          });
+        }
+      }
+    }
+
+    // Step 5: Broadcast to dashboard
     broadcast({ type: 'event', data: event });
   }
 
@@ -231,6 +289,139 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
     return store.getDriftSummary(sessionId);
   });
 
+  // ─── Provider Registry ─────────────────────────────────────────────────
+  // Shows all configured + auto-discovered RAG and MCP providers
+
+  app.get('/api/providers', async () => ({
+    rag: [...ragProviders.values()],
+    mcp: [...mcpProviders.values()],
+  }));
+
+  app.get('/api/providers/rag', async () => [...ragProviders.values()]);
+  app.get('/api/providers/mcp', async () => [...mcpProviders.values()]);
+
+  // Register a new provider at runtime
+  app.post('/api/providers/rag', async (req) => {
+    const body = req.body as RagProviderConfig;
+    if (!body.name) return { ok: false, error: 'name is required' };
+    ragProviders.set(body.name, { ...body, eventCount: 0 });
+    console.log(`[AIr] Registered RAG provider: ${body.name} (${body.type ?? 'custom'})`);
+    return { ok: true, provider: body.name };
+  });
+
+  // ─── Simplified RAG Ingest ────────────────────────────────────────────
+  // Language-agnostic HTTP endpoint. Your RAG (Python, Go, etc.) POSTs
+  // simple JSON — no need to construct full TelemetryEvent objects.
+  //
+  // POST /api/rag/retrieval  — log a retrieval/search operation
+  // POST /api/rag/embedding  — log an embedding generation
+  // POST /api/rag/index      — log a document indexing operation
+  //
+  // All fields except 'source' are optional. AIr fills in defaults.
+
+  app.post('/api/rag/retrieval', async (req) => {
+    try {
+      const body = req.body as {
+        source: string;
+        sessionId?: string;
+        query?: string;
+        resultCount?: number;
+        topScore?: number;
+        durationMs?: number;
+        chunkSizes?: number[];
+        metadata?: Record<string, unknown>;
+      };
+      if (!body.source) return { ok: false, error: 'source is required' };
+
+      const event: TelemetryEvent = {
+        id: uid(),
+        sessionId: body.sessionId ?? `rag-${body.source}`,
+        timestamp: Date.now(),
+        type: 'rag_retrieval',
+        source: body.source,
+        query: body.query ?? '',
+        resultCount: body.resultCount ?? 0,
+        topScore: body.topScore,
+        durationMs: body.durationMs ?? 0,
+        chunkSizes: body.chunkSizes,
+        totalChunkTokens: body.chunkSizes?.reduce((a, b) => a + b, 0),
+        metadata: body.metadata,
+      } as any;
+
+      ingestAndBroadcast(event);
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err) };
+    }
+  });
+
+  app.post('/api/rag/embedding', async (req) => {
+    try {
+      const body = req.body as {
+        source: string;
+        sessionId?: string;
+        model?: string;
+        inputTokens?: number;
+        durationMs?: number;
+        dimensions?: number;
+        batchSize?: number;
+      };
+      if (!body.source) return { ok: false, error: 'source is required' };
+
+      // Look up defaults from config
+      const providerConfig = ragProviders.get(body.source);
+
+      const event: TelemetryEvent = {
+        id: uid(),
+        sessionId: body.sessionId ?? `rag-${body.source}`,
+        timestamp: Date.now(),
+        type: 'rag_embedding',
+        source: body.source,
+        model: body.model ?? providerConfig?.embeddingModel ?? 'unknown',
+        inputTokens: body.inputTokens ?? 0,
+        durationMs: body.durationMs ?? 0,
+        dimensions: body.dimensions ?? providerConfig?.dimensions,
+        batchSize: body.batchSize,
+      } as any;
+
+      ingestAndBroadcast(event);
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err) };
+    }
+  });
+
+  app.post('/api/rag/index', async (req) => {
+    try {
+      const body = req.body as {
+        source: string;
+        sessionId?: string;
+        documentCount?: number;
+        totalTokens?: number;
+        durationMs?: number;
+        metadata?: Record<string, unknown>;
+      };
+      if (!body.source) return { ok: false, error: 'source is required' };
+
+      const event: TelemetryEvent = {
+        id: uid(),
+        sessionId: body.sessionId ?? `rag-${body.source}`,
+        timestamp: Date.now(),
+        type: 'rag_index',
+        source: body.source,
+        documentCount: body.documentCount ?? 0,
+        totalTokens: body.totalTokens ?? 0,
+        durationMs: body.durationMs ?? 0,
+        metadata: body.metadata,
+      } as any;
+
+      ingestAndBroadcast(event);
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err) };
+    }
+  });
+
   // ─── HTTP Ingest (for short-lived hooks: Claude Code, Codex, etc.) ────
   app.post('/api/ingest', async (req) => {
     try {
@@ -266,6 +457,15 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
   app.get('/api/config', async () => ({
     redactionLevel: redactionConfig.level,
     driftDetection: true,
+    budgetLimit: airConfig.budgetLimit ?? null,
+    providers: {
+      rag: [...ragProviders.values()].map(({ eventCount, lastSeen, ...p }) => ({
+        ...p, eventCount, lastSeen, active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
+      })),
+      mcp: [...mcpProviders.values()].map(({ eventCount, lastSeen, ...p }) => ({
+        ...p, eventCount, lastSeen, active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
+      })),
+    },
     features: [
       'token_tracking',
       'cost_monitoring',
@@ -274,6 +474,8 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
       'prompt_rating',
       'drift_detection',
       'data_redaction',
+      'provider_registry',
+      'rag_http_api',
     ],
   }));
 
