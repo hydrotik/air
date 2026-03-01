@@ -16,6 +16,15 @@ import type {
   DriftEvent,
 } from '../shared/events';
 
+/** Safely parse JSON, returning fallback on malformed input */
+function safeJsonParse<T>(json: string, fallback: T): T {
+  try {
+    return JSON.parse(json);
+  } catch {
+    return fallback;
+  }
+}
+
 export class TelemetryStore {
   private stmts: ReturnType<typeof this.prepareStatements>;
 
@@ -301,12 +310,12 @@ export class TelemetryStore {
 
   getEvents(sessionId: string): TelemetryEvent[] {
     const rows = this.stmts.getEvents.all(sessionId) as any[];
-    return rows.map((r) => JSON.parse(r.data));
+    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data));
   }
 
   getRecentEvents(sessionId: string, limit = 100): TelemetryEvent[] {
     const rows = this.stmts.getRecentEvents.all(sessionId, limit) as any[];
-    return rows.map((r) => JSON.parse(r.data)).reverse();
+    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data)).reverse();
   }
 
   getToolCalls(sessionId: string) {
@@ -326,13 +335,13 @@ export class TelemetryStore {
     if (!row?.breakdown) return null;
     return {
       ...row,
-      breakdown: JSON.parse(row.breakdown),
+      breakdown: safeJsonParse(row.breakdown, []),
     };
   }
 
   getAllRecentEvents(limit = 200): TelemetryEvent[] {
     const rows = this.stmts.getAllEvents.all(limit) as any[];
-    return rows.map((r) => JSON.parse(r.data)).reverse();
+    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data)).reverse();
   }
 
   // ─── MCP Stats ──────────────────────────────────────────────────────
