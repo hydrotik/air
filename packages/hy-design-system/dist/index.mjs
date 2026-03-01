@@ -6602,21 +6602,31 @@ const ProductCard = React.forwardRef(({ product, isWishlisted = false, onWishlis
 				className: productCardImageWrapper,
 				onMouseEnter: () => setHovered(true),
 				onMouseLeave: () => setHovered(false),
-				children: [product.href ? /* @__PURE__ */ jsx("a", {
+				children: [product.href ? /* @__PURE__ */ jsxs("a", {
 					href: product.href,
 					"aria-label": product.name,
-					children: /* @__PURE__ */ jsx("img", {
-						src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+					children: [/* @__PURE__ */ jsx("img", {
+						src: product.thumbnailSrc,
 						alt: product.name,
-						className: productCardImage({ visible: true }),
+						className: productCardImage({ visible: !hovered || !product.alternateSrc }),
 						loading: "lazy"
-					})
-				}) : /* @__PURE__ */ jsx("img", {
-					src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+					}), product.alternateSrc && /* @__PURE__ */ jsx("img", {
+						src: product.alternateSrc,
+						alt: `${product.name} alternate`,
+						className: productCardImage({ visible: hovered }),
+						loading: "lazy"
+					})]
+				}) : /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("img", {
+					src: product.thumbnailSrc,
 					alt: product.name,
-					className: productCardImage({ visible: true }),
+					className: productCardImage({ visible: !hovered || !product.alternateSrc }),
 					loading: "lazy"
-				}), /* @__PURE__ */ jsx("div", {
+				}), product.alternateSrc && /* @__PURE__ */ jsx("img", {
+					src: product.alternateSrc,
+					alt: `${product.name} alternate`,
+					className: productCardImage({ visible: hovered }),
+					loading: "lazy"
+				})] }), /* @__PURE__ */ jsx("div", {
 					className: productCardOverlay,
 					children: onWishlistToggle && /* @__PURE__ */ jsx("button", {
 						type: "button",

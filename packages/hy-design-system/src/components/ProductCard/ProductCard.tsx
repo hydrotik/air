@@ -83,19 +83,37 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
           {product.href ? (
             <a href={product.href} aria-label={product.name}>
               <img
-                src={hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc}
+                src={product.thumbnailSrc}
                 alt={product.name}
-                className={productCardImage({ visible: true })}
+                className={productCardImage({ visible: !hovered || !product.alternateSrc })}
                 loading="lazy"
               />
+              {product.alternateSrc && (
+                <img
+                  src={product.alternateSrc}
+                  alt={`${product.name} alternate`}
+                  className={productCardImage({ visible: hovered })}
+                  loading="lazy"
+                />
+              )}
             </a>
           ) : (
-            <img
-              src={hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc}
-              alt={product.name}
-              className={productCardImage({ visible: true })}
-              loading="lazy"
-            />
+            <>
+              <img
+                src={product.thumbnailSrc}
+                alt={product.name}
+                className={productCardImage({ visible: !hovered || !product.alternateSrc })}
+                loading="lazy"
+              />
+              {product.alternateSrc && (
+                <img
+                  src={product.alternateSrc}
+                  alt={`${product.name} alternate`}
+                  className={productCardImage({ visible: hovered })}
+                  loading="lazy"
+                />
+              )}
+            </>
           )}
 
           {/* Wishlist + overlays */}

@@ -6657,21 +6657,31 @@ const ProductCard = react.default.forwardRef(({ product, isWishlisted = false, o
 				className: productCardImageWrapper,
 				onMouseEnter: () => setHovered(true),
 				onMouseLeave: () => setHovered(false),
-				children: [product.href ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+				children: [product.href ? /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("a", {
 					href: product.href,
 					"aria-label": product.name,
-					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
-						src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+						src: product.thumbnailSrc,
 						alt: product.name,
-						className: productCardImage({ visible: true }),
+						className: productCardImage({ visible: !hovered || !product.alternateSrc }),
 						loading: "lazy"
-					})
-				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
-					src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+					}), product.alternateSrc && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+						src: product.alternateSrc,
+						alt: `${product.name} alternate`,
+						className: productCardImage({ visible: hovered }),
+						loading: "lazy"
+					})]
+				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+					src: product.thumbnailSrc,
 					alt: product.name,
-					className: productCardImage({ visible: true }),
+					className: productCardImage({ visible: !hovered || !product.alternateSrc }),
 					loading: "lazy"
-				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				}), product.alternateSrc && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+					src: product.alternateSrc,
+					alt: `${product.name} alternate`,
+					className: productCardImage({ visible: hovered }),
+					loading: "lazy"
+				})] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: productCardOverlay,
 					children: onWishlistToggle && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
 						type: "button",
