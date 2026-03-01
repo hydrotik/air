@@ -24,11 +24,13 @@ const CATEGORY_COLORS: Record<string, string> = {
 export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, contextWindow }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current || segments.length === 0) return;
 
     const container = containerRef.current;
+    const tooltip = tooltipRef.current!;
     const width = container.clientWidth;
     const height = 200;
 
@@ -84,11 +86,37 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .attr('fill-opacity', (d: any) => (d.data.category === 'unused' ? 0.3 : 0.8))
       .attr('stroke', (d: any) => (d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'))
       .style('cursor', 'pointer')
-      .on('mouseover', function () {
+      .on('mouseover', function (event, d: any) {
         d3.select(this).attr('fill-opacity', 1);
+        const cat = d.data.category;
+        const color = cat === 'unused' ? 'rgba(255,255,255,0.5)' : (CATEGORY_COLORS[cat] ?? '#64748b');
+        const pct = ((d.data.value / contextWindow) * 100).toFixed(1);
+        tooltip.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+            <span style="width:8px;height:8px;border-radius:2px;background:${color};flex-shrink:0"></span>
+            <span style="font-weight:600;color:#fff;font-size:10px">${d.data.name}</span>
+          </div>
+          <div style="color:rgba(255,255,255,0.7);font-size:9px">
+            ${formatTokens(d.data.value)} tokens · ${pct}% of window
+          </div>
+        `;
+        tooltip.style.opacity = '1';
+      })
+      .on('mousemove', function (event) {
+        const rect = container.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        // Position tooltip, flip if near right/bottom edge
+        const tipW = 180;
+        const tipH = 48;
+        const left = x + tipW + 12 > width ? x - tipW - 8 : x + 12;
+        const top = y + tipH + 12 > height ? y - tipH - 8 : y + 12;
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
       })
       .on('mouseout', function (_, d: any) {
         d3.select(this).attr('fill-opacity', d.data.category === 'unused' ? 0.3 : 0.8);
+        tooltip.style.opacity = '0';
       });
 
     // Labels (only for boxes large enough)
@@ -101,6 +129,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .attr('font-size', '9px')
       .attr('font-family', "'JetBrains Mono', monospace")
       .attr('font-weight', 600)
+      .style('pointer-events', 'none')
       .text((d: any) => d.data.name);
 
     // Token count labels
@@ -112,6 +141,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .attr('fill', 'rgba(255,255,255,0.6)')
       .attr('font-size', '8px')
       .attr('font-family', "'JetBrains Mono', monospace")
+      .style('pointer-events', 'none')
       .text((d: any) => `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`);
   }, [segments, totalTokens, contextWindow]);
 
@@ -126,8 +156,27 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
   }
 
   return (
-    <div ref={containerRef} className={treemapContainer}>
+    <div ref={containerRef} className={treemapContainer} style={{ position: 'relative' }}>
       <svg ref={svgRef} />
+      <div
+        ref={tooltipRef}
+        style={{
+          position: 'absolute',
+          pointerEvents: 'none',
+          opacity: 0,
+          transition: 'opacity 0.15s ease',
+          background: 'rgba(10, 10, 15, 0.95)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 6,
+          padding: '6px 10px',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 10,
+          whiteSpace: 'nowrap',
+          zIndex: 10,
+          backdropFilter: 'blur(8px)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+        }}
+      />
     </div>
   );
 };
