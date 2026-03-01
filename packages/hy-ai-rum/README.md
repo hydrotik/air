@@ -6,7 +6,7 @@ AIr monitors your AI coding sessions — context window usage, tool call perform
 
 ![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green)
 
-![AIr Dashboard](docs/dashboard.png)
+![AIr Dashboard](docs/dash.png)
 
 ---
 
