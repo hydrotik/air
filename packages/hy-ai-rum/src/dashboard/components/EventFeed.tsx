@@ -24,6 +24,10 @@ const TYPE_COLORS: Record<string, string> = {
   heartbeat: '#334155',
   mcp_request: '#f97316',
   mcp_response: '#fb923c',
+  rag_retrieval: '#84cc16',
+  rag_embedding: '#a3e635',
+  rag_index: '#65a30d',
+  custom: '#94a3b8',
 };
 
 function getEventSummary(event: TelemetryEvent): string {
@@ -57,9 +61,17 @@ function getEventSummary(event: TelemetryEvent): string {
     case 'heartbeat':
       return '♥';
     case 'mcp_request':
-      return `${event.serverName}:${event.method}${event.toolName ? ` (${event.toolName})` : ''}`;
+      return `${event.serverName}:${event.method}${event.toolName ? ` (${event.toolName})` : ''}${event.resourceUri ? ` [${event.resourceUri}]` : ''}`;
     case 'mcp_response':
-      return `${event.serverName}:${event.method} ${event.isError ? '✗' : '✓'} ${event.durationMs}ms`;
+      return `${event.serverName}:${event.method} ${event.isError ? '✗ ' + (event.errorMessage ?? '') : '✓'} ${event.durationMs}ms${event.outputSizeBytes ? ` (${formatBytes(event.outputSizeBytes)})` : ''}`;
+    case 'rag_retrieval':
+      return `${event.source} "${event.query.slice(0, 40)}" → ${event.resultCount} results ${event.durationMs}ms${event.topScore != null ? ` (score:${event.topScore.toFixed(2)})` : ''}`;
+    case 'rag_embedding':
+      return `${event.source} ${event.model} ${event.inputTokens} tokens ${event.durationMs}ms${event.dimensions ? ` ${event.dimensions}d` : ''}`;
+    case 'rag_index':
+      return `${event.source} ${event.documentCount} docs ${formatTokens(event.totalTokens)} tokens ${event.durationMs}ms`;
+    case 'custom':
+      return `${event.provider}:${event.eventName}${event.durationMs ? ` ${event.durationMs}ms` : ''}${event.isError ? ' ✗' : ''}`;
     default:
       return (event as TelemetryEvent).type;
   }

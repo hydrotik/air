@@ -121,6 +121,24 @@ export async function createServer(port = 5200) {
     return store.getAllRecentEvents(Number(limit));
   });
 
+  // ─── MCP Stats ──────────────────────────────────────────────────────────
+  app.get('/api/sessions/:id/mcp-stats', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getMcpStats(id);
+  });
+
+  // ─── RAG Stats ─────────────────────────────────────────────────────────
+  app.get('/api/sessions/:id/rag-stats', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getRagStats(id);
+  });
+
+  // ─── Provider Events ──────────────────────────────────────────────────
+  app.get('/api/sessions/:id/providers', async (req) => {
+    const { id } = req.params as { id: string };
+    return store.getProviderSummary(id);
+  });
+
   // Health check
   app.get('/api/health', async () => ({
     status: 'ok',
