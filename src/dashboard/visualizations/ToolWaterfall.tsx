@@ -34,12 +34,12 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
 
     const container = containerRef.current;
     const width = container.clientWidth;
-    const barHeight = 22;
-    const gap = 3;
-    const labelWidth = 60;
-    const durationLabelWidth = 60;
-    const margin = { top: 10, right: durationLabelWidth + 10, bottom: 20, left: labelWidth + 10 };
-    const height = Math.max(200, toolCalls.length * (barHeight + gap) + margin.top + margin.bottom);
+    const barHeight = 14;
+    const gap = 2;
+    const labelWidth = 50;
+    const durationLabelWidth = 50;
+    const margin = { top: 6, right: durationLabelWidth + 6, bottom: 16, left: labelWidth + 6 };
+    const height = Math.max(150, toolCalls.length * (barHeight + gap) + margin.top + margin.bottom);
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -60,7 +60,7 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(xAxis as any)
       .attr('font-family', "'JetBrains Mono', monospace")
-      .attr('font-size', '9px')
+      .attr('font-size', '8px')
       .attr('color', 'rgba(255,255,255,0.3)');
 
     // Bars
@@ -74,13 +74,13 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
     // Tool name labels
     bars
       .append('text')
-      .attr('x', margin.left - 6)
+      .attr('x', margin.left - 4)
       .attr('y', barHeight / 2)
       .attr('dy', '0.35em')
       .attr('text-anchor', 'end')
       .attr('fill', 'rgba(255,255,255,0.6)')
       .attr('font-family', "'JetBrains Mono', monospace")
-      .attr('font-size', '10px')
+      .attr('font-size', '9px')
       .text((d) => d.tool_name);
 
     // Bars
@@ -110,7 +110,7 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
       .attr('dy', '0.35em')
       .attr('fill', 'rgba(255,255,255,0.4)')
       .attr('font-family', "'JetBrains Mono', monospace")
-      .attr('font-size', '9px')
+      .attr('font-size', '8px')
       .text((d) => (d.duration_ms != null ? `${d.duration_ms}ms` : '…'));
   }, [toolCalls]);
 

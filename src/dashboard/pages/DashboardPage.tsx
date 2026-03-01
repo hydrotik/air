@@ -123,11 +123,11 @@ export const DashboardPage: React.FC = () => {
             style={{ background: connected ? '#22c55e' : '#ef4444' }}
             title={connected ? 'Connected' : 'Disconnected'}
           />
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, opacity: 0.5 }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, opacity: 0.5 }}>
             {connected ? 'Live' : 'Reconnecting…'}
           </span>
         </div>
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, opacity: 0.4 }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, opacity: 0.4 }}>
           {sessions.length} session{sessions.length !== 1 ? 's' : ''}
         </div>
       </div>
@@ -148,7 +148,7 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Context Window Breakdown</span>
-              <span style={{ fontWeight: 400, opacity: 0.5 }}>treemap</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>treemap</span>
             </div>
             <div className={panelBody}>
               <ContextTreemap
@@ -162,7 +162,7 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Context Utilization Over Time</span>
-              <span style={{ fontWeight: 400, opacity: 0.5 }}>% of window</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>% of window</span>
             </div>
             <div className={panelBody}>
               <ContextUtilizationChart snapshots={contextSnapshots} />
@@ -175,7 +175,7 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Token Flow</span>
-              <span style={{ fontWeight: 400, opacity: 0.5 }}>per turn</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>per turn</span>
             </div>
             <div className={panelBody}>
               <TokenFlowChart events={sessionEvents} />
@@ -185,9 +185,9 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Tool Call Waterfall</span>
-              <span style={{ fontWeight: 400, opacity: 0.5 }}>timeline</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>timeline</span>
             </div>
-            <div className={panelBody} style={{ overflow: 'auto', maxHeight: 400 }}>
+            <div className={panelBody} style={{ overflow: 'auto', maxHeight: 280 }}>
               <ToolWaterfall toolCalls={toolCalls} />
             </div>
           </div>
@@ -199,7 +199,7 @@ export const DashboardPage: React.FC = () => {
             <div className={panelHeader}>
               <span>Sessions</span>
             </div>
-            <div className={panelBody} style={{ maxHeight: 400, overflow: 'auto' }}>
+            <div className={panelBody} style={{ maxHeight: 240, overflow: 'auto' }}>
               <SessionSelector
                 sessions={sessions}
                 activeSessionId={activeSessionId}
@@ -211,7 +211,7 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Live Event Feed</span>
-              <span style={{ fontWeight: 400, opacity: 0.5 }}>{events.length} events</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>{events.length} events</span>
             </div>
             <div className={panelBody} style={{ padding: 0 }}>
               <EventFeed events={events} />
