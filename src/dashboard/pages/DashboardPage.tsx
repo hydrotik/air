@@ -15,6 +15,7 @@ import { QualityPanel } from '../visualizations/QualityPanel';
 import { PromptPanel } from '../visualizations/PromptPanel';
 import { DriftPanel } from '../visualizations/DriftPanel';
 import { ProviderRegistryPanel } from '../visualizations/ProviderRegistryPanel';
+import { ActivitySparklines } from '../visualizations/ActivitySparklines';
 import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
 import {
   shell,
@@ -61,6 +62,9 @@ export const DashboardPage: React.FC = () => {
     fetchPromptVariants,
     fetchDriftEvents,
     fetchDriftSummary,
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
   } = useTelemetry();
 
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -78,6 +82,9 @@ export const DashboardPage: React.FC = () => {
   const [evalTs, setEvalTs] = useState<any[]>([]);
   const [promptVariants, setPromptVariants] = useState<any[]>([]);
   const [driftEvents, setDriftEvents] = useState<any[]>([]);
+  const [mcpTs, setMcpTs] = useState<any[]>([]);
+  const [ragTs2, setRagTs2] = useState<any[]>([]);
+  const [toolTs, setToolTs] = useState<any[]>([]);
   const [driftSummary, setDriftSummary] = useState<any[]>([]);
 
   // Map API response shape to our state shape
@@ -116,11 +123,14 @@ export const DashboardPage: React.FC = () => {
     fetchPromptVariants().then(setPromptVariants);
     fetchDriftEvents(activeSessionId).then(setDriftEvents);
     fetchDriftSummary(activeSessionId).then(setDriftSummary);
+    fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+    fetchRagTimeseries(activeSessionId).then(setRagTs2);
+    fetchToolTimeseries(activeSessionId).then(setToolTs);
   }, [activeSessionId, fetchSessionEvents, fetchToolCalls, fetchContextSnapshots,
     fetchLatestBreakdown, fetchMcpStats, fetchRagStats, fetchLatencyStats,
     fetchLatencyTimeseries, fetchCostBreakdown, fetchCostTimeseries,
     fetchEvalStats, fetchEvalTimeseries, fetchPromptVariants,
-    fetchDriftEvents, fetchDriftSummary]);
+    fetchDriftEvents, fetchDriftSummary, fetchMcpTimeseries, fetchRagTimeseries, fetchToolTimeseries]);
 
   // Refresh data when new events arrive for active session
   useEffect(() => {
@@ -131,14 +141,21 @@ export const DashboardPage: React.FC = () => {
 
       const types = new Set(relevant.map((e) => e.type));
 
-      if (types.has('tool_call_end')) fetchToolCalls(activeSessionId).then(setToolCalls);
+      if (types.has('tool_call_end') || types.has('tool_call')) {
+        fetchToolCalls(activeSessionId).then(setToolCalls);
+        fetchToolTimeseries(activeSessionId).then(setToolTs);
+      }
       if (types.has('context_breakdown') || types.has('context_usage')) {
         fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
         fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
       }
-      if (types.has('mcp_response')) fetchMcpStats(activeSessionId).then(setMcpStats);
+      if (types.has('mcp_response')) {
+        fetchMcpStats(activeSessionId).then(setMcpStats);
+        fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+      }
       if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
         fetchRagStats(activeSessionId).then(setRagStats);
+        fetchRagTimeseries(activeSessionId).then(setRagTs2);
       }
       if (types.has('latency')) {
         fetchLatencyStats(activeSessionId).then(setLatencyStats);
@@ -163,7 +180,8 @@ export const DashboardPage: React.FC = () => {
   }, [events, activeSessionId, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown,
     fetchMcpStats, fetchRagStats, fetchLatencyStats, fetchLatencyTimeseries,
     fetchCostBreakdown, fetchCostTimeseries, fetchEvalStats, fetchEvalTimeseries,
-    fetchPromptVariants, fetchDriftEvents, fetchDriftSummary]);
+    fetchPromptVariants, fetchDriftEvents, fetchDriftSummary,
+    fetchMcpTimeseries, fetchRagTimeseries, fetchToolTimeseries]);
 
   // Compute KPIs from active session
   const activeSession: SessionSummary | undefined = sessions.find((s) => s.sessionId === activeSessionId);
@@ -208,6 +226,7 @@ export const DashboardPage: React.FC = () => {
   const hasPromptData = promptVariants.length > 0;
   const hasDriftData = driftEvents.length > 0 || driftSummary.length > 0;
   const hasProviders = providers.rag.length > 0 || providers.mcp.length > 0;
+  const hasActivityData = mcpTs.length > 0 || ragTs2.length > 0 || toolTs.length > 0;
 
   return (
     <div className={shell}>
@@ -263,6 +282,25 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className={panelBody} style={{ overflow: 'auto', maxHeight: 240 }}>
               <DriftPanel events={driftEvents} summary={driftSummary} />
+            </div>
+          </div>
+        )}
+
+        {/* Activity Sparklines */}
+        {hasActivityData && (
+          <div className={panel}>
+            <div className={panelHeader}>
+              <span>Activity Monitor</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                {toolTs.length + mcpTs.length + ragTs2.length} events · latency sparklines
+              </span>
+            </div>
+            <div className={panelBody} style={{ overflow: 'auto', maxHeight: 340, padding: 0 }}>
+              <ActivitySparklines
+                mcpTimeseries={mcpTs}
+                ragTimeseries={ragTs2}
+                toolTimeseries={toolTs}
+              />
             </div>
           </div>
         )}
