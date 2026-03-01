@@ -30,7 +30,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
 
     const container = containerRef.current;
     const width = container.clientWidth;
-    const height = 300;
+    const height = 200;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -93,37 +93,26 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
 
     // Labels (only for boxes large enough)
     leaf
-      .filter((d: any) => d.x1 - d.x0 > 60 && d.y1 - d.y0 > 30)
+      .filter((d: any) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 22)
       .append('text')
-      .attr('x', 6)
-      .attr('y', 16)
+      .attr('x', 4)
+      .attr('y', 12)
       .attr('fill', '#fff')
-      .attr('font-size', '11px')
+      .attr('font-size', '9px')
       .attr('font-family', "'JetBrains Mono', monospace")
-      .attr('font-weight', 500)
+      .attr('font-weight', 600)
       .text((d: any) => d.data.name);
 
     // Token count labels
     leaf
-      .filter((d: any) => d.x1 - d.x0 > 60 && d.y1 - d.y0 > 45)
+      .filter((d: any) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 34)
       .append('text')
-      .attr('x', 6)
-      .attr('y', 30)
+      .attr('x', 4)
+      .attr('y', 23)
       .attr('fill', 'rgba(255,255,255,0.6)')
-      .attr('font-size', '10px')
+      .attr('font-size', '8px')
       .attr('font-family', "'JetBrains Mono', monospace")
-      .text((d: any) => `${formatTokens(d.data.value)} tokens`);
-
-    // Percentage labels
-    leaf
-      .filter((d: any) => d.x1 - d.x0 > 80 && d.y1 - d.y0 > 58)
-      .append('text')
-      .attr('x', 6)
-      .attr('y', 44)
-      .attr('fill', 'rgba(255,255,255,0.4)')
-      .attr('font-size', '10px')
-      .attr('font-family', "'JetBrains Mono', monospace")
-      .text((d: any) => `${((d.data.value / contextWindow) * 100).toFixed(1)}%`);
+      .text((d: any) => `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`);
   }, [segments, totalTokens, contextWindow]);
 
   if (segments.length === 0) {
