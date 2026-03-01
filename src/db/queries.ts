@@ -95,15 +95,22 @@ export class TelemetryStore {
   }
 
   ingestEvent(event: TelemetryEvent): void {
-    // Always store raw event
+    // Ensure session row exists before inserting event (FK constraint)
+    if (event.type === 'session_start') {
+      const e = event as SessionStartEvent;
+      this.stmts.upsertSession.run(e.sessionId, e.timestamp, e.timestamp, e.cwd, e.model, e.provider);
+    } else {
+      // Auto-create session if we see events without a session_start
+      this.stmts.upsertSession.run(event.sessionId, event.timestamp, event.timestamp, '', '', '');
+    }
+
+    // Store raw event
     this.stmts.insertEvent.run(event.id, event.sessionId, event.timestamp, event.type, JSON.stringify(event));
 
     switch (event.type) {
-      case 'session_start': {
-        const e = event as SessionStartEvent;
-        this.stmts.upsertSession.run(e.sessionId, e.timestamp, e.timestamp, e.cwd, e.model, e.provider);
+      case 'session_start':
+        // Already handled above
         break;
-      }
       case 'agent_start': {
         const e = event as AgentStartEvent;
         this.stmts.updateSessionModel.run(e.model, e.provider, e.sessionId);
