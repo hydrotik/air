@@ -149,6 +149,48 @@ export async function createServer(port = 5200) {
     return store.getProviderSummary(id);
   });
 
+  // ─── HTTP Ingest (for short-lived hooks: Claude Code, Codex, etc.) ────
+  app.post('/api/ingest', async (req) => {
+    try {
+      const event = req.body as TelemetryEvent;
+      store.ingestEvent(event);
+
+      // Broadcast to dashboard clients
+      const msg: DashboardMessage = { type: 'event', data: event };
+      const payload = JSON.stringify(msg);
+      for (const client of dashboardClients) {
+        if (client.readyState === 1) {
+          client.send(payload);
+        }
+      }
+
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err) };
+    }
+  });
+
+  // ─── HTTP Batch Ingest (multiple events at once) ─────────────────────
+  app.post('/api/ingest/batch', async (req) => {
+    try {
+      const events = req.body as TelemetryEvent[];
+      for (const event of events) {
+        store.ingestEvent(event);
+
+        const msg: DashboardMessage = { type: 'event', data: event };
+        const payload = JSON.stringify(msg);
+        for (const client of dashboardClients) {
+          if (client.readyState === 1) {
+            client.send(payload);
+          }
+        }
+      }
+      return { ok: true, count: events.length };
+    } catch (err) {
+      return { ok: false, error: String(err) };
+    }
+  });
+
   // Health check
   app.get('/api/health', async () => ({
     status: 'ok',
