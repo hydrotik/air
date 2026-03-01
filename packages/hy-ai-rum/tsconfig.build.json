@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/server/**/*.ts",
+    "src/sdk/**/*.ts",
+    "src/shared/**/*.ts",
+    "src/db/**/*.ts",
+    "src/collector/**/*.ts"
+  ],
+  "exclude": ["src/dashboard", "node_modules", "dist"]
+}

@@ -8,16 +8,38 @@ AIr monitors your AI coding sessions — context window usage, tool call perform
 
 ---
 
+## Install
+
+```bash
+npm install @hydrotik/air
+```
+
+This gives you:
+- **`air` CLI** — starts the server + dashboard (single process)
+- **SDK** — instrument MCP servers, RAG pipelines, and custom tools
+- **Event types** — TypeScript definitions for all telemetry events
+
+---
+
 ## Quick Start
 
 ### 1. Start the AIr server + dashboard
+
+**Standalone** (installed via npm):
+
+```bash
+npx @hydrotik/air                    # default port 5200
+npx @hydrotik/air --port 8080        # custom port
+```
+
+**Monorepo** (development):
 
 ```bash
 pnpm turbo run dev --filter=@hydrotik/air
 ```
 
 Opens:
-- **Dashboard** → [http://localhost:5201](http://localhost:5201)
+- **Dashboard** → [http://localhost:5200](http://localhost:5200) (production) or [http://localhost:5201](http://localhost:5201) (dev)
 - **API** → [http://localhost:5200/api/health](http://localhost:5200/api/health)
 
 ### 2. Install the collector extension
@@ -265,22 +287,61 @@ The collector is **silent and non-blocking** — if the AIr server isn't running
 
 ---
 
+## Package Exports
+
+```
+@hydrotik/air          → Event type definitions (TelemetryEvent, etc.)
+@hydrotik/air/sdk      → AirClient, instrumentMcp, createRagTracer
+@hydrotik/air/server   → createServer() for programmatic use
+```
+
+**bin:** `air` → starts server + serves built dashboard on a single port
+
+---
+
+## What Ships in the Package
+
+```
+dist/
+├── server/          ← Fastify server + CLI (ESM)
+│   ├── cli.js       ← npx entry point
+│   └── index.js     ← createServer() export
+├── sdk/             ← SDK for instrumentation (ESM + CJS + DTS)
+│   ├── index.js
+│   ├── index.cjs
+│   └── index.d.ts
+├── shared/          ← Event type definitions (ESM + CJS + DTS)
+│   ├── index.js
+│   ├── index.cjs
+│   └── index.d.ts
+└── dashboard/       ← Pre-built React SPA
+    ├── index.html
+    └── assets/      ← JS + CSS bundles (~650KB gzip: ~190KB)
+```
+
+Runtime dependencies: `fastify`, `better-sqlite3`, `ws`, `@fastify/cors`, `@fastify/static`, `@fastify/websocket`
+
+Dashboard (React, D3, Recharts, vanilla-extract) is pre-built at publish time — **zero React dependency at runtime**.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | Server | Fastify 5, better-sqlite3, @fastify/websocket |
-| Dashboard | React 19, Vite 6, D3.js 7, Recharts 2 |
-| Styling | vanilla-extract, @hydrotik/tokens |
+| Dashboard | React 19, Vite 6, D3.js 7, Recharts 2 (pre-built) |
+| Styling | vanilla-extract, @hydrotik/tokens (compiled to CSS) |
 | Collector | Pi ExtensionAPI, WebSocket (ws) |
-| Storage | SQLite 3 (WAL mode) |
+| SDK | WebSocket (ws), zero other deps |
+| Storage | SQLite 3 (WAL mode), `~/.hydrotik/air/telemetry.db` |
 
 ---
 
 ## Troubleshooting
 
 **Dashboard shows "Reconnecting…"**
-The AIr server isn't running. Start it with `pnpm turbo run dev --filter=@hydrotik/air`.
+The AIr server isn't running. Start it with `npx @hydrotik/air` or `pnpm turbo run dev --filter=@hydrotik/air`.
 
 **"0 sessions" after reload**
 The collector connects to the server async. Send a message in pi — the first tool call or turn will create a session.
