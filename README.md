@@ -2,7 +2,7 @@
 
 **Real-time AI observability for coding agents.**
 
-AIr monitors your AI coding sessions — context window usage, tool call performance, token costs, and compaction events — streaming everything to a live dashboard. Think New Relic, but for your LLM workflow.
+AIr monitors your AI coding sessions — context window usage, tool call performance, token costs, and compaction events — streaming everything to a live dashboard.
 
 ![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green)
 
