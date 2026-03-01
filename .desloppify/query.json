@@ -1,169 +1,313 @@
 {
-  "command": "scan",
-  "overall_score": 100.0,
-  "objective_score": 100.0,
-  "strict_score": 100.0,
-  "verified_strict_score": 100.0,
-  "prev_overall_score": 100.0,
-  "prev_objective_score": 100.0,
-  "prev_strict_score": 100.0,
-  "prev_verified_strict_score": 100.0,
-  "profile": "full",
-  "noise_budget": 10,
-  "noise_global_budget": 0,
-  "hidden_by_detector": {},
-  "hidden_total": 0,
-  "diff": {
-    "new": 0,
-    "auto_resolved": 0,
-    "reopened": 0,
-    "total_current": 0,
-    "suspect_detectors": [],
-    "chronic_reopeners": [],
-    "skipped_other_lang": 0,
-    "skipped_out_of_scope": 215,
-    "ignored": 0,
-    "ignore_patterns": 0,
-    "raw_findings": 0,
-    "suppressed_pct": 0.0
-  },
-  "stats": {
-    "total": 1,
-    "open": 1,
-    "fixed": 0,
-    "auto_resolved": 0,
-    "wontfix": 0,
-    "false_positive": 0,
-    "by_tier": {
-      "4": {
-        "open": 1,
-        "fixed": 0,
-        "auto_resolved": 0,
-        "wontfix": 0,
-        "false_positive": 0
-      }
-    }
-  },
-  "open_scope": {
-    "in_scope": 1,
-    "out_of_scope": 169,
-    "global": 170
-  },
-  "warnings": [],
-  "dimension_scores": {},
-  "score_breakdown": {
-    "overall_score": 100.0,
-    "mechanical_fraction": 1.0,
-    "subjective_fraction": 0.0,
-    "mechanical_avg": 100.0,
-    "subjective_avg": null,
-    "entries": []
-  },
-  "subjective_integrity": {
-    "status": "pass",
-    "target_score": 95.0,
-    "matched_count": 0,
-    "matched_dimensions": [],
-    "reset_dimensions": []
-  },
-  "score_confidence": {
-    "status": "full",
-    "confidence": 1.0,
-    "detectors": [],
-    "dimensions": []
-  },
-  "potentials": {
-    "typescript": {
-      "logs": 0,
-      "unused": 0,
-      "exports": 0,
-      "deprecated": 0,
-      "structural": 0,
-      "flat_dirs": 0,
-      "props": 0,
-      "single_use": 0,
-      "coupling": 0,
-      "cycles": 0,
-      "orphaned": 0,
-      "patterns": 0,
-      "naming": 0,
-      "facade": 0,
-      "test_coverage": 0,
-      "smells": 0,
-      "react": 0,
-      "security": 0,
-      "subjective_review": 0,
-      "boilerplate_duplication": 0,
-      "dupes": 0,
-      "stale_wontfix": 0
-    }
-  },
-  "scan_coverage": {
-    "typescript": {
-      "status": "full",
-      "confidence": 1.0,
-      "detectors": {
-        "security": {
-          "detector": "security",
-          "status": "full",
-          "confidence": 1.0,
-          "summary": "Security coverage complete for enabled detectors.",
-          "impact": "",
-          "remediation": "",
-          "tool": "",
-          "reason": ""
-        }
-      },
-      "warnings": [],
-      "updated_at": "2026-02-28T22:36:55+00:00"
-    }
-  },
-  "zone_distribution": {},
+  "command": "resolve",
+  "patterns": [
+    "orphaned::docs/reference/sink/component-wrapper.tsx"
+  ],
+  "status": "false_positive",
+  "resolved": [
+    "orphaned::docs/reference/sink/component-wrapper.tsx"
+  ],
+  "count": 1,
+  "next_command": "desloppify scan",
+  "overall_score": 33.0,
+  "objective_score": 82.6,
+  "strict_score": 32.9,
+  "verified_strict_score": 82.0,
+  "prev_overall_score": 33.0,
+  "prev_objective_score": 82.5,
+  "prev_strict_score": 32.9,
+  "prev_verified_strict_score": 82.0,
+  "attestation": "I have actually verified this is reference docs and I am not gaming the score",
   "narrative": {
-    "phase": "early_momentum",
-    "headline": "Score 100.0/100 with 1 findings open. Keep the momentum going.",
-    "dimensions": {},
+    "phase": "regression",
+    "headline": "Score shifted 67.2 pts \u2014 this is normal after structural changes. Rescan after your next fix to see the real trend.",
+    "dimensions": {
+      "lowest_dimensions": [
+        {
+          "name": "Error consistency",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "Abstraction fit",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "AI generated debt",
+          "strict": 0.0,
+          "issues": 0,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        }
+      ],
+      "biggest_gap_dimensions": [
+        {
+          "name": "Code quality",
+          "lenient": 95.7,
+          "strict": 93.6,
+          "gap": 2.1,
+          "wontfix_count": 43
+        }
+      ],
+      "stagnant_dimensions": [
+        {
+          "name": "Security",
+          "strict": 99.9,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Error consistency",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Abstraction fit",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "AI generated debt",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "High elegance",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Mid elegance",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Low elegance",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Cross-module arch",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Convention drift",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "API coherence",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Auth consistency",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Stale migration",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Structure nav",
+          "strict": 0.0,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Design coherence",
+          "strict": 0.0,
+          "stuck_scans": 3
+        }
+      ]
+    },
     "actions": [
+      {
+        "type": "reorganize",
+        "detector": "orphaned",
+        "count": 1,
+        "description": "1 orphaned findings \u2014 delete dead files or relocate with `desloppify move`",
+        "command": "desloppify show orphaned --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 1,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "flat_dirs",
+        "count": 1,
+        "description": "1 flat_dirs findings \u2014 create subdirectories and use `desloppify move`",
+        "command": "desloppify show flat_dirs --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 2,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "facade",
+        "count": 9,
+        "description": "9 facade findings \u2014 flatten re-export facades or consolidate barrel files",
+        "command": "desloppify show facade --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 3,
+        "lane": "restructure"
+      },
+      {
+        "type": "refactor",
+        "detector": "structural",
+        "count": 9,
+        "description": "9 structural findings \u2014 decompose large files \u2014 extract logic into focused modules",
+        "command": "desloppify show structural --status open",
+        "impact": 0.0,
+        "dimension": "File health",
+        "priority": 4,
+        "lane": "refactor"
+      },
+      {
+        "type": "refactor",
+        "detector": "dupes",
+        "count": 1,
+        "description": "1 dupes findings \u2014 extract shared utility or consolidate duplicates",
+        "command": "desloppify show dupes --status open",
+        "impact": 0.0,
+        "dimension": "Duplication",
+        "priority": 5,
+        "lane": "refactor"
+      },
+      {
+        "type": "refactor",
+        "detector": "test_coverage",
+        "count": 129,
+        "description": "129 test_coverage findings \u2014 add tests for untested production modules \u2014 prioritize by import count",
+        "command": "desloppify show test_coverage --status open",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 6,
+        "lane": "test_coverage"
+      },
+      {
+        "type": "refactor",
+        "detector": "boilerplate_duplication",
+        "count": 43,
+        "description": "43 boilerplate_duplication findings \u2014 extract shared boilerplate into reusable helpers or base classes",
+        "command": "desloppify show boilerplate_duplication --status open",
+        "impact": 0.0,
+        "dimension": "Duplication",
+        "priority": 7,
+        "lane": "refactor"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "smells",
+        "count": 27,
+        "description": "27 smells findings \u2014 inspect with `desloppify next` and fix manually",
+        "command": "desloppify show smells --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 8,
+        "lane": "refactor"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "exports",
+        "count": 41,
+        "description": "41 exports findings \u2014 run `knip --fix` to remove dead exports",
+        "command": "desloppify show exports --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 9,
+        "lane": "refactor"
+      },
       {
         "type": "manual_fix",
         "detector": "subjective_review",
-        "count": 1,
-        "description": "1 files need design review \u2014 run design review with dimension templates",
+        "count": 152,
+        "description": "152 files need design review \u2014 run design review with dimension templates",
         "command": "desloppify fix review",
         "impact": 0.0,
         "dimension": "Test health",
-        "priority": 1,
+        "priority": 10,
         "lane": "refactor"
       }
     ],
     "strategy": {
       "fixer_leverage": {
         "auto_fixable_count": 0,
-        "total_count": 1,
+        "total_count": 413,
         "coverage": 0.0,
         "impact_ratio": 0.0,
         "recommendation": "none"
       },
       "lanes": {
+        "restructure": {
+          "actions": [
+            1,
+            2,
+            3
+          ],
+          "file_count": 11,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
         "refactor": {
           "actions": [
-            1
+            4,
+            5,
+            7,
+            8,
+            9,
+            10
           ],
-          "file_count": 1,
+          "file_count": 165,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "test_coverage": {
+          "actions": [
+            6
+          ],
+          "file_count": 129,
           "total_impact": 0.0,
           "automation": "manual",
           "run_first": false
         }
       },
-      "can_parallelize": false,
-      "hint": "Work through actions in priority order. Rescan after each fix to track progress."
+      "can_parallelize": true,
+      "hint": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify."
     },
     "tools": {
-      "fixers": [],
+      "fixers": [
+        {
+          "name": "dead-useeffect",
+          "detector": "smells",
+          "open_count": 27,
+          "command": "desloppify fix dead-useeffect --dry-run"
+        },
+        {
+          "name": "empty-if-chain",
+          "detector": "smells",
+          "open_count": 27,
+          "command": "desloppify fix empty-if-chain --dry-run"
+        }
+      ],
       "move": {
         "available": true,
-        "relevant": false,
-        "reason": null,
+        "relevant": true,
+        "reason": "1 orphaned files + 1 flat directories",
         "usage": "desloppify move <source> <dest> [--dry-run]"
       },
       "plan": {
@@ -178,61 +322,61 @@
       }
     },
     "debt": {
-      "overall_gap": 0.0,
-      "wontfix_count": 0,
-      "worst_dimension": null,
-      "worst_gap": 0.0,
+      "overall_gap": 0.1,
+      "wontfix_count": 44,
+      "worst_dimension": "Code quality",
+      "worst_gap": 2.1,
       "trend": "stable"
     },
     "milestone": null,
     "primary_action": {
-      "command": "desloppify fix review",
-      "description": "1 files need design review \u2014 run design review with dimension templates"
+      "command": "desloppify show orphaned --status open",
+      "description": "1 orphaned findings \u2014 delete dead files or relocate with `desloppify move`"
     },
-    "why_now": "Work through actions in priority order. Rescan after each fix to track progress.",
+    "why_now": "3 independent workstreams, safe to parallelize. Rescan after each phase to verify.",
     "verification_step": {
       "command": "desloppify scan",
       "reason": "revalidate after changes"
     },
-    "risk_flags": [],
+    "risk_flags": [
+      {
+        "type": "wontfix_gap",
+        "severity": "medium",
+        "message": "Strict/lenient gap is 0.1 pts with 44 wontfix findings"
+      }
+    ],
     "strict_target": {
       "target": 95.0,
-      "current": 100.0,
-      "gap": -5.0,
-      "state": "above",
+      "current": 32.9,
+      "gap": 62.1,
+      "state": "below",
       "warning": null
     },
     "reminders": [
       {
-        "type": "badge_recommendation",
-        "message": "Score is above 90! Add the scorecard to your README: <img src=\"scorecard.png\" width=\"100%\">",
-        "command": null,
-        "priority": 3,
-        "severity": "low"
+        "type": "rescan_needed",
+        "message": "Rescan to verify \u2014 cascading effects may create new findings.",
+        "command": "desloppify scan",
+        "priority": 1,
+        "severity": "high"
       },
       {
-        "type": "report_scores",
-        "message": "ALWAYS share ALL scores with the user: overall, objective, and strict, plus every dimension score (lenient + strict), including subjective dimensions. The goal is to maximize strict scores.",
+        "type": "fp_calibration_orphaned_production",
+        "message": "89% of orphaned findings in production zone are false positives. Consider reviewing detection rules for production files.",
         "command": null,
-        "no_decay": true,
-        "priority": 3,
-        "severity": "low"
-      },
-      {
-        "type": "review_not_run",
-        "message": "Mechanical checks look good! Run a subjective design review to catch issues linters miss: desloppify review --prepare",
-        "command": "desloppify review --prepare",
-        "priority": 3,
-        "severity": "low"
+        "priority": 2,
+        "severity": "medium"
       }
     ],
     "reminder_history": {
       "zone_classification": 3,
-      "report_scores": 5,
+      "report_scores": 6,
       "feedback_nudge": 3,
       "stagnant_nudge": 16,
       "badge_recommendation": 2,
-      "review_not_run": 2
+      "review_not_run": 2,
+      "rescan_needed": 1,
+      "fp_calibration_orphaned_production": 1
     }
   },
   "config": {
