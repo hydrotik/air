@@ -434,7 +434,184 @@ AIr automatically detects when model behavior changes — latency spikes, cost i
 
 ---
 
+## Bring Your Own RAG
+
+AIr supports any RAG system through **three integration paths** — from zero-code config to full SDK instrumentation.
+
+### 1. Configuration File (`.air.json`)
+
+Drop a `.air.json` in your project root to register your RAG providers. The dashboard shows them immediately — even before data flows.
+
+```json
+{
+  "providers": {
+    "rag": [
+      {
+        "name": "product-search",
+        "type": "qdrant",
+        "description": "Product catalog vector search",
+        "embeddingModel": "text-embedding-3-small",
+        "dimensions": 1536
+      },
+      {
+        "name": "docs-kb",
+        "type": "pinecone",
+        "description": "Documentation knowledge base"
+      }
+    ],
+    "mcp": [
+      { "name": "design-mcp", "description": "Design system MCP server" }
+    ]
+  },
+  "redaction": "preview",
+  "budgetLimit": 10.00
+}
+```
+
+The server reads this config on startup and registers providers in the dashboard's **Integrations** panel with status indicators (active/inactive/never seen).
+
+### 2. HTTP API (Language-Agnostic)
+
+Your RAG system — Python, Go, Rust, whatever — POSTs simple JSON to dedicated endpoints. No SDK needed, no full event schema required. Only `source` is mandatory.
+
+**Log a retrieval:**
+```bash
+curl -X POST http://localhost:5200/api/rag/retrieval \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "source": "product-search",
+    "query": "red running shoes",
+    "resultCount": 10,
+    "topScore": 0.92,
+    "durationMs": 45
+  }'
+```
+
+**Log an embedding:**
+```bash
+curl -X POST http://localhost:5200/api/rag/embedding \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "source": "product-search",
+    "model": "text-embedding-3-small",
+    "inputTokens": 150,
+    "durationMs": 12,
+    "dimensions": 1536
+  }'
+```
+
+**Log an indexing operation:**
+```bash
+curl -X POST http://localhost:5200/api/rag/index \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "source": "docs-kb",
+    "documentCount": 500,
+    "totalTokens": 250000,
+    "durationMs": 3200
+  }'
+```
+
+**Register a provider at runtime:**
+```bash
+curl -X POST http://localhost:5200/api/providers/rag \
+  -H 'Content-Type: application/json' \
+  -d '{ "name": "my-rag", "type": "custom", "description": "My RAG pipeline" }'
+```
+
+The server auto-fills defaults from `.air.json` config (e.g., embedding model, dimensions) and applies redaction before storage.
+
+### 3. SDK (TypeScript)
+
+For TypeScript/Node.js RAG systems, use the SDK for automatic tracing with `async`/`await` wrappers.
+
+**Config-driven (reads `.air.json`):**
+```ts
+import { createRagTracersFromConfig } from '@hydrotik/air/sdk';
+
+// Creates a tracer for each provider in .air.json
+const rag = createRagTracersFromConfig({ sessionId: 'my-session' });
+
+// Use by provider name
+const results = await rag['product-search'].traceRetrieval('red shoes', async () => {
+  return await qdrant.search({ vector, limit: 10 });
+}, {
+  extractResults: (r) => ({
+    count: r.length,
+    topScore: r[0]?.score,
+    chunkSizes: r.map(doc => doc.tokenCount),
+  }),
+});
+```
+
+**Manual setup:**
+```ts
+import { createRagTracer } from '@hydrotik/air/sdk';
+
+const rag = createRagTracer('product-search', {
+  sessionId: 'my-session',
+  defaultEmbeddingModel: 'text-embedding-3-small',
+  defaultDimensions: 1536,
+});
+
+await rag.traceRetrieval('query', fetchFn);
+await rag.traceEmbedding('text-embedding-3-small', 150, embedFn);
+await rag.traceIndex(500, 250000, indexFn);
+```
+
+### What Shows Up in the Dashboard
+
+| Panel | What it shows |
+|-------|--------------|
+| **Integrations** | All registered providers with status (active/idle/never seen), type, event count, last seen |
+| **RAG Pipeline** | Stats table: source, type, call count, avg latency, avg results, relevance scores, token volumes |
+| **Live Event Feed** | Real-time stream of `rag_retrieval`, `rag_embedding`, `rag_index` events |
+| **Drift Detection** | Alerts when RAG latency, error rate, or result quality shifts from baseline |
+
+### Supported Vector DB Types
+
+The `type` field in `.air.json` is for display only — AIr works with any backend:
+
+| Type | Icon |
+|------|------|
+| `pinecone` | 🌲 |
+| `qdrant` | 🔷 |
+| `weaviate` | 🕸 |
+| `chroma` | 🎨 |
+| `pgvector` | 🐘 |
+| `milvus` | 🔬 |
+| `custom` | ⚙️ |
+
+### Provider API
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/providers` | All registered RAG + MCP providers with status |
+| `GET /api/providers/rag` | RAG providers only |
+| `POST /api/providers/rag` | Register a new RAG provider at runtime |
+| `POST /api/rag/retrieval` | Log a retrieval (simplified — only `source` required) |
+| `POST /api/rag/embedding` | Log an embedding generation |
+| `POST /api/rag/index` | Log a document indexing operation |
+
+---
+
 ## Configuration
+
+### Configuration File
+
+Create `.air.json` or `air.config.json` in your project root. AIr searches up to 5 parent directories.
+
+```json
+{
+  "providers": {
+    "rag": [{ "name": "my-rag", "type": "qdrant" }],
+    "mcp": [{ "name": "my-mcp" }]
+  },
+  "redaction": "preview",
+  "budgetLimit": 10.00,
+  "port": 5200
+}
+```
 
 ### Environment Variables
 
@@ -599,7 +776,14 @@ All endpoints return JSON. All ingested data is subject to server-side redaction
 | `GET /api/sessions/:id/mcp-stats` | MCP call stats grouped by server/method/tool |
 | `GET /api/sessions/:id/rag-stats` | RAG stats grouped by source/type |
 | `GET /api/sessions/:id/providers` | Event type summary for all providers |
-| **Ingestion** | |
+| `GET /api/providers` | Registered RAG + MCP providers with status |
+| `GET /api/providers/rag` | RAG providers only |
+| `POST /api/providers/rag` | Register a new RAG provider at runtime |
+| **RAG Ingest (simplified)** | |
+| `POST /api/rag/retrieval` | Log a retrieval — only `source` required |
+| `POST /api/rag/embedding` | Log an embedding — only `source` required |
+| `POST /api/rag/index` | Log an indexing op — only `source` required |
+| **Ingestion (full events)** | |
 | `POST /api/ingest` | Ingest a single event (redacted before storage) |
 | `POST /api/ingest/batch` | Ingest multiple events at once |
 
