@@ -42,8 +42,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/hydrotik/hydrotik.git",
-    "directory": "packages/hy-ai-rum"
+    "url": "https://github.com/hydrotik/air.git"
   },
   "scripts": {
     "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:dashboard\"",
