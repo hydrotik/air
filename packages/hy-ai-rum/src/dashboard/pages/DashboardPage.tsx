@@ -176,12 +176,12 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={panel}>
+          <div className={panel} style={{ display: 'flex', flexDirection: 'column' }}>
             <div className={panelHeader}>
               <span>Context Utilization Over Time</span>
               <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>% of window</span>
             </div>
-            <div className={panelBody} style={{ height: 200, padding: 0 }}>
+            <div className={panelBody} style={{ flex: 1, minHeight: 200, padding: 0 }}>
               <ContextUtilizationChart snapshots={contextSnapshots} />
             </div>
           </div>
@@ -189,12 +189,12 @@ export const DashboardPage: React.FC = () => {
 
         {/* Token Flow + Tool Waterfall */}
         <div className={gridRow}>
-          <div className={panel}>
+          <div className={panel} style={{ display: 'flex', flexDirection: 'column' }}>
             <div className={panelHeader}>
               <span>Token Flow</span>
               <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>per turn</span>
             </div>
-            <div className={panelBody} style={{ height: 200, padding: 0 }}>
+            <div className={panelBody} style={{ flex: 1, minHeight: 200, padding: 0 }}>
               <TokenFlowChart events={sessionEvents} />
             </div>
           </div>
