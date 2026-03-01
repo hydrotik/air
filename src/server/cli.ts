@@ -16,6 +16,7 @@
 
 import { createServer } from './index.js';
 import type { RedactionConfig, RedactionLevel } from '../shared/events.js';
+import { loadConfig } from '../shared/config.js';
 
 const args = process.argv.slice(2);
 
@@ -24,14 +25,18 @@ function getArg(name: string, fallback: string): string {
   return idx !== -1 && args[idx + 1] ? args[idx + 1] : fallback;
 }
 
-const port = Number(getArg('port', '5200'));
+const config = loadConfig();
+const port = Number(getArg('port', String(config.port ?? 5200)));
 const host = getArg('host', '0.0.0.0');
-const redactionLevel = getArg('redaction', process.env.AIR_REDACTION_LEVEL ?? 'preview') as RedactionLevel;
+const redactionLevel = getArg(
+  'redaction',
+  process.env.AIR_REDACTION_LEVEL ?? config.redaction ?? 'preview',
+) as RedactionLevel;
 
 const redaction: RedactionConfig = { level: redactionLevel };
 
 async function main() {
-  const { app } = await createServer(port, { redaction });
+  const { app } = await createServer(port, { redaction, config });
   await app.listen({ port, host });
 
   const redactionLabel = redactionLevel === 'none'
@@ -40,14 +45,28 @@ async function main() {
       ? '🔒 FULL (all content stripped)'
       : '🛡️  PREVIEW (content truncated + scrubbed)';
 
+  const ragProviders = config.providers?.rag ?? [];
+  const mcpProviders = config.providers?.mcp ?? [];
+  const providerLines: string[] = [];
+  if (ragProviders.length > 0) {
+    providerLines.push(`  RAG:        ${ragProviders.map(p => p.name).join(', ')}`);
+  }
+  if (mcpProviders.length > 0) {
+    providerLines.push(`  MCP:        ${mcpProviders.map(p => p.name).join(', ')}`);
+  }
+  if (config.budgetLimit) {
+    providerLines.push(`  Budget:     $${config.budgetLimit.toFixed(2)}`);
+  }
+
   console.log(`
   ⚡ AIr — Real-time AI Observability
   ────────────────────────────────────
   Dashboard:  http://localhost:${port}
   API:        http://localhost:${port}/api/health
   Collector:  ws://localhost:${port}/ws/collector
+  RAG API:    http://localhost:${port}/api/rag/*
   Redaction:  ${redactionLabel}
-  ────────────────────────────────────
+${providerLines.length > 0 ? providerLines.join('\n') + '\n' : ''}  ────────────────────────────────────
   `);
 }
 
