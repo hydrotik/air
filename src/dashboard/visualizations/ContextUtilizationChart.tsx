@@ -32,7 +32,7 @@ export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
 
   const data = snapshots.map((s, i) => ({
     index: i + 1,
-    utilization: Math.round(s.utilization * 100) / 100,
+    utilization: Math.min(100, Math.round(s.utilization * 100) / 100),
     tokensUsed: s.tokens_used,
     contextWindow: s.context_window,
     time: new Date(s.timestamp).toLocaleTimeString(),
