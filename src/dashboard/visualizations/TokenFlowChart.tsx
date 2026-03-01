@@ -35,9 +35,17 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
     cost: e.cost.total,
   }));
 
+  // Auto-scale Y axis to data range with padding
+  const allValues = data.flatMap((d) => [d.input, d.output, d.cacheRead]);
+  const maxVal = Math.max(...allValues, 1);
+  const minVal = Math.min(...allValues.filter((v) => v > 0), 0);
+  const yPad = Math.max((maxVal - minVal) * 0.1, maxVal * 0.05);
+  const yMin = Math.max(0, Math.floor((minVal - yPad) / 1000) * 1000);
+  const yMax = Math.ceil((maxVal + yPad) / 1000) * 1000;
+
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+      <AreaChart data={data} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
         <defs>
           <linearGradient id="inputGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -55,26 +63,28 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
         <XAxis
           dataKey="index"
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
           axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
           tickLine={false}
-          label={{ value: 'Turn', position: 'insideBottomRight', offset: -5, fill: 'rgba(255,255,255,0.3)', fontSize: 10 }}
         />
         <YAxis
-          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+          domain={[yMin, yMax]}
+          tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
           axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
           tickLine={false}
           tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v))}
+          width={40}
         />
         <Tooltip
           contentStyle={{
-            background: 'rgba(15, 15, 20, 0.95)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 8,
+            background: 'rgba(10, 10, 15, 0.95)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 6,
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 11,
+            fontSize: 10,
+            padding: '4px 8px',
           }}
-          labelStyle={{ color: 'rgba(255,255,255,0.5)' }}
+          labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: 9 }}
           formatter={(value: number, name: string) => [value.toLocaleString(), name]}
         />
         <Area type="monotone" dataKey="input" name="Input" stroke="#3b82f6" fill="url(#inputGrad)" strokeWidth={1.5} />
