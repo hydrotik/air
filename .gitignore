@@ -41,3 +41,6 @@ rag-store.json
 playwright-report/
 test-results/
 blob-report/
+
+# Pi extension dependencies
+.pi/extensions/*/node_modules
