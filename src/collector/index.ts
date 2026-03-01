@@ -1,12 +1,12 @@
 /**
- * AI-RUM Collector — Pi Extension
+ * AIr Collector — Pi Extension
  *
  * Hooks into pi's event system and streams telemetry to the RUM server.
  * Install: copy to ~/.pi/agent/extensions/ or .pi/extensions/
  *
  * Configuration via environment:
- *   AI_RUM_URL=ws://localhost:5200/ws/collector (default)
- *   AI_RUM_ENABLED=true (default)
+ *   AIR_URL=ws://localhost:5200/ws/collector (default)
+ *   AIR_ENABLED=true (default)
  */
 
 import type { ExtensionAPI } from '@mariozechner/pi-coding-agent';
@@ -56,9 +56,9 @@ function contentToString(content: any): string {
   return JSON.stringify(content);
 }
 
-export default function aiRumCollector(pi: ExtensionAPI) {
-  const url = process.env.AI_RUM_URL ?? 'ws://localhost:5200/ws/collector';
-  const enabled = process.env.AI_RUM_ENABLED !== 'false';
+export default function airCollector(pi: ExtensionAPI) {
+  const url = process.env.AIR_URL ?? 'ws://localhost:5200/ws/collector';
+  const enabled = process.env.AIR_ENABLED !== 'false';
 
   if (!enabled) return;
 
@@ -74,7 +74,7 @@ export default function aiRumCollector(pi: ExtensionAPI) {
     try {
       ws = new WebSocket(url);
       ws.on('open', () => {
-        console.log('[AI-RUM] Connected to server');
+        console.log('[AIr] Connected to server');
         if (reconnectTimer) {
           clearTimeout(reconnectTimer);
           reconnectTimer = null;
