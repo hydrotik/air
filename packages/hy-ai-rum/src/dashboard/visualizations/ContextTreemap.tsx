@@ -109,15 +109,25 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
         const cat = d.data.category;
         const color = cat === 'unused' ? 'rgba(255,255,255,0.5)' : (CATEGORY_COLORS[cat] ?? '#64748b');
         const pct = ((d.data.value / contextWindow) * 100).toFixed(1);
-        tooltip.innerHTML = `
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-            <span style="width:8px;height:8px;border-radius:2px;background:${color};flex-shrink:0"></span>
-            <span style="font-weight:600;color:#fff;font-size:10px">${d.data.name}</span>
-          </div>
-          <div style="color:rgba(255,255,255,0.7);font-size:9px">
-            ${formatTokens(d.data.value)} tokens · ${pct}% of window
-          </div>
-        `;
+
+        // Build tooltip via DOM (no innerHTML — safe from XSS)
+        tooltip.textContent = '';
+        const row = Object.assign(document.createElement('div'), {
+          style: 'display:flex;align-items:center;gap:6px;margin-bottom:3px',
+        });
+        const swatch = Object.assign(document.createElement('span'), {
+          style: `width:8px;height:8px;border-radius:2px;background:${color};flex-shrink:0`,
+        });
+        const name = Object.assign(document.createElement('span'), {
+          textContent: d.data.name,
+          style: 'font-weight:600;color:#fff;font-size:10px',
+        });
+        row.append(swatch, name);
+        const detail = Object.assign(document.createElement('div'), {
+          textContent: `${formatTokens(d.data.value)} tokens · ${pct}% of window`,
+          style: 'color:rgba(255,255,255,0.7);font-size:9px',
+        });
+        tooltip.append(row, detail);
         tooltip.style.opacity = '1';
       })
       .on('mousemove', function (event: MouseEvent) {
