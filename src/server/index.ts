@@ -22,15 +22,25 @@ export async function createServer(port = 5200) {
   await app.register(websocket);
 
   // ─── Serve dashboard static files (production) ────────────────────────────
-  const distPath = path.resolve(__dirname, '../../dist');
-  try {
+  // Try multiple paths since __dirname differs between:
+  //   - dev: src/server/     → ../../dist/dashboard/ or ../../dist/
+  //   - built (chunk at dist/): ./dashboard/
+  //   - built (server/): ../dashboard/
+  const candidatePaths = [
+    path.resolve(__dirname, 'dashboard'),         // chunk at dist/ → dist/dashboard/
+    path.resolve(__dirname, '../dashboard'),       // server/ → dist/dashboard/
+    path.resolve(__dirname, '../../dist/dashboard'), // src/server/ → dist/dashboard/
+    path.resolve(__dirname, '../../dist'),         // src/server/ → dist/ (legacy)
+  ];
+  const fs = await import('node:fs');
+  const staticRoot = candidatePaths.find((p) => fs.existsSync(path.join(p, 'index.html'))) ?? null;
+
+  if (staticRoot) {
+    console.log(`[AIr] Serving dashboard from: ${staticRoot}`);
     await app.register(fastifyStatic, {
-      root: distPath,
+      root: staticRoot,
       prefix: '/',
-      decorateReply: false,
     });
-  } catch {
-    // dist may not exist in dev — dashboard runs via Vite
   }
 
   // ─── Collector WebSocket (pi extension → server) ─────────────────────────
