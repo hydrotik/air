@@ -32,6 +32,20 @@ export interface ToolCallEndEvent extends BaseEvent {
   isError: boolean;
 }
 
+/** Complete tool call in a single event (from HTTP ingest, e.g. MCP servers) */
+export interface ToolCallEvent extends BaseEvent {
+  type: 'tool_call';
+  toolName: string;
+  toolCallId: string;
+  provider?: string;
+  durationMs: number;
+  inputTokens?: number;
+  outputTokens?: number;
+  isError: boolean;
+  errorMessage?: string;
+  metadata?: Record<string, unknown>;
+}
+
 // ─── Turn / Agent Events ────────────────────────────────────────────────────
 
 export interface TurnStartEvent extends BaseEvent {
@@ -392,6 +406,7 @@ export interface RedactionConfig {
 export type TelemetryEvent =
   | ToolCallStartEvent
   | ToolCallEndEvent
+  | ToolCallEvent
   | TurnStartEvent
   | TurnEndEvent
   | AgentStartEvent
