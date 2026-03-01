@@ -280,8 +280,8 @@ export const DashboardPage: React.FC = () => {
                 {driftEvents.length} alert{driftEvents.length !== 1 ? 's' : ''}
               </span>
             </div>
-            <div className={panelBody} style={{ overflow: 'auto', maxHeight: 240 }}>
-              <DriftPanel events={driftEvents} summary={driftSummary} />
+            <div className={panelBody} style={{ overflow: 'hidden' }}>
+              <DriftPanel events={driftEvents} summary={driftSummary} maxVisibleRows={4} />
             </div>
           </div>
         )}

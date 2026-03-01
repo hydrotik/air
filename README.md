@@ -6,7 +6,9 @@ AIr monitors your AI coding sessions — context windows, tool calls, token cost
 
 ![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green) ![Security](https://img.shields.io/badge/data-redacted-green)
 
-![AIr Dashboard](docs/dash.png)
+<p align="center">
+  <img src="docs/dash.png" alt="AIr Dashboard — KPIs, drift detection, activity monitor, context treemap, token flow, tool waterfall, integrations, and session list" width="100%" />
+</p>
 
 ---
 
@@ -21,7 +23,19 @@ This gives you:
 - **SDK** — instrument MCP servers, RAG pipelines, and custom tools
 - **Event types** — TypeScript definitions for all telemetry events
 
-> 📖 **Integrating your own services?** See the **[Integration Guide](./INTEGRATION_PROMPT_README.md)** — includes a copy-paste prompt for AI agents, HTTP API reference, and examples in JavaScript, Python, and Go.
+---
+
+### 🔌 Integrate Your Own Services
+
+> **Want to wire your RAG pipeline, MCP server, or custom tools into AIr?**
+>
+> 📖 **[Integration Guide](./INTEGRATION_PROMPT_README.md)** — everything you need:
+> - **Copy-paste prompt** for AI coding agents (Claude Code, Codex, ChatGPT) to auto-instrument your services
+> - **HTTP API reference** — just POST JSON, no SDK required
+> - **Language examples** — JavaScript, Python, Go, and cURL
+> - **Step-by-step walkthrough** — config file → verify → instrument → dashboard
+>
+> Most integrations take **under 5 minutes**. The only required field is `source`.
 
 ---
 
@@ -41,6 +55,27 @@ npx @hydrotik/air --port 8080        # custom port
 ```bash
 pnpm turbo run dev --filter=@hydrotik/air
 ```
+
+**Background / detached** (cross-platform — macOS, Linux, Windows):
+
+```bash
+# Start as a detached background process (survives terminal closure)
+pnpm --filter @hydrotik/air start:detached
+
+# Custom port
+pnpm --filter @hydrotik/air start:detached -- --port 8080
+
+# Stop the background server
+pnpm --filter @hydrotik/air stop
+```
+
+> **⚠ Troubleshooting: Server won't start from AI agents / CI tools**
+>
+> AI coding agents (pi, Cursor, VS Code tasks) run commands in a process group
+> that gets cleaned up when the shell exits. A simple `node cli.js &` will die
+> when the parent tool finishes. Use `start:detached` instead — it spawns the
+> server as a fully detached process with `child.unref()`, writes a PID file
+> to `$TMPDIR/air-server.pid`, and exits cleanly. Works on all platforms.
 
 Opens:
 - **Dashboard** → [http://localhost:5200](http://localhost:5200) (production) or [http://localhost:5201](http://localhost:5201) (dev)
