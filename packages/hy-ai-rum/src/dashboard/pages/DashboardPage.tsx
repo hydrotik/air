@@ -181,7 +181,7 @@ export const DashboardPage: React.FC = () => {
               <span>Context Utilization Over Time</span>
               <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>% of window</span>
             </div>
-            <div className={panelBody} style={{ height: 200, padding: '6px 6px 0' }}>
+            <div className={panelBody} style={{ height: 200, padding: 0 }}>
               <ContextUtilizationChart snapshots={contextSnapshots} />
             </div>
           </div>
@@ -194,7 +194,7 @@ export const DashboardPage: React.FC = () => {
               <span>Token Flow</span>
               <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>per turn</span>
             </div>
-            <div className={panelBody} style={{ height: 200, padding: '6px 6px 0' }}>
+            <div className={panelBody} style={{ height: 200, padding: 0 }}>
               <TokenFlowChart events={sessionEvents} />
             </div>
           </div>
