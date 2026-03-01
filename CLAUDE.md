@@ -162,6 +162,123 @@ Uses the **wrapper pattern** (not per-element border hacks):
 - `<InputGroupToolbar>` for bottom toolbar rows (textarea combos)
 - `inputGroupInputClass` strips chrome from child `<Input>`/`<Textarea>`
 
+## E-Commerce Components
+
+Migrated from the Vartell/acme design system, rebuilt with vanilla-extract + Hydrotik tokens.
+
+### Price
+
+Currency-formatted price display with discount/original support.
+
+```tsx
+import { Price } from '@hydrotik/design-system';
+
+<Price amount={129.99} />                                    // $129.99
+<Price amount={99.99} originalAmount={149.99} />             // $149.99 (struck) $99.99 (red)
+<Price amount={29.99} currency="EUR" locale="de-DE" />       // 29,99 €
+<Price amount={59.99} showCents={false} />                   // $60
+<Price amount={129.99} size="xl" />                          // sizes: sm | md | lg | xl
+```
+
+### ColorSwatch
+
+Color picker swatch with selection state. Square or circle shape.
+
+```tsx
+import { ColorSwatch } from '@hydrotik/design-system';
+
+<ColorSwatch hex="#1a2744" name="Navy" isSelected onClick={handleClick} />
+<ColorSwatch hex="#d4c5a9" name="Cream" shape="circle" size="lg" />
+<ColorSwatch hex="#000" name="Black" disabled />
+```
+
+- Has `aria-pressed` for selection state, `aria-label` from `name`
+- Sizes: `sm` (24px), `md` (32px), `lg` (40px)
+- Shapes: `square` (default), `circle`
+
+### QuantityPicker
+
+Increment/decrement stepper with min/max bounds.
+
+```tsx
+import { QuantityPicker } from '@hydrotik/design-system';
+
+<QuantityPicker quantity={3} onIncrease={inc} onDecrease={dec} min={1} max={10} />
+<QuantityPicker quantity={1} onIncrease={inc} onDecrease={dec} size="lg" />
+```
+
+- Has `role="group"` with labeled increase/decrease buttons
+- Auto-disables buttons at min/max bounds
+- Sizes: `sm`, `md`, `lg`
+
+### ProductCard
+
+E-commerce product card with hover image swap, wishlist toggle, and render props.
+
+```tsx
+import { ProductCard, ProductCardSkeleton } from '@hydrotik/design-system';
+
+<ProductCard
+  product={{ id: 1, name: 'Suit', price: 129.99, thumbnailSrc: '...', alternateSrc: '...' }}
+  isWishlisted={false}
+  onWishlistToggle={(p) => toggle(p.id)}
+  renderPrice={(p) => <Price amount={p.price} />}
+  renderActions={(p) => <AddToCartButton onAddToCart={() => add(p)} />}
+/>
+<ProductCardSkeleton />  // loading state
+```
+
+- Dual-image hover swap (both images stacked, CSS opacity transition — no flash)
+- Wishlist heart icon (lucide `Heart`, filled when wishlisted)
+- `renderPrice` and `renderActions` render props for composition
+- Colors data passed through `product.colors` for consumer rendering
+
+### CartItem
+
+Shopping cart line item with image, variant info, remove action, and render props.
+
+```tsx
+import { CartItem, CartItemSkeleton } from '@hydrotik/design-system';
+
+<CartItem
+  item={{ id: 1, name: 'Suit', price: 129.99, quantity: 2, color: 'Navy', size: 'M', image: '...' }}
+  onRemove={() => remove(1)}
+  renderQuantityPicker={(item) => <QuantityPicker quantity={item.quantity} ... />}
+  renderPrice={(item) => <Price amount={item.price} />}
+/>
+<CartItemSkeleton />  // loading state
+```
+
+### AddToCartButton
+
+CTA button with quantity badge and added/disabled states.
+
+```tsx
+import { AddToCartButton } from '@hydrotik/design-system';
+
+<AddToCartButton onAddToCart={handleAdd} />                           // + ADD TO CART
+<AddToCartButton onAddToCart={handleAdd} variant="primary" />         // blue primary
+<AddToCartButton onAddToCart={handleAdd} quantity={2} />              // ✓ ADDED (2) — disabled
+<AddToCartButton onAddToCart={handleAdd} disabled>Out of Stock</AddToCartButton>
+```
+
+- Variants: `default` (outline), `primary` (filled)
+- Shows check icon + quantity badge when `quantity > 0`
+- Auto-disables when added or explicitly disabled
+- Has `aria-label` for accessibility
+
+## Component Preview Routes
+
+| Route         | Page       | Description                                                                                                                            |
+| ------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`           | DataGrid   | Enterprise data grid as default home                                                                                                   |
+| `/dashboard`  | Dashboard  | KPI cards, revenue bar chart, visitors pie chart, products table                                                                       |
+| `/inventory`  | Inventory  | Sidebar nav, KPI cards, area chart, category donut, recent orders, products table                                                      |
+| `/ecommerce`  | E-Commerce | Product grid with hover swap, shopping cart, component showcase, loading states                                                        |
+| `/plugin`     | Plugin     | TectraScope marketing landing page                                                                                                     |
+| `/datagrid`   | DataGrid   | Enterprise data grid demo                                                                                                              |
+| `/editorial`  | Editorial  | High-density data journalism with DataGrids, SegmentedRatingBars, FlagTags, timeline chart                                             |
+
 ## Deep Reference
 
 For architecture, testing, directory structure, and tooling details, read on-demand:

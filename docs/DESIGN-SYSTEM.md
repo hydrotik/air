@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hydrotik design system is a **CSS-in-TypeScript** component library with **46 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope plus enterprise-grade additions. Built on:
+The Hydrotik design system is a **CSS-in-TypeScript** component library with **52 components** covering the full [shadcn/ui](https://ui.shadcn.com) scope plus enterprise-grade and e-commerce additions. Built on:
 
 | Layer | Technology |
 |---|---|
@@ -158,7 +158,7 @@ const { theme, setTheme } = useTheme();
 
 ---
 
-## Component Catalog (46 components)
+## Component Catalog (52 components)
 
 ### Layout & Structure
 
@@ -239,6 +239,17 @@ const { theme, setTheme } = useTheme();
 | **Alert** | Feedback banner — default, destructive, success, warning |
 | **SegmentedRatingBar** | Segmented bar graph — left-to-right fill showing coverage across N data sources. 1px gap between segments, 1px border-radius per segment. Lit segments at 85% accent, dim at 12%. Boolean array or value/total. Sizes: xs, sm, md, lg. Colors: all chart tokens + primary, destructive, success, warning. `role="meter"` with ARIA. |
 | **FlagTag** | Inline status flag — icon + mono label, no background/border. Icon is +6px taller than label, nudged up 2px for optical alignment. Variants: destructive, warning, success, primary, muted. Sizes: xs (label 8px / icon 14px), sm (9/15), md (11/17), lg (13/19). Default: ⚠ FLAG in destructive red. |
+
+### E-Commerce (6)
+
+| Component | Description |
+|-----------|-------------|
+| **Price** | Currency-formatted price display. Supports discount/original (struck-through), `Intl.NumberFormat`, showCents toggle. Sizes: sm, md, lg, xl. |
+| **ColorSwatch** | Color picker swatch button with `aria-pressed` selection. Shapes: square, circle. Sizes: sm (24px), md (32px), lg (40px). Focus ring on keyboard nav. |
+| **QuantityPicker** | Increment/decrement stepper with `role="group"`. Auto-disables at min/max. Sizes: sm, md, lg. |
+| **ProductCard** | Product card with dual-image hover swap (CSS opacity, no flash), wishlist heart toggle, `renderPrice`/`renderActions` render props. Includes `ProductCardSkeleton`. |
+| **CartItem** | Shopping cart line item with image, variant info (color/size), remove button, `renderQuantityPicker`/`renderPrice` render props. Includes `CartItemSkeleton`. |
+| **AddToCartButton** | CTA with added state (check icon + quantity badge). Variants: default (outline), primary (filled). Auto-disables when added. `aria-label` for a11y. |
 
 ---
 
