@@ -40,6 +40,16 @@ export const DashboardPage: React.FC = () => {
   const [contextSnapshots, setContextSnapshots] = useState<any[]>([]);
   const [breakdown, setBreakdown] = useState<{ segments: ContextSegment[]; tokens_used: number; context_window: number } | null>(null);
 
+  // Map API response shape to our state shape
+  const mapBreakdown = (data: any) => {
+    if (!data) return null;
+    return {
+      segments: data.breakdown ?? data.segments ?? [],
+      tokens_used: data.tokens_used ?? 0,
+      context_window: data.context_window ?? 200_000,
+    };
+  };
+
   // Auto-select most recent session
   useEffect(() => {
     if (sessions.length > 0 && !activeSessionId) {
@@ -54,7 +64,7 @@ export const DashboardPage: React.FC = () => {
     fetchSessionEvents(activeSessionId).then(setSessionEvents);
     fetchToolCalls(activeSessionId).then(setToolCalls);
     fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-    fetchLatestBreakdown(activeSessionId).then(setBreakdown);
+    fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
   }, [activeSessionId, fetchSessionEvents, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown]);
 
   // Refresh session data when new events arrive for active session
@@ -69,7 +79,7 @@ export const DashboardPage: React.FC = () => {
       if (types.has('tool_call_end')) fetchToolCalls(activeSessionId).then(setToolCalls);
       if (types.has('context_breakdown') || types.has('context_usage')) {
         fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-        fetchLatestBreakdown(activeSessionId).then(setBreakdown);
+        fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
       }
     }
   }, [events, activeSessionId, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown]);
