@@ -144,18 +144,71 @@ export interface SessionEndEvent extends BaseEvent {
 
 export interface McpRequestEvent extends BaseEvent {
   type: 'mcp_request';
-  method: string;
+  method: string;        // 'tools/call' | 'resources/read' | 'prompts/get' | etc.
   toolName?: string;
+  resourceUri?: string;
   serverName: string;
+  inputSizeBytes?: number;
+  inputPreview?: string;
 }
 
 export interface McpResponseEvent extends BaseEvent {
   type: 'mcp_response';
   method: string;
   toolName?: string;
+  resourceUri?: string;
   serverName: string;
   durationMs: number;
+  outputSizeBytes?: number;
+  outputPreview?: string;
   isError: boolean;
+  errorMessage?: string;
+}
+
+// ─── RAG Events ────────────────────────────────────────────────────────────
+// For instrumenting retrieval-augmented generation pipelines
+
+export interface RagRetrievalEvent extends BaseEvent {
+  type: 'rag_retrieval';
+  source: string;         // name of the retrieval source / vector DB
+  query: string;          // search query or embedding input (truncated)
+  resultCount: number;
+  topScore?: number;      // relevance score of best result (0-1)
+  durationMs: number;
+  chunkSizes?: number[];  // token/char sizes of returned chunks
+  totalChunkTokens?: number;
+  metadata?: Record<string, unknown>;
+}
+
+export interface RagEmbeddingEvent extends BaseEvent {
+  type: 'rag_embedding';
+  source: string;
+  model: string;          // embedding model name
+  inputTokens: number;
+  durationMs: number;
+  dimensions?: number;    // embedding vector dimensions
+  batchSize?: number;
+}
+
+export interface RagIndexEvent extends BaseEvent {
+  type: 'rag_index';
+  source: string;
+  documentCount: number;
+  totalTokens: number;
+  durationMs: number;
+  metadata?: Record<string, unknown>;
+}
+
+// ─── Custom / Provider Events ──────────────────────────────────────────────
+// Generic event for extending AIr with custom providers
+
+export interface CustomEvent extends BaseEvent {
+  type: 'custom';
+  provider: string;       // provider name (e.g. 'my-rag', 'langchain', 'llamaindex')
+  eventName: string;      // provider-specific event name
+  data: Record<string, unknown>;
+  durationMs?: number;
+  isError?: boolean;
   errorMessage?: string;
 }
 
@@ -185,6 +238,10 @@ export type TelemetryEvent =
   | SessionEndEvent
   | McpRequestEvent
   | McpResponseEvent
+  | RagRetrievalEvent
+  | RagEmbeddingEvent
+  | RagIndexEvent
+  | CustomEvent
   | HeartbeatEvent;
 
 // ─── Dashboard Messages (Server → Dashboard via WebSocket) ─────────────────

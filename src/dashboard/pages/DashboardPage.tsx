@@ -7,6 +7,8 @@ import { ContextTreemap } from '../visualizations/ContextTreemap';
 import { ToolWaterfall } from '../visualizations/ToolWaterfall';
 import { TokenFlowChart } from '../visualizations/TokenFlowChart';
 import { ContextUtilizationChart } from '../visualizations/ContextUtilizationChart';
+import { McpStatsPanel } from '../visualizations/McpStatsPanel';
+import { RagStatsPanel } from '../visualizations/RagStatsPanel';
 import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
 import {
   shell,
@@ -32,6 +34,8 @@ export const DashboardPage: React.FC = () => {
     fetchToolCalls,
     fetchContextSnapshots,
     fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
   } = useTelemetry();
 
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -39,6 +43,8 @@ export const DashboardPage: React.FC = () => {
   const [toolCalls, setToolCalls] = useState<any[]>([]);
   const [contextSnapshots, setContextSnapshots] = useState<any[]>([]);
   const [breakdown, setBreakdown] = useState<{ segments: ContextSegment[]; tokens_used: number; context_window: number } | null>(null);
+  const [mcpStats, setMcpStats] = useState<any[]>([]);
+  const [ragStats, setRagStats] = useState<any[]>([]);
 
   // Map API response shape to our state shape
   const mapBreakdown = (data: any) => {
@@ -65,7 +71,9 @@ export const DashboardPage: React.FC = () => {
     fetchToolCalls(activeSessionId).then(setToolCalls);
     fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
     fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
-  }, [activeSessionId, fetchSessionEvents, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown]);
+    fetchMcpStats(activeSessionId).then(setMcpStats);
+    fetchRagStats(activeSessionId).then(setRagStats);
+  }, [activeSessionId, fetchSessionEvents, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown, fetchMcpStats, fetchRagStats]);
 
   // Refresh session data when new events arrive for active session
   useEffect(() => {
@@ -81,8 +89,12 @@ export const DashboardPage: React.FC = () => {
         fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
         fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
       }
+      if (types.has('mcp_response')) fetchMcpStats(activeSessionId).then(setMcpStats);
+      if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
+        fetchRagStats(activeSessionId).then(setRagStats);
+      }
     }
-  }, [events, activeSessionId, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown]);
+  }, [events, activeSessionId, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown, fetchMcpStats, fetchRagStats]);
 
   // Compute KPIs from active session
   const activeSession: SessionSummary | undefined = sessions.find((s) => s.sessionId === activeSessionId);
@@ -192,6 +204,35 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* MCP + RAG Stats (conditional — only when data exists) */}
+        {(mcpStats.length > 0 || ragStats.length > 0) && (
+          <div className={gridRow}>
+            <div className={panel}>
+              <div className={panelHeader}>
+                <span>MCP Servers</span>
+                <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                  {mcpStats.length > 0 ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls` : 'no data'}
+                </span>
+              </div>
+              <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
+                <McpStatsPanel stats={mcpStats} />
+              </div>
+            </div>
+
+            <div className={panel}>
+              <div className={panelHeader}>
+                <span>RAG Pipeline</span>
+                <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                  {ragStats.length > 0 ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops` : 'no data'}
+                </span>
+              </div>
+              <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
+                <RagStatsPanel stats={ragStats} />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Sessions + Live Feed */}
         <div className={gridRow}>

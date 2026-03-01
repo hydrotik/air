@@ -6,6 +6,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./sdk": "./src/sdk/index.ts",
     "./collector": "./src/collector/index.ts",
     "./server": "./src/server/index.ts"
   },

@@ -206,6 +206,63 @@ export class TelemetryStore {
     return rows.map((r) => JSON.parse(r.data)).reverse();
   }
 
+  /** MCP call stats grouped by server + method */
+  getMcpStats(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        json_extract(data, '$.serverName') as server_name,
+        json_extract(data, '$.method') as method,
+        json_extract(data, '$.toolName') as tool_name,
+        COUNT(*) as call_count,
+        AVG(json_extract(data, '$.durationMs')) as avg_ms,
+        MIN(json_extract(data, '$.durationMs')) as min_ms,
+        MAX(json_extract(data, '$.durationMs')) as max_ms,
+        SUM(CASE WHEN json_extract(data, '$.isError') = 1 THEN 1 ELSE 0 END) as errors
+      FROM events
+      WHERE session_id = ? AND type = 'mcp_response'
+      GROUP BY server_name, method, tool_name
+      ORDER BY call_count DESC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** RAG retrieval stats grouped by source */
+  getRagStats(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        json_extract(data, '$.source') as source,
+        type,
+        COUNT(*) as call_count,
+        AVG(json_extract(data, '$.durationMs')) as avg_ms,
+        MIN(json_extract(data, '$.durationMs')) as min_ms,
+        MAX(json_extract(data, '$.durationMs')) as max_ms,
+        AVG(json_extract(data, '$.resultCount')) as avg_results,
+        AVG(json_extract(data, '$.topScore')) as avg_top_score,
+        SUM(json_extract(data, '$.totalChunkTokens')) as total_chunk_tokens
+      FROM events
+      WHERE session_id = ? AND type IN ('rag_retrieval', 'rag_embedding', 'rag_index')
+      GROUP BY source, type
+      ORDER BY call_count DESC
+    `);
+    return stmt.all(sessionId);
+  }
+
+  /** Summary of all providers that have sent events */
+  getProviderSummary(sessionId: string) {
+    const stmt = this.db.prepare(`
+      SELECT
+        type,
+        COUNT(*) as event_count,
+        MIN(timestamp) as first_seen,
+        MAX(timestamp) as last_seen
+      FROM events
+      WHERE session_id = ?
+      GROUP BY type
+      ORDER BY event_count DESC
+    `);
+    return stmt.all(sessionId);
+  }
+
   private rowToSummary(row: any): SessionSummary {
     return {
       sessionId: row.session_id,
