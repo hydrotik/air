@@ -10,15 +10,33 @@ interface Props {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  system_prompt: '#6366f1',    // indigo
+  // System prompt sub-sections
+  sp_base: '#6366f1',          // indigo
+  sp_claude_md: '#818cf8',     // indigo-light
+  sp_skills: '#a855f7',        // purple
+  sp_tools: '#7c3aed',         // violet
+  sp_prompt_templates: '#8b5cf6', // violet-light
+  sp_extensions: '#c084fc',    // purple-light
+  sp_other: '#6366f1',         // indigo
+  system_prompt: '#6366f1',    // indigo (legacy)
   context_files: '#8b5cf6',    // violet
   skills: '#a855f7',           // purple
+  // Messages
   user_messages: '#3b82f6',    // blue
   assistant_messages: '#06b6d4', // cyan
-  tool_results: '#f59e0b',     // amber
+  tool_results: '#f59e0b',     // amber (legacy blob)
   compaction_summary: '#10b981', // emerald
   custom_messages: '#ec4899',   // pink
   thinking: '#64748b',         // slate
+  // File-level tool results
+  tr_gsd: '#f97316',           // orange
+  tr_desloppify: '#fb923c',    // orange-light
+  tr_source_code: '#eab308',   // yellow
+  tr_config: '#a3a3a3',        // neutral
+  tr_docs: '#d97706',          // amber-dark
+  tr_tests: '#84cc16',         // lime
+  tr_styles: '#14b8a6',        // teal
+  tool_results_other: '#ca8a04', // yellow-dark
 };
 
 export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, contextWindow }) => {

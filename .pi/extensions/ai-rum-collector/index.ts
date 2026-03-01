@@ -40,6 +40,88 @@ function contentToString(content: any): string {
   return '';
 }
 
+/**
+ * Parse system prompt into sub-sections by detecting structural markers.
+ * Pi's system prompt contains CLAUDE.md content, skills, tools, etc.
+ */
+function parseSystemPromptSources(prompt: string): Array<{ key: string; chars: number }> {
+  const sources: Array<{ key: string; chars: number }> = [];
+  let remaining = prompt.length;
+
+  // CLAUDE.md content — usually after "## /path/to/CLAUDE.md" or "# Project Context"
+  const claudeMdMatch = prompt.match(/## .*?CLAUDE\.md\n([\s\S]*?)(?=\n## |\n<available_skills>|$)/i);
+  if (claudeMdMatch) {
+    sources.push({ key: 'sp_claude_md', chars: claudeMdMatch[0].length });
+    remaining -= claudeMdMatch[0].length;
+  }
+
+  // Skills section — between <available_skills> and </available_skills>
+  const skillsMatch = prompt.match(/<available_skills>[\s\S]*?<\/available_skills>/);
+  if (skillsMatch) {
+    sources.push({ key: 'sp_skills', chars: skillsMatch[0].length });
+    remaining -= skillsMatch[0].length;
+  }
+
+  // Tool definitions — "Available tools:" or "Here are the functions"
+  const toolsMatch = prompt.match(/(?:Available tools:|Here are the (?:functions|tools)[^:]*:)[\s\S]*?(?=\n# |\nCurrent date|$)/i);
+  if (toolsMatch) {
+    sources.push({ key: 'sp_tools', chars: toolsMatch[0].length });
+    remaining -= toolsMatch[0].length;
+  }
+
+  // Prompt templates
+  const templatesMatch = prompt.match(/(?:prompt.templates|Prompt Templates?)[\s\S]*?(?=\n## |\n<|$)/i);
+  if (templatesMatch) {
+    sources.push({ key: 'sp_prompt_templates', chars: templatesMatch[0].length });
+    remaining -= templatesMatch[0].length;
+  }
+
+  // Extensions info
+  const extMatch = prompt.match(/(?:extensions?|custom tools)[\s\S]*?(?=\n## |\n<|$)/i);
+  if (extMatch && extMatch[0].length < prompt.length * 0.5) {
+    sources.push({ key: 'sp_extensions', chars: extMatch[0].length });
+    remaining -= extMatch[0].length;
+  }
+
+  // Remaining = base prompt + anything we didn't match
+  if (remaining > 0) {
+    sources.push({ key: 'sp_base', chars: remaining });
+  }
+
+  return sources;
+}
+
+/**
+ * Classify a file path into a context source category.
+ */
+function classifyFilePath(filePath: string): string {
+  const p = filePath.toLowerCase();
+
+  // GSD / planning
+  if (p.includes('.get-shit-done') || p.includes('.gsd') || p.includes('.planning') || p.includes('gsd')) return 'tr_gsd';
+
+  // Desloppify
+  if (p.includes('.desloppify') || p.includes('desloppify')) return 'tr_desloppify';
+
+  // Documentation
+  if (p.includes('readme') || p.includes('.md') || p.includes('/docs/')) return 'tr_docs';
+
+  // Config files
+  if (p.includes('config') || p.includes('.json') || p.includes('.yaml') || p.includes('.yml') ||
+      p.includes('tsconfig') || p.includes('package.json') || p.includes('.env')) return 'tr_config';
+
+  // Test files
+  if (p.includes('.test.') || p.includes('.spec.') || p.includes('__tests__')) return 'tr_tests';
+
+  // Style files
+  if (p.includes('.css') || p.includes('.scss') || p.includes('.css.ts')) return 'tr_styles';
+
+  // Source code (catch-all for .ts, .tsx, .js, .jsx)
+  if (p.match(/\.(tsx?|jsx?|py|rs|go)$/)) return 'tr_source_code';
+
+  return 'tool_results_other';
+}
+
 export default function airCollector(pi: ExtensionAPI) {
   const url = process.env.AIR_URL ?? 'ws://localhost:5200/ws/collector';
   const enabled = process.env.AIR_ENABLED !== 'false';
@@ -50,6 +132,8 @@ export default function airCollector(pi: ExtensionAPI) {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   const pendingToolStarts = new Map<string, number>();
+  // Track file reads: toolCallId → { path, outputSize }
+  const fileReads = new Map<string, { path: string; outputBytes: number }>();
 
   // ─── Connection Management ───────────────────────────────────────────
 
@@ -260,20 +344,70 @@ export default function airCollector(pi: ExtensionAPI) {
         }
       }
 
-      // System prompt — includes CLAUDE.md, skills, etc.
+      // System prompt — parse into sub-sections
       const systemPrompt = ctx.getSystemPrompt?.() ?? '';
       if (systemPrompt.length > 0) {
-        charsByCategory['system_prompt'] = systemPrompt.length;
+        // Parse the system prompt to identify constituent sources
+        const sources = parseSystemPromptSources(systemPrompt);
+        for (const src of sources) {
+          charsByCategory[src.key] = src.chars;
+        }
+      }
+
+      // Classify tool results by tracked file reads
+      const toolResultByCategory: Record<string, number> = {};
+      for (const [, fr] of fileReads) {
+        const category = classifyFilePath(fr.path);
+        toolResultByCategory[category] = (toolResultByCategory[category] ?? 0) + fr.outputBytes;
+      }
+
+      // If we have file-level breakdowns, split the tool_results blob
+      if (Object.keys(toolResultByCategory).length > 0) {
+        const classifiedChars = Object.values(toolResultByCategory).reduce((s, c) => s + c, 0);
+        const totalToolChars = charsByCategory['tool_results'] ?? 0;
+        // Scale classified bytes to match the total tool result chars (bytes ≠ chars but close)
+        const scale = totalToolChars > 0 && classifiedChars > 0 ? totalToolChars / classifiedChars : 1;
+        let accounted = 0;
+        for (const [cat, bytes] of Object.entries(toolResultByCategory)) {
+          const scaled = Math.round(bytes * scale);
+          toolResultByCategory[cat] = scaled;
+          accounted += scaled;
+        }
+        // Keep unclassified remainder (bash output, edit results, etc.)
+        const remainder = totalToolChars - accounted;
+        if (remainder > 100) {
+          toolResultByCategory['tool_results_other'] = remainder;
+        }
+        delete charsByCategory['tool_results'];
+        Object.assign(charsByCategory, toolResultByCategory);
       }
 
       const labels: Record<string, string> = {
-        system_prompt: 'System Prompt + Context Files',
+        // System prompt sub-sections
+        sp_base: 'Base System Prompt',
+        sp_claude_md: 'CLAUDE.md',
+        sp_skills: 'Skills',
+        sp_tools: 'Tool Definitions',
+        sp_prompt_templates: 'Prompt Templates',
+        sp_extensions: 'Extensions',
+        sp_other: 'Other Context Files',
+        system_prompt: 'System Prompt',
+        // Messages
         user_messages: 'User Messages',
         assistant_messages: 'Assistant Messages',
         tool_results: 'Tool Results',
         thinking: 'Thinking Blocks',
         compaction_summary: 'Compaction Summaries',
         custom_messages: 'Extension Messages',
+        // File-level tool results
+        tr_gsd: 'GSD Specs & Plans',
+        tr_desloppify: 'Desloppify State',
+        tr_source_code: 'Source Code',
+        tr_config: 'Config Files',
+        tr_docs: 'Documentation',
+        tr_tests: 'Test Files',
+        tr_styles: 'Stylesheets',
+        tool_results_other: 'Other Tool Results',
       };
 
       // Use real token count from getContextUsage() and distribute proportionally
@@ -318,6 +452,12 @@ export default function airCollector(pi: ExtensionAPI) {
     const startTime = Date.now();
     pendingToolStarts.set(event.toolCallId, startTime);
 
+    // Track file reads for context source breakdown
+    const toolName = event.toolName?.toLowerCase() ?? '';
+    if (toolName === 'read' && event.args?.path) {
+      fileReads.set(event.toolCallId, { path: event.args.path, outputBytes: 0 });
+    }
+
     const inputStr = JSON.stringify(event.args ?? {});
     send({
       id: uid(),
@@ -337,6 +477,14 @@ export default function airCollector(pi: ExtensionAPI) {
     const endTime = Date.now();
 
     const outputStr = event.result ? JSON.stringify(event.result) : '';
+    const outputBytes = Buffer.byteLength(outputStr);
+
+    // Update file read tracking with output size
+    const fileRead = fileReads.get(event.toolCallId);
+    if (fileRead) {
+      fileRead.outputBytes = outputBytes;
+    }
+
     send({
       id: uid(),
       sessionId,
@@ -345,7 +493,7 @@ export default function airCollector(pi: ExtensionAPI) {
       toolName: event.toolName,
       toolCallId: event.toolCallId,
       durationMs: endTime - startTime,
-      outputSizeBytes: Buffer.byteLength(outputStr),
+      outputSizeBytes: outputBytes,
       outputPreview: outputStr.slice(0, 200),
       isError: event.isError ?? false,
     });
