@@ -4,16 +4,20 @@
  * Streams telemetry to the AIr server for real-time AI observability.
  * Hooks into pi's tool calls, turns, context usage, compaction, and model events.
  *
- * Requires: AIr server running on ws://localhost:5200
- * Start with: pnpm turbo run dev --filter=@hydrotik/air
+ * Auto-starts the AIr server if it's not already running.
  *
  * Config env vars:
- *   AIR_URL     — WebSocket endpoint (default: ws://localhost:5200/ws/collector)
- *   AIR_ENABLED — set to "false" to disable (default: true)
+ *   AIR_URL        — WebSocket endpoint (default: ws://localhost:5200/ws/collector)
+ *   AIR_ENABLED    — set to "false" to disable (default: true)
+ *   AIR_PORT       — server port (default: 5200)
+ *   AIR_AUTOSTART  — set to "false" to disable auto-start (default: true)
  */
 
 import type { ExtensionAPI } from '@mariozechner/pi-coding-agent';
 import WebSocket from 'ws';
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
@@ -181,7 +185,71 @@ export default function airCollector(pi: ExtensionAPI) {
     }
   }
 
-  connect();
+  // ─── Auto-start AIr server if not running ────────────────────────────
+
+  const airPort = Number(process.env.AIR_PORT ?? '5200');
+  const autoStart = process.env.AIR_AUTOSTART !== 'false';
+
+  async function isServerRunning(): Promise<boolean> {
+    try {
+      const res = await fetch(`http://localhost:${airPort}/api/health`);
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  async function startServer(): Promise<void> {
+    // Try multiple paths to find the AIr CLI
+    const candidates = [
+      // Monorepo: built dist
+      path.resolve(process.cwd(), 'packages/hy-ai-rum/dist/server/cli.js'),
+      // Monorepo: via tsx (dev)
+      path.resolve(process.cwd(), 'packages/hy-ai-rum/src/server/start.ts'),
+      // Global npm install
+      'air',
+    ];
+
+    for (const candidate of candidates) {
+      const isFile = candidate !== 'air' && existsSync(candidate);
+      const isBin = candidate === 'air';
+
+      if (isFile || isBin) {
+        const cmd = candidate.endsWith('.ts') ? 'npx' : 'node';
+        const args = candidate.endsWith('.ts')
+          ? ['tsx', candidate]
+          : isBin
+            ? [] // 'air' is the bin itself
+            : [candidate, '--port', String(airPort)];
+
+        const child = spawn(
+          isBin ? 'air' : cmd,
+          isBin ? ['--port', String(airPort)] : args,
+          {
+            detached: true,
+            stdio: 'ignore',
+            env: { ...process.env, AIR_PORT: String(airPort) },
+          }
+        );
+        child.unref();
+
+        // Wait up to 3s for server to be ready
+        for (let i = 0; i < 15; i++) {
+          await new Promise((r) => setTimeout(r, 200));
+          if (await isServerRunning()) return;
+        }
+        // If it didn't start, try next candidate
+      }
+    }
+  }
+
+  // Auto-start then connect
+  (async () => {
+    if (autoStart && !(await isServerRunning())) {
+      await startServer();
+    }
+    connect();
+  })();
 
   // Heartbeat every 10s
   heartbeatTimer = setInterval(() => {

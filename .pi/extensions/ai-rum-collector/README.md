@@ -2,6 +2,8 @@
 
 Streams telemetry from your [pi](https://github.com/mariozechner/pi-coding-agent) coding agent sessions to the AIr dashboard for real-time observability.
 
+**Auto-starts the AIr server** — no manual setup needed. Just `/reload` and go.
+
 ## Setup
 
 ```bash
@@ -24,17 +26,29 @@ cp -r .pi/extensions/ai-rum-collector ~/.pi/agent/extensions/air-collector
 cd ~/.pi/agent/extensions/air-collector && npm install
 ```
 
-## Requirements
+## How Auto-Start Works
 
-- AIr server running on `ws://localhost:5200` (start with `pnpm turbo run dev --filter=@hydrotik/air`)
-- Pi coding agent with extension support
+When the extension activates, it:
+
+1. Checks if the AIr server is already running (`GET /api/health`)
+2. If not, spawns it as a **detached background process** (won't block pi)
+3. Tries these paths in order:
+   - `packages/hy-ai-rum/dist/server/cli.js` (monorepo built)
+   - `packages/hy-ai-rum/src/server/start.ts` (monorepo dev via tsx)
+   - `air` global bin (npm global install)
+4. Waits up to 3 seconds for the server to be ready
+5. Connects the WebSocket collector
+
+The server persists after pi exits — it's a standalone process.
 
 ## Configuration
 
 | Env Variable | Default | Description |
 |-------------|---------|-------------|
 | `AIR_URL` | `ws://localhost:5200/ws/collector` | Server WebSocket endpoint |
-| `AIR_ENABLED` | `true` | Set to `"false"` to disable |
+| `AIR_ENABLED` | `true` | Set to `"false"` to disable collection |
+| `AIR_PORT` | `5200` | Server port (used by auto-start) |
+| `AIR_AUTOSTART` | `true` | Set to `"false"` to disable auto-start |
 
 ## What It Collects
 
@@ -48,4 +62,4 @@ cd ~/.pi/agent/extensions/air-collector && npm install
 | Compactions | `session_compact` | Tokens before, summary length |
 | Model changes | `model_select` | Previous/new model, trigger source |
 
-The collector is **non-blocking** — if the server isn't running, events are silently dropped and it reconnects every 5 seconds.
+The collector is **non-blocking** — if the server isn't running or auto-start fails, events are silently dropped and it reconnects every 5 seconds.
