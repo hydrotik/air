@@ -5450,7 +5450,7 @@ const emptyState = (0, _vanilla_extract_css.style)({
 	color: _hydrotik_tokens.vars.color.textMuted,
 	fontSize: _hydrotik_tokens.vars.font.size.sm
 });
-const shimmer = (0, _vanilla_extract_css.keyframes)({
+const shimmer$2 = (0, _vanilla_extract_css.keyframes)({
 	"0%": { backgroundPosition: "-200% 0" },
 	"100%": { backgroundPosition: "200% 0" }
 });
@@ -5464,7 +5464,7 @@ const loadingSkeleton = (0, _vanilla_extract_css.style)({
 	borderRadius: _hydrotik_tokens.vars.radii.sm,
 	background: `linear-gradient(90deg, ${_hydrotik_tokens.vars.color.ghostHover} 25%, color-mix(in srgb, ${_hydrotik_tokens.vars.color.ghostHover} 50%, transparent) 50%, ${_hydrotik_tokens.vars.color.ghostHover} 75%)`,
 	backgroundSize: "200% 100%",
-	animation: `${shimmer} 1.5s infinite`
+	animation: `${shimmer$2} 1.5s infinite`
 });
 const footer = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -6248,10 +6248,882 @@ function RenderRows({ rows, visibleColumns, table, enableSelection, enableExpand
 DataGrid.displayName = "DataGrid";
 
 //#endregion
+//#region src/components/Price/Price.css.ts
+const priceRoot = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "baseline",
+	gap: _hydrotik_tokens.vars.space["2"],
+	fontFamily: _hydrotik_tokens.vars.font.family.sans
+});
+const priceAmount = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		fontVariantNumeric: "tabular-nums",
+		letterSpacing: "-0.01em"
+	},
+	variants: {
+		variant: {
+			current: {
+				color: _hydrotik_tokens.vars.color.text,
+				fontWeight: "600"
+			},
+			original: {
+				color: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.text} 50%, transparent)`,
+				fontWeight: "400",
+				textDecoration: "line-through"
+			},
+			discount: {
+				color: _hydrotik_tokens.vars.color.destructive,
+				fontWeight: "600"
+			}
+		},
+		size: {
+			sm: { fontSize: _hydrotik_tokens.vars.font.size.sm },
+			md: { fontSize: _hydrotik_tokens.vars.font.size.md },
+			lg: { fontSize: _hydrotik_tokens.vars.font.size.lg },
+			xl: { fontSize: _hydrotik_tokens.vars.font.size.xl }
+		}
+	},
+	defaultVariants: {
+		variant: "current",
+		size: "md"
+	}
+});
+
+//#endregion
+//#region src/components/Price/Price.tsx
+function formatPrice(amount, currency, showCents, locale) {
+	return new Intl.NumberFormat(locale, {
+		style: "currency",
+		currency,
+		minimumFractionDigits: showCents ? 2 : 0,
+		maximumFractionDigits: showCents ? 2 : 0
+	}).format(amount);
+}
+const Price = react.default.forwardRef(({ amount, currency = "USD", locale = "en-US", showCents = true, originalAmount, size = "md", className }, ref) => {
+	const hasDiscount = originalAmount != null && originalAmount > amount;
+	const formattedAmount = formatPrice(amount, currency, showCents, locale);
+	const formattedOriginal = hasDiscount ? formatPrice(originalAmount, currency, showCents, locale) : null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${priceRoot} ${className ?? ""}`,
+		children: [hasDiscount && formattedOriginal && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: priceAmount({
+				variant: "original",
+				size
+			}),
+			children: formattedOriginal
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: priceAmount({
+				variant: hasDiscount ? "discount" : "current",
+				size
+			}),
+			children: formattedAmount
+		})]
+	});
+});
+Price.displayName = "Price";
+
+//#endregion
+//#region src/components/ColorSwatch/ColorSwatch.css.ts
+const colorSwatchStyle = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "inline-flex",
+		alignItems: "center",
+		justifyContent: "center",
+		cursor: "pointer",
+		border: "1px solid",
+		borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 60%, transparent)`,
+		transition: "all 150ms ease",
+		flexShrink: 0,
+		":hover": {
+			borderColor: _hydrotik_tokens.vars.color.text,
+			transform: "scale(1.05)"
+		},
+		":focus-visible": {
+			outline: "none",
+			boxShadow: `0 0 0 2px ${_hydrotik_tokens.vars.color.background}, 0 0 0 4px ${_hydrotik_tokens.vars.color.focusRing}`
+		}
+	},
+	variants: {
+		selected: {
+			true: {
+				borderColor: _hydrotik_tokens.vars.color.text,
+				borderWidth: "2px",
+				boxShadow: `0 0 0 1px ${_hydrotik_tokens.vars.color.background}`
+			},
+			false: {}
+		},
+		size: {
+			sm: {
+				width: "24px",
+				height: "24px",
+				borderRadius: _hydrotik_tokens.vars.radii.sm
+			},
+			md: {
+				width: "32px",
+				height: "32px",
+				borderRadius: _hydrotik_tokens.vars.radii.sm
+			},
+			lg: {
+				width: "40px",
+				height: "40px",
+				borderRadius: _hydrotik_tokens.vars.radii.md
+			}
+		},
+		shape: {
+			square: {},
+			circle: { borderRadius: "50%" }
+		},
+		disabled: {
+			true: {
+				opacity: .5,
+				cursor: "not-allowed",
+				pointerEvents: "none"
+			},
+			false: {}
+		}
+	},
+	defaultVariants: {
+		selected: false,
+		size: "md",
+		shape: "square",
+		disabled: false
+	}
+});
+
+//#endregion
+//#region src/components/ColorSwatch/ColorSwatch.tsx
+const ColorSwatch = react.default.forwardRef(({ hex, name, isSelected = false, size = "md", shape = "square", disabled = false, onClick, href, className }, ref) => {
+	const classes = `${colorSwatchStyle({
+		selected: isSelected,
+		size,
+		shape,
+		disabled
+	})} ${className ?? ""}`;
+	if (href) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+		href,
+		className: classes,
+		"aria-label": name,
+		title: name,
+		style: { backgroundColor: hex }
+	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+		ref,
+		type: "button",
+		onClick,
+		disabled,
+		className: classes,
+		"aria-label": name,
+		"aria-pressed": isSelected,
+		title: name,
+		style: { backgroundColor: hex }
+	});
+});
+ColorSwatch.displayName = "ColorSwatch";
+
+//#endregion
+//#region src/components/QuantityPicker/QuantityPicker.css.ts
+const quantityPickerRoot = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "inline-flex",
+		alignItems: "center",
+		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+		borderRadius: _hydrotik_tokens.vars.radii.md,
+		overflow: "hidden",
+		fontFamily: _hydrotik_tokens.vars.font.family.sans,
+		fontVariantNumeric: "tabular-nums",
+		backgroundColor: _hydrotik_tokens.vars.color.background
+	},
+	variants: { size: {
+		sm: { height: "28px" },
+		md: { height: "32px" },
+		lg: { height: "40px" }
+	} },
+	defaultVariants: { size: "md" }
+});
+const quantityButton = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "32px",
+	height: "100%",
+	border: "none",
+	backgroundColor: "transparent",
+	color: _hydrotik_tokens.vars.color.text,
+	cursor: "pointer",
+	fontSize: _hydrotik_tokens.vars.font.size.md,
+	fontWeight: "500",
+	transition: "background-color 150ms ease",
+	":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+	":disabled": {
+		opacity: .5,
+		cursor: "not-allowed"
+	},
+	":focus-visible": {
+		outline: "none",
+		backgroundColor: _hydrotik_tokens.vars.color.ghostHover
+	},
+	selectors: {
+		"&:first-of-type": { borderRight: `1px solid ${_hydrotik_tokens.vars.color.border}` },
+		"&:last-of-type": { borderLeft: `1px solid ${_hydrotik_tokens.vars.color.border}` }
+	}
+});
+const quantityDisplay = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		color: _hydrotik_tokens.vars.color.text,
+		fontWeight: "500",
+		userSelect: "none"
+	},
+	variants: { size: {
+		sm: {
+			minWidth: "28px",
+			fontSize: _hydrotik_tokens.vars.font.size.xs,
+			padding: `0 ${_hydrotik_tokens.vars.space["1"]}`
+		},
+		md: {
+			minWidth: "36px",
+			fontSize: _hydrotik_tokens.vars.font.size.sm,
+			padding: `0 ${_hydrotik_tokens.vars.space["2"]}`
+		},
+		lg: {
+			minWidth: "44px",
+			fontSize: _hydrotik_tokens.vars.font.size.md,
+			padding: `0 ${_hydrotik_tokens.vars.space["3"]}`
+		}
+	} },
+	defaultVariants: { size: "md" }
+});
+
+//#endregion
+//#region src/components/QuantityPicker/QuantityPicker.tsx
+const QuantityPicker = react.default.forwardRef(({ quantity, onIncrease, onDecrease, min = 1, max = 99, size = "md", className }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${quantityPickerRoot({ size })} ${className ?? ""}`,
+		role: "group",
+		"aria-label": "Quantity picker",
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+				type: "button",
+				className: quantityButton,
+				onClick: onDecrease,
+				disabled: quantity <= min,
+				"aria-label": "Decrease quantity",
+				children: "−"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				className: quantityDisplay({ size }),
+				"aria-live": "polite",
+				children: quantity
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+				type: "button",
+				className: quantityButton,
+				onClick: onIncrease,
+				disabled: quantity >= max,
+				"aria-label": "Increase quantity",
+				children: "+"
+			})
+		]
+	});
+});
+QuantityPicker.displayName = "QuantityPicker";
+
+//#endregion
+//#region src/components/ProductCard/ProductCard.css.ts
+const productCardRoot = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	display: "flex",
+	flexDirection: "column",
+	overflow: "hidden",
+	fontFamily: _hydrotik_tokens.vars.font.family.sans
+});
+const productCardImageWrapper = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	aspectRatio: "1",
+	overflow: "hidden",
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 50%, transparent)`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	cursor: "pointer",
+	transition: "border-color 150ms ease",
+	":hover": { borderColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.text} 30%, transparent)` }
+});
+const productCardImage = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		position: "absolute",
+		inset: 0,
+		width: "100%",
+		height: "100%",
+		objectFit: "cover",
+		transition: "opacity 300ms ease"
+	},
+	variants: { visible: {
+		true: { opacity: 1 },
+		false: { opacity: 0 }
+	} },
+	defaultVariants: { visible: true }
+});
+const productCardOverlay = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: _hydrotik_tokens.vars.space["2"],
+	right: _hydrotik_tokens.vars.space["2"],
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["1"],
+	zIndex: 10
+});
+const productCardWishlist = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "32px",
+	height: "32px",
+	borderRadius: _hydrotik_tokens.vars.radii.full,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.background} 80%, transparent)`,
+	backdropFilter: "blur(8px)",
+	border: "none",
+	cursor: "pointer",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	transition: "all 150ms ease",
+	":hover": {
+		color: _hydrotik_tokens.vars.color.destructive,
+		backgroundColor: _hydrotik_tokens.vars.color.background
+	}
+});
+const productCardWishlistFilled = (0, _vanilla_extract_css.style)({
+	color: _hydrotik_tokens.vars.color.destructive,
+	fill: "currentColor"
+});
+const productCardInfo = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["1"],
+	paddingTop: _hydrotik_tokens.vars.space["3"]
+});
+const productCardName = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: "400",
+	color: _hydrotik_tokens.vars.color.text,
+	textTransform: "uppercase",
+	letterSpacing: "0.02em",
+	lineHeight: "1.3",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	display: "-webkit-box",
+	WebkitLineClamp: 2,
+	WebkitBoxOrient: "vertical",
+	margin: 0
+});
+(0, _vanilla_extract_css.globalStyle)(`${productCardName} a`, {
+	color: "inherit",
+	textDecoration: "none"
+});
+(0, _vanilla_extract_css.globalStyle)(`${productCardName} a:hover`, { textDecoration: "underline" });
+const productCardMeta = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	gap: _hydrotik_tokens.vars.space["2"]
+});
+const productCardSwatches = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	gap: "2px"
+});
+const productCardActions = (0, _vanilla_extract_css.style)({ paddingTop: _hydrotik_tokens.vars.space["2"] });
+const shimmer$1 = (0, _vanilla_extract_css.keyframes)({
+	"0%": { backgroundPosition: "-200% 0" },
+	"100%": { backgroundPosition: "200% 0" }
+});
+const productCardSkeleton = (0, _vanilla_extract_css.style)({
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	background: `linear-gradient(90deg, ${_hydrotik_tokens.vars.color.border} 25%, color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 60%, transparent) 50%, ${_hydrotik_tokens.vars.color.border} 75%)`,
+	backgroundSize: "200% 100%",
+	animation: `${shimmer$1} 1.5s infinite`
+});
+
+//#endregion
+//#region src/components/ProductCard/ProductCard.tsx
+const ProductCard = react.default.forwardRef(({ product, isWishlisted = false, onWishlistToggle, renderActions, renderPrice, renderSwatches, className }, ref) => {
+	const [hovered, setHovered] = (0, react.useState)(false);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${productCardRoot} ${className ?? ""}`,
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: productCardImageWrapper,
+				onMouseEnter: () => setHovered(true),
+				onMouseLeave: () => setHovered(false),
+				children: [product.href ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+					href: product.href,
+					"aria-label": product.name,
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+						src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+						alt: product.name,
+						className: productCardImage({ visible: true }),
+						loading: "lazy"
+					})
+				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+					src: hovered && product.alternateSrc ? product.alternateSrc : product.thumbnailSrc,
+					alt: product.name,
+					className: productCardImage({ visible: true }),
+					loading: "lazy"
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: productCardOverlay,
+					children: onWishlistToggle && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: `${productCardWishlist} ${isWishlisted ? productCardWishlistFilled : ""}`,
+						onClick: () => onWishlistToggle(product),
+						"aria-label": isWishlisted ? "Remove from wishlist" : "Add to wishlist",
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Heart, { size: 16 })
+					})
+				})]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: productCardInfo,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+					className: productCardName,
+					children: product.href ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+						href: product.href,
+						children: product.name
+					}) : product.name
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: productCardMeta,
+					children: [renderPrice ? renderPrice(product) : null, renderSwatches ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: productCardSwatches,
+						children: renderSwatches(product)
+					}) : null]
+				})]
+			}),
+			renderActions && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: productCardActions,
+				children: renderActions(product)
+			})
+		]
+	});
+});
+ProductCard.displayName = "ProductCard";
+const ProductCardSkeleton = react.default.forwardRef(({ className }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${productCardRoot} ${className ?? ""}`,
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: productCardSkeleton,
+				style: { aspectRatio: "1" }
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: productCardInfo,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: productCardSkeleton,
+					style: {
+						height: "14px",
+						width: "75%"
+					}
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: productCardSkeleton,
+					style: {
+						height: "14px",
+						width: "40%"
+					}
+				})]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: productCardActions,
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: productCardSkeleton,
+					style: {
+						height: "36px",
+						width: "100%"
+					}
+				})
+			})
+		]
+	});
+});
+ProductCardSkeleton.displayName = "ProductCardSkeleton";
+
+//#endregion
+//#region src/components/CartItem/CartItem.css.ts
+const cartItemRoot = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	overflow: "hidden",
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	backgroundColor: _hydrotik_tokens.vars.color.background
+});
+const cartItemImage = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	width: "100px",
+	flexShrink: 0,
+	borderRight: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	overflow: "hidden"
+});
+const cartItemImg = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	height: "100%",
+	objectFit: "cover"
+});
+const cartItemContent = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	justifyContent: "space-between",
+	flex: 1,
+	padding: _hydrotik_tokens.vars.space["3"],
+	minHeight: "100px"
+});
+const cartItemHeader = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "flex-start",
+	gap: _hydrotik_tokens.vars.space["2"]
+});
+const cartItemName = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: "400",
+	color: _hydrotik_tokens.vars.color.text,
+	lineHeight: "1.3",
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	display: "-webkit-box",
+	WebkitLineClamp: 2,
+	WebkitBoxOrient: "vertical",
+	margin: 0,
+	flex: 1
+});
+const cartItemNameLink = (0, _vanilla_extract_css.style)({
+	color: "inherit",
+	textDecoration: "none",
+	":hover": { textDecoration: "underline" }
+});
+const cartItemVariant = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	marginLeft: _hydrotik_tokens.vars.space["1"]
+});
+const cartItemPrice = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	fontWeight: "600",
+	color: _hydrotik_tokens.vars.color.text,
+	fontVariantNumeric: "tabular-nums",
+	whiteSpace: "nowrap"
+});
+const cartItemFooter = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	gap: _hydrotik_tokens.vars.space["2"],
+	paddingTop: _hydrotik_tokens.vars.space["2"]
+});
+const cartItemControls = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"]
+});
+const cartItemRemove = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "28px",
+	height: "28px",
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	backgroundColor: "transparent",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	cursor: "pointer",
+	transition: "all 150ms ease",
+	":hover": {
+		borderColor: _hydrotik_tokens.vars.color.destructive,
+		color: _hydrotik_tokens.vars.color.destructive,
+		backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.destructive} 10%, transparent)`
+	},
+	":focus-visible": {
+		outline: "none",
+		borderColor: _hydrotik_tokens.vars.color.focusRing,
+		boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+	}
+});
+const shimmer = (0, _vanilla_extract_css.keyframes)({
+	"0%": { backgroundPosition: "-200% 0" },
+	"100%": { backgroundPosition: "200% 0" }
+});
+const cartItemSkeleton = (0, _vanilla_extract_css.style)({
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	background: `linear-gradient(90deg, ${_hydrotik_tokens.vars.color.border} 25%, color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 60%, transparent) 50%, ${_hydrotik_tokens.vars.color.border} 75%)`,
+	backgroundSize: "200% 100%",
+	animation: `${shimmer} 1.5s infinite`
+});
+
+//#endregion
+//#region src/components/CartItem/CartItem.tsx
+const CartItem = react.default.forwardRef(({ item, onRemove, renderQuantityPicker, renderPrice, className }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${cartItemRoot} ${className ?? ""}`,
+		children: [item.image && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: cartItemImage,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("img", {
+				src: item.image,
+				alt: item.name,
+				className: cartItemImg,
+				loading: "lazy"
+			})
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: cartItemContent,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: cartItemHeader,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("h4", {
+					className: cartItemName,
+					children: [
+						item.href ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+							href: item.href,
+							className: cartItemNameLink,
+							children: item.name
+						}) : item.name,
+						item.color && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+							className: cartItemVariant,
+							children: [
+								"(",
+								item.color,
+								")"
+							]
+						}),
+						item.size && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+							className: cartItemVariant,
+							children: [
+								"(",
+								item.size,
+								")"
+							]
+						})
+					]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cartItemPrice,
+					children: renderPrice ? renderPrice(item) : `$${item.price.toFixed(2)}`
+				})]
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: cartItemFooter,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cartItemControls,
+					children: renderQuantityPicker ? renderQuantityPicker(item) : null
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+					type: "button",
+					className: cartItemRemove,
+					onClick: onRemove,
+					"aria-label": `Remove ${item.name} from cart`,
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Trash2, { size: 14 })
+				})]
+			})]
+		})]
+	});
+});
+CartItem.displayName = "CartItem";
+const CartItemSkeleton = react.default.forwardRef(({ className }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: `${cartItemRoot} ${className ?? ""}`,
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: cartItemImage,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: cartItemSkeleton,
+				style: {
+					width: "100%",
+					height: "100%"
+				}
+			})
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: cartItemContent,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: cartItemHeader,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					style: {
+						flex: 1,
+						display: "flex",
+						flexDirection: "column",
+						gap: "6px"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: cartItemSkeleton,
+						style: {
+							height: "14px",
+							width: "80%"
+						}
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: cartItemSkeleton,
+						style: {
+							height: "12px",
+							width: "40%"
+						}
+					})]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cartItemSkeleton,
+					style: {
+						height: "14px",
+						width: "60px"
+					}
+				})]
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: cartItemFooter,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cartItemSkeleton,
+					style: {
+						height: "28px",
+						width: "80px"
+					}
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cartItemSkeleton,
+					style: {
+						height: "28px",
+						width: "28px"
+					}
+				})]
+			})]
+		})]
+	});
+});
+CartItemSkeleton.displayName = "CartItemSkeleton";
+
+//#endregion
+//#region src/components/AddToCartButton/AddToCartButton.css.ts
+const addToCartRoot = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "inline-flex",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: _hydrotik_tokens.vars.space["2"],
+		fontFamily: _hydrotik_tokens.vars.font.family.sans,
+		fontSize: _hydrotik_tokens.vars.font.size.sm,
+		fontWeight: "500",
+		textTransform: "uppercase",
+		letterSpacing: "0.05em",
+		cursor: "pointer",
+		border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+		borderRadius: _hydrotik_tokens.vars.radii.md,
+		transition: "all 150ms ease",
+		":focus-visible": {
+			outline: "none",
+			borderColor: _hydrotik_tokens.vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+		}
+	},
+	variants: {
+		variant: {
+			default: {
+				backgroundColor: _hydrotik_tokens.vars.color.background,
+				color: _hydrotik_tokens.vars.color.text,
+				borderColor: _hydrotik_tokens.vars.color.border,
+				":hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover }
+			},
+			primary: {
+				backgroundColor: _hydrotik_tokens.vars.color.primary,
+				color: _hydrotik_tokens.vars.color.primaryForeground,
+				borderColor: _hydrotik_tokens.vars.color.primary,
+				":hover": { backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 85%, transparent)` }
+			}
+		},
+		size: {
+			sm: {
+				height: "28px",
+				padding: `0 ${_hydrotik_tokens.vars.space["3"]}`
+			},
+			md: {
+				height: "36px",
+				padding: `0 ${_hydrotik_tokens.vars.space["4"]}`
+			},
+			lg: {
+				height: "44px",
+				padding: `0 ${_hydrotik_tokens.vars.space["6"]}`
+			}
+		},
+		added: {
+			true: {
+				borderColor: _hydrotik_tokens.vars.color.success,
+				color: _hydrotik_tokens.vars.color.success,
+				backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.success} 10%, transparent)`,
+				cursor: "default",
+				pointerEvents: "none"
+			},
+			false: {}
+		},
+		disabled: {
+			true: {
+				opacity: .5,
+				cursor: "not-allowed",
+				pointerEvents: "none"
+			},
+			false: {}
+		}
+	},
+	defaultVariants: {
+		variant: "default",
+		size: "md",
+		added: false,
+		disabled: false
+	}
+});
+const addToCartIcon = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: "16px",
+	height: "16px"
+});
+const addToCartBadge = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	justifyContent: "center",
+	minWidth: "18px",
+	height: "18px",
+	borderRadius: "9px",
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.text} 15%, transparent)`,
+	color: _hydrotik_tokens.vars.color.text,
+	fontSize: "11px",
+	fontWeight: "600",
+	padding: `0 ${_hydrotik_tokens.vars.space["1"]}`
+});
+
+//#endregion
+//#region src/components/AddToCartButton/AddToCartButton.tsx
+const AddToCartButton = react.default.forwardRef(({ onAddToCart, quantity = 0, variant = "default", size = "md", disabled = false, children, className, style }, ref) => {
+	const isAdded = quantity > 0;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+		ref,
+		type: "button",
+		className: `${addToCartRoot({
+			variant,
+			size,
+			added: isAdded,
+			disabled
+		})} ${className ?? ""}`,
+		style,
+		onClick: onAddToCart,
+		disabled: disabled || isAdded,
+		"aria-label": isAdded ? `Added to cart (${quantity})` : "Add to cart",
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				className: addToCartIcon,
+				children: isAdded ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 14 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Plus, { size: 14 })
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: children ?? (isAdded ? "Added" : "Add to Cart") }),
+			isAdded && quantity > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				className: addToCartBadge,
+				children: quantity
+			})
+		]
+	});
+});
+AddToCartButton.displayName = "AddToCartButton";
+
+//#endregion
 exports.Accordion = Accordion;
 exports.AccordionContent = AccordionContent;
 exports.AccordionItem = AccordionItem;
 exports.AccordionTrigger = AccordionTrigger;
+exports.AddToCartButton = AddToCartButton;
 exports.Alert = Alert;
 exports.AlertDescription = AlertDescription;
 exports.AlertDialog = AlertDialog;
@@ -6285,10 +7157,13 @@ exports.CardDescription = CardDescription;
 exports.CardFooter = CardFooter;
 exports.CardHeader = CardHeader;
 exports.CardTitle = CardTitle;
+exports.CartItem = CartItem;
+exports.CartItemSkeleton = CartItemSkeleton;
 exports.Checkbox = Checkbox;
 exports.Collapsible = Collapsible;
 exports.CollapsibleContent = CollapsibleContent;
 exports.CollapsibleTrigger = CollapsibleTrigger;
+exports.ColorSwatch = ColorSwatch;
 exports.Command = Command;
 exports.CommandEmpty = CommandEmpty;
 exports.CommandGroup = CommandGroup;
@@ -6391,7 +7266,11 @@ exports.PopoverAnchor = PopoverAnchor;
 exports.PopoverClose = PopoverClose;
 exports.PopoverContent = PopoverContent;
 exports.PopoverTrigger = PopoverTrigger;
+exports.Price = Price;
+exports.ProductCard = ProductCard;
+exports.ProductCardSkeleton = ProductCardSkeleton;
 exports.Progress = Progress;
+exports.QuantityPicker = QuantityPicker;
 exports.RadioGroup = RadioGroup;
 exports.RadioGroupItem = RadioGroupItem;
 exports.ScrollArea = ScrollArea;

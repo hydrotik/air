@@ -1174,5 +1174,148 @@ declare function useDataGrid<TData>(options: DataGridOptions<TData>): DataGridIn
 //#region src/components/DataGrid/core.d.ts
 declare function createDataGrid<TData>(options: DataGridOptions<TData>): DataGridInstance<TData>;
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, type CellContext, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, type GroupingState, type HeaderContext, type HeaderGroup, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Progress, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
+//#region src/components/Price/Price.d.ts
+interface PriceProps {
+  /** Price amount in minor or major currency units */
+  amount: number;
+  /** ISO 4217 currency code */
+  currency?: string;
+  /** BCP 47 locale string */
+  locale?: string;
+  /** Show cents/decimal portion */
+  showCents?: boolean;
+  /** Original price before discount (shows struck-through) */
+  originalAmount?: number;
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+}
+declare const Price: React.ForwardRefExoticComponent<PriceProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/ColorSwatch/ColorSwatch.d.ts
+interface ColorSwatchProps {
+  /** CSS hex color value */
+  hex: string;
+  /** Color name for accessibility */
+  name?: string;
+  /** Whether this swatch is currently selected */
+  isSelected?: boolean;
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg';
+  /** Shape variant */
+  shape?: 'square' | 'circle';
+  /** Disabled state */
+  disabled?: boolean;
+  /** Click handler */
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  /** Optional link (renders as anchor) */
+  href?: string;
+  className?: string;
+}
+declare const ColorSwatch: React.ForwardRefExoticComponent<ColorSwatchProps & React.RefAttributes<HTMLButtonElement>>;
+//#endregion
+//#region src/components/QuantityPicker/QuantityPicker.d.ts
+interface QuantityPickerProps {
+  /** Current quantity value */
+  quantity: number;
+  /** Called when increase button is clicked */
+  onIncrease: () => void;
+  /** Called when decrease button is clicked */
+  onDecrease: () => void;
+  /** Minimum allowed quantity */
+  min?: number;
+  /** Maximum allowed quantity */
+  max?: number;
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+declare const QuantityPicker: React.ForwardRefExoticComponent<QuantityPickerProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/ProductCard/ProductCard.d.ts
+interface ProductCardColor {
+  name: string;
+  hex: string;
+}
+interface ProductCardProduct {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  thumbnailSrc: string;
+  alternateSrc?: string;
+  colors?: ProductCardColor[];
+  href?: string;
+}
+interface ProductCardProps {
+  /** Product data */
+  product: ProductCardProduct;
+  /** Whether the product is in the user's wishlist */
+  isWishlisted?: boolean;
+  /** Toggle wishlist callback */
+  onWishlistToggle?: (product: ProductCardProduct) => void;
+  /** Render prop for custom actions (e.g., AddToCartButton) */
+  renderActions?: (product: ProductCardProduct) => React.ReactNode;
+  /** Render prop for price display */
+  renderPrice?: (product: ProductCardProduct) => React.ReactNode;
+  /** Render prop for color swatches */
+  renderSwatches?: (product: ProductCardProduct) => React.ReactNode;
+  className?: string;
+}
+declare const ProductCard: React.ForwardRefExoticComponent<ProductCardProps & React.RefAttributes<HTMLDivElement>>;
+interface ProductCardSkeletonProps {
+  className?: string;
+}
+declare const ProductCardSkeleton: React.ForwardRefExoticComponent<ProductCardSkeletonProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/CartItem/CartItem.d.ts
+interface CartItemData {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  color?: string;
+  size?: string;
+  image?: string;
+  href?: string;
+}
+interface CartItemProps {
+  /** Cart item data */
+  item: CartItemData;
+  /** Called when quantity changes */
+  onUpdateQuantity?: (quantity: number) => void;
+  /** Called to remove item */
+  onRemove: () => void;
+  /** Render prop for quantity picker */
+  renderQuantityPicker?: (item: CartItemData) => React.ReactNode;
+  /** Render prop for price */
+  renderPrice?: (item: CartItemData) => React.ReactNode;
+  className?: string;
+}
+declare const CartItem: React.ForwardRefExoticComponent<CartItemProps & React.RefAttributes<HTMLDivElement>>;
+interface CartItemSkeletonProps {
+  className?: string;
+}
+declare const CartItemSkeleton: React.ForwardRefExoticComponent<CartItemSkeletonProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/AddToCartButton/AddToCartButton.d.ts
+interface AddToCartButtonProps {
+  /** Click handler to add item to cart */
+  onAddToCart: () => void;
+  /** Current quantity in cart (0 = not added) */
+  quantity?: number;
+  /** Button variant */
+  variant?: 'default' | 'primary';
+  /** Size variant */
+  size?: 'sm' | 'md' | 'lg';
+  /** Disabled state */
+  disabled?: boolean;
+  /** Button label */
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}
+declare const AddToCartButton: React.ForwardRefExoticComponent<AddToCartButtonProps & React.RefAttributes<HTMLButtonElement>>;
+//#endregion
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, type AddToCartButtonProps, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, type CartItemData, type CartItemProps, CartItemSkeleton, type CartItemSkeletonProps, type CellContext, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, type ColorSwatchProps, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, type GroupingState, type HeaderContext, type HeaderGroup, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, type PriceProps, ProductCard, type ProductCardColor, type ProductCardProduct, type ProductCardProps, ProductCardSkeleton, type ProductCardSkeletonProps, Progress, QuantityPicker, type QuantityPickerProps, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
 //# sourceMappingURL=index.d.mts.map

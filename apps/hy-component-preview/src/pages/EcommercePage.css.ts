@@ -1,317 +1,162 @@
-import { style, keyframes } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 import { vars } from '@hydrotik/tokens';
 
-/* ─── Layout ─── */
-export const layout = style({
-  display: 'flex',
-  flex: 1,
-  minHeight: 0,
-});
+/* ------------------------------------------------------------------ */
+/*  Layout                                                             */
+/* ------------------------------------------------------------------ */
 
-export const sidebar = style({
-  display: 'none',
-  flexDirection: 'column',
-  width: '240px',
-  borderRight: `1px solid ${vars.color.border}`,
-  backgroundColor: vars.color.surface,
-  padding: `${vars.space['4']} 0`,
-  gap: vars.space['1'],
-  flexShrink: 0,
-  overflow: 'auto',
-  '@media': {
-    '(min-width: 768px)': {
-      display: 'flex',
-    },
-  },
-});
-
-export const sidebarCollapsed = style({
-  width: '52px',
-});
-
-export const sidebarGroup = style({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: vars.space['0_5'],
-  padding: `0 ${vars.space['3']}`,
-});
-
-export const sidebarGroupLabel = style({
-  fontSize: vars.font.size.xs,
-  fontWeight: 500,
-  color: vars.color.textMuted,
-  padding: `${vars.space['2']} ${vars.space['3']}`,
-  textTransform: 'none',
-});
-
-export const sidebarItem = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  padding: `${vars.space['1_5']} ${vars.space['3']}`,
-  fontSize: vars.font.size.sm,
-  fontWeight: 500,
-  color: vars.color.textMuted,
-  borderRadius: vars.radii.md,
-  cursor: 'pointer',
-  transition: 'color 0.15s, background-color 0.15s',
-  textDecoration: 'none',
-  border: 'none',
-  background: 'none',
-  width: '100%',
-  textAlign: 'left',
-  selectors: {
-    '&:hover': {
-      color: vars.color.text,
-      backgroundColor: vars.color.secondary,
-    },
-  },
-});
-
-export const sidebarItemActive = style({
-  color: vars.color.text,
-  backgroundColor: vars.color.secondary,
-});
-
-export const sidebarItemCount = style({
-  marginLeft: 'auto',
-  fontSize: vars.font.size.xs,
-  color: vars.color.textMuted,
-  fontWeight: 400,
-  fontVariantNumeric: 'tabular-nums',
-});
-
-/* ─── Main content ─── */
-export const main = style({
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  overflow: 'auto',
-  minWidth: 0,
-});
-
-export const header = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['3'],
-  padding: `${vars.space['3']} ${vars.space['6']}`,
-  borderBottom: `1px solid ${vars.color.border}`,
-  flexWrap: 'wrap',
-});
-
-export const headerTitle = style({
-  fontSize: vars.font.size.lg,
-  fontWeight: 600,
-  letterSpacing: '-0.01em',
-  whiteSpace: 'nowrap',
-});
-
-export const headerActions = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  marginLeft: 'auto',
-});
-
-export const content = style({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: vars.space['6'],
-  padding: vars.space['6'],
-  maxWidth: '80rem',
-  width: '100%',
+export const pageRoot = style({
+  maxWidth: '1200px',
   margin: '0 auto',
+  padding: `${vars.space['8']} ${vars.space['6']}`,
+  fontFamily: vars.font.family.sans,
 });
 
-/* ─── KPI cards ─── */
-export const kpiGrid = style({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(1, 1fr)',
-  gap: vars.space['4'],
-  '@media': {
-    '(min-width: 640px)': { gridTemplateColumns: 'repeat(2, 1fr)' },
-    '(min-width: 1024px)': { gridTemplateColumns: 'repeat(4, 1fr)' },
-  },
+export const pageTitle = style({
+  fontSize: vars.font.size['3xl'],
+  fontWeight: '700',
+  color: vars.color.text,
+  marginBottom: vars.space['2'],
 });
 
-export const kpiValue = style({
-  fontSize: '24px',
-  fontWeight: 600,
-  fontVariantNumeric: 'tabular-nums',
-  lineHeight: 1.2,
+export const pageDescription = style({
+  fontSize: vars.font.size.md,
+  color: vars.color.textMuted,
+  marginBottom: vars.space['8'],
+  maxWidth: '640px',
 });
 
-export const kpiTrend = style({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '4px',
-  fontSize: vars.font.size.sm,
-  fontWeight: 500,
+export const section = style({
+  marginBottom: vars.space['12'],
 });
 
-export const trendUp = style({ color: '#22c55e' });
-export const trendDown = style({ color: vars.color.destructive });
+export const sectionTitle = style({
+  fontSize: vars.font.size.xl,
+  fontWeight: '600',
+  color: vars.color.text,
+  marginBottom: vars.space['1'],
+});
 
-export const kpiDesc = style({
+export const sectionDescription = style({
   fontSize: vars.font.size.sm,
   color: vars.color.textMuted,
+  marginBottom: vars.space['6'],
 });
 
-/* ─── Charts grid ─── */
-export const chartsGrid = style({
+/* ------------------------------------------------------------------ */
+/*  Product Grid                                                       */
+/* ------------------------------------------------------------------ */
+
+export const productGrid = style({
   display: 'grid',
-  gridTemplateColumns: '1fr',
-  gap: vars.space['4'],
+  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+  gap: vars.space['6'],
+});
+
+/* ------------------------------------------------------------------ */
+/*  Cart Layout                                                        */
+/* ------------------------------------------------------------------ */
+
+export const cartLayout = style({
+  display: 'grid',
+  gridTemplateColumns: '1fr 340px',
+  gap: vars.space['6'],
+  alignItems: 'start',
   '@media': {
-    '(min-width: 768px)': { gridTemplateColumns: 'repeat(2, 1fr)' },
+    '(max-width: 768px)': {
+      gridTemplateColumns: '1fr',
+    },
   },
 });
 
-/* ─── Table ─── */
-export const tableHeader = style({
+export const cartItems = style({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  flexWrap: 'wrap',
+  flexDirection: 'column',
   gap: vars.space['3'],
 });
 
-export const tableFilters = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['2'],
-  flexWrap: 'wrap',
-});
-
-export const tableFooter = style({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingTop: vars.space['3'],
-});
-
-/* ─── Tooltip ─── */
-export const tooltip = style({
-  backgroundColor: vars.color.surfaceElevated,
+export const cartSummary = style({
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.lg,
-  padding: `${vars.space['2']} ${vars.space['3']}`,
-  boxShadow: vars.shadow.md,
-  fontSize: vars.font.size.sm,
-  minWidth: '140px',
+  padding: vars.space['6'],
+  backgroundColor: vars.color.surface,
+  position: 'sticky',
+  top: vars.space['4'],
 });
 
-export const tooltipLabel = style({
-  fontWeight: 600,
-  marginBottom: vars.space['1'],
+export const cartSummaryTitle = style({
+  fontSize: vars.font.size.lg,
+  fontWeight: '600',
+  color: vars.color.text,
+  marginBottom: vars.space['4'],
+});
+
+export const cartSummaryRow = style({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: `${vars.space['2']} 0`,
+  fontSize: vars.font.size.sm,
   color: vars.color.text,
 });
 
-export const tooltipRow = style({
+export const cartSummaryTotal = style({
   display: 'flex',
+  justifyContent: 'space-between',
   alignItems: 'center',
-  gap: vars.space['2'],
+  padding: `${vars.space['3']} 0`,
+  fontSize: vars.font.size.md,
+  fontWeight: '700',
+  color: vars.color.text,
+  borderTop: `1px solid ${vars.color.border}`,
+  marginTop: vars.space['2'],
+});
+
+/* ------------------------------------------------------------------ */
+/*  Component Showcase                                                 */
+/* ------------------------------------------------------------------ */
+
+export const showcaseGrid = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+  gap: vars.space['6'],
+});
+
+export const showcaseCard = style({
+  border: `1px solid ${vars.color.border}`,
+  borderRadius: vars.radii.lg,
+  padding: vars.space['6'],
+  backgroundColor: vars.color.surface,
+});
+
+export const showcaseLabel = style({
+  fontSize: vars.font.size.xs,
+  fontWeight: '500',
   color: vars.color.textMuted,
-  padding: `${vars.space['0_5']} 0`,
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  marginBottom: vars.space['3'],
 });
 
-export const tooltipDot = style({
-  width: '8px',
-  height: '8px',
-  borderRadius: vars.radii.full,
-  flexShrink: 0,
-});
-
-/* ─── Order status dot ─── */
-export const statusDot = style({
-  width: '8px',
-  height: '8px',
-  borderRadius: vars.radii.full,
-  flexShrink: 0,
-});
-
-/* ─── Recent orders / activity ─── */
-export const activityItem = style({
+export const showcaseRow = style({
   display: 'flex',
   alignItems: 'center',
   gap: vars.space['3'],
-  padding: `${vars.space['2_5']} 0`,
-  borderBottom: `1px solid color-mix(in srgb, ${vars.color.border} 50%, transparent)`,
-  selectors: {
-    '&:last-child': {
-      borderBottom: 'none',
-    },
-  },
+  flexWrap: 'wrap',
 });
 
-export const activityAvatar = style({
-  width: '32px',
-  height: '32px',
-  borderRadius: vars.radii.full,
-  backgroundColor: vars.color.secondary,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: vars.font.size.xs,
-  fontWeight: 600,
-  color: vars.color.text,
-  flexShrink: 0,
+export const divider = style({
+  height: '1px',
+  backgroundColor: vars.color.border,
+  margin: `${vars.space['8']} 0`,
 });
 
-export const activityText = style({
-  flex: 1,
-  minWidth: 0,
-});
+/* ------------------------------------------------------------------ */
+/*  Skeleton Grid                                                      */
+/* ------------------------------------------------------------------ */
 
-export const activityName = style({
-  fontSize: vars.font.size.sm,
-  fontWeight: 500,
-  color: vars.color.text,
-});
-
-export const activityMeta = style({
-  fontSize: vars.font.size.xs,
-  color: vars.color.textMuted,
-});
-
-export const activityAmount = style({
-  fontSize: vars.font.size.sm,
-  fontWeight: 600,
-  fontVariantNumeric: 'tabular-nums',
-  color: vars.color.text,
-  whiteSpace: 'nowrap',
-});
-
-/* ─── Search ─── */
-export const searchWrapper = style({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  flex: 1,
-  maxWidth: '320px',
-});
-
-export const searchIcon = style({
-  position: 'absolute',
-  left: vars.space['3'],
-  color: vars.color.textMuted,
-  pointerEvents: 'none',
-});
-
-/* ─── Breadcrumbs ─── */
-export const breadcrumbs = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space['1'],
-  fontSize: vars.font.size.sm,
-  color: vars.color.textMuted,
-});
-
-export const breadcrumbSep = style({
-  color: vars.color.border,
-});
-
-export const breadcrumbCurrent = style({
-  color: vars.color.text,
-  fontWeight: 500,
+export const skeletonGrid = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+  gap: vars.space['6'],
 });

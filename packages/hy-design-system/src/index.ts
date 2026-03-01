@@ -358,5 +358,38 @@ export type {
   AggregateFn,
 } from './components/DataGrid';
 
+// ─── Price ────────────────────────────────────────────────────────────────────
+export { Price } from './components/Price';
+export type { PriceProps } from './components/Price';
+
+// ─── ColorSwatch ──────────────────────────────────────────────────────────────
+export { ColorSwatch } from './components/ColorSwatch';
+export type { ColorSwatchProps } from './components/ColorSwatch';
+
+// ─── QuantityPicker ───────────────────────────────────────────────────────────
+export { QuantityPicker } from './components/QuantityPicker';
+export type { QuantityPickerProps } from './components/QuantityPicker';
+
+// ─── ProductCard ──────────────────────────────────────────────────────────────
+export { ProductCard, ProductCardSkeleton } from './components/ProductCard';
+export type {
+  ProductCardProps,
+  ProductCardSkeletonProps,
+  ProductCardProduct,
+  ProductCardColor,
+} from './components/ProductCard';
+
+// ─── CartItem ─────────────────────────────────────────────────────────────────
+export { CartItem, CartItemSkeleton } from './components/CartItem';
+export type {
+  CartItemProps,
+  CartItemSkeletonProps,
+  CartItemData,
+} from './components/CartItem';
+
+// ─── AddToCartButton ──────────────────────────────────────────────────────────
+export { AddToCartButton } from './components/AddToCartButton';
+export type { AddToCartButtonProps } from './components/AddToCartButton';
+
 // ─── Icons (re-export lucide-react) ──────────────────────────────────────────
 export * as Icons from 'lucide-react';
