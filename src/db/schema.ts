@@ -16,6 +16,7 @@ export function getDb(): Database.Database {
 }
 
 function migrate(db: Database.Database): void {
+  // ─── Core tables ──────────────────────────────────────────────────────
   db.exec(`
     CREATE TABLE IF NOT EXISTS sessions (
       session_id    TEXT PRIMARY KEY,
@@ -77,10 +78,135 @@ function migrate(db: Database.Database): void {
   `);
 
   // ─── Additive migrations (safe for existing DBs) ─────────────────────
+
   // Add agent column — defaults to 'pi' for backward compat
+  safeAlter(db, `ALTER TABLE sessions ADD COLUMN agent TEXT NOT NULL DEFAULT 'pi'`);
+
+  // ─── Latency tracking ────────────────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS latency_snapshots (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id    TEXT NOT NULL,
+      timestamp     INTEGER NOT NULL,
+      operation     TEXT NOT NULL,
+      total_ms      REAL NOT NULL,
+      ttft_ms       REAL,
+      phases        TEXT, -- JSON array of LatencyPhase
+      model         TEXT,
+      provider      TEXT,
+      FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_latency_session ON latency_snapshots(session_id, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_latency_op ON latency_snapshots(operation);
+  `);
+
+  // ─── Cost tracking ──────────────────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS cost_snapshots (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id    TEXT NOT NULL,
+      timestamp     INTEGER NOT NULL,
+      model         TEXT NOT NULL,
+      provider      TEXT NOT NULL,
+      input_cost    REAL NOT NULL DEFAULT 0,
+      output_cost   REAL NOT NULL DEFAULT 0,
+      cache_read_cost REAL NOT NULL DEFAULT 0,
+      cache_write_cost REAL NOT NULL DEFAULT 0,
+      total_cost    REAL NOT NULL DEFAULT 0,
+      cumulative_cost REAL NOT NULL DEFAULT 0,
+      budget_limit  REAL,
+      budget_exceeded INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_cost_session ON cost_snapshots(session_id, timestamp);
+  `);
+
+  // ─── Output evaluation ──────────────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS output_evals (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id    TEXT NOT NULL,
+      timestamp     INTEGER NOT NULL,
+      turn_index    INTEGER NOT NULL,
+      model         TEXT NOT NULL,
+      provider      TEXT NOT NULL,
+      response_tokens INTEGER NOT NULL DEFAULT 0,
+      tool_call_count INTEGER NOT NULL DEFAULT 0,
+      tool_error_count INTEGER NOT NULL DEFAULT 0,
+      tool_success_rate REAL NOT NULL DEFAULT 1.0,
+      had_retry     INTEGER NOT NULL DEFAULT 0,
+      had_immediate_follow_up INTEGER NOT NULL DEFAULT 0,
+      response_latency_ms INTEGER NOT NULL DEFAULT 0,
+      cache_hit_rate REAL NOT NULL DEFAULT 0,
+      user_rating   INTEGER,
+      tags          TEXT, -- JSON array of strings
+      FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_evals_session ON output_evals(session_id, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_evals_model ON output_evals(model);
+  `);
+
+  // ─── Prompt rating ──────────────────────────────────────────────────
+  // SECURITY: Only stores prompt hash (SHA-256 first 16 chars), never raw content
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS prompt_ratings (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id    TEXT NOT NULL,
+      timestamp     INTEGER NOT NULL,
+      prompt_hash   TEXT NOT NULL,
+      variant       TEXT NOT NULL,
+      category      TEXT NOT NULL DEFAULT 'system',
+      model         TEXT NOT NULL,
+      provider      TEXT NOT NULL,
+      goal_achieved INTEGER NOT NULL DEFAULT 0,
+      turns_to_complete INTEGER NOT NULL DEFAULT 1,
+      total_tokens  INTEGER NOT NULL DEFAULT 0,
+      total_cost    REAL NOT NULL DEFAULT 0,
+      total_latency_ms INTEGER NOT NULL DEFAULT 0,
+      tool_error_rate REAL NOT NULL DEFAULT 0,
+      required_compaction INTEGER NOT NULL DEFAULT 0,
+      rating        INTEGER,
+      notes         TEXT, -- Brief notes, no sensitive data
+      FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_prompt_hash ON prompt_ratings(prompt_hash);
+    CREATE INDEX IF NOT EXISTS idx_prompt_variant ON prompt_ratings(variant);
+    CREATE INDEX IF NOT EXISTS idx_prompt_session ON prompt_ratings(session_id);
+  `);
+
+  // ─── Drift events ──────────────────────────────────────────────────
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS drift_events (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id    TEXT NOT NULL,
+      timestamp     INTEGER NOT NULL,
+      metric        TEXT NOT NULL,
+      model         TEXT NOT NULL,
+      provider      TEXT NOT NULL,
+      baseline      REAL NOT NULL,
+      current_val   REAL NOT NULL,
+      deviation_pct REAL NOT NULL,
+      direction     TEXT NOT NULL,
+      severity      TEXT NOT NULL,
+      window_size   INTEGER NOT NULL,
+      threshold     REAL NOT NULL,
+      FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_drift_session ON drift_events(session_id, timestamp);
+    CREATE INDEX IF NOT EXISTS idx_drift_severity ON drift_events(severity);
+  `);
+}
+
+/** Safely run an ALTER TABLE — ignores "duplicate column" errors */
+function safeAlter(db: Database.Database, sql: string): void {
   try {
-    db.exec(`ALTER TABLE sessions ADD COLUMN agent TEXT NOT NULL DEFAULT 'pi'`);
+    db.exec(sql);
   } catch {
-    // Column already exists — ignore
+    // Column/table already exists — ignore
   }
 }

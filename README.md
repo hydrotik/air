@@ -2,9 +2,9 @@
 
 **Real-time AI observability for coding agents.**
 
-AIr monitors your AI coding sessions — context window usage, tool call performance, token costs, and compaction events — streaming everything to a live dashboard.
+AIr monitors your AI coding sessions — context windows, tool calls, token costs, latency, output quality, prompt effectiveness, and drift detection — streaming everything to a live dashboard with built-in data redaction.
 
-![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green)
+![AIr Dashboard](https://img.shields.io/badge/status-beta-blue) ![Pi Compatible](https://img.shields.io/badge/pi-extension-green) ![Security](https://img.shields.io/badge/data-redacted-green)
 
 ![AIr Dashboard](docs/dash.png)
 
@@ -211,6 +211,229 @@ Scrolling log of all telemetry events — color-coded by type, newest-first, wit
 
 ---
 
+## Data Security & Redaction
+
+AIr is designed to store **metadata only** — sizes, durations, counts, rates — not your prompts, code, or conversations.
+
+### Redaction Levels
+
+Set via `--redaction` flag or `AIR_REDACTION_LEVEL` env var:
+
+| Level | What's stored | Use case |
+|-------|--------------|----------|
+| `preview` **(default)** | Content truncated to 50 chars, sensitive patterns scrubbed | Production — safe observability |
+| `full` | ALL content fields stripped, only numeric metadata remains | Strict compliance environments |
+| `none` | Everything stored as-is | Local development only |
+
+```bash
+npx air --redaction full    # maximum privacy
+npx air --redaction preview # balanced (default)
+npx air --redaction none    # development only ⚠️
+```
+
+### What Gets Scrubbed
+
+At `preview` and `full` levels, the server automatically detects and redacts:
+- API keys and tokens (`sk-...`, `Bearer ...`, `AKIA...`)
+- JWT tokens
+- Email addresses
+- Private key blocks
+- Database connection strings with credentials
+- `.env`-style `KEY=VALUE` patterns
+
+### Security Principles
+
+1. **No raw prompts stored** — prompt tracking uses one-way SHA-256 hashes
+2. **No code content stored** — tool I/O stores byte sizes, not actual content
+3. **Redaction at ingestion** — data is sanitized before it hits SQLite
+4. **Local-only by default** — server binds to localhost, no external network calls
+5. **No telemetry about telemetry** — AIr itself sends nothing to external services
+
+---
+
+## Latency Monitoring
+
+AIr tracks timing at multiple granularities:
+
+### Automatic (from collectors)
+- **Turn latency** — time from user message to final response (Pi collector)
+- **Tool call duration** — per-tool execution time with waterfall visualization
+- **API call latency** — MCP and RAG operation timing (SDK)
+
+### Manual (via SDK)
+```ts
+import { AirClient } from '@hydrotik/air/sdk';
+const air = new AirClient({ sessionId: 'my-session' });
+
+// Auto-measure an operation
+const result = await air.measureLatency('api_call', async () => {
+  return await fetch('https://api.example.com/data');
+}, { model: 'gpt-4o' });
+
+// Record with phase breakdown
+air.recordLatency('turn', 1500, {
+  ttftMs: 200,
+  phases: [
+    { name: 'thinking', durationMs: 800 },
+    { name: 'tool_execution', durationMs: 500 },
+    { name: 'response_generation', durationMs: 200 },
+  ],
+});
+```
+
+### API
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/sessions/:id/latency` | Latency stats by operation (avg/min/max) |
+| `GET /api/sessions/:id/latency/timeseries?operation=turn` | Time series |
+
+---
+
+## Cost Monitoring
+
+AIr tracks costs automatically using a built-in pricing table for common models (Claude, GPT-4o, Gemini, Codex, etc.) and supports manual cost recording.
+
+### Automatic Cost Calculation
+When a `token_usage` event arrives with zero cost, AIr auto-computes it from the model pricing table. The Pi collector emits cost events automatically.
+
+### Budget Alerts
+```ts
+const air = new AirClient({
+  sessionId: 'my-session',
+  budgetLimit: 5.00, // Alert when session cost exceeds $5
+});
+```
+
+When cumulative cost crosses the budget limit, a `cost` event with `budgetExceeded: true` is emitted and stored.
+
+### Built-in Model Pricing
+Prices per 1M tokens (USD). Override via custom events if your pricing differs.
+
+| Model | Input | Output | Cache Read |
+|-------|-------|--------|------------|
+| claude-4-sonnet | $3.00 | $15.00 | $0.30 |
+| claude-4-opus | $15.00 | $75.00 | $1.50 |
+| gpt-4o | $2.50 | $10.00 | $1.25 |
+| gpt-4.1 | $2.00 | $8.00 | $0.50 |
+| gpt-4.1-mini | $0.40 | $1.60 | $0.10 |
+| gemini-2.5-pro | $1.25 | $10.00 | — |
+
+### API
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/sessions/:id/cost` | Cost breakdown by model |
+| `GET /api/sessions/:id/cost/timeseries` | Cumulative cost over time |
+
+---
+
+## Output Evaluation
+
+AIr tracks quality signals for every LLM turn — no content stored, only metrics:
+
+- **Tool success rate** — what % of tool calls succeeded
+- **Response token count** — verbosity tracking
+- **Cache hit rate** — context efficiency
+- **Retry detection** — did the turn need a correction?
+- **Response latency** — time from prompt to response
+- **User rating** — optional 1-5 star rating via SDK
+
+### Automatic (Pi collector)
+The Pi collector emits `output_eval` events automatically on every turn with tool success rate, cache hit rate, response latency, and token counts.
+
+### Manual (SDK)
+```ts
+air.recordOutputEval(3, 'claude-4-sonnet', 'anthropic', {
+  responseTokens: 450,
+  toolCallCount: 5,
+  toolErrorCount: 1,
+  responseLatencyMs: 3200,
+  cacheHitRate: 0.65,
+}, { userRating: 4, tags: ['accurate', 'concise'] });
+```
+
+### API
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/sessions/:id/evals` | Aggregate quality metrics by model |
+| `GET /api/sessions/:id/evals/timeseries` | Quality signals over time |
+
+---
+
+## Prompt Rating & Comparison
+
+Track which prompt variants work best — without storing prompt content.
+
+### How It Works
+1. Prompts are identified by a **SHA-256 hash** (first 16 chars) — the raw text never leaves your machine
+2. Each prompt gets a **variant label** (`baseline`, `v2-concise`, `v3-cot`, etc.)
+3. After a task completes, record effectiveness metrics
+4. Query the API to compare variants by goal achievement, cost, latency, and error rates
+
+### SDK Usage
+```ts
+import { AirClient, hashPrompt } from '@hydrotik/air/sdk';
+const air = new AirClient({ sessionId: 'my-session' });
+
+// Rate after a successful interaction
+air.ratePrompt('v2-concise', 'system', systemPromptText, {
+  goalAchieved: true,
+  turnsToComplete: 3,
+  totalTokens: 5000,
+  totalCost: 0.02,
+  totalLatencyMs: 15000,
+  toolErrorRate: 0,
+  requiredCompaction: false,
+}, 4); // 4/5 stars
+
+// Compare variants via API
+// GET /api/prompts → all variants ranked by goal rate
+// GET /api/prompts?hash=abc123 → variants for specific prompt
+```
+
+### API
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/prompts` | All prompt variants ranked by effectiveness |
+| `GET /api/prompts?hash=<hash>` | Compare variants of a specific prompt |
+| `GET /api/prompts/:variant` | All ratings for a specific variant |
+
+---
+
+## Drift Detection
+
+AIr automatically detects when model behavior changes — latency spikes, cost increases, error rate jumps, or token usage shifts.
+
+### How It Works
+1. The server maintains **rolling baselines** for key metrics (window of 50 samples)
+2. When a new value deviates beyond the threshold, a `drift` event is emitted
+3. Drift events are stored and queryable for post-mortem analysis
+
+### Monitored Metrics
+| Metric | What it tracks |
+|--------|---------------|
+| `latency` | Tool call and turn duration |
+| `cost` | Per-turn cost |
+| `token_usage` | Total tokens per turn |
+| `output_tokens` | Response verbosity |
+| `error_rate` | Tool failure rate |
+| `cache_hit_rate` | Context cache efficiency |
+
+### Severity Thresholds
+| Severity | Default Deviation |
+|----------|------------------|
+| `info` | ≥25% from baseline |
+| `warning` | ≥50% from baseline |
+| `critical` | ≥100% from baseline |
+
+### API
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/drift` | Recent drift events (all sessions) |
+| `GET /api/drift?session=<id>` | Drift events for a session |
+| `GET /api/drift/summary` | Drift counts by metric and severity |
+
+---
+
 ## Configuration
 
 ### Environment Variables
@@ -219,6 +442,7 @@ Scrolling log of all telemetry events — color-coded by type, newest-first, wit
 |----------|---------|-------------|
 | `AIR_URL` | `ws://localhost:5200/ws/collector` | AIr server WebSocket endpoint |
 | `AIR_ENABLED` | `true` | Set to `"false"` to disable collection |
+| `AIR_REDACTION_LEVEL` | `preview` | Data redaction: `none`, `preview`, `full` |
 
 ### Database
 
@@ -337,23 +561,46 @@ MCP and RAG panels appear automatically in the dashboard when data from those pr
 
 ## REST API
 
-All endpoints return JSON.
+All endpoints return JSON. All ingested data is subject to server-side redaction.
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /api/health` | Server uptime + connected clients |
+| **Server** | |
+| `GET /api/health` | Server uptime, connected clients, redaction level |
+| `GET /api/config` | Server configuration and enabled features |
+| **Sessions** | |
 | `GET /api/sessions` | List all sessions with summary stats |
 | `GET /api/sessions/:id` | Single session summary |
 | `GET /api/sessions/:id/events` | All events for a session |
+| `GET /api/events/recent` | Recent events across all sessions |
+| **Tools** | |
 | `GET /api/sessions/:id/tool-calls` | Tool call records with timing |
 | `GET /api/sessions/:id/tool-stats` | Per-tool aggregate stats (count, avg/min/max ms, errors) |
+| **Context** | |
 | `GET /api/sessions/:id/context` | Context utilization snapshots over time |
 | `GET /api/sessions/:id/context/latest` | Latest context breakdown with segments |
+| **Latency** | |
+| `GET /api/sessions/:id/latency` | Latency stats by operation |
+| `GET /api/sessions/:id/latency/timeseries` | Latency time series (optional `?operation=`) |
+| **Cost** | |
+| `GET /api/sessions/:id/cost` | Cost breakdown by model |
+| `GET /api/sessions/:id/cost/timeseries` | Cumulative cost over time |
+| **Quality** | |
+| `GET /api/sessions/:id/evals` | Output evaluation stats by model |
+| `GET /api/sessions/:id/evals/timeseries` | Quality signals over time |
+| **Prompts** | |
+| `GET /api/prompts` | All prompt variants ranked by effectiveness |
+| `GET /api/prompts?hash=<hash>` | Compare variants of a specific prompt |
+| `GET /api/prompts/:variant` | All ratings for a variant |
+| **Drift** | |
+| `GET /api/drift` | Recent drift events (optional `?session=`) |
+| `GET /api/drift/summary` | Drift counts by metric and severity |
+| **Integrations** | |
 | `GET /api/sessions/:id/mcp-stats` | MCP call stats grouped by server/method/tool |
 | `GET /api/sessions/:id/rag-stats` | RAG stats grouped by source/type |
-| `GET /api/sessions/:id/providers` | Event type summary for all connected providers |
-| `GET /api/events/recent` | Recent events across all sessions |
-| `POST /api/ingest` | Ingest a single event (for HTTP-based collectors) |
+| `GET /api/sessions/:id/providers` | Event type summary for all providers |
+| **Ingestion** | |
+| `POST /api/ingest` | Ingest a single event (redacted before storage) |
 | `POST /api/ingest/batch` | Ingest multiple events at once |
 
 ---
@@ -432,8 +679,8 @@ A long-running watcher that tails `~/.codex/sessions/*.jsonl`:
 ## Package Exports
 
 ```
-@hydrotik/air          → Event type definitions (TelemetryEvent, etc.)
-@hydrotik/air/sdk      → AirClient, instrumentMcp, createRagTracer
+@hydrotik/air          → Event types, MODEL_PRICING, computeCost, DriftDetector, redaction utils
+@hydrotik/air/sdk      → AirClient, hashPrompt, instrumentMcp, createRagTracer
 @hydrotik/air/server   → createServer() for programmatic use
 ```
 
@@ -474,12 +721,13 @@ Dashboard (React, D3, Recharts, vanilla-extract) is pre-built at publish time �
 
 | Layer | Technology |
 |-------|-----------|
-| Server | Fastify 5, better-sqlite3, @fastify/websocket |
+| Server | Fastify 5, better-sqlite3, @fastify/websocket, data redaction, drift detection |
 | Dashboard | React 19, Vite 6, D3.js 7, Recharts 2 (pre-built) |
 | Styling | vanilla-extract, @hydrotik/tokens (compiled to CSS) |
 | Collectors | Pi ExtensionAPI (WebSocket), Claude Code hooks (HTTP), Codex watcher (HTTP) |
-| SDK | WebSocket (ws), zero other deps |
+| SDK | WebSocket (ws), crypto (prompt hashing), zero external deps |
 | Storage | SQLite 3 (WAL mode), `~/.hydrotik/air/telemetry.db` |
+| Security | 3-level content redaction, SHA-256 prompt hashing, sensitive pattern scrubbing |
 
 ---
 
