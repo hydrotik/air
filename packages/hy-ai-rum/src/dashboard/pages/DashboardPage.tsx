@@ -98,15 +98,19 @@ export const DashboardPage: React.FC = () => {
         contextPct: '—',
       };
     }
+    // Use latest context snapshot tokens (real context window usage) instead of marginal API tokens
+    const latestCtx = contextSnapshots.length > 0 ? contextSnapshots[contextSnapshots.length - 1] : null;
+    const ctxTokens = latestCtx?.tokens_used ?? 0;
+
     return {
-      totalTokens: formatTokens(activeSession.totalTokensIn + activeSession.totalTokensOut),
+      totalTokens: formatTokens(ctxTokens),
       totalCost: `$${activeSession.totalCost.toFixed(4)}`,
       toolCalls: String(activeSession.toolCallCount),
       turns: String(activeSession.turnCount),
       compactions: String(activeSession.compactionCount),
       contextPct: `${activeSession.contextUtilizationPct.toFixed(1)}%`,
     };
-  }, [activeSession]);
+  }, [activeSession, contextSnapshots]);
 
   return (
     <div className={shell}>
@@ -131,7 +135,7 @@ export const DashboardPage: React.FC = () => {
       <div className={main}>
         {/* KPI Row */}
         <div className={kpiRow}>
-          <KpiCard label="Total Tokens" value={kpis.totalTokens} sub="in + out" color="#3b82f6" />
+          <KpiCard label="Total Tokens" value={kpis.totalTokens} sub="context window" color="#3b82f6" />
           <KpiCard label="Total Cost" value={kpis.totalCost} sub="this session" color="#10b981" />
           <KpiCard label="Tool Calls" value={kpis.toolCalls} sub="executions" color="#f59e0b" />
           <KpiCard label="Turns" value={kpis.turns} sub="LLM roundtrips" color="#8b5cf6" />
