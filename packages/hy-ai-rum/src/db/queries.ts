@@ -23,6 +23,14 @@ export class TelemetryStore {
     this.stmts = this.prepareStatements();
   }
 
+  /** Ensure a session row exists (for events that arrive without a session_start) */
+  private ensureSession(sessionId: string, provider?: string): void {
+    const existing = this.stmts.getSession.get(sessionId);
+    if (!existing) {
+      this.stmts.upsertSession.run(sessionId, Date.now(), Date.now(), null, null, provider ?? null, provider ?? 'sdk');
+    }
+  }
+
   private prepareStatements() {
     return {
       upsertSession: this.db.prepare(`
@@ -174,6 +182,17 @@ export class TelemetryStore {
         this.stmts.incrToolCalls.run(e.sessionId);
         break;
       }
+      case 'tool_call': {
+        // Complete tool call in a single event (from HTTP ingest, e.g. MCP servers)
+        const e = event as any;
+        const startTime = e.timestamp - (e.durationMs ?? 0);
+        this.stmts.insertToolStart.run(e.toolCallId, e.sessionId, e.toolName, startTime, e.inputTokens ?? 0);
+        this.stmts.updateToolEnd.run(e.timestamp, e.durationMs ?? 0, e.outputTokens ?? 0, e.isError ? 1 : 0, e.toolCallId);
+        this.stmts.incrToolCalls.run(e.sessionId);
+        // Auto-create session if it doesn't exist (MCP servers don't send session_start)
+        this.ensureSession(e.sessionId, e.provider ?? 'mcp');
+        break;
+      }
       case 'turn_end': {
         this.stmts.incrTurns.run(event.sessionId);
         break;
@@ -207,6 +226,7 @@ export class TelemetryStore {
 
       case 'latency': {
         const e = event as LatencyEvent;
+        this.ensureSession(e.sessionId, e.provider ?? e.model);
         this.stmts.insertLatency.run(
           e.sessionId, e.timestamp, e.operation, e.totalMs, e.ttftMs ?? null,
           e.phases ? JSON.stringify(e.phases) : null, e.model ?? null, e.provider ?? null,

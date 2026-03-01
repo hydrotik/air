@@ -20,19 +20,65 @@ import { createHash } from 'node:crypto';
 // ---------------------------------------------------------------------------
 const AIR_URL = process.env.AIR_URL ?? 'http://localhost:5200';
 const AIR_ENABLED = process.env.AIR_ENABLED !== 'false';
+let airSessionId = `mcp-design-${Date.now().toString(36)}`;
 
-/** Fire-and-forget telemetry POST — never throws, never blocks */
-function airReport(endpoint: string, data: Record<string, unknown>): void {
+/** Fire-and-forget POST to AIr — never throws, never blocks */
+function airPost(path: string, data: Record<string, unknown>): void {
   if (!AIR_ENABLED) return;
-  const url = `${AIR_URL}/api/rag/${endpoint}`;
-  const body = JSON.stringify({ source: 'design-mcp', ...data });
+  const url = `${AIR_URL}${path}`;
+  const body = JSON.stringify(data);
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body,
     signal: AbortSignal.timeout(2000),
-  }).catch(() => {
-    // AIr server not running — silently ignore
+  }).catch(() => {});
+}
+
+/** Report a RAG operation (retrieval, embedding, index) */
+function airRag(endpoint: string, data: Record<string, unknown>): void {
+  airPost(`/api/rag/${endpoint}`, { source: 'design-mcp', sessionId: airSessionId, ...data });
+}
+
+/** Report an MCP tool invocation with latency + success/failure */
+function airToolCall(tool: string, durationMs: number, opts?: {
+  success?: boolean;
+  error?: string;
+  inputSize?: number;
+  outputSize?: number;
+  metadata?: Record<string, unknown>;
+}): void {
+  airPost('/api/ingest', {
+    id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    sessionId: airSessionId,
+    timestamp: Date.now(),
+    type: 'tool_call',
+    toolName: tool,
+    toolCallId: `${tool}-${Date.now()}`,
+    provider: 'design-mcp',
+    durationMs,
+    isError: opts?.success === false,
+    errorMessage: opts?.error,
+    inputTokens: opts?.inputSize,
+    outputTokens: opts?.outputSize,
+    metadata: opts?.metadata,
+  });
+}
+
+/** Report a latency snapshot */
+function airLatency(operation: string, totalMs: number, opts?: {
+  model?: string;
+  metadata?: Record<string, unknown>;
+}): void {
+  airPost('/api/ingest', {
+    id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    sessionId: airSessionId,
+    timestamp: Date.now(),
+    type: 'latency',
+    operation,
+    totalMs,
+    model: opts?.model ?? 'design-mcp',
+    metadata: opts?.metadata,
   });
 }
 
@@ -968,22 +1014,23 @@ server.tool(
     const totalChars = store.chunks.reduce((s, c) => s + c.content.length, 0);
     const estimatedTokens = Math.round(totalChars * 0.75);
 
-    // Report indexing to AIr
-    airReport('index', {
+    const text = `✅ RAG store synced.\n\n- Added: ${result.added}\n- Updated: ${result.updated}\n- Total chunks: ${result.total}\n- Store: ${RAG_STORE_PATH}`;
+
+    // Report to AIr: indexing + tool call + latency
+    airRag('index', {
       documentCount: result.total,
       totalTokens: estimatedTokens,
       durationMs,
       metadata: { added: result.added, updated: result.updated },
     });
+    airToolCall('rag_sync', durationMs, {
+      success: true,
+      outputSize: text.length,
+      metadata: { chunks: result.total, added: result.added, updated: result.updated, estimatedTokens },
+    });
+    airLatency('rag_sync', durationMs, { metadata: { chunks: result.total } });
 
-    return {
-      content: [
-        {
-          type: 'text',
-          text: `✅ RAG store synced.\n\n- Added: ${result.added}\n- Updated: ${result.updated}\n- Total chunks: ${result.total}\n- Store: ${RAG_STORE_PATH}`,
-        },
-      ],
-    };
+    return { content: [{ type: 'text', text }] };
   },
 );
 
@@ -1004,7 +1051,6 @@ server.tool(
     const t0 = Date.now();
     let store = loadRagStore();
     if (store.chunks.length === 0) {
-      // Auto-sync on first use
       syncRagStore();
       store = loadRagStore();
     }
@@ -1014,26 +1060,36 @@ server.tool(
       chunks = chunks.filter((c) => c.category === category);
     }
 
+    const tSearch = Date.now();
     const results = tfidfSearch(query, chunks, topK);
+    const searchMs = Date.now() - tSearch;
     const durationMs = Date.now() - t0;
 
-    // Report to AIr
-    airReport('retrieval', {
-      query: query.slice(0, 50), // truncated for privacy
+    // Report to AIr: retrieval + tool call + latency
+    airRag('retrieval', {
+      query: query.slice(0, 50),
       resultCount: results.length,
-      topScore: results.length > 0 ? 1.0 : 0, // TF-IDF scores are relative
+      topScore: results.length > 0 ? 1.0 : 0,
       durationMs,
-      metadata: { category, topK, corpusSize: chunks.length },
+      chunkSizes: results.map(r => r.content.length),
+      metadata: { category, topK, corpusSize: chunks.length, searchMs },
+    });
+    airToolCall('rag_search', durationMs, {
+      success: results.length > 0,
+      inputSize: query.length,
+      outputSize: results.reduce((s, r) => s + r.content.length, 0),
+      metadata: { resultCount: results.length, corpusSize: chunks.length, searchMs, category },
+    });
+    airLatency('rag_search', durationMs, {
+      metadata: { searchMs, corpusSize: chunks.length, resultCount: results.length },
     });
 
     if (results.length === 0) {
       return {
-        content: [
-          {
-            type: 'text',
-            text: `No results found for "${query}". Try a broader query or run \`rag_sync\` to refresh the knowledge base.`,
-          },
-        ],
+        content: [{
+          type: 'text',
+          text: `No results found for "${query}". Try a broader query or run \`rag_sync\` to refresh the knowledge base.`,
+        }],
       };
     }
 
@@ -1061,27 +1117,34 @@ server.tool(
     const store = loadRagStore();
     const chunk = store.chunks.find((c) => c.id === id);
     const durationMs = Date.now() - t0;
+    const found = !!chunk;
 
-    // Report to AIr
-    airReport('retrieval', {
+    // Report to AIr: retrieval + tool call + latency
+    airRag('retrieval', {
       query: id.slice(0, 50),
-      resultCount: chunk ? 1 : 0,
-      topScore: chunk ? 1.0 : 0,
+      resultCount: found ? 1 : 0,
+      topScore: found ? 1.0 : 0,
       durationMs,
+      chunkSizes: found ? [chunk!.content.length] : [],
       metadata: { tool: 'rag_get', directLookup: true },
     });
+    airToolCall('rag_get', durationMs, {
+      success: found,
+      inputSize: id.length,
+      outputSize: found ? chunk!.content.length : 0,
+      metadata: { chunkId: id, found },
+    });
+    airLatency('rag_get', durationMs);
 
     if (!chunk) {
       const ids = store.chunks.map((c) => c.id).join('\n  ');
       return { content: [{ type: 'text', text: `Chunk "${id}" not found.\n\nAvailable IDs:\n  ${ids}` }] };
     }
     return {
-      content: [
-        {
-          type: 'text',
-          text: `# ${chunk.title}\n\n*Category: ${chunk.category} | Source: ${chunk.source}*\n*Tags: ${chunk.tags.join(', ')}*\n*Updated: ${chunk.updatedAt}*\n\n${chunk.content}`,
-        },
-      ],
+      content: [{
+        type: 'text',
+        text: `# ${chunk.title}\n\n*Category: ${chunk.category} | Source: ${chunk.source}*\n*Tags: ${chunk.tags.join(', ')}*\n*Updated: ${chunk.updatedAt}*\n\n${chunk.content}`,
+      }],
     };
   },
 );
@@ -1098,24 +1161,21 @@ server.tool(
       .describe('Filter by category'),
   },
   async ({ category }) => {
+    const t0 = Date.now();
     const store = loadRagStore();
     let chunks = store.chunks;
     if (category && category !== 'all') {
       chunks = chunks.filter((c) => c.category === category);
     }
+    const durationMs = Date.now() - t0;
 
     if (chunks.length === 0) {
+      airToolCall('rag_list', durationMs, { success: true, outputSize: 0, metadata: { category, count: 0 } });
       return {
-        content: [
-          {
-            type: 'text',
-            text: 'RAG store is empty. Run `rag_sync` to populate it from the repo.',
-          },
-        ],
+        content: [{ type: 'text', text: 'RAG store is empty. Run `rag_sync` to populate it from the repo.' }],
       };
     }
 
-    // Group by category
     const grouped: Record<string, RagChunk[]> = {};
     for (const c of chunks) {
       (grouped[c.category] ??= []).push(c);
@@ -1129,6 +1189,12 @@ server.tool(
       }
       text += '\n';
     }
+
+    airToolCall('rag_list', durationMs, {
+      success: true, outputSize: text.length,
+      metadata: { category, chunkCount: chunks.length, categories: Object.keys(grouped).length },
+    });
+    airLatency('rag_list', durationMs);
 
     return { content: [{ type: 'text', text }] };
   },
@@ -1145,23 +1211,36 @@ server.tool(
       .describe('Which token file to read'),
   },
   async ({ file }) => {
+    const t0 = Date.now();
     const fileMap: Record<string, string> = {
       contract: 'packages/hy-tokens/src/contract.css.ts',
       dark: 'packages/hy-tokens/src/dark.css.ts',
       light: 'packages/hy-tokens/src/light.css.ts',
     };
 
+    let text: string;
+    let filesRead: string[];
     if (file === 'all') {
-      let text = '';
+      text = '';
+      filesRead = Object.keys(fileMap);
       for (const [name, path] of Object.entries(fileMap)) {
         const src = safeRead(join(MONO_ROOT, path)) ?? 'File not found';
         text += `## ${name}.css.ts\n\`\`\`ts\n${src}\n\`\`\`\n\n`;
       }
-      return { content: [{ type: 'text', text }] };
+    } else {
+      filesRead = [file];
+      const src = safeRead(join(MONO_ROOT, fileMap[file]!)) ?? 'File not found';
+      text = `\`\`\`ts\n${src}\n\`\`\``;
     }
+    const durationMs = Date.now() - t0;
 
-    const src = safeRead(join(MONO_ROOT, fileMap[file]!)) ?? 'File not found';
-    return { content: [{ type: 'text', text: `\`\`\`ts\n${src}\n\`\`\`` }] };
+    airToolCall('get_tokens', durationMs, {
+      success: true, outputSize: text.length,
+      metadata: { file, filesRead },
+    });
+    airLatency('get_tokens', durationMs);
+
+    return { content: [{ type: 'text', text }] };
   },
 );
 
@@ -1172,6 +1251,7 @@ server.tool(
     name: z.string().describe('PascalCase component name (e.g. "Button", "Dialog")'),
   },
   async ({ name }) => {
+    const t0 = Date.now();
     const dir = join(MONO_ROOT, 'packages/hy-design-system/src/components', name);
     try {
       const files = readdirSync(dir);
@@ -1183,9 +1263,20 @@ server.tool(
           text += `## ${file}\n\`\`\`${lang}\n${src}\n\`\`\`\n\n`;
         }
       }
+      const durationMs = Date.now() - t0;
+      airToolCall('get_component', durationMs, {
+        success: true, outputSize: text.length,
+        metadata: { component: name, fileCount: files.length },
+      });
+      airLatency('get_component', durationMs);
       return { content: [{ type: 'text', text }] };
     } catch {
-      // List available
+      const durationMs = Date.now() - t0;
+      airToolCall('get_component', durationMs, {
+        success: false, error: `Component "${name}" not found`,
+        metadata: { component: name },
+      });
+      airLatency('get_component', durationMs);
       const componentsDir = join(MONO_ROOT, 'packages/hy-design-system/src/components');
       try {
         const available = readdirSync(componentsDir)
@@ -1209,13 +1300,13 @@ server.tool(
     property: z.string().optional().describe('CSS property for context (e.g. "backgroundColor")'),
   },
   async ({ value, property }) => {
+    const t0 = Date.now();
     const issues: string[] = [];
     const suggestions: string[] = [];
 
     // Hex colors
     if (/^#[0-9a-fA-F]{3,8}$/.test(value)) {
       issues.push(`Raw hex color "${value}". Use \`vars.color.*\` instead.`);
-      // Try to match from live dark/light files
       const darkSrc = safeRead(join(MONO_ROOT, 'packages/hy-tokens/src/dark.css.ts')) ?? '';
       const lightSrc = safeRead(join(MONO_ROOT, 'packages/hy-tokens/src/light.css.ts')) ?? '';
       const regex = new RegExp(`(\\w+):\\s*'${value.replace('#', '\\#')}'`, 'gi');
@@ -1239,7 +1330,16 @@ server.tool(
       issues.push(`Raw radius "${value}". Use \`vars.radii.*\`.`);
     }
 
-    if (issues.length === 0) {
+    const durationMs = Date.now() - t0;
+    const hasIssues = issues.length > 0;
+
+    airToolCall('check_token_usage', durationMs, {
+      success: true, inputSize: value.length,
+      metadata: { value: value.slice(0, 20), property, issueCount: issues.length, suggestionCount: suggestions.length },
+    });
+    airLatency('check_token_usage', durationMs);
+
+    if (!hasIssues) {
       return { content: [{ type: 'text', text: `✅ "${value}" looks OK.` }] };
     }
 
