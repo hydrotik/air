@@ -21,6 +21,8 @@ This gives you:
 - **SDK** — instrument MCP servers, RAG pipelines, and custom tools
 - **Event types** — TypeScript definitions for all telemetry events
 
+> 📖 **Integrating your own services?** See the **[Integration Guide](./INTEGRATION_PROMPT_README.md)** — includes a copy-paste prompt for AI agents, HTTP API reference, and examples in JavaScript, Python, and Go.
+
 ---
 
 ## Quick Start
@@ -435,6 +437,8 @@ AIr automatically detects when model behavior changes — latency spikes, cost i
 ---
 
 ## Bring Your Own RAG
+
+> 🚀 **Quick integration?** See the **[Integration Guide](./INTEGRATION_PROMPT_README.md)** for step-by-step instructions and a prompt you can paste into any AI coding agent to auto-instrument your services.
 
 AIr supports any RAG system through **three integration paths** — from zero-code config to full SDK instrumentation.
 
