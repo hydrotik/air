@@ -146,6 +146,35 @@ export function useTelemetry() {
     }
   }, []);
 
+  // ─── Sparkline timeseries ──────────────────────────────────────────────
+
+  const fetchMcpTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/mcp-stats/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchRagTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/rag-stats/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const fetchToolTimeseries = useCallback(async (sessionId: string) => {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/tool-calls/timeseries`);
+      return await res.json();
+    } catch {
+      return [];
+    }
+  }, []);
+
   // ─── New fetch functions ──────────────────────────────────────────────
 
   const fetchLatencyStats = useCallback(async (sessionId: string) => {
@@ -271,5 +300,9 @@ export function useTelemetry() {
     fetchPromptVariants,
     fetchDriftEvents,
     fetchDriftSummary,
+    // Sparkline timeseries
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
   };
 }
