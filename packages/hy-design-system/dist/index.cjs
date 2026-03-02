@@ -7269,14 +7269,23 @@ const THEMES = {
 	light: "",
 	dark: ".dark"
 };
+/** Sanitize a CSS value — strip characters that could break out of a declaration */
+function sanitizeCssValue(value) {
+	return value.replace(/[{};<>]/g, "");
+}
+/** Sanitize a CSS identifier (chart id, variable name) */
+function sanitizeCssIdent(value) {
+	return value.replace(/[^a-zA-Z0-9_-]/g, "");
+}
 const ChartStyle = ({ id, config }) => {
 	const colorConfig = Object.entries(config).filter(([, cfg]) => cfg.theme || cfg.color);
 	if (!colorConfig.length) return null;
+	const safeId = sanitizeCssIdent(id);
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("style", { dangerouslySetInnerHTML: { __html: Object.entries(THEMES).map(([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart=${safeId}] {
 ${colorConfig.map(([key, itemConfig]) => {
 		const color = itemConfig.theme?.[theme] || itemConfig.color;
-		return color ? `  --color-${key}: ${color};` : null;
+		return color ? `  --color-${sanitizeCssIdent(key)}: ${sanitizeCssValue(color)};` : null;
 	}).filter(Boolean).join("\n")}
 }
 `).join("") } });

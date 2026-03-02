@@ -1390,7 +1390,7 @@ declare const ChartTooltipContent: React.ForwardRefExoticComponent<Omit<Omit<Rec
   formatter?: ((value: recharts_types_component_DefaultTooltipContent0.ValueType, name: recharts_types_component_DefaultTooltipContent0.NameType, item: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>, index: number, payload: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>[]) => React.ReactNode | [React.ReactNode, React.ReactNode]) | undefined;
   includeHidden?: boolean | undefined;
   isAnimationActive?: boolean | "auto";
-  itemSorter?: "name" | "value" | "dataKey" | ((item: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>) => number | string | undefined) | undefined;
+  itemSorter?: "value" | "name" | "dataKey" | ((item: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>) => number | string | undefined) | undefined;
   itemStyle?: React.CSSProperties;
   labelFormatter?: ((label: any, payload: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>[]) => React.ReactNode) | undefined;
   labelStyle?: React.CSSProperties;
