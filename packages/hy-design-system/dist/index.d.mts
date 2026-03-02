@@ -30,8 +30,17 @@ import * as ToastPrimitive from "@radix-ui/react-toast";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import * as RechartsPrimitive from "recharts";
+import * as react_hook_form0 from "react-hook-form";
 import { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
 import { Toaster as Toaster$1, toast } from "sonner";
+import * as recharts_types_component_DefaultTooltipContent0 from "recharts/types/component/DefaultTooltipContent";
+import * as recharts_types_util_types0 from "recharts/types/util/types";
+import * as recharts_types_component_Tooltip0 from "recharts/types/component/Tooltip";
+import * as recharts_types_component_Cursor0 from "recharts/types/component/Cursor";
+import * as recharts_types_state_tooltipSlice0 from "recharts/types/state/tooltipSlice";
+import * as recharts_types_util_payload_getUniqPayload0 from "recharts/types/util/payload/getUniqPayload";
+import * as recharts_types_chart_types0 from "recharts/types/chart/types";
 
 //#region src/components/Accordion/Accordion.d.ts
 declare const Accordion: React.ForwardRefExoticComponent<(Omit<AccordionPrimitive.AccordionSingleProps & React.RefAttributes<HTMLDivElement>, "ref"> | Omit<AccordionPrimitive.AccordionMultipleProps & React.RefAttributes<HTMLDivElement>, "ref">) & React.RefAttributes<HTMLDivElement>>;
@@ -1336,6 +1345,78 @@ interface AddToCartButtonProps {
 }
 declare const AddToCartButton: React.ForwardRefExoticComponent<AddToCartButtonProps & React.RefAttributes<HTMLButtonElement>>;
 //#endregion
+//#region src/components/Chart/Chart.d.ts
+/**
+ * Chart configuration — maps data keys to labels, icons, and colors.
+ * Colors can be static or theme-aware.
+ */
+type ChartConfig = { [k in string]: {
+  label?: React.ReactNode;
+  icon?: React.ComponentType;
+} & ({
+  color?: string;
+  theme?: never;
+} | {
+  color?: never;
+  theme: Record<string, string>;
+}) };
+type ChartContextProps = {
+  config: ChartConfig;
+};
+declare function useChart(): ChartContextProps;
+declare const ChartContainer: React.ForwardRefExoticComponent<Omit<React.ClassAttributes<HTMLDivElement> & React.HTMLAttributes<HTMLDivElement> & {
+  config: ChartConfig;
+  children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"];
+}, "ref"> & React.RefAttributes<HTMLDivElement>>;
+declare const ChartStyle: ({
+  id,
+  config
+}: {
+  id: string;
+  config: ChartConfig;
+}) => react_jsx_runtime0.JSX.Element | null;
+declare const ChartTooltip: typeof RechartsPrimitive.Tooltip;
+declare const ChartTooltipContent: React.ForwardRefExoticComponent<Omit<Omit<RechartsPrimitive.DefaultTooltipContentProps<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>, "label" | "active" | "viewBox" | "payload" | "coordinate" | "accessibilityLayer"> & {
+  active?: boolean;
+  allowEscapeViewBox?: recharts_types_util_types0.AllowInDimension;
+  animationDuration?: recharts_types_util_types0.AnimationDuration;
+  animationEasing?: recharts_types_util_types0.AnimationTiming;
+  axisId?: RechartsPrimitive.AxisId;
+  content?: recharts_types_component_Tooltip0.ContentType<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType> | undefined;
+  contentStyle?: React.CSSProperties;
+  cursor?: recharts_types_component_Cursor0.CursorDefinition;
+  defaultIndex?: number | RechartsPrimitive.TooltipIndex;
+  filterNull?: boolean;
+  formatter?: ((value: recharts_types_component_DefaultTooltipContent0.ValueType, name: recharts_types_component_DefaultTooltipContent0.NameType, item: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>, index: number, payload: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>[]) => React.ReactNode | [React.ReactNode, React.ReactNode]) | undefined;
+  includeHidden?: boolean | undefined;
+  isAnimationActive?: boolean | "auto";
+  itemSorter?: "value" | "name" | "dataKey" | ((item: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>) => number | string | undefined) | undefined;
+  itemStyle?: React.CSSProperties;
+  labelFormatter?: ((label: any, payload: RechartsPrimitive.TooltipPayloadEntry<recharts_types_component_DefaultTooltipContent0.ValueType, recharts_types_component_DefaultTooltipContent0.NameType>[]) => React.ReactNode) | undefined;
+  labelStyle?: React.CSSProperties;
+  offset?: number | RechartsPrimitive.Coordinate;
+  payloadUniqBy?: recharts_types_util_payload_getUniqPayload0.UniqueOption<recharts_types_state_tooltipSlice0.TooltipPayloadEntry>;
+  portal?: HTMLElement | null;
+  position?: Partial<RechartsPrimitive.Coordinate>;
+  reverseDirection?: recharts_types_util_types0.AllowInDimension;
+  separator?: string;
+  shared?: boolean;
+  trigger?: recharts_types_chart_types0.TooltipTrigger;
+  useTranslate3d?: boolean;
+  wrapperStyle?: React.CSSProperties;
+} & React.ClassAttributes<HTMLDivElement> & React.HTMLAttributes<HTMLDivElement> & {
+  hideLabel?: boolean;
+  hideIndicator?: boolean;
+  indicator?: "line" | "dot" | "dashed";
+  nameKey?: string;
+  labelKey?: string;
+}, "ref"> & React.RefAttributes<HTMLDivElement>>;
+declare const ChartLegend: typeof RechartsPrimitive.Legend;
+declare const ChartLegendContent: React.ForwardRefExoticComponent<Omit<React.ClassAttributes<HTMLDivElement> & React.HTMLAttributes<HTMLDivElement> & Pick<RechartsPrimitive.LegendProps, "verticalAlign" | "payload"> & {
+  hideIcon?: boolean;
+  nameKey?: string;
+}, "ref"> & React.RefAttributes<HTMLDivElement>>;
+//#endregion
 //#region src/components/Heading/Heading.d.ts
 interface HeadingProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Page or section title */
@@ -1367,11 +1448,22 @@ interface ModalProps {
 declare const Modal: React.FC<ModalProps>;
 //#endregion
 //#region src/components/Form/Form.d.ts
-declare const Form: any;
+declare const Form: <TFieldValues extends FieldValues, TContext = any, TTransformedValues = TFieldValues>(props: react_hook_form0.FormProviderProps<TFieldValues, TContext, TTransformedValues>) => React.JSX.Element;
 declare const FormField: <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
   ...props
 }: ControllerProps<TFieldValues, TName>) => react_jsx_runtime0.JSX.Element;
-declare const useFormField: () => any;
+declare const useFormField: () => {
+  invalid: boolean;
+  isDirty: boolean;
+  isTouched: boolean;
+  isValidating: boolean;
+  error?: react_hook_form0.FieldError;
+  id: string;
+  name: string;
+  formItemId: string;
+  formDescriptionId: string;
+  formMessageId: string;
+};
 declare const FormItem: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>>;
 declare const FormLabel: React.ForwardRefExoticComponent<Omit<LabelProps & React.RefAttributes<HTMLLabelElement>, "ref"> & React.RefAttributes<HTMLLabelElement>>;
 declare const FormControl: React.ForwardRefExoticComponent<Omit<_radix_ui_react_slot0.SlotProps & React.RefAttributes<HTMLElement>, "ref"> & React.RefAttributes<HTMLElement>>;
@@ -1457,5 +1549,5 @@ type ToasterProps = React.ComponentProps<typeof Toaster$1>;
  */
 declare const Toaster: React.FC<ToasterProps>;
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, type AddToCartButtonProps, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, type CartItemData, type CartItemProps, CartItemSkeleton, type CartItemSkeletonProps, type CellContext, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, type ColorSwatchProps, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, type GroupingState, type HeaderContext, type HeaderGroup, Heading, type HeadingProps, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, type ModalProps, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, type PriceProps, ProductCard, type ProductCardColor, type ProductCardProduct, type ProductCardProps, ProductCardSkeleton, type ProductCardSkeletonProps, Progress, QuantityPicker, type QuantityPickerProps, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toaster, type ToasterProps, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useDataGrid, useFormField, useSidebar };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, type AddToCartButtonProps, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, type CartItemData, type CartItemProps, CartItemSkeleton, type CartItemSkeletonProps, type CellContext, type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, type ColorSwatchProps, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, type GroupingState, type HeaderContext, type HeaderGroup, Heading, type HeadingProps, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, type ModalProps, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, type PriceProps, ProductCard, type ProductCardColor, type ProductCardProduct, type ProductCardProps, ProductCardSkeleton, type ProductCardSkeletonProps, Progress, QuantityPicker, type QuantityPickerProps, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toaster, type ToasterProps, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.d.mts.map

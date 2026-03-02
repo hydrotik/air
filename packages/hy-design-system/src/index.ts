@@ -391,6 +391,18 @@ export type {
 export { AddToCartButton } from './components/AddToCartButton';
 export type { AddToCartButtonProps } from './components/AddToCartButton';
 
+// ─── Chart ───────────────────────────────────────────────────────────────────
+export {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
+  useChart,
+} from './components/Chart';
+export type { ChartConfig } from './components/Chart';
+
 // ─── Heading ─────────────────────────────────────────────────────────────────
 export { Heading } from './components/Heading';
 export type { HeadingProps } from './components/Heading';

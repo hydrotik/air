@@ -87,6 +87,8 @@ let _radix_ui_react_toggle_group = require("@radix-ui/react-toggle-group");
 _radix_ui_react_toggle_group = __toESM(_radix_ui_react_toggle_group);
 let _radix_ui_react_tooltip = require("@radix-ui/react-tooltip");
 _radix_ui_react_tooltip = __toESM(_radix_ui_react_tooltip);
+let recharts = require("recharts");
+recharts = __toESM(recharts);
 let react_hook_form = require("react-hook-form");
 let sonner = require("sonner");
 
@@ -7131,6 +7133,248 @@ const AddToCartButton = react.default.forwardRef(({ onAddToCart, quantity = 0, v
 AddToCartButton.displayName = "AddToCartButton";
 
 //#endregion
+//#region src/components/Chart/Chart.css.ts
+const chartContainerStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	justifyContent: "center",
+	fontSize: _hydrotik_tokens.vars.font.size.xs
+});
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-cartesian-axis-tick text`, { fill: _hydrotik_tokens.vars.color.textMuted });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-cartesian-grid line`, { stroke: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 50%, transparent)` });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-curve.recharts-tooltip-cursor`, { stroke: _hydrotik_tokens.vars.color.border });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-dot[stroke='#fff']`, { stroke: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-layer`, { outline: "none" });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-polar-grid [stroke='#ccc']`, { stroke: _hydrotik_tokens.vars.color.border });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-radial-bar-background-sector`, { fill: _hydrotik_tokens.vars.color.secondary });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-rectangle.recharts-tooltip-cursor`, { fill: _hydrotik_tokens.vars.color.secondary });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-reference-line line`, { stroke: _hydrotik_tokens.vars.color.border });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-sector[stroke='#fff']`, { stroke: "transparent" });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-sector`, { outline: "none" });
+(0, _vanilla_extract_css.globalStyle)(`[data-chart] .recharts-surface`, { outline: "none" });
+const tooltipContentStyle = (0, _vanilla_extract_css.style)({
+	display: "grid",
+	minWidth: "8rem",
+	alignItems: "flex-start",
+	gap: "6px",
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid color-mix(in srgb, ${_hydrotik_tokens.vars.color.border} 50%, transparent)`,
+	backgroundColor: _hydrotik_tokens.vars.color.background,
+	paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+	paddingRight: _hydrotik_tokens.vars.space["2_5"],
+	paddingTop: _hydrotik_tokens.vars.space["1_5"],
+	paddingBottom: _hydrotik_tokens.vars.space["1_5"],
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	boxShadow: _hydrotik_tokens.vars.shadow.xl
+});
+const tooltipLabelStyle = (0, _vanilla_extract_css.style)({ fontWeight: _hydrotik_tokens.vars.font.weight.medium });
+const tooltipItemsStyle = (0, _vanilla_extract_css.style)({
+	display: "grid",
+	gap: "6px"
+});
+const tooltipItemRowStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	width: "100%",
+	alignItems: "stretch",
+	gap: _hydrotik_tokens.vars.space["2"]
+});
+const tooltipItemRowCenteredStyle = (0, _vanilla_extract_css.style)({ alignItems: "center" });
+const tooltipIndicatorDotStyle = (0, _vanilla_extract_css.style)({
+	height: "10px",
+	width: "10px",
+	flexShrink: 0,
+	borderRadius: "2px"
+});
+const tooltipIndicatorLineStyle = (0, _vanilla_extract_css.style)({
+	width: "4px",
+	flexShrink: 0,
+	borderRadius: "2px"
+});
+const tooltipIndicatorDashedStyle = (0, _vanilla_extract_css.style)({
+	width: 0,
+	flexShrink: 0,
+	borderWidth: "1.5px",
+	borderStyle: "dashed",
+	backgroundColor: "transparent"
+});
+const tooltipItemContentStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flex: "1 1 0%",
+	justifyContent: "space-between",
+	lineHeight: "1"
+});
+const tooltipItemContentEndStyle = (0, _vanilla_extract_css.style)({ alignItems: "flex-end" });
+const tooltipItemContentCenterStyle = (0, _vanilla_extract_css.style)({ alignItems: "center" });
+const tooltipItemLabelStyle = (0, _vanilla_extract_css.style)({
+	display: "grid",
+	gap: "6px"
+});
+const tooltipItemNameStyle = (0, _vanilla_extract_css.style)({ color: _hydrotik_tokens.vars.color.textMuted });
+const tooltipItemValueStyle = (0, _vanilla_extract_css.style)({
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	fontVariantNumeric: "tabular-nums",
+	color: _hydrotik_tokens.vars.color.text
+});
+const legendContentStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	gap: _hydrotik_tokens.vars.space["4"]
+});
+const legendContentTopStyle = (0, _vanilla_extract_css.style)({ paddingBottom: _hydrotik_tokens.vars.space["3"] });
+const legendContentBottomStyle = (0, _vanilla_extract_css.style)({ paddingTop: _hydrotik_tokens.vars.space["3"] });
+const legendItemStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: "6px"
+});
+const legendItemDotStyle = (0, _vanilla_extract_css.style)({
+	height: "8px",
+	width: "8px",
+	flexShrink: 0,
+	borderRadius: "2px"
+});
+
+//#endregion
+//#region src/components/Chart/Chart.tsx
+const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
+const ChartContext = react.default.createContext(null);
+function useChart() {
+	const context = react.default.useContext(ChartContext);
+	if (!context) throw new Error("useChart must be used within a <ChartContainer />");
+	return context;
+}
+const ChartContainer = react.default.forwardRef(({ id, className, children, config, ...props }, ref) => {
+	const uniqueId = react.default.useId();
+	const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartContext.Provider, {
+		value: { config },
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			"data-chart": chartId,
+			ref,
+			className: cx$1(chartContainerStyle, className),
+			...props,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartStyle, {
+				id: chartId,
+				config
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(recharts.ResponsiveContainer, {
+				debounce: 2e3,
+				children
+			})]
+		})
+	});
+});
+ChartContainer.displayName = "ChartContainer";
+const THEMES = {
+	light: "",
+	dark: ".dark"
+};
+const ChartStyle = ({ id, config }) => {
+	const colorConfig = Object.entries(config).filter(([, cfg]) => cfg.theme || cfg.color);
+	if (!colorConfig.length) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("style", { dangerouslySetInnerHTML: { __html: Object.entries(THEMES).map(([theme, prefix]) => `
+${prefix} [data-chart=${id}] {
+${colorConfig.map(([key, itemConfig]) => {
+		const color = itemConfig.theme?.[theme] || itemConfig.color;
+		return color ? `  --color-${key}: ${color};` : null;
+	}).filter(Boolean).join("\n")}
+}
+`).join("") } });
+};
+const ChartTooltip = recharts.Tooltip;
+const ChartTooltipContent = react.default.forwardRef(({ active, payload, className, indicator = "dot", hideLabel = false, hideIndicator = false, label, labelFormatter, formatter, color, nameKey, labelKey }, ref) => {
+	const { config } = useChart();
+	const tooltipLabel = react.default.useMemo(() => {
+		if (hideLabel || !payload?.length) return null;
+		const [item] = payload;
+		const itemConfig = getPayloadConfigFromPayload(config, item, `${labelKey || item.dataKey || item.name || "value"}`);
+		const value = !labelKey && typeof label === "string" ? config[label]?.label || label : itemConfig?.label;
+		if (labelFormatter) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: tooltipLabelStyle,
+			children: labelFormatter(value, payload)
+		});
+		if (!value) return null;
+		return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: tooltipLabelStyle,
+			children: value
+		});
+	}, [
+		label,
+		labelFormatter,
+		payload,
+		hideLabel,
+		config,
+		labelKey
+	]);
+	if (!active || !payload?.length) return null;
+	const nestLabel = payload.length === 1 && indicator !== "dot";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: cx$1(tooltipContentStyle, className),
+		children: [!nestLabel ? tooltipLabel : null, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: tooltipItemsStyle,
+			children: payload.map((item, index) => {
+				const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.name || item.dataKey || "value"}`);
+				const indicatorColor = color || item.payload.fill || item.color;
+				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: cx$1(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
+					children: formatter && item.value !== void 0 && item.name ? formatter(item.value, item.name, item, index, item.payload) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [itemConfig?.icon ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(itemConfig.icon, {}) : !hideIndicator && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: cx$1(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
+						style: {
+							"--color-bg": indicatorColor,
+							"--color-border": indicatorColor,
+							backgroundColor: indicator !== "dashed" ? indicatorColor : void 0,
+							borderColor: indicator === "dashed" ? indicatorColor : void 0
+						}
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+						className: cx$1(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+							className: tooltipItemLabelStyle,
+							children: [nestLabel ? tooltipLabel : null, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								className: tooltipItemNameStyle,
+								children: itemConfig?.label || item.name
+							})]
+						}), item.value !== void 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+							className: tooltipItemValueStyle,
+							children: item.value.toLocaleString()
+						})]
+					})] })
+				}, item.dataKey);
+			})
+		})]
+	});
+});
+ChartTooltipContent.displayName = "ChartTooltipContent";
+const ChartLegend = recharts.Legend;
+const ChartLegendContent = react.default.forwardRef(({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey }, ref) => {
+	const { config } = useChart();
+	if (!payload?.length) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		ref,
+		className: cx$1(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
+		children: payload.map((item) => {
+			const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.dataKey || "value"}`);
+			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: legendItemStyle,
+				children: [itemConfig?.icon && !hideIcon ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(itemConfig.icon, {}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: legendItemDotStyle,
+					style: { backgroundColor: item.color }
+				}), itemConfig?.label]
+			}, item.value);
+		})
+	});
+});
+ChartLegendContent.displayName = "ChartLegendContent";
+function getPayloadConfigFromPayload(config, payload, key) {
+	if (typeof payload !== "object" || payload === null) return void 0;
+	const payloadPayload = "payload" in payload && typeof payload.payload === "object" && payload.payload !== null ? payload.payload : void 0;
+	let configLabelKey = key;
+	if (key in payload && typeof payload[key] === "string") configLabelKey = payload[key];
+	else if (payloadPayload && key in payloadPayload && typeof payloadPayload[key] === "string") configLabelKey = payloadPayload[key];
+	return configLabelKey in config ? config[configLabelKey] : config[key];
+}
+
+//#endregion
 //#region src/components/Heading/Heading.css.ts
 const headingRoot = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -8036,6 +8280,12 @@ exports.CardHeader = CardHeader;
 exports.CardTitle = CardTitle;
 exports.CartItem = CartItem;
 exports.CartItemSkeleton = CartItemSkeleton;
+exports.ChartContainer = ChartContainer;
+exports.ChartLegend = ChartLegend;
+exports.ChartLegendContent = ChartLegendContent;
+exports.ChartStyle = ChartStyle;
+exports.ChartTooltip = ChartTooltip;
+exports.ChartTooltipContent = ChartTooltipContent;
 exports.Checkbox = Checkbox;
 exports.Collapsible = Collapsible;
 exports.CollapsibleContent = CollapsibleContent;
@@ -8260,6 +8510,7 @@ Object.defineProperty(exports, 'toast', {
     return sonner.toast;
   }
 });
+exports.useChart = useChart;
 exports.useDataGrid = useDataGrid;
 exports.useFormField = useFormField;
 exports.useSidebar = useSidebar;
