@@ -1549,5 +1549,115 @@ type ToasterProps = React.ComponentProps<typeof Toaster$1>;
  */
 declare const Toaster: React.FC<ToasterProps>;
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, type AddToCartButtonProps, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, type CartItemData, type CartItemProps, CartItemSkeleton, type CartItemSkeletonProps, type CellContext, type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, type ColorSwatchProps, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, type GroupingState, type HeaderContext, type HeaderGroup, Heading, type HeadingProps, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, type ModalProps, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, type PriceProps, ProductCard, type ProductCardColor, type ProductCardProduct, type ProductCardProps, ProductCardSkeleton, type ProductCardSkeletonProps, Progress, QuantityPicker, type QuantityPickerProps, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toaster, type ToasterProps, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
+//#region src/components/CodeBlock/CodeBlock.d.ts
+interface CodeBlockProps {
+  /** Code string to display */
+  children: string;
+  /** Programming language (for display badge) */
+  language?: string;
+  /** Show copy button (default: true) */
+  showCopy?: boolean;
+  /** Show language badge (default: true) */
+  showLanguage?: boolean;
+  /** Additional className */
+  className?: string;
+}
+/**
+ * Code block with optional copy button and language badge.
+ * For use in chat/AI contexts — renders a `<pre><code>` block.
+ *
+ * Note: This component does NOT include syntax highlighting by default.
+ * Consumers can wrap the code with their preferred highlighter
+ * (e.g. Prism, Shiki, highlight.js).
+ */
+declare const CodeBlock: React.ForwardRefExoticComponent<CodeBlockProps & React.RefAttributes<HTMLDivElement>>;
+/**
+ * Inline code styling — for use in markdown renderers.
+ */
+declare const InlineCode: React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>>;
+//#endregion
+//#region src/components/ChatMessage/ChatMessage.d.ts
+interface ChatMessageProps {
+  /** Role of the message sender */
+  role: 'user' | 'assistant' | 'system';
+  /** Message content (rendered as children for flexibility) */
+  children: React.ReactNode;
+  /** Optional avatar label (e.g. initials or name) */
+  avatar?: string;
+  /** Optional label override (default: "Question" / "Answer") */
+  label?: string;
+  /** Additional className */
+  className?: string;
+}
+declare const ChatMessage: React.ForwardRefExoticComponent<ChatMessageProps & React.RefAttributes<HTMLDivElement>>;
+interface ChatMessagePairProps {
+  /** User question content */
+  question: React.ReactNode;
+  /** Assistant answer content (if available) */
+  answer?: React.ReactNode;
+  /** Loading indicator to show when answer is pending */
+  loading?: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+declare const ChatMessagePair: React.ForwardRefExoticComponent<ChatMessagePairProps & React.RefAttributes<HTMLDivElement>>;
+interface ChatContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+declare const ChatContainer: React.ForwardRefExoticComponent<ChatContainerProps & React.RefAttributes<HTMLDivElement>>;
+interface ChatInputContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+declare const ChatInputContainer: React.ForwardRefExoticComponent<ChatInputContainerProps & React.RefAttributes<HTMLDivElement>>;
+interface ChatEmptyStateProps {
+  /** Title text */
+  title?: string;
+  /** Description text */
+  description?: string;
+  /** Icon or illustration */
+  icon?: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+declare const ChatEmptyState: React.ForwardRefExoticComponent<ChatEmptyStateProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/TypingAnimation/TypingAnimation.d.ts
+interface TypingAnimationProps {
+  /** Full text to type out */
+  text: string;
+  /** Callback when typing completes */
+  onComplete?: () => void;
+  /** Base delay between words in ms (default: 100) */
+  speed?: number;
+  /** Show blinking cursor (default: true) */
+  showCursor?: boolean;
+  /** Additional className */
+  className?: string;
+}
+/**
+ * Word-by-word typing animation — simulates LLM streaming output.
+ * Types out text progressively with a blinking cursor.
+ */
+declare const TypingAnimation: React.ForwardRefExoticComponent<TypingAnimationProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+//#region src/components/ToolCallIndicator/ToolCallIndicator.d.ts
+interface ToolCallIndicatorProps {
+  /** Name of the tool being called (optional) */
+  toolName?: string;
+  /** Custom label (overrides default tool-based labels) */
+  label?: string;
+  /** Custom icon (default: spinning loader) */
+  icon?: React.ReactNode;
+  /** Show tool name badge (default: true when toolName provided) */
+  showBadge?: boolean;
+  /** Additional className */
+  className?: string;
+}
+/**
+ * Visual indicator for LLM tool calls in progress.
+ * Shows a spinner with the tool name while the model is executing a tool.
+ */
+declare const ToolCallIndicator: React.ForwardRefExoticComponent<ToolCallIndicatorProps & React.RefAttributes<HTMLDivElement>>;
+//#endregion
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, type AddToCartButtonProps, type AggregateFn, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, type AlertProps, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, type AvatarProps, Badge, type BadgeProps, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, type BreadcrumbLinkProps, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, type ButtonProps, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, type CartItemData, type CartItemProps, CartItemSkeleton, type CartItemSkeletonProps, type CellContext, type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, type ChatContainerProps, ChatEmptyState, type ChatEmptyStateProps, ChatInputContainer, type ChatInputContainerProps, ChatMessage, ChatMessagePair, type ChatMessagePairProps, type ChatMessageProps, Checkbox, CodeBlock, type CodeBlockProps, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, type ColorSwatchProps, type ColumnDef, type ColumnFilter, type ColumnFiltersState, type ColumnOrderState, type ColumnSizingState, type ColumnSort, type ColumnVisibilityState, Command, CommandEmpty, CommandGroup, type CommandGroupProps, CommandInput, type CommandInputProps, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, type DataGridInstance, type DataGridOptions, type Row as DataGridRow, type DataGridState, Dialog, DialogClose, DialogContent, type DialogContentProps, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, type EditingState, type ExpandedState, FieldMessage, type FieldMessageProps, type FilterFn, FlagTag, type FlagTagProps, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, type GroupingState, type HeaderContext, type HeaderGroup, Heading, type HeadingProps, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, type InputGroupAddonProps, type InputGroupProps, InputGroupToolbar, type InputGroupToolbarProps, type InputProps, Kbd, type KbdProps, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, type ModalProps, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, type PaginationLinkProps, PaginationNext, PaginationPrevious, type PaginationState, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, type PriceProps, ProductCard, type ProductCardColor, type ProductCardProduct, type ProductCardProps, ProductCardSkeleton, type ProductCardSkeletonProps, Progress, QuantityPicker, type QuantityPickerProps, RadioGroup, RadioGroupItem, type ResolvedColumn, type RowModel, type RowSelectionState, ScrollArea, ScrollBar, SegmentedRatingBar, type SegmentedRatingBarProps, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, type SelectTriggerProps, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, type SheetContentProps, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, type SortDirection, type SortingFn, type SortingState, Spinner, type SpinnerProps, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, type TextareaProps, Toast, ToastAction, ToastClose, ToastDescription, type ToastProps, ToastProvider, ToastTitle, ToastViewport, Toaster, type ToasterProps, Toggle, ToggleGroup, ToggleGroupItem, type ToggleProps, ToolCallIndicator, type ToolCallIndicatorProps, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, type TypingAnimationProps, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.d.cts.map

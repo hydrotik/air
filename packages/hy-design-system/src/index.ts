@@ -453,5 +453,33 @@ export {
 export { Toaster, toast } from './components/Sonner';
 export type { ToasterProps } from './components/Sonner';
 
+// ─── CodeBlock ───────────────────────────────────────────────────────────────
+export { CodeBlock, InlineCode } from './components/CodeBlock';
+export type { CodeBlockProps } from './components/CodeBlock';
+
+// ─── ChatMessage ─────────────────────────────────────────────────────────────
+export {
+  ChatMessage,
+  ChatMessagePair,
+  ChatContainer,
+  ChatInputContainer,
+  ChatEmptyState,
+} from './components/ChatMessage';
+export type {
+  ChatMessageProps,
+  ChatMessagePairProps,
+  ChatContainerProps,
+  ChatInputContainerProps,
+  ChatEmptyStateProps,
+} from './components/ChatMessage';
+
+// ─── TypingAnimation ─────────────────────────────────────────────────────────
+export { TypingAnimation } from './components/TypingAnimation';
+export type { TypingAnimationProps } from './components/TypingAnimation';
+
+// ─── ToolCallIndicator ───────────────────────────────────────────────────────
+export { ToolCallIndicator } from './components/ToolCallIndicator';
+export type { ToolCallIndicatorProps } from './components/ToolCallIndicator';
+
 // ─── Icons (re-export lucide-react) ──────────────────────────────────────────
 export * as Icons from 'lucide-react';

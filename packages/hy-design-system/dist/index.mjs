@@ -1,7 +1,7 @@
 import React, { forwardRef, useId, useState } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import * as Icons from "lucide-react";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Heart, MoreHorizontal, PanelLeft, Plus, Search, Trash2, X } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Copy, Heart, Loader2, MoreHorizontal, PanelLeft, Plus, Search, Trash2, Wrench, X } from "lucide-react";
 import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@hydrotik/tokens";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
@@ -641,7 +641,7 @@ BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
 //#endregion
 //#region src/components/Button/Button.css.ts
-const spin$1 = keyframes({ to: { transform: "rotate(360deg)" } });
+const spin$2 = keyframes({ to: { transform: "rotate(360deg)" } });
 const spinner = style({
 	display: "inline-block",
 	width: "1em",
@@ -649,7 +649,7 @@ const spinner = style({
 	border: `2px solid currentColor`,
 	borderTopColor: "transparent",
 	borderRadius: vars.radii.full,
-	animation: `${spin$1} 0.6s linear infinite`,
+	animation: `${spin$2} 0.6s linear infinite`,
 	flexShrink: 0
 });
 /**
@@ -3124,14 +3124,14 @@ SheetDescription.displayName = "SheetDescription";
 
 //#endregion
 //#region src/components/Skeleton/Skeleton.css.ts
-const pulse = keyframes({
+const pulse$1 = keyframes({
 	"0%, 100%": { opacity: "1" },
 	"50%": { opacity: "0.5" }
 });
 const skeleton = style({
 	borderRadius: vars.radii.md,
 	backgroundColor: vars.color.secondary,
-	animation: `${pulse} 2s ${vars.motion.easing.default} infinite`
+	animation: `${pulse$1} 2s ${vars.motion.easing.default} infinite`
 });
 
 //#endregion
@@ -3211,14 +3211,14 @@ Slider.displayName = "Slider";
 
 //#endregion
 //#region src/components/Spinner/Spinner.css.ts
-const spin = keyframes({ to: { transform: "rotate(360deg)" } });
+const spin$1 = keyframes({ to: { transform: "rotate(360deg)" } });
 const spinnerRecipe = recipe({
 	base: {
 		display: "inline-block",
 		borderRadius: vars.radii.full,
 		border: "2px solid currentColor",
 		borderTopColor: "transparent",
-		animation: `${spin} 0.6s linear infinite`,
+		animation: `${spin$1} 0.6s linear infinite`,
 		flexShrink: 0
 	},
 	variants: { size: {
@@ -3976,7 +3976,7 @@ const muted = style({
 	color: vars.color.textMuted,
 	lineHeight: vars.font.lineHeight.relaxed
 });
-const inlineCode = style({
+const inlineCode$1 = style({
 	position: "relative",
 	fontFamily: vars.font.family.mono,
 	fontSize: "0.875em",
@@ -4031,7 +4031,7 @@ const TypographyLead = createTypographyComponent("p", lead, "TypographyLead");
 const TypographyLarge = createTypographyComponent("div", large, "TypographyLarge");
 const TypographySmall = createTypographyComponent("small", small, "TypographySmall");
 const TypographyMuted = createTypographyComponent("p", muted, "TypographyMuted");
-const TypographyInlineCode = createTypographyComponent("code", inlineCode, "TypographyInlineCode");
+const TypographyInlineCode = createTypographyComponent("code", inlineCode$1, "TypographyInlineCode");
 const TypographyBlockquote = createTypographyComponent("blockquote", blockquote, "TypographyBlockquote");
 const TypographyUl = createTypographyComponent("ul", ul, "TypographyUl");
 const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
@@ -5392,7 +5392,7 @@ const pinnedRight = style({
 		background: `linear-gradient(to left, ${vars.color.border}, transparent)`
 	}
 });
-const emptyState = style({
+const emptyState$1 = style({
 	padding: `${vars.space["12"]} ${vars.space["4"]}`,
 	textAlign: "center",
 	color: vars.color.textMuted,
@@ -6113,7 +6113,7 @@ function DataGrid({ height, showToolbar = true, showStatusBar = false, showFoote
 							columnCount: totalColumnCount,
 							rowCount: loadingRowCount
 						}) : rowModel.rows.length === 0 ? /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx("td", {
-							className: emptyState,
+							className: emptyState$1,
 							colSpan: totalColumnCount,
 							children: emptyMessage
 						}) }) : /* @__PURE__ */ jsx(RenderRows, {
@@ -7181,7 +7181,7 @@ const legendItemDotStyle = style({
 
 //#endregion
 //#region src/components/Chart/Chart.tsx
-const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
+const cx$2 = (...classes) => classes.filter(Boolean).join(" ");
 const ChartContext = React.createContext(null);
 function useChart() {
 	const context = React.useContext(ChartContext);
@@ -7196,7 +7196,7 @@ const ChartContainer = React.forwardRef(({ id, className, children, config, ...p
 		children: /* @__PURE__ */ jsxs("div", {
 			"data-chart": chartId,
 			ref,
-			className: cx$1(chartContainerStyle, className),
+			className: cx$2(chartContainerStyle, className),
 			...props,
 			children: [/* @__PURE__ */ jsx(ChartStyle, {
 				id: chartId,
@@ -7254,16 +7254,16 @@ const ChartTooltipContent = React.forwardRef(({ active, payload, className, indi
 	const nestLabel = payload.length === 1 && indicator !== "dot";
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
-		className: cx$1(tooltipContentStyle, className),
+		className: cx$2(tooltipContentStyle, className),
 		children: [!nestLabel ? tooltipLabel : null, /* @__PURE__ */ jsx("div", {
 			className: tooltipItemsStyle,
 			children: payload.map((item, index) => {
 				const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.name || item.dataKey || "value"}`);
 				const indicatorColor = color || item.payload.fill || item.color;
 				return /* @__PURE__ */ jsx("div", {
-					className: cx$1(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
+					className: cx$2(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
 					children: formatter && item.value !== void 0 && item.name ? formatter(item.value, item.name, item, index, item.payload) : /* @__PURE__ */ jsxs(Fragment, { children: [itemConfig?.icon ? /* @__PURE__ */ jsx(itemConfig.icon, {}) : !hideIndicator && /* @__PURE__ */ jsx("div", {
-						className: cx$1(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
+						className: cx$2(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
 						style: {
 							"--color-bg": indicatorColor,
 							"--color-border": indicatorColor,
@@ -7271,7 +7271,7 @@ const ChartTooltipContent = React.forwardRef(({ active, payload, className, indi
 							borderColor: indicator === "dashed" ? indicatorColor : void 0
 						}
 					}), /* @__PURE__ */ jsxs("div", {
-						className: cx$1(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
+						className: cx$2(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
 						children: [/* @__PURE__ */ jsxs("div", {
 							className: tooltipItemLabelStyle,
 							children: [nestLabel ? tooltipLabel : null, /* @__PURE__ */ jsx("span", {
@@ -7295,7 +7295,7 @@ const ChartLegendContent = React.forwardRef(({ className, hideIcon = false, payl
 	if (!payload?.length) return null;
 	return /* @__PURE__ */ jsx("div", {
 		ref,
-		className: cx$1(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
+		className: cx$2(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
 		children: payload.map((item) => {
 			const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.dataKey || "value"}`);
 			return /* @__PURE__ */ jsxs("div", {
@@ -7780,7 +7780,7 @@ const sidebarMenuSkeletonStyle = style({
 
 //#endregion
 //#region src/components/Sidebar/Sidebar.tsx
-const cx = (...classes) => classes.filter(Boolean).join(" ");
+const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 3600 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
@@ -7852,7 +7852,7 @@ const SidebarProvider = React.forwardRef(({ defaultOpen = true, open: openProp, 
 			delayDuration: 0,
 			children: /* @__PURE__ */ jsx("div", {
 				ref,
-				className: cx(sidebarProviderStyle, className),
+				className: cx$1(sidebarProviderStyle, className),
 				style,
 				"data-sidebar-provider": "",
 				...props,
@@ -7866,7 +7866,7 @@ const Sidebar = React.forwardRef(({ side = "left", variant = "sidebar", collapsi
 	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 	if (collapsible === "none") return /* @__PURE__ */ jsx("div", {
 		ref,
-		className: cx(sidebarCollapsedNone, className),
+		className: cx$1(sidebarCollapsedNone, className),
 		...props,
 		children: /* @__PURE__ */ jsx("div", {
 			className: sidebarInnerStyle,
@@ -7898,21 +7898,21 @@ const Sidebar = React.forwardRef(({ side = "left", variant = "sidebar", collapsi
 	});
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
-		className: cx(sidebarStyle, className),
+		className: cx$1(sidebarStyle, className),
 		"data-state": state,
 		"data-collapsible": state === "collapsed" ? collapsible : "",
 		"data-variant": variant,
 		"data-side": side,
 		children: [/* @__PURE__ */ jsx("div", {
-			className: cx(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
+			className: cx$1(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
 			style: state === "collapsed" && collapsible === "offcanvas" ? { width: 0 } : void 0
 		}), /* @__PURE__ */ jsx("div", {
-			className: cx(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
+			className: cx$1(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
 			style: state === "collapsed" && collapsible === "icon" ? { width: `calc(${SIDEBAR_WIDTH_ICON} + 16px)` } : state === "collapsed" && collapsible === "offcanvas" ? side === "left" ? { left: `calc(-1 * ${SIDEBAR_WIDTH})` } : { right: `calc(-1 * ${SIDEBAR_WIDTH})` } : void 0,
 			...props,
 			children: /* @__PURE__ */ jsx("div", {
 				"data-sidebar": "sidebar",
-				className: cx(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
+				className: cx$1(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
 				children
 			})
 		})]
@@ -7926,7 +7926,7 @@ const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) 
 		"data-sidebar": "trigger",
 		variant: "ghost",
 		size: "icon",
-		className: cx(sidebarTriggerStyle, className),
+		className: cx$1(sidebarTriggerStyle, className),
 		onClick: (e) => {
 			onClick?.(e);
 			toggleSidebar();
@@ -7958,56 +7958,56 @@ const SidebarRail = React.forwardRef(({ className, ...props }, ref) => {
 		tabIndex: -1,
 		onClick: toggleSidebar,
 		title: "Toggle Sidebar",
-		className: cx(sidebarRailStyle, className),
+		className: cx$1(sidebarRailStyle, className),
 		...props
 	});
 });
 SidebarRail.displayName = "SidebarRail";
 const SidebarInset = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("main", {
 	ref,
-	className: cx(sidebarInsetStyle, className),
+	className: cx$1(sidebarInsetStyle, className),
 	...props
 }));
 SidebarInset.displayName = "SidebarInset";
 const SidebarInput = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Input, {
 	ref,
 	"data-sidebar": "input",
-	className: cx(sidebarInputStyle, className),
+	className: cx$1(sidebarInputStyle, className),
 	...props
 }));
 SidebarInput.displayName = "SidebarInput";
 const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "header",
-	className: cx(sidebarHeaderStyle, className),
+	className: cx$1(sidebarHeaderStyle, className),
 	...props
 }));
 SidebarHeader.displayName = "SidebarHeader";
 const SidebarFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "footer",
-	className: cx(sidebarFooterStyle, className),
+	className: cx$1(sidebarFooterStyle, className),
 	...props
 }));
 SidebarFooter.displayName = "SidebarFooter";
 const SidebarSeparator = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Separator, {
 	ref,
 	"data-sidebar": "separator",
-	className: cx(sidebarSeparatorStyle, className),
+	className: cx$1(sidebarSeparatorStyle, className),
 	...props
 }));
 SidebarSeparator.displayName = "SidebarSeparator";
 const SidebarContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "content",
-	className: cx(sidebarContentStyle, className),
+	className: cx$1(sidebarContentStyle, className),
 	...props
 }));
 SidebarContent.displayName = "SidebarContent";
 const SidebarGroup = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "group",
-	className: cx(sidebarGroupStyle, className),
+	className: cx$1(sidebarGroupStyle, className),
 	...props
 }));
 SidebarGroup.displayName = "SidebarGroup";
@@ -8015,7 +8015,7 @@ const SidebarGroupLabel = React.forwardRef(({ className, asChild = false, ...pro
 	return /* @__PURE__ */ jsx(asChild ? Slot : "div", {
 		ref,
 		"data-sidebar": "group-label",
-		className: cx(sidebarGroupLabelStyle, className),
+		className: cx$1(sidebarGroupLabelStyle, className),
 		...props
 	});
 });
@@ -8023,21 +8023,21 @@ SidebarGroupLabel.displayName = "SidebarGroupLabel";
 const SidebarGroupContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "group-content",
-	className: cx(sidebarGroupContentStyle, className),
+	className: cx$1(sidebarGroupContentStyle, className),
 	...props
 }));
 SidebarGroupContent.displayName = "SidebarGroupContent";
 const SidebarMenu = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
 	ref,
 	"data-sidebar": "menu",
-	className: cx(sidebarMenuStyle, className),
+	className: cx$1(sidebarMenuStyle, className),
 	...props
 }));
 SidebarMenu.displayName = "SidebarMenu";
 const SidebarMenuItem = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("li", {
 	ref,
 	"data-sidebar": "menu-item",
-	className: cx(sidebarMenuItemStyle, className),
+	className: cx$1(sidebarMenuItemStyle, className),
 	...props
 }));
 SidebarMenuItem.displayName = "SidebarMenuItem";
@@ -8049,7 +8049,7 @@ const SidebarMenuButton = React.forwardRef(({ asChild = false, isActive = false,
 		"data-sidebar": "menu-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx(sidebarMenuButtonRecipe({
+		className: cx$1(sidebarMenuButtonRecipe({
 			variant,
 			size
 		}), className),
@@ -8070,7 +8070,7 @@ SidebarMenuButton.displayName = "SidebarMenuButton";
 const SidebarMenuBadge = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "menu-badge",
-	className: cx(sidebarMenuBadgeStyle, className),
+	className: cx$1(sidebarMenuBadgeStyle, className),
 	...props
 }));
 SidebarMenuBadge.displayName = "SidebarMenuBadge";
@@ -8079,7 +8079,7 @@ const SidebarMenuSkeleton = React.forwardRef(({ className, showIcon = false, ...
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
 		"data-sidebar": "menu-skeleton",
-		className: cx(sidebarMenuSkeletonStyle, className),
+		className: cx$1(sidebarMenuSkeletonStyle, className),
 		...props,
 		children: [showIcon && /* @__PURE__ */ jsx(Skeleton, { style: {
 			width: 16,
@@ -8096,7 +8096,7 @@ SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
 const SidebarMenuSub = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
 	ref,
 	"data-sidebar": "menu-sub",
-	className: cx(sidebarMenuSubStyle, className),
+	className: cx$1(sidebarMenuSubStyle, className),
 	...props
 }));
 SidebarMenuSub.displayName = "SidebarMenuSub";
@@ -8111,7 +8111,7 @@ const SidebarMenuSubButton = React.forwardRef(({ asChild = false, size = "md", i
 		"data-sidebar": "menu-sub-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx(sidebarMenuSubButtonStyle, className),
+		className: cx$1(sidebarMenuSubButtonStyle, className),
 		style: size === "sm" ? { fontSize: "0.75rem" } : void 0,
 		...props
 	});
@@ -8184,5 +8184,459 @@ const Toaster = ({ theme = "dark", ...props }) => /* @__PURE__ */ jsx(Toaster$1,
 Toaster.displayName = "Toaster";
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
+//#region src/components/CodeBlock/CodeBlock.css.ts
+const codeBlockWrapper = style({
+	position: "relative",
+	marginTop: vars.space["4"],
+	marginBottom: vars.space["4"]
+});
+const codeBlockPre = style({
+	borderRadius: vars.radii.md,
+	overflow: "auto",
+	fontFamily: vars.font.family.mono,
+	fontSize: vars.font.size.sm,
+	lineHeight: vars.font.lineHeight.relaxed,
+	padding: vars.space["4"],
+	margin: 0,
+	backgroundColor: vars.color.surface,
+	border: `1px solid ${vars.color.border}`,
+	color: vars.color.text
+});
+const copyButton = style({
+	position: "absolute",
+	top: vars.space["2"],
+	right: vars.space["2"],
+	display: "flex",
+	alignItems: "center",
+	gap: vars.space["1_5"],
+	borderRadius: vars.radii.md,
+	border: "none",
+	backgroundColor: vars.color.surfaceElevated,
+	color: vars.color.textMuted,
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"],
+	paddingTop: vars.space["1"],
+	paddingBottom: vars.space["1"],
+	fontSize: vars.font.size.xs,
+	fontFamily: vars.font.family.sans,
+	cursor: "pointer",
+	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	selectors: { "&:hover": {
+		backgroundColor: vars.color.ghostHover,
+		color: vars.color.text
+	} }
+});
+const languageBadge = style({
+	position: "absolute",
+	top: vars.space["2"],
+	left: vars.space["2"],
+	fontSize: "10px",
+	fontFamily: vars.font.family.mono,
+	color: vars.color.textMuted,
+	textTransform: "uppercase",
+	letterSpacing: "1px",
+	userSelect: "none"
+});
+const inlineCode = style({
+	fontFamily: vars.font.family.mono,
+	fontSize: "0.875em",
+	backgroundColor: vars.color.secondary,
+	color: vars.color.text,
+	borderRadius: vars.radii.sm,
+	paddingLeft: vars.space["1"],
+	paddingRight: vars.space["1"],
+	paddingTop: "2px",
+	paddingBottom: "2px"
+});
+
+//#endregion
+//#region src/components/CodeBlock/CodeBlock.tsx
+/**
+* Code block with optional copy button and language badge.
+* For use in chat/AI contexts — renders a `<pre><code>` block.
+*
+* Note: This component does NOT include syntax highlighting by default.
+* Consumers can wrap the code with their preferred highlighter
+* (e.g. Prism, Shiki, highlight.js).
+*/
+const CodeBlock = React.forwardRef(({ children, language, showCopy = true, showLanguage = true, className }, ref) => {
+	const [copied, setCopied] = React.useState(false);
+	const codeString = String(children).replace(/\n$/, "");
+	const handleCopy = async () => {
+		try {
+			await navigator.clipboard.writeText(codeString);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2e3);
+		} catch {}
+	};
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: [codeBlockWrapper, className].filter(Boolean).join(" "),
+		children: [
+			showLanguage && language && /* @__PURE__ */ jsx("span", {
+				className: languageBadge,
+				children: language
+			}),
+			showCopy && /* @__PURE__ */ jsxs("button", {
+				type: "button",
+				className: copyButton,
+				onClick: handleCopy,
+				"aria-label": copied ? "Copied" : "Copy code",
+				children: [copied ? /* @__PURE__ */ jsx(Check, { size: 12 }) : /* @__PURE__ */ jsx(Copy, { size: 12 }), copied ? "Copied" : "Copy"]
+			}),
+			/* @__PURE__ */ jsx("pre", {
+				className: codeBlockPre,
+				children: /* @__PURE__ */ jsx("code", { children: codeString })
+			})
+		]
+	});
+});
+CodeBlock.displayName = "CodeBlock";
+/**
+* Inline code styling — for use in markdown renderers.
+*/
+const InlineCode = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("code", {
+	ref,
+	className: [inlineCode, className].filter(Boolean).join(" "),
+	...props
+}));
+InlineCode.displayName = "InlineCode";
+
+//#endregion
+//#region src/components/ChatMessage/ChatMessage.css.ts
+const messageContainer = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["4"],
+	width: "100%",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const messageCard = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["4"],
+	borderRadius: vars.radii.lg,
+	border: `1px solid ${vars.color.border}`,
+	backgroundColor: vars.color.surface,
+	padding: vars.space["6"],
+	fontSize: vars.font.size.sm,
+	color: vars.color.textMuted
+});
+const messageBubble = recipe({
+	base: {
+		borderRadius: vars.radii.md,
+		padding: vars.space["4"]
+	},
+	variants: { role: {
+		user: { backgroundColor: vars.color.background },
+		assistant: { backgroundColor: vars.color.background }
+	} },
+	defaultVariants: { role: "assistant" }
+});
+const messageLabel = style({
+	fontSize: vars.font.size.xs,
+	color: vars.color.textMuted,
+	marginBottom: vars.space["1"],
+	fontFamily: vars.font.family.mono,
+	textTransform: "uppercase",
+	letterSpacing: "0.5px"
+});
+const messageContent = style({
+	color: vars.color.text,
+	lineHeight: vars.font.lineHeight.relaxed,
+	fontFamily: vars.font.family.sans,
+	fontSize: vars.font.size.sm
+});
+const avatarRow = style({
+	display: "flex",
+	alignItems: "center",
+	gap: vars.space["2"],
+	marginBottom: vars.space["2"]
+});
+const avatarIcon = style({
+	width: "24px",
+	height: "24px",
+	borderRadius: vars.radii.full,
+	backgroundColor: vars.color.primary,
+	color: vars.color.primaryForeground,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	fontSize: "12px",
+	fontWeight: vars.font.weight.bold,
+	flexShrink: 0
+});
+const avatarLabel = style({
+	fontSize: vars.font.size.xs,
+	fontWeight: vars.font.weight.medium,
+	color: vars.color.text
+});
+const inputContainer = style({
+	width: "100%",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const inputForm = style({
+	display: "flex",
+	gap: vars.space["4"],
+	borderRadius: vars.radii.lg,
+	border: `1px solid ${vars.color.border}`,
+	backgroundColor: vars.color.surface,
+	padding: vars.space["4"]
+});
+const emptyState = style({
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
+	gap: vars.space["4"],
+	padding: vars.space["6"],
+	borderRadius: vars.radii.lg,
+	border: `1px solid ${vars.color.border}`,
+	backgroundColor: vars.color.surface,
+	textAlign: "center",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const emptyStateTitle = style({
+	fontSize: vars.font.size.lg,
+	fontWeight: vars.font.weight.bold,
+	color: vars.color.text
+});
+const emptyStateDescription = style({
+	fontSize: vars.font.size.sm,
+	color: vars.color.textMuted
+});
+
+//#endregion
+//#region src/components/ChatMessage/ChatMessage.tsx
+const cx = (...classes) => classes.filter(Boolean).join(" ");
+const ChatMessage = React.forwardRef(({ role, children, avatar, label, className }, ref) => {
+	const defaultLabel = role === "user" ? "Question" : role === "assistant" ? "Answer" : "System";
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: cx(messageBubble({ role: role === "system" ? "assistant" : role }), className),
+		children: [
+			avatar && /* @__PURE__ */ jsxs("div", {
+				className: avatarRow,
+				children: [/* @__PURE__ */ jsx("div", {
+					className: avatarIcon,
+					children: avatar
+				}), /* @__PURE__ */ jsx("span", {
+					className: avatarLabel,
+					children: label || defaultLabel
+				})]
+			}),
+			!avatar && /* @__PURE__ */ jsxs("div", {
+				className: messageLabel,
+				children: [label || defaultLabel, ":"]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: messageContent,
+				children
+			})
+		]
+	});
+});
+ChatMessage.displayName = "ChatMessage";
+const ChatMessagePair = React.forwardRef(({ question, answer, loading, className }, ref) => /* @__PURE__ */ jsxs("div", {
+	ref,
+	className: cx(messageCard, className),
+	children: [/* @__PURE__ */ jsx(ChatMessage, {
+		role: "user",
+		children: question
+	}), /* @__PURE__ */ jsx(ChatMessage, {
+		role: "assistant",
+		children: answer || loading || /* @__PURE__ */ jsx("span", { children: "No answer yet." })
+	})]
+}));
+ChatMessagePair.displayName = "ChatMessagePair";
+const ChatContainer = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	className: cx(messageContainer, className),
+	...props,
+	children
+}));
+ChatContainer.displayName = "ChatContainer";
+const ChatInputContainer = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	className: cx(inputContainer, className),
+	...props,
+	children: /* @__PURE__ */ jsx("div", {
+		className: inputForm,
+		children
+	})
+}));
+ChatInputContainer.displayName = "ChatInputContainer";
+const ChatEmptyState = React.forwardRef(({ title = "What can I help with?", description, icon, className }, ref) => /* @__PURE__ */ jsxs("div", {
+	ref,
+	className: cx(emptyState, className),
+	children: [
+		icon && /* @__PURE__ */ jsx("div", { children: icon }),
+		/* @__PURE__ */ jsx("h2", {
+			className: emptyStateTitle,
+			children: title
+		}),
+		description && /* @__PURE__ */ jsx("p", {
+			className: emptyStateDescription,
+			children: description
+		})
+	]
+}));
+ChatEmptyState.displayName = "ChatEmptyState";
+
+//#endregion
+//#region src/components/TypingAnimation/TypingAnimation.css.ts
+const blink = keyframes({
+	"0%, 100%": { opacity: 1 },
+	"50%": { opacity: 0 }
+});
+const typingContainer = style({
+	fontFamily: vars.font.family.sans,
+	fontSize: vars.font.size.sm,
+	color: vars.color.text,
+	lineHeight: vars.font.lineHeight.relaxed
+});
+const cursorStyle = style({
+	animation: `${blink} 1s step-end infinite`,
+	color: vars.color.primary,
+	fontWeight: vars.font.weight.bold
+});
+
+//#endregion
+//#region src/components/TypingAnimation/TypingAnimation.tsx
+/**
+* Word-by-word typing animation — simulates LLM streaming output.
+* Types out text progressively with a blinking cursor.
+*/
+const TypingAnimation = React.forwardRef(({ text, onComplete, speed = 100, showCursor = true, className }, ref) => {
+	const [displayedText, setDisplayedText] = React.useState("");
+	const [isTyping, setIsTyping] = React.useState(true);
+	React.useEffect(() => {
+		setDisplayedText("");
+		setIsTyping(true);
+		let currentIndex = 0;
+		const words = text.split(" ");
+		const typeWord = () => {
+			if (currentIndex < words.length) {
+				setDisplayedText((prev) => prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]);
+				currentIndex++;
+				const delay = Math.random() < .8 ? speed : speed * 3;
+				setTimeout(typeWord, delay);
+			} else {
+				setIsTyping(false);
+				onComplete?.();
+			}
+		};
+		const timer = setTimeout(typeWord, speed);
+		return () => clearTimeout(timer);
+	}, [
+		text,
+		speed,
+		onComplete
+	]);
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: [typingContainer, className].filter(Boolean).join(" "),
+		children: [displayedText, showCursor && isTyping && /* @__PURE__ */ jsx("span", {
+			className: cursorStyle,
+			children: "|"
+		})]
+	});
+});
+TypingAnimation.displayName = "TypingAnimation";
+
+//#endregion
+//#region src/components/ToolCallIndicator/ToolCallIndicator.css.ts
+const spin = keyframes({
+	from: { transform: "rotate(0deg)" },
+	to: { transform: "rotate(360deg)" }
+});
+const pulse = keyframes({
+	"0%, 100%": { opacity: 1 },
+	"50%": { opacity: .5 }
+});
+const indicatorContainer = style({
+	display: "flex",
+	alignItems: "center",
+	gap: vars.space["2"],
+	padding: vars.space["2"]
+});
+const indicatorSpinner = style({
+	animation: `${spin} 1s linear infinite`,
+	color: vars.color.primary,
+	flexShrink: 0
+});
+const indicatorLabel = style({
+	fontSize: vars.font.size.sm,
+	color: vars.color.textMuted,
+	fontFamily: vars.font.family.sans
+});
+const indicatorDot = style({
+	display: "inline-block",
+	animation: `${pulse} 1.5s ease-in-out infinite`
+});
+const toolBadge = style({
+	display: "inline-flex",
+	alignItems: "center",
+	gap: vars.space["1"],
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"],
+	paddingTop: vars.space["0_5"],
+	paddingBottom: vars.space["0_5"],
+	borderRadius: vars.radii.full,
+	backgroundColor: `color-mix(in srgb, ${vars.color.primary} 15%, transparent)`,
+	color: vars.color.primary,
+	fontSize: vars.font.size.xs,
+	fontFamily: vars.font.family.mono,
+	fontWeight: vars.font.weight.medium
+});
+
+//#endregion
+//#region src/components/ToolCallIndicator/ToolCallIndicator.tsx
+/** Known tool name → friendly label mapping */
+const TOOL_LABELS = {
+	getInformation: "Getting information",
+	addResource: "Saving to knowledge base",
+	search: "Searching",
+	calculate: "Calculating",
+	generateImage: "Generating image",
+	rag_search: "Searching knowledge base",
+	rag_sync: "Syncing knowledge base"
+};
+/**
+* Visual indicator for LLM tool calls in progress.
+* Shows a spinner with the tool name while the model is executing a tool.
+*/
+const ToolCallIndicator = React.forwardRef(({ toolName, label, icon, showBadge = true, className }, ref) => {
+	const displayLabel = label || toolName && TOOL_LABELS[toolName] || "Thinking";
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: [indicatorContainer, className].filter(Boolean).join(" "),
+		children: [
+			/* @__PURE__ */ jsx("div", {
+				className: indicatorSpinner,
+				children: icon || /* @__PURE__ */ jsx(Loader2, { size: 16 })
+			}),
+			/* @__PURE__ */ jsxs("span", {
+				className: indicatorLabel,
+				children: [displayLabel, /* @__PURE__ */ jsx("span", {
+					className: indicatorDot,
+					children: "..."
+				})]
+			}),
+			showBadge && toolName && /* @__PURE__ */ jsxs("span", {
+				className: toolBadge,
+				children: [/* @__PURE__ */ jsx(Wrench, { size: 10 }), toolName]
+			})
+		]
+	});
+});
+ToolCallIndicator.displayName = "ToolCallIndicator";
+
+//#endregion
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, ChatEmptyState, ChatInputContainer, ChatMessage, ChatMessagePair, Checkbox, CodeBlock, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, ToolCallIndicator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.mjs.map

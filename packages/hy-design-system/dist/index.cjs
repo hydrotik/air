@@ -697,7 +697,7 @@ BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
 //#endregion
 //#region src/components/Button/Button.css.ts
-const spin$1 = (0, _vanilla_extract_css.keyframes)({ to: { transform: "rotate(360deg)" } });
+const spin$2 = (0, _vanilla_extract_css.keyframes)({ to: { transform: "rotate(360deg)" } });
 const spinner = (0, _vanilla_extract_css.style)({
 	display: "inline-block",
 	width: "1em",
@@ -705,7 +705,7 @@ const spinner = (0, _vanilla_extract_css.style)({
 	border: `2px solid currentColor`,
 	borderTopColor: "transparent",
 	borderRadius: _hydrotik_tokens.vars.radii.full,
-	animation: `${spin$1} 0.6s linear infinite`,
+	animation: `${spin$2} 0.6s linear infinite`,
 	flexShrink: 0
 });
 /**
@@ -3180,14 +3180,14 @@ SheetDescription.displayName = "SheetDescription";
 
 //#endregion
 //#region src/components/Skeleton/Skeleton.css.ts
-const pulse = (0, _vanilla_extract_css.keyframes)({
+const pulse$1 = (0, _vanilla_extract_css.keyframes)({
 	"0%, 100%": { opacity: "1" },
 	"50%": { opacity: "0.5" }
 });
 const skeleton = (0, _vanilla_extract_css.style)({
 	borderRadius: _hydrotik_tokens.vars.radii.md,
 	backgroundColor: _hydrotik_tokens.vars.color.secondary,
-	animation: `${pulse} 2s ${_hydrotik_tokens.vars.motion.easing.default} infinite`
+	animation: `${pulse$1} 2s ${_hydrotik_tokens.vars.motion.easing.default} infinite`
 });
 
 //#endregion
@@ -3267,14 +3267,14 @@ Slider.displayName = "Slider";
 
 //#endregion
 //#region src/components/Spinner/Spinner.css.ts
-const spin = (0, _vanilla_extract_css.keyframes)({ to: { transform: "rotate(360deg)" } });
+const spin$1 = (0, _vanilla_extract_css.keyframes)({ to: { transform: "rotate(360deg)" } });
 const spinnerRecipe = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		display: "inline-block",
 		borderRadius: _hydrotik_tokens.vars.radii.full,
 		border: "2px solid currentColor",
 		borderTopColor: "transparent",
-		animation: `${spin} 0.6s linear infinite`,
+		animation: `${spin$1} 0.6s linear infinite`,
 		flexShrink: 0
 	},
 	variants: { size: {
@@ -4032,7 +4032,7 @@ const muted = (0, _vanilla_extract_css.style)({
 	color: _hydrotik_tokens.vars.color.textMuted,
 	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
 });
-const inlineCode = (0, _vanilla_extract_css.style)({
+const inlineCode$1 = (0, _vanilla_extract_css.style)({
 	position: "relative",
 	fontFamily: _hydrotik_tokens.vars.font.family.mono,
 	fontSize: "0.875em",
@@ -4087,7 +4087,7 @@ const TypographyLead = createTypographyComponent("p", lead, "TypographyLead");
 const TypographyLarge = createTypographyComponent("div", large, "TypographyLarge");
 const TypographySmall = createTypographyComponent("small", small, "TypographySmall");
 const TypographyMuted = createTypographyComponent("p", muted, "TypographyMuted");
-const TypographyInlineCode = createTypographyComponent("code", inlineCode, "TypographyInlineCode");
+const TypographyInlineCode = createTypographyComponent("code", inlineCode$1, "TypographyInlineCode");
 const TypographyBlockquote = createTypographyComponent("blockquote", blockquote, "TypographyBlockquote");
 const TypographyUl = createTypographyComponent("ul", ul, "TypographyUl");
 const TypographyOl = createTypographyComponent("ol", ol, "TypographyOl");
@@ -5448,7 +5448,7 @@ const pinnedRight = (0, _vanilla_extract_css.style)({
 		background: `linear-gradient(to left, ${_hydrotik_tokens.vars.color.border}, transparent)`
 	}
 });
-const emptyState = (0, _vanilla_extract_css.style)({
+const emptyState$1 = (0, _vanilla_extract_css.style)({
 	padding: `${_hydrotik_tokens.vars.space["12"]} ${_hydrotik_tokens.vars.space["4"]}`,
 	textAlign: "center",
 	color: _hydrotik_tokens.vars.color.textMuted,
@@ -6169,7 +6169,7 @@ function DataGrid({ height, showToolbar = true, showStatusBar = false, showFoote
 							columnCount: totalColumnCount,
 							rowCount: loadingRowCount
 						}) : rowModel.rows.length === 0 ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)("tr", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
-							className: emptyState,
+							className: emptyState$1,
 							colSpan: totalColumnCount,
 							children: emptyMessage
 						}) }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RenderRows, {
@@ -7237,7 +7237,7 @@ const legendItemDotStyle = (0, _vanilla_extract_css.style)({
 
 //#endregion
 //#region src/components/Chart/Chart.tsx
-const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
+const cx$2 = (...classes) => classes.filter(Boolean).join(" ");
 const ChartContext = react.default.createContext(null);
 function useChart() {
 	const context = react.default.useContext(ChartContext);
@@ -7252,7 +7252,7 @@ const ChartContainer = react.default.forwardRef(({ id, className, children, conf
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 			"data-chart": chartId,
 			ref,
-			className: cx$1(chartContainerStyle, className),
+			className: cx$2(chartContainerStyle, className),
 			...props,
 			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChartStyle, {
 				id: chartId,
@@ -7310,16 +7310,16 @@ const ChartTooltipContent = react.default.forwardRef(({ active, payload, classNa
 	const nestLabel = payload.length === 1 && indicator !== "dot";
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		ref,
-		className: cx$1(tooltipContentStyle, className),
+		className: cx$2(tooltipContentStyle, className),
 		children: [!nestLabel ? tooltipLabel : null, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: tooltipItemsStyle,
 			children: payload.map((item, index) => {
 				const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.name || item.dataKey || "value"}`);
 				const indicatorColor = color || item.payload.fill || item.color;
 				return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-					className: cx$1(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
+					className: cx$2(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
 					children: formatter && item.value !== void 0 && item.name ? formatter(item.value, item.name, item, index, item.payload) : /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [itemConfig?.icon ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(itemConfig.icon, {}) : !hideIndicator && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-						className: cx$1(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
+						className: cx$2(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
 						style: {
 							"--color-bg": indicatorColor,
 							"--color-border": indicatorColor,
@@ -7327,7 +7327,7 @@ const ChartTooltipContent = react.default.forwardRef(({ active, payload, classNa
 							borderColor: indicator === "dashed" ? indicatorColor : void 0
 						}
 					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-						className: cx$1(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
+						className: cx$2(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
 						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 							className: tooltipItemLabelStyle,
 							children: [nestLabel ? tooltipLabel : null, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
@@ -7351,7 +7351,7 @@ const ChartLegendContent = react.default.forwardRef(({ className, hideIcon = fal
 	if (!payload?.length) return null;
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		ref,
-		className: cx$1(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
+		className: cx$2(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
 		children: payload.map((item) => {
 			const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.dataKey || "value"}`);
 			return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -7836,7 +7836,7 @@ const sidebarMenuSkeletonStyle = (0, _vanilla_extract_css.style)({
 
 //#endregion
 //#region src/components/Sidebar/Sidebar.tsx
-const cx = (...classes) => classes.filter(Boolean).join(" ");
+const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 3600 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
@@ -7908,7 +7908,7 @@ const SidebarProvider = react.default.forwardRef(({ defaultOpen = true, open: op
 			delayDuration: 0,
 			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				ref,
-				className: cx(sidebarProviderStyle, className),
+				className: cx$1(sidebarProviderStyle, className),
 				style,
 				"data-sidebar-provider": "",
 				...props,
@@ -7922,7 +7922,7 @@ const Sidebar = react.default.forwardRef(({ side = "left", variant = "sidebar", 
 	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 	if (collapsible === "none") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		ref,
-		className: cx(sidebarCollapsedNone, className),
+		className: cx$1(sidebarCollapsedNone, className),
 		...props,
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 			className: sidebarInnerStyle,
@@ -7954,21 +7954,21 @@ const Sidebar = react.default.forwardRef(({ side = "left", variant = "sidebar", 
 	});
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		ref,
-		className: cx(sidebarStyle, className),
+		className: cx$1(sidebarStyle, className),
 		"data-state": state,
 		"data-collapsible": state === "collapsed" ? collapsible : "",
 		"data-variant": variant,
 		"data-side": side,
 		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-			className: cx(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
+			className: cx$1(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
 			style: state === "collapsed" && collapsible === "offcanvas" ? { width: 0 } : void 0
 		}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
-			className: cx(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
+			className: cx$1(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
 			style: state === "collapsed" && collapsible === "icon" ? { width: `calc(${SIDEBAR_WIDTH_ICON} + 16px)` } : state === "collapsed" && collapsible === "offcanvas" ? side === "left" ? { left: `calc(-1 * ${SIDEBAR_WIDTH})` } : { right: `calc(-1 * ${SIDEBAR_WIDTH})` } : void 0,
 			...props,
 			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				"data-sidebar": "sidebar",
-				className: cx(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
+				className: cx$1(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
 				children
 			})
 		})]
@@ -7982,7 +7982,7 @@ const SidebarTrigger = react.default.forwardRef(({ className, onClick, ...props 
 		"data-sidebar": "trigger",
 		variant: "ghost",
 		size: "icon",
-		className: cx(sidebarTriggerStyle, className),
+		className: cx$1(sidebarTriggerStyle, className),
 		onClick: (e) => {
 			onClick?.(e);
 			toggleSidebar();
@@ -8014,56 +8014,56 @@ const SidebarRail = react.default.forwardRef(({ className, ...props }, ref) => {
 		tabIndex: -1,
 		onClick: toggleSidebar,
 		title: "Toggle Sidebar",
-		className: cx(sidebarRailStyle, className),
+		className: cx$1(sidebarRailStyle, className),
 		...props
 	});
 });
 SidebarRail.displayName = "SidebarRail";
 const SidebarInset = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("main", {
 	ref,
-	className: cx(sidebarInsetStyle, className),
+	className: cx$1(sidebarInsetStyle, className),
 	...props
 }));
 SidebarInset.displayName = "SidebarInset";
 const SidebarInput = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
 	ref,
 	"data-sidebar": "input",
-	className: cx(sidebarInputStyle, className),
+	className: cx$1(sidebarInputStyle, className),
 	...props
 }));
 SidebarInput.displayName = "SidebarInput";
 const SidebarHeader = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "header",
-	className: cx(sidebarHeaderStyle, className),
+	className: cx$1(sidebarHeaderStyle, className),
 	...props
 }));
 SidebarHeader.displayName = "SidebarHeader";
 const SidebarFooter = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "footer",
-	className: cx(sidebarFooterStyle, className),
+	className: cx$1(sidebarFooterStyle, className),
 	...props
 }));
 SidebarFooter.displayName = "SidebarFooter";
 const SidebarSeparator = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Separator, {
 	ref,
 	"data-sidebar": "separator",
-	className: cx(sidebarSeparatorStyle, className),
+	className: cx$1(sidebarSeparatorStyle, className),
 	...props
 }));
 SidebarSeparator.displayName = "SidebarSeparator";
 const SidebarContent = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "content",
-	className: cx(sidebarContentStyle, className),
+	className: cx$1(sidebarContentStyle, className),
 	...props
 }));
 SidebarContent.displayName = "SidebarContent";
 const SidebarGroup = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "group",
-	className: cx(sidebarGroupStyle, className),
+	className: cx$1(sidebarGroupStyle, className),
 	...props
 }));
 SidebarGroup.displayName = "SidebarGroup";
@@ -8071,7 +8071,7 @@ const SidebarGroupLabel = react.default.forwardRef(({ className, asChild = false
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(asChild ? _radix_ui_react_slot.Slot : "div", {
 		ref,
 		"data-sidebar": "group-label",
-		className: cx(sidebarGroupLabelStyle, className),
+		className: cx$1(sidebarGroupLabelStyle, className),
 		...props
 	});
 });
@@ -8079,21 +8079,21 @@ SidebarGroupLabel.displayName = "SidebarGroupLabel";
 const SidebarGroupContent = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "group-content",
-	className: cx(sidebarGroupContentStyle, className),
+	className: cx$1(sidebarGroupContentStyle, className),
 	...props
 }));
 SidebarGroupContent.displayName = "SidebarGroupContent";
 const SidebarMenu = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 	ref,
 	"data-sidebar": "menu",
-	className: cx(sidebarMenuStyle, className),
+	className: cx$1(sidebarMenuStyle, className),
 	...props
 }));
 SidebarMenu.displayName = "SidebarMenu";
 const SidebarMenuItem = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", {
 	ref,
 	"data-sidebar": "menu-item",
-	className: cx(sidebarMenuItemStyle, className),
+	className: cx$1(sidebarMenuItemStyle, className),
 	...props
 }));
 SidebarMenuItem.displayName = "SidebarMenuItem";
@@ -8105,7 +8105,7 @@ const SidebarMenuButton = react.default.forwardRef(({ asChild = false, isActive 
 		"data-sidebar": "menu-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx(sidebarMenuButtonRecipe({
+		className: cx$1(sidebarMenuButtonRecipe({
 			variant,
 			size
 		}), className),
@@ -8126,7 +8126,7 @@ SidebarMenuButton.displayName = "SidebarMenuButton";
 const SidebarMenuBadge = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 	ref,
 	"data-sidebar": "menu-badge",
-	className: cx(sidebarMenuBadgeStyle, className),
+	className: cx$1(sidebarMenuBadgeStyle, className),
 	...props
 }));
 SidebarMenuBadge.displayName = "SidebarMenuBadge";
@@ -8135,7 +8135,7 @@ const SidebarMenuSkeleton = react.default.forwardRef(({ className, showIcon = fa
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		ref,
 		"data-sidebar": "menu-skeleton",
-		className: cx(sidebarMenuSkeletonStyle, className),
+		className: cx$1(sidebarMenuSkeletonStyle, className),
 		...props,
 		children: [showIcon && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
 			width: 16,
@@ -8152,7 +8152,7 @@ SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
 const SidebarMenuSub = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
 	ref,
 	"data-sidebar": "menu-sub",
-	className: cx(sidebarMenuSubStyle, className),
+	className: cx$1(sidebarMenuSubStyle, className),
 	...props
 }));
 SidebarMenuSub.displayName = "SidebarMenuSub";
@@ -8167,7 +8167,7 @@ const SidebarMenuSubButton = react.default.forwardRef(({ asChild = false, size =
 		"data-sidebar": "menu-sub-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx(sidebarMenuSubButtonStyle, className),
+		className: cx$1(sidebarMenuSubButtonStyle, className),
 		style: size === "sm" ? { fontSize: "0.75rem" } : void 0,
 		...props
 	});
@@ -8240,6 +8240,460 @@ const Toaster = ({ theme = "dark", ...props }) => /* @__PURE__ */ (0, react_jsx_
 Toaster.displayName = "Toaster";
 
 //#endregion
+//#region src/components/CodeBlock/CodeBlock.css.ts
+const codeBlockWrapper = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	marginTop: _hydrotik_tokens.vars.space["4"],
+	marginBottom: _hydrotik_tokens.vars.space["4"]
+});
+const codeBlockPre = (0, _vanilla_extract_css.style)({
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	overflow: "auto",
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed,
+	padding: _hydrotik_tokens.vars.space["4"],
+	margin: 0,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	color: _hydrotik_tokens.vars.color.text
+});
+const copyButton = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: _hydrotik_tokens.vars.space["2"],
+	right: _hydrotik_tokens.vars.space["2"],
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["1_5"],
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	border: "none",
+	backgroundColor: _hydrotik_tokens.vars.color.surfaceElevated,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"],
+	paddingTop: _hydrotik_tokens.vars.space["1"],
+	paddingBottom: _hydrotik_tokens.vars.space["1"],
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	cursor: "pointer",
+	transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+	selectors: { "&:hover": {
+		backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
+		color: _hydrotik_tokens.vars.color.text
+	} }
+});
+const languageBadge = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: _hydrotik_tokens.vars.space["2"],
+	left: _hydrotik_tokens.vars.space["2"],
+	fontSize: "10px",
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	textTransform: "uppercase",
+	letterSpacing: "1px",
+	userSelect: "none"
+});
+const inlineCode = (0, _vanilla_extract_css.style)({
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	fontSize: "0.875em",
+	backgroundColor: _hydrotik_tokens.vars.color.secondary,
+	color: _hydrotik_tokens.vars.color.text,
+	borderRadius: _hydrotik_tokens.vars.radii.sm,
+	paddingLeft: _hydrotik_tokens.vars.space["1"],
+	paddingRight: _hydrotik_tokens.vars.space["1"],
+	paddingTop: "2px",
+	paddingBottom: "2px"
+});
+
+//#endregion
+//#region src/components/CodeBlock/CodeBlock.tsx
+/**
+* Code block with optional copy button and language badge.
+* For use in chat/AI contexts — renders a `<pre><code>` block.
+*
+* Note: This component does NOT include syntax highlighting by default.
+* Consumers can wrap the code with their preferred highlighter
+* (e.g. Prism, Shiki, highlight.js).
+*/
+const CodeBlock = react.default.forwardRef(({ children, language, showCopy = true, showLanguage = true, className }, ref) => {
+	const [copied, setCopied] = react.default.useState(false);
+	const codeString = String(children).replace(/\n$/, "");
+	const handleCopy = async () => {
+		try {
+			await navigator.clipboard.writeText(codeString);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2e3);
+		} catch {}
+	};
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: [codeBlockWrapper, className].filter(Boolean).join(" "),
+		children: [
+			showLanguage && language && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+				className: languageBadge,
+				children: language
+			}),
+			showCopy && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
+				type: "button",
+				className: copyButton,
+				onClick: handleCopy,
+				"aria-label": copied ? "Copied" : "Copy code",
+				children: [copied ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 12 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Copy, { size: 12 }), copied ? "Copied" : "Copy"]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
+				className: codeBlockPre,
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", { children: codeString })
+			})
+		]
+	});
+});
+CodeBlock.displayName = "CodeBlock";
+/**
+* Inline code styling — for use in markdown renderers.
+*/
+const InlineCode = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
+	ref,
+	className: [inlineCode, className].filter(Boolean).join(" "),
+	...props
+}));
+InlineCode.displayName = "InlineCode";
+
+//#endregion
+//#region src/components/ChatMessage/ChatMessage.css.ts
+const messageContainer = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["4"],
+	width: "100%",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const messageCard = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["4"],
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	padding: _hydrotik_tokens.vars.space["6"],
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted
+});
+const messageBubble = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		borderRadius: _hydrotik_tokens.vars.radii.md,
+		padding: _hydrotik_tokens.vars.space["4"]
+	},
+	variants: { role: {
+		user: { backgroundColor: _hydrotik_tokens.vars.color.background },
+		assistant: { backgroundColor: _hydrotik_tokens.vars.color.background }
+	} },
+	defaultVariants: { role: "assistant" }
+});
+const messageLabel = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	marginBottom: _hydrotik_tokens.vars.space["1"],
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	textTransform: "uppercase",
+	letterSpacing: "0.5px"
+});
+const messageContent = (0, _vanilla_extract_css.style)({
+	color: _hydrotik_tokens.vars.color.text,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	fontSize: _hydrotik_tokens.vars.font.size.sm
+});
+const avatarRow = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	marginBottom: _hydrotik_tokens.vars.space["2"]
+});
+const avatarIcon = (0, _vanilla_extract_css.style)({
+	width: "24px",
+	height: "24px",
+	borderRadius: _hydrotik_tokens.vars.radii.full,
+	backgroundColor: _hydrotik_tokens.vars.color.primary,
+	color: _hydrotik_tokens.vars.color.primaryForeground,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	fontSize: "12px",
+	fontWeight: _hydrotik_tokens.vars.font.weight.bold,
+	flexShrink: 0
+});
+const avatarLabel = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	color: _hydrotik_tokens.vars.color.text
+});
+const inputContainer = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const inputForm = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	gap: _hydrotik_tokens.vars.space["4"],
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	padding: _hydrotik_tokens.vars.space["4"]
+});
+const emptyState = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["4"],
+	padding: _hydrotik_tokens.vars.space["6"],
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	textAlign: "center",
+	maxWidth: "600px",
+	marginLeft: "auto",
+	marginRight: "auto"
+});
+const emptyStateTitle = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.lg,
+	fontWeight: _hydrotik_tokens.vars.font.weight.bold,
+	color: _hydrotik_tokens.vars.color.text
+});
+const emptyStateDescription = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted
+});
+
+//#endregion
+//#region src/components/ChatMessage/ChatMessage.tsx
+const cx = (...classes) => classes.filter(Boolean).join(" ");
+const ChatMessage = react.default.forwardRef(({ role, children, avatar, label, className }, ref) => {
+	const defaultLabel = role === "user" ? "Question" : role === "assistant" ? "Answer" : "System";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: cx(messageBubble({ role: role === "system" ? "assistant" : role }), className),
+		children: [
+			avatar && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: avatarRow,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: avatarIcon,
+					children: avatar
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+					className: avatarLabel,
+					children: label || defaultLabel
+				})]
+			}),
+			!avatar && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: messageLabel,
+				children: [label || defaultLabel, ":"]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: messageContent,
+				children
+			})
+		]
+	});
+});
+ChatMessage.displayName = "ChatMessage";
+const ChatMessagePair = react.default.forwardRef(({ question, answer, loading, className }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+	ref,
+	className: cx(messageCard, className),
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChatMessage, {
+		role: "user",
+		children: question
+	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChatMessage, {
+		role: "assistant",
+		children: answer || loading || /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "No answer yet." })
+	})]
+}));
+ChatMessagePair.displayName = "ChatMessagePair";
+const ChatContainer = react.default.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	className: cx(messageContainer, className),
+	...props,
+	children
+}));
+ChatContainer.displayName = "ChatContainer";
+const ChatInputContainer = react.default.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	className: cx(inputContainer, className),
+	...props,
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: inputForm,
+		children
+	})
+}));
+ChatInputContainer.displayName = "ChatInputContainer";
+const ChatEmptyState = react.default.forwardRef(({ title = "What can I help with?", description, icon, className }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+	ref,
+	className: cx(emptyState, className),
+	children: [
+		icon && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: icon }),
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+			className: emptyStateTitle,
+			children: title
+		}),
+		description && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+			className: emptyStateDescription,
+			children: description
+		})
+	]
+}));
+ChatEmptyState.displayName = "ChatEmptyState";
+
+//#endregion
+//#region src/components/TypingAnimation/TypingAnimation.css.ts
+const blink = (0, _vanilla_extract_css.keyframes)({
+	"0%, 100%": { opacity: 1 },
+	"50%": { opacity: 0 }
+});
+const typingContainer = (0, _vanilla_extract_css.style)({
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.text,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
+});
+const cursorStyle = (0, _vanilla_extract_css.style)({
+	animation: `${blink} 1s step-end infinite`,
+	color: _hydrotik_tokens.vars.color.primary,
+	fontWeight: _hydrotik_tokens.vars.font.weight.bold
+});
+
+//#endregion
+//#region src/components/TypingAnimation/TypingAnimation.tsx
+/**
+* Word-by-word typing animation — simulates LLM streaming output.
+* Types out text progressively with a blinking cursor.
+*/
+const TypingAnimation = react.default.forwardRef(({ text, onComplete, speed = 100, showCursor = true, className }, ref) => {
+	const [displayedText, setDisplayedText] = react.default.useState("");
+	const [isTyping, setIsTyping] = react.default.useState(true);
+	react.default.useEffect(() => {
+		setDisplayedText("");
+		setIsTyping(true);
+		let currentIndex = 0;
+		const words = text.split(" ");
+		const typeWord = () => {
+			if (currentIndex < words.length) {
+				setDisplayedText((prev) => prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]);
+				currentIndex++;
+				const delay = Math.random() < .8 ? speed : speed * 3;
+				setTimeout(typeWord, delay);
+			} else {
+				setIsTyping(false);
+				onComplete?.();
+			}
+		};
+		const timer = setTimeout(typeWord, speed);
+		return () => clearTimeout(timer);
+	}, [
+		text,
+		speed,
+		onComplete
+	]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: [typingContainer, className].filter(Boolean).join(" "),
+		children: [displayedText, showCursor && isTyping && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			className: cursorStyle,
+			children: "|"
+		})]
+	});
+});
+TypingAnimation.displayName = "TypingAnimation";
+
+//#endregion
+//#region src/components/ToolCallIndicator/ToolCallIndicator.css.ts
+const spin = (0, _vanilla_extract_css.keyframes)({
+	from: { transform: "rotate(0deg)" },
+	to: { transform: "rotate(360deg)" }
+});
+const pulse = (0, _vanilla_extract_css.keyframes)({
+	"0%, 100%": { opacity: 1 },
+	"50%": { opacity: .5 }
+});
+const indicatorContainer = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: _hydrotik_tokens.vars.space["2"]
+});
+const indicatorSpinner = (0, _vanilla_extract_css.style)({
+	animation: `${spin} 1s linear infinite`,
+	color: _hydrotik_tokens.vars.color.primary,
+	flexShrink: 0
+});
+const indicatorLabel = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans
+});
+const indicatorDot = (0, _vanilla_extract_css.style)({
+	display: "inline-block",
+	animation: `${pulse} 1.5s ease-in-out infinite`
+});
+const toolBadge = (0, _vanilla_extract_css.style)({
+	display: "inline-flex",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["1"],
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"],
+	paddingTop: _hydrotik_tokens.vars.space["0_5"],
+	paddingBottom: _hydrotik_tokens.vars.space["0_5"],
+	borderRadius: _hydrotik_tokens.vars.radii.full,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 15%, transparent)`,
+	color: _hydrotik_tokens.vars.color.primary,
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium
+});
+
+//#endregion
+//#region src/components/ToolCallIndicator/ToolCallIndicator.tsx
+/** Known tool name → friendly label mapping */
+const TOOL_LABELS = {
+	getInformation: "Getting information",
+	addResource: "Saving to knowledge base",
+	search: "Searching",
+	calculate: "Calculating",
+	generateImage: "Generating image",
+	rag_search: "Searching knowledge base",
+	rag_sync: "Syncing knowledge base"
+};
+/**
+* Visual indicator for LLM tool calls in progress.
+* Shows a spinner with the tool name while the model is executing a tool.
+*/
+const ToolCallIndicator = react.default.forwardRef(({ toolName, label, icon, showBadge = true, className }, ref) => {
+	const displayLabel = label || toolName && TOOL_LABELS[toolName] || "Thinking";
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: [indicatorContainer, className].filter(Boolean).join(" "),
+		children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: indicatorSpinner,
+				children: icon || /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Loader2, { size: 16 })
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+				className: indicatorLabel,
+				children: [displayLabel, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+					className: indicatorDot,
+					children: "..."
+				})]
+			}),
+			showBadge && toolName && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+				className: toolBadge,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Wrench, { size: 10 }), toolName]
+			})
+		]
+	});
+});
+ToolCallIndicator.displayName = "ToolCallIndicator";
+
+//#endregion
 exports.Accordion = Accordion;
 exports.AccordionContent = AccordionContent;
 exports.AccordionItem = AccordionItem;
@@ -8286,7 +8740,13 @@ exports.ChartLegendContent = ChartLegendContent;
 exports.ChartStyle = ChartStyle;
 exports.ChartTooltip = ChartTooltip;
 exports.ChartTooltipContent = ChartTooltipContent;
+exports.ChatContainer = ChatContainer;
+exports.ChatEmptyState = ChatEmptyState;
+exports.ChatInputContainer = ChatInputContainer;
+exports.ChatMessage = ChatMessage;
+exports.ChatMessagePair = ChatMessagePair;
 exports.Checkbox = Checkbox;
+exports.CodeBlock = CodeBlock;
 exports.Collapsible = Collapsible;
 exports.CollapsibleContent = CollapsibleContent;
 exports.CollapsibleTrigger = CollapsibleTrigger;
@@ -8359,6 +8819,7 @@ Object.defineProperty(exports, 'Icons', {
     return lucide_react;
   }
 });
+exports.InlineCode = InlineCode;
 exports.Input = Input;
 exports.InputGroup = InputGroup;
 exports.InputGroupAddon = InputGroupAddon;
@@ -8484,10 +8945,12 @@ exports.Toaster = Toaster;
 exports.Toggle = Toggle;
 exports.ToggleGroup = ToggleGroup;
 exports.ToggleGroupItem = ToggleGroupItem;
+exports.ToolCallIndicator = ToolCallIndicator;
 exports.Tooltip = Tooltip;
 exports.TooltipContent = TooltipContent;
 exports.TooltipProvider = TooltipProvider;
 exports.TooltipTrigger = TooltipTrigger;
+exports.TypingAnimation = TypingAnimation;
 exports.TypographyBlockquote = TypographyBlockquote;
 exports.TypographyH1 = TypographyH1;
 exports.TypographyH2 = TypographyH2;
