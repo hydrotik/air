@@ -1,7 +1,7 @@
-import React, { forwardRef, useId, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useId, useRef, useState } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import * as Icons from "lucide-react";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Copy, Heart, Loader2, MoreHorizontal, PanelLeft, Plus, Search, Trash2, Wrench, X } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Copy, Heart, Loader2, MoreHorizontal, PanelLeft, Plus, Search, Trash2, Upload, Wrench, X } from "lucide-react";
 import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@hydrotik/tokens";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
@@ -7181,7 +7181,7 @@ const legendItemDotStyle = style({
 
 //#endregion
 //#region src/components/Chart/Chart.tsx
-const cx$2 = (...classes) => classes.filter(Boolean).join(" ");
+const cx$3 = (...classes) => classes.filter(Boolean).join(" ");
 const ChartContext = React.createContext(null);
 function useChart() {
 	const context = React.useContext(ChartContext);
@@ -7196,7 +7196,7 @@ const ChartContainer = React.forwardRef(({ id, className, children, config, ...p
 		children: /* @__PURE__ */ jsxs("div", {
 			"data-chart": chartId,
 			ref,
-			className: cx$2(chartContainerStyle, className),
+			className: cx$3(chartContainerStyle, className),
 			...props,
 			children: [/* @__PURE__ */ jsx(ChartStyle, {
 				id: chartId,
@@ -7254,16 +7254,16 @@ const ChartTooltipContent = React.forwardRef(({ active, payload, className, indi
 	const nestLabel = payload.length === 1 && indicator !== "dot";
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
-		className: cx$2(tooltipContentStyle, className),
+		className: cx$3(tooltipContentStyle, className),
 		children: [!nestLabel ? tooltipLabel : null, /* @__PURE__ */ jsx("div", {
 			className: tooltipItemsStyle,
 			children: payload.map((item, index) => {
 				const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.name || item.dataKey || "value"}`);
 				const indicatorColor = color || item.payload.fill || item.color;
 				return /* @__PURE__ */ jsx("div", {
-					className: cx$2(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
+					className: cx$3(tooltipItemRowStyle, indicator === "dot" && tooltipItemRowCenteredStyle),
 					children: formatter && item.value !== void 0 && item.name ? formatter(item.value, item.name, item, index, item.payload) : /* @__PURE__ */ jsxs(Fragment, { children: [itemConfig?.icon ? /* @__PURE__ */ jsx(itemConfig.icon, {}) : !hideIndicator && /* @__PURE__ */ jsx("div", {
-						className: cx$2(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
+						className: cx$3(indicator === "dot" && tooltipIndicatorDotStyle, indicator === "line" && tooltipIndicatorLineStyle, indicator === "dashed" && tooltipIndicatorDashedStyle),
 						style: {
 							"--color-bg": indicatorColor,
 							"--color-border": indicatorColor,
@@ -7271,7 +7271,7 @@ const ChartTooltipContent = React.forwardRef(({ active, payload, className, indi
 							borderColor: indicator === "dashed" ? indicatorColor : void 0
 						}
 					}), /* @__PURE__ */ jsxs("div", {
-						className: cx$2(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
+						className: cx$3(tooltipItemContentStyle, nestLabel ? tooltipItemContentEndStyle : tooltipItemContentCenterStyle),
 						children: [/* @__PURE__ */ jsxs("div", {
 							className: tooltipItemLabelStyle,
 							children: [nestLabel ? tooltipLabel : null, /* @__PURE__ */ jsx("span", {
@@ -7295,7 +7295,7 @@ const ChartLegendContent = React.forwardRef(({ className, hideIcon = false, payl
 	if (!payload?.length) return null;
 	return /* @__PURE__ */ jsx("div", {
 		ref,
-		className: cx$2(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
+		className: cx$3(legendContentStyle, verticalAlign === "top" ? legendContentTopStyle : legendContentBottomStyle, className),
 		children: payload.map((item) => {
 			const itemConfig = getPayloadConfigFromPayload(config, item, `${nameKey || item.dataKey || "value"}`);
 			return /* @__PURE__ */ jsxs("div", {
@@ -7780,7 +7780,7 @@ const sidebarMenuSkeletonStyle = style({
 
 //#endregion
 //#region src/components/Sidebar/Sidebar.tsx
-const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
+const cx$2 = (...classes) => classes.filter(Boolean).join(" ");
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 3600 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
@@ -7852,7 +7852,7 @@ const SidebarProvider = React.forwardRef(({ defaultOpen = true, open: openProp, 
 			delayDuration: 0,
 			children: /* @__PURE__ */ jsx("div", {
 				ref,
-				className: cx$1(sidebarProviderStyle, className),
+				className: cx$2(sidebarProviderStyle, className),
 				style,
 				"data-sidebar-provider": "",
 				...props,
@@ -7866,7 +7866,7 @@ const Sidebar = React.forwardRef(({ side = "left", variant = "sidebar", collapsi
 	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 	if (collapsible === "none") return /* @__PURE__ */ jsx("div", {
 		ref,
-		className: cx$1(sidebarCollapsedNone, className),
+		className: cx$2(sidebarCollapsedNone, className),
 		...props,
 		children: /* @__PURE__ */ jsx("div", {
 			className: sidebarInnerStyle,
@@ -7898,21 +7898,21 @@ const Sidebar = React.forwardRef(({ side = "left", variant = "sidebar", collapsi
 	});
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
-		className: cx$1(sidebarStyle, className),
+		className: cx$2(sidebarStyle, className),
 		"data-state": state,
 		"data-collapsible": state === "collapsed" ? collapsible : "",
 		"data-variant": variant,
 		"data-side": side,
 		children: [/* @__PURE__ */ jsx("div", {
-			className: cx$1(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
+			className: cx$2(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
 			style: state === "collapsed" && collapsible === "offcanvas" ? { width: 0 } : void 0
 		}), /* @__PURE__ */ jsx("div", {
-			className: cx$1(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
+			className: cx$2(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
 			style: state === "collapsed" && collapsible === "icon" ? { width: `calc(${SIDEBAR_WIDTH_ICON} + 16px)` } : state === "collapsed" && collapsible === "offcanvas" ? side === "left" ? { left: `calc(-1 * ${SIDEBAR_WIDTH})` } : { right: `calc(-1 * ${SIDEBAR_WIDTH})` } : void 0,
 			...props,
 			children: /* @__PURE__ */ jsx("div", {
 				"data-sidebar": "sidebar",
-				className: cx$1(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
+				className: cx$2(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
 				children
 			})
 		})]
@@ -7926,7 +7926,7 @@ const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) 
 		"data-sidebar": "trigger",
 		variant: "ghost",
 		size: "icon",
-		className: cx$1(sidebarTriggerStyle, className),
+		className: cx$2(sidebarTriggerStyle, className),
 		onClick: (e) => {
 			onClick?.(e);
 			toggleSidebar();
@@ -7958,56 +7958,56 @@ const SidebarRail = React.forwardRef(({ className, ...props }, ref) => {
 		tabIndex: -1,
 		onClick: toggleSidebar,
 		title: "Toggle Sidebar",
-		className: cx$1(sidebarRailStyle, className),
+		className: cx$2(sidebarRailStyle, className),
 		...props
 	});
 });
 SidebarRail.displayName = "SidebarRail";
 const SidebarInset = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("main", {
 	ref,
-	className: cx$1(sidebarInsetStyle, className),
+	className: cx$2(sidebarInsetStyle, className),
 	...props
 }));
 SidebarInset.displayName = "SidebarInset";
 const SidebarInput = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Input, {
 	ref,
 	"data-sidebar": "input",
-	className: cx$1(sidebarInputStyle, className),
+	className: cx$2(sidebarInputStyle, className),
 	...props
 }));
 SidebarInput.displayName = "SidebarInput";
 const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "header",
-	className: cx$1(sidebarHeaderStyle, className),
+	className: cx$2(sidebarHeaderStyle, className),
 	...props
 }));
 SidebarHeader.displayName = "SidebarHeader";
 const SidebarFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "footer",
-	className: cx$1(sidebarFooterStyle, className),
+	className: cx$2(sidebarFooterStyle, className),
 	...props
 }));
 SidebarFooter.displayName = "SidebarFooter";
 const SidebarSeparator = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Separator, {
 	ref,
 	"data-sidebar": "separator",
-	className: cx$1(sidebarSeparatorStyle, className),
+	className: cx$2(sidebarSeparatorStyle, className),
 	...props
 }));
 SidebarSeparator.displayName = "SidebarSeparator";
 const SidebarContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "content",
-	className: cx$1(sidebarContentStyle, className),
+	className: cx$2(sidebarContentStyle, className),
 	...props
 }));
 SidebarContent.displayName = "SidebarContent";
 const SidebarGroup = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "group",
-	className: cx$1(sidebarGroupStyle, className),
+	className: cx$2(sidebarGroupStyle, className),
 	...props
 }));
 SidebarGroup.displayName = "SidebarGroup";
@@ -8015,7 +8015,7 @@ const SidebarGroupLabel = React.forwardRef(({ className, asChild = false, ...pro
 	return /* @__PURE__ */ jsx(asChild ? Slot : "div", {
 		ref,
 		"data-sidebar": "group-label",
-		className: cx$1(sidebarGroupLabelStyle, className),
+		className: cx$2(sidebarGroupLabelStyle, className),
 		...props
 	});
 });
@@ -8023,21 +8023,21 @@ SidebarGroupLabel.displayName = "SidebarGroupLabel";
 const SidebarGroupContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "group-content",
-	className: cx$1(sidebarGroupContentStyle, className),
+	className: cx$2(sidebarGroupContentStyle, className),
 	...props
 }));
 SidebarGroupContent.displayName = "SidebarGroupContent";
 const SidebarMenu = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
 	ref,
 	"data-sidebar": "menu",
-	className: cx$1(sidebarMenuStyle, className),
+	className: cx$2(sidebarMenuStyle, className),
 	...props
 }));
 SidebarMenu.displayName = "SidebarMenu";
 const SidebarMenuItem = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("li", {
 	ref,
 	"data-sidebar": "menu-item",
-	className: cx$1(sidebarMenuItemStyle, className),
+	className: cx$2(sidebarMenuItemStyle, className),
 	...props
 }));
 SidebarMenuItem.displayName = "SidebarMenuItem";
@@ -8049,7 +8049,7 @@ const SidebarMenuButton = React.forwardRef(({ asChild = false, isActive = false,
 		"data-sidebar": "menu-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx$1(sidebarMenuButtonRecipe({
+		className: cx$2(sidebarMenuButtonRecipe({
 			variant,
 			size
 		}), className),
@@ -8070,7 +8070,7 @@ SidebarMenuButton.displayName = "SidebarMenuButton";
 const SidebarMenuBadge = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
 	ref,
 	"data-sidebar": "menu-badge",
-	className: cx$1(sidebarMenuBadgeStyle, className),
+	className: cx$2(sidebarMenuBadgeStyle, className),
 	...props
 }));
 SidebarMenuBadge.displayName = "SidebarMenuBadge";
@@ -8079,7 +8079,7 @@ const SidebarMenuSkeleton = React.forwardRef(({ className, showIcon = false, ...
 	return /* @__PURE__ */ jsxs("div", {
 		ref,
 		"data-sidebar": "menu-skeleton",
-		className: cx$1(sidebarMenuSkeletonStyle, className),
+		className: cx$2(sidebarMenuSkeletonStyle, className),
 		...props,
 		children: [showIcon && /* @__PURE__ */ jsx(Skeleton, { style: {
 			width: 16,
@@ -8096,7 +8096,7 @@ SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
 const SidebarMenuSub = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
 	ref,
 	"data-sidebar": "menu-sub",
-	className: cx$1(sidebarMenuSubStyle, className),
+	className: cx$2(sidebarMenuSubStyle, className),
 	...props
 }));
 SidebarMenuSub.displayName = "SidebarMenuSub";
@@ -8111,7 +8111,7 @@ const SidebarMenuSubButton = React.forwardRef(({ asChild = false, size = "md", i
 		"data-sidebar": "menu-sub-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cx$1(sidebarMenuSubButtonStyle, className),
+		className: cx$2(sidebarMenuSubButtonStyle, className),
 		style: size === "sm" ? { fontSize: "0.75rem" } : void 0,
 		...props
 	});
@@ -8182,6 +8182,258 @@ const Toaster = ({ theme = "dark", ...props }) => /* @__PURE__ */ jsx(Toaster$1,
 	...props
 });
 Toaster.displayName = "Toaster";
+
+//#endregion
+//#region src/components/FileUploader/FileUploader.css.ts
+const uploaderRoot = style({
+	position: "relative",
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["6"],
+	overflow: "hidden"
+});
+const dropzone = style({
+	position: "relative",
+	display: "grid",
+	height: "208px",
+	width: "100%",
+	cursor: "pointer",
+	placeItems: "center",
+	borderRadius: vars.radii.lg,
+	border: `2px dashed color-mix(in srgb, ${vars.color.textMuted} 25%, transparent)`,
+	paddingLeft: vars.space["5"],
+	paddingRight: vars.space["5"],
+	paddingTop: vars.space["2_5"],
+	paddingBottom: vars.space["2_5"],
+	textAlign: "center",
+	transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, border-color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+	selectors: {
+		"&:hover": { backgroundColor: `color-mix(in srgb, ${vars.color.secondary} 25%, transparent)` },
+		"&:focus-visible": {
+			outline: "none",
+			borderColor: vars.color.focusRing,
+			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+		}
+	}
+});
+const dropzoneActive = style({ borderColor: `color-mix(in srgb, ${vars.color.textMuted} 50%, transparent)` });
+const dropzoneDisabled = style({
+	pointerEvents: "none",
+	opacity: .6
+});
+const dropzoneContent = style({
+	display: "flex",
+	flexDirection: "column",
+	alignItems: "center",
+	justifyContent: "center",
+	gap: vars.space["4"]
+});
+const dropzoneIcon = style({
+	borderRadius: vars.radii.full,
+	border: `1px dashed ${vars.color.border}`,
+	padding: vars.space["3"],
+	color: vars.color.textMuted
+});
+const dropzoneText = style({
+	fontWeight: vars.font.weight.medium,
+	color: vars.color.textMuted,
+	fontSize: vars.font.size.sm
+});
+const dropzoneSubtext = style({
+	fontSize: vars.font.size.xs,
+	color: `color-mix(in srgb, ${vars.color.textMuted} 70%, transparent)`
+});
+const fileListContainer = style({
+	maxHeight: "192px",
+	width: "100%",
+	overflowY: "auto",
+	paddingLeft: vars.space["3"],
+	paddingRight: vars.space["3"]
+});
+const fileListInner = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["4"]
+});
+const fileCard = style({
+	position: "relative",
+	display: "flex",
+	alignItems: "center",
+	gap: vars.space["4"]
+});
+const fileInfo = style({
+	display: "flex",
+	flex: "1 1 0%",
+	flexDirection: "column",
+	gap: vars.space["2"]
+});
+const fileName = style({
+	fontSize: vars.font.size.sm,
+	fontWeight: vars.font.weight.medium,
+	color: `color-mix(in srgb, ${vars.color.text} 80%, transparent)`,
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	whiteSpace: "nowrap"
+});
+const fileSize = style({
+	fontSize: vars.font.size.xs,
+	color: vars.color.textMuted
+});
+const filePreview = style({
+	width: "48px",
+	height: "48px",
+	flexShrink: 0,
+	borderRadius: vars.radii.md,
+	objectFit: "cover"
+});
+
+//#endregion
+//#region src/components/FileUploader/FileUploader.tsx
+const cx$1 = (...classes) => classes.filter(Boolean).join(" ");
+function formatBytes(bytes, decimals = 2) {
+	if (bytes === 0) return "0 Bytes";
+	const k = 1024;
+	const sizes = [
+		"Bytes",
+		"KB",
+		"MB",
+		"GB"
+	];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`;
+}
+/**
+* File uploader with drag-and-drop, previews, and progress.
+* Framework-agnostic — uses native File API (no react-dropzone dependency).
+*/
+const FileUploader = React.forwardRef(({ value: valueProp, onValueChange, onUpload, progresses, accept = { "image/*": [] }, maxSize = 1024 * 1024 * 2, maxFiles = 1, multiple = false, disabled = false, className, ...props }, ref) => {
+	const [files, setFiles] = useState(valueProp || []);
+	const [isDragActive, setIsDragActive] = useState(false);
+	const inputRef = useRef(null);
+	useEffect(() => {
+		if (valueProp) setFiles(valueProp);
+	}, [valueProp]);
+	const updateFiles = useCallback((newFiles) => {
+		setFiles(newFiles);
+		onValueChange?.(newFiles);
+	}, [onValueChange]);
+	const isAccepted = useCallback((file) => {
+		if (!accept || Object.keys(accept).length === 0) return true;
+		return Object.keys(accept).some((mime) => {
+			if (mime.endsWith("/*")) return file.type.startsWith(mime.replace("/*", "/"));
+			return file.type === mime;
+		});
+	}, [accept]);
+	const handleFiles = useCallback((incoming) => {
+		const accepted = Array.from(incoming).filter((f) => f.size <= maxSize && isAccepted(f));
+		if (files.length + accepted.length > maxFiles) {
+			const allowed = accepted.slice(0, maxFiles - files.length);
+			updateFiles([...files, ...allowed]);
+		} else {
+			const updated = [...files, ...accepted];
+			updateFiles(updated);
+			if (onUpload && updated.length > 0) onUpload(updated);
+		}
+	}, [
+		files,
+		maxFiles,
+		maxSize,
+		isAccepted,
+		updateFiles,
+		onUpload
+	]);
+	const onRemove = (index) => {
+		updateFiles(files.filter((_, i) => i !== index));
+	};
+	const isDisabled = disabled || files.length >= maxFiles;
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: cx$1(uploaderRoot, className),
+		...props,
+		children: [/* @__PURE__ */ jsxs("div", {
+			role: "button",
+			tabIndex: isDisabled ? -1 : 0,
+			className: cx$1(dropzone, isDragActive && dropzoneActive, isDisabled && dropzoneDisabled),
+			onClick: () => !isDisabled && inputRef.current?.click(),
+			onKeyDown: (e) => {
+				if ((e.key === "Enter" || e.key === " ") && !isDisabled) inputRef.current?.click();
+			},
+			onDragOver: (e) => {
+				e.preventDefault();
+				if (!isDisabled) setIsDragActive(true);
+			},
+			onDragLeave: () => setIsDragActive(false),
+			onDrop: (e) => {
+				e.preventDefault();
+				setIsDragActive(false);
+				if (!isDisabled && e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files);
+			},
+			children: [/* @__PURE__ */ jsx("input", {
+				ref: inputRef,
+				type: "file",
+				multiple: maxFiles > 1 || multiple,
+				accept: Object.keys(accept).join(","),
+				style: { display: "none" },
+				onChange: (e) => {
+					if (e.target.files?.length) handleFiles(e.target.files);
+					e.target.value = "";
+				}
+			}), /* @__PURE__ */ jsxs("div", {
+				className: dropzoneContent,
+				children: [/* @__PURE__ */ jsx("div", {
+					className: dropzoneIcon,
+					children: /* @__PURE__ */ jsx(Upload, {
+						size: 28,
+						"aria-hidden": true
+					})
+				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
+					className: dropzoneText,
+					children: isDragActive ? "Drop the files here" : "Drag 'n' drop files here, or click to select"
+				}), /* @__PURE__ */ jsx("p", {
+					className: dropzoneSubtext,
+					children: maxFiles > 1 ? `Up to ${maxFiles === Infinity ? "unlimited" : maxFiles} files (${formatBytes(maxSize)} each)` : `Max ${formatBytes(maxSize)}`
+				})] })]
+			})]
+		}), files.length > 0 && /* @__PURE__ */ jsx("div", {
+			className: fileListContainer,
+			children: /* @__PURE__ */ jsx("div", {
+				className: fileListInner,
+				children: files.map((file, index) => /* @__PURE__ */ jsxs("div", {
+					className: fileCard,
+					children: [
+						file.type.startsWith("image/") && /* @__PURE__ */ jsx("img", {
+							src: URL.createObjectURL(file),
+							alt: file.name,
+							className: filePreview
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: fileInfo,
+							children: [
+								/* @__PURE__ */ jsx("p", {
+									className: fileName,
+									children: file.name
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: fileSize,
+									children: formatBytes(file.size)
+								}),
+								progresses?.[file.name] !== void 0 && /* @__PURE__ */ jsx(Progress, { value: progresses[file.name] })
+							]
+						}),
+						/* @__PURE__ */ jsx(Button, {
+							variant: "outline",
+							size: "icon-sm",
+							onClick: () => onRemove(index),
+							"aria-label": `Remove ${file.name}`,
+							children: /* @__PURE__ */ jsx(X, { size: 14 })
+						})
+					]
+				}, index))
+			})
+		})]
+	});
+});
+FileUploader.displayName = "FileUploader";
 
 //#endregion
 //#region src/components/CodeBlock/CodeBlock.css.ts
@@ -8638,5 +8890,5 @@ const ToolCallIndicator = React.forwardRef(({ toolName, label, icon, showBadge =
 ToolCallIndicator.displayName = "ToolCallIndicator";
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, ChatEmptyState, ChatInputContainer, ChatMessage, ChatMessagePair, Checkbox, CodeBlock, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, ToolCallIndicator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, ChatEmptyState, ChatInputContainer, ChatMessage, ChatMessagePair, Checkbox, CodeBlock, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FileUploader, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, ToolCallIndicator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.mjs.map

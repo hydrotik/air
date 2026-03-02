@@ -453,6 +453,10 @@ export {
 export { Toaster, toast } from './components/Sonner';
 export type { ToasterProps } from './components/Sonner';
 
+// ─── FileUploader ────────────────────────────────────────────────────────────
+export { FileUploader } from './components/FileUploader';
+export type { FileUploaderProps } from './components/FileUploader';
+
 // ─── CodeBlock ───────────────────────────────────────────────────────────────
 export { CodeBlock, InlineCode } from './components/CodeBlock';
 export type { CodeBlockProps } from './components/CodeBlock';
