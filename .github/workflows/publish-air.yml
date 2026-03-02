@@ -1,4 +1,4 @@
-name: Publish AIr to npm
+name: Publish AIr to npm + GitHub Packages
 
 on:
   # Trigger manually or on version tag
@@ -25,6 +25,7 @@ jobs:
         working-directory: packages/hy-ai-rum
     permissions:
       contents: write
+      packages: write
       id-token: write
 
     steps:
@@ -66,11 +67,25 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/air-v}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      # ── Publish to npmjs.com ────────────────────────────────────────
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      # ── Publish to GitHub Packages ──────────────────────────────────
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@hydrotik'
+
+      - name: Publish to GitHub Packages
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Git tag + sync ─────────────────────────────────────────────
       - name: Create git tag + push (manual dispatch)
         if: github.event_name == 'workflow_dispatch'
         run: |
