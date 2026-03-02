@@ -280,6 +280,7 @@ import { AddToCartButton } from '@hydrotik/design-system';
 | `/plugin`     | Plugin     | TectraScope marketing landing page                                                                                                     |
 | `/datagrid`   | DataGrid   | Enterprise data grid demo                                                                                                              |
 | `/editorial`  | Editorial  | High-density data journalism with DataGrids, SegmentedRatingBars, FlagTags, timeline chart                                             |
+| `/aitools`    | AI Tools   | LLM streaming components: ChatMessage, CodeBlock, TypingAnimation, ToolCallIndicator, chat demo                                        |
 
 ## AIr Publishing
 
