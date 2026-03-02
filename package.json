@@ -8,9 +8,9 @@
     "access": "public"
   },
   "bin": {
-    "air": "./dist/server/cli.js",
-    "air-install-claude-code": "./src/collectors/claude-code/install.js",
-    "air-codex-watcher": "./src/collectors/codex/watcher.js"
+    "air": "dist/server/cli.js",
+    "air-install-claude-code": "src/collectors/claude-code/install.js",
+    "air-codex-watcher": "src/collectors/codex/watcher.js"
   },
   "exports": {
     ".": {
