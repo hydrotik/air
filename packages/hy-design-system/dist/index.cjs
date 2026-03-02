@@ -87,6 +87,8 @@ let _radix_ui_react_toggle_group = require("@radix-ui/react-toggle-group");
 _radix_ui_react_toggle_group = __toESM(_radix_ui_react_toggle_group);
 let _radix_ui_react_tooltip = require("@radix-ui/react-tooltip");
 _radix_ui_react_tooltip = __toESM(_radix_ui_react_tooltip);
+let react_hook_form = require("react-hook-form");
+let sonner = require("sonner");
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = (0, _vanilla_extract_css.keyframes)({
@@ -3644,7 +3646,7 @@ const toastViewport = (0, _vanilla_extract_css.style)({
 	zIndex: _hydrotik_tokens.vars.zIndex.toast,
 	outline: "none"
 });
-const toast = (0, _vanilla_extract_recipes.recipe)({
+const toast$1 = (0, _vanilla_extract_recipes.recipe)({
 	base: {
 		position: "relative",
 		display: "grid",
@@ -3741,7 +3743,7 @@ const ToastViewport = react.default.forwardRef(({ className, ...props }, ref) =>
 ToastViewport.displayName = "ToastViewport";
 const Toast = react.default.forwardRef(({ className, variant = "default", ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_toast.Root, {
 	ref,
-	className: [toast({ variant }), className].filter(Boolean).join(" "),
+	className: [toast$1({ variant }), className].filter(Boolean).join(" "),
 	...props
 }));
 Toast.displayName = "Toast";
@@ -7129,6 +7131,871 @@ const AddToCartButton = react.default.forwardRef(({ onAddToCart, quantity = 0, v
 AddToCartButton.displayName = "AddToCartButton";
 
 //#endregion
+//#region src/components/Heading/Heading.css.ts
+const headingRoot = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["1"]
+});
+const headingTitle = (0, _vanilla_extract_css.style)({
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	fontWeight: _hydrotik_tokens.vars.font.weight.bold,
+	letterSpacing: _hydrotik_tokens.vars.font.letterSpacing.tight,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.tight,
+	color: _hydrotik_tokens.vars.color.text,
+	margin: 0
+});
+const headingDescription = (0, _vanilla_extract_css.style)({
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	margin: 0,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal
+});
+const headingSizeStyles = {
+	sm: (0, _vanilla_extract_css.style)({ fontSize: _hydrotik_tokens.vars.font.size.xl }),
+	md: (0, _vanilla_extract_css.style)({ fontSize: _hydrotik_tokens.vars.font.size["2xl"] }),
+	lg: (0, _vanilla_extract_css.style)({ fontSize: _hydrotik_tokens.vars.font.size["3xl"] }),
+	xl: (0, _vanilla_extract_css.style)({ fontSize: _hydrotik_tokens.vars.font.size["4xl"] })
+};
+
+//#endregion
+//#region src/components/Heading/Heading.tsx
+const Heading = react.default.forwardRef(({ title, description, size = "lg", as: Tag = "h2", className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+	ref,
+	className: [headingRoot, className].filter(Boolean).join(" "),
+	...props,
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Tag, {
+		className: [headingTitle, headingSizeStyles[size]].join(" "),
+		children: title
+	}), description && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+		className: headingDescription,
+		children: description
+	})]
+}));
+Heading.displayName = "Heading";
+
+//#endregion
+//#region src/components/Modal/Modal.tsx
+const Modal = ({ title, description, isOpen, onClose, children, className }) => {
+	const onChange = (open) => {
+		if (!open) onClose();
+	};
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Dialog, {
+		open: isOpen,
+		onOpenChange: onChange,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DialogContent, {
+			className,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogTitle, { children: title }), description && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogDescription, { children: description })] }), children && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children })]
+		})
+	});
+};
+Modal.displayName = "Modal";
+
+//#endregion
+//#region src/components/Form/Form.css.ts
+const formItemStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["2"],
+	marginBottom: _hydrotik_tokens.vars.space["2"]
+});
+const formDescriptionStyle = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.normal,
+	margin: 0
+});
+const formMessageStyle = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	margin: 0
+});
+const formMessageErrorStyle = (0, _vanilla_extract_css.style)({ color: _hydrotik_tokens.vars.color.destructive });
+const formLabelErrorStyle = (0, _vanilla_extract_css.style)({ color: _hydrotik_tokens.vars.color.destructive });
+
+//#endregion
+//#region src/components/Form/Form.tsx
+const Form = react_hook_form.FormProvider;
+const FormFieldContext = react.default.createContext({});
+const FormField = ({ ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FormFieldContext.Provider, {
+	value: { name: props.name },
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_hook_form.Controller, { ...props })
+});
+const FormItemContext = react.default.createContext({});
+const useFormField = () => {
+	const fieldContext = react.default.useContext(FormFieldContext);
+	const itemContext = react.default.useContext(FormItemContext);
+	const { getFieldState, formState } = (0, react_hook_form.useFormContext)();
+	const fieldState = getFieldState(fieldContext.name, formState);
+	if (!fieldContext) throw new Error("useFormField should be used within <FormField>");
+	const { id } = itemContext;
+	return {
+		id,
+		name: fieldContext.name,
+		formItemId: `${id}-form-item`,
+		formDescriptionId: `${id}-form-item-description`,
+		formMessageId: `${id}-form-item-message`,
+		...fieldState
+	};
+};
+const FormItem = react.default.forwardRef(({ className, ...props }, ref) => {
+	const id = react.default.useId();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FormItemContext.Provider, {
+		value: { id },
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			ref,
+			className: [formItemStyle, className].filter(Boolean).join(" "),
+			...props
+		})
+	});
+});
+FormItem.displayName = "FormItem";
+const FormLabel = react.default.forwardRef(({ className, ...props }, ref) => {
+	const { error, formItemId } = useFormField();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+		ref,
+		className: [error ? formLabelErrorStyle : "", className].filter(Boolean).join(" "),
+		htmlFor: formItemId,
+		...props
+	});
+});
+FormLabel.displayName = "FormLabel";
+const FormControl = react.default.forwardRef(({ ...props }, ref) => {
+	const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_slot.Slot, {
+		ref,
+		id: formItemId,
+		"aria-describedby": !error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`,
+		"aria-invalid": !!error,
+		...props
+	});
+});
+FormControl.displayName = "FormControl";
+const FormDescription = react.default.forwardRef(({ className, ...props }, ref) => {
+	const { formDescriptionId } = useFormField();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+		ref,
+		id: formDescriptionId,
+		className: [formDescriptionStyle, className].filter(Boolean).join(" "),
+		...props
+	});
+});
+FormDescription.displayName = "FormDescription";
+const FormMessage = react.default.forwardRef(({ className, children, ...props }, ref) => {
+	const { error, formMessageId } = useFormField();
+	const body = error ? String(error?.message) : children;
+	if (!body) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+		ref,
+		id: formMessageId,
+		className: [
+			formMessageStyle,
+			error ? formMessageErrorStyle : "",
+			className
+		].filter(Boolean).join(" "),
+		...props,
+		children: body
+	});
+});
+FormMessage.displayName = "FormMessage";
+
+//#endregion
+//#region src/components/Sidebar/Sidebar.css.ts
+const sidebarWidthVar = (0, _vanilla_extract_css.createVar)();
+const sidebarWidthIconVar = (0, _vanilla_extract_css.createVar)();
+const sidebarProviderStyle = (0, _vanilla_extract_css.style)({
+	vars: {
+		[sidebarWidthVar]: "16rem",
+		[sidebarWidthIconVar]: "3rem"
+	},
+	display: "flex",
+	minHeight: "100svh",
+	width: "100%",
+	color: _hydrotik_tokens.vars.color.text
+});
+const sidebarStyle = (0, _vanilla_extract_css.style)({
+	display: "none",
+	"@media": { "(min-width: 768px)": { display: "block" } }
+});
+const sidebarGapStyle = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	height: "100svh",
+	width: sidebarWidthVar,
+	backgroundColor: "transparent",
+	transition: "width 200ms ease-in-out"
+});
+const sidebarFixedStyle = (0, _vanilla_extract_css.style)({
+	position: "fixed",
+	top: 0,
+	bottom: 0,
+	zIndex: 10,
+	display: "none",
+	height: "100svh",
+	width: sidebarWidthVar,
+	transition: "left 200ms ease-in-out, right 200ms ease-in-out, width 200ms ease-in-out",
+	"@media": { "(min-width: 768px)": { display: "flex" } }
+});
+const sidebarFixedLeftStyle = (0, _vanilla_extract_css.style)({ left: 0 });
+const sidebarFixedRightStyle = (0, _vanilla_extract_css.style)({ right: 0 });
+const sidebarInnerStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	height: "100%",
+	width: "100%",
+	flexDirection: "column",
+	backgroundColor: _hydrotik_tokens.vars.color.surface
+});
+const sidebarInnerFloatingStyle = (0, _vanilla_extract_css.style)({
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	boxShadow: _hydrotik_tokens.vars.shadow.sm
+});
+const sidebarBorderLeftStyle = (0, _vanilla_extract_css.style)({ borderRight: `1px solid ${_hydrotik_tokens.vars.color.border}` });
+const sidebarBorderRightStyle = (0, _vanilla_extract_css.style)({ borderLeft: `1px solid ${_hydrotik_tokens.vars.color.border}` });
+const sidebarCollapsedNone = (0, _vanilla_extract_css.style)({
+	width: sidebarWidthVar,
+	flex: "none"
+});
+const sidebarInsetStyle = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	display: "flex",
+	minHeight: "100svh",
+	flex: "1 1 0%",
+	flexDirection: "column",
+	backgroundColor: _hydrotik_tokens.vars.color.background
+});
+const sidebarHeaderStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: _hydrotik_tokens.vars.space["2"]
+});
+const sidebarFooterStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["2"],
+	padding: _hydrotik_tokens.vars.space["2"]
+});
+const sidebarContentStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	minHeight: 0,
+	flex: "1 1 0%",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["2"],
+	overflowY: "auto"
+});
+const sidebarSeparatorStyle = (0, _vanilla_extract_css.style)({
+	marginLeft: _hydrotik_tokens.vars.space["2"],
+	marginRight: _hydrotik_tokens.vars.space["2"],
+	width: "auto",
+	backgroundColor: _hydrotik_tokens.vars.color.border
+});
+const sidebarGroupStyle = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	display: "flex",
+	width: "100%",
+	minWidth: 0,
+	flexDirection: "column",
+	padding: _hydrotik_tokens.vars.space["2"]
+});
+const sidebarGroupLabelStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	height: "32px",
+	flexShrink: 0,
+	alignItems: "center",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"],
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	outline: "none",
+	transition: "margin 200ms ease-in-out, opacity 200ms ease-in-out"
+});
+const sidebarGroupContentStyle = (0, _vanilla_extract_css.style)({
+	width: "100%",
+	fontSize: _hydrotik_tokens.vars.font.size.sm
+});
+const sidebarMenuStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	width: "100%",
+	minWidth: 0,
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["1"],
+	listStyle: "none",
+	margin: 0,
+	padding: 0
+});
+const sidebarMenuItemStyle = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	listStyle: "none"
+});
+const sidebarMenuButtonRecipe = (0, _vanilla_extract_recipes.recipe)({
+	base: {
+		display: "flex",
+		width: "100%",
+		alignItems: "center",
+		gap: _hydrotik_tokens.vars.space["2"],
+		overflow: "hidden",
+		borderRadius: _hydrotik_tokens.vars.radii.md,
+		padding: _hydrotik_tokens.vars.space["2"],
+		textAlign: "left",
+		outline: "none",
+		border: "none",
+		backgroundColor: "transparent",
+		color: _hydrotik_tokens.vars.color.text,
+		fontFamily: _hydrotik_tokens.vars.font.family.sans,
+		cursor: "pointer",
+		transition: `background-color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}, color ${_hydrotik_tokens.vars.motion.duration.fast} ${_hydrotik_tokens.vars.motion.easing.default}`,
+		selectors: {
+			"&:hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+			"&:disabled, &[aria-disabled=\"true\"]": {
+				pointerEvents: "none",
+				opacity: .5
+			},
+			"&[data-active=\"true\"]": {
+				backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
+				fontWeight: _hydrotik_tokens.vars.font.weight.medium
+			}
+		}
+	},
+	variants: {
+		variant: {
+			default: {},
+			outline: {
+				backgroundColor: _hydrotik_tokens.vars.color.background,
+				boxShadow: `0 0 0 1px ${_hydrotik_tokens.vars.color.border}`,
+				selectors: { "&:hover": {
+					backgroundColor: _hydrotik_tokens.vars.color.ghostHover,
+					boxShadow: `0 0 0 1px ${_hydrotik_tokens.vars.color.ghostHover}`
+				} }
+			}
+		},
+		size: {
+			default: {
+				height: "32px",
+				fontSize: _hydrotik_tokens.vars.font.size.sm
+			},
+			sm: {
+				height: "28px",
+				fontSize: _hydrotik_tokens.vars.font.size.xs
+			},
+			lg: {
+				height: "48px",
+				fontSize: _hydrotik_tokens.vars.font.size.sm
+			}
+		}
+	},
+	defaultVariants: {
+		variant: "default",
+		size: "default"
+	}
+});
+const sidebarMenuBadgeStyle = (0, _vanilla_extract_css.style)({
+	pointerEvents: "none",
+	position: "absolute",
+	right: _hydrotik_tokens.vars.space["1"],
+	display: "flex",
+	height: "20px",
+	minWidth: "20px",
+	userSelect: "none",
+	alignItems: "center",
+	justifyContent: "center",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	paddingLeft: _hydrotik_tokens.vars.space["1_5"],
+	paddingRight: _hydrotik_tokens.vars.space["1_5"],
+	fontSize: _hydrotik_tokens.vars.font.size.xs,
+	fontWeight: _hydrotik_tokens.vars.font.weight.medium,
+	fontVariantNumeric: "tabular-nums",
+	color: _hydrotik_tokens.vars.color.text
+});
+const sidebarMenuSubStyle = (0, _vanilla_extract_css.style)({
+	marginLeft: "14px",
+	display: "flex",
+	minWidth: 0,
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["1"],
+	borderLeft: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	paddingLeft: _hydrotik_tokens.vars.space["2_5"],
+	paddingTop: _hydrotik_tokens.vars.space["0_5"],
+	paddingBottom: _hydrotik_tokens.vars.space["0_5"],
+	listStyle: "none",
+	margin: 0,
+	marginLeft: "14px"
+});
+const sidebarMenuSubButtonStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	height: "28px",
+	minWidth: 0,
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	overflow: "hidden",
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"],
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.text,
+	outline: "none",
+	textDecoration: "none",
+	border: "none",
+	backgroundColor: "transparent",
+	cursor: "pointer",
+	selectors: {
+		"&:hover": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover },
+		"&[data-active=\"true\"]": { backgroundColor: _hydrotik_tokens.vars.color.ghostHover }
+	}
+});
+const sidebarTriggerStyle = (0, _vanilla_extract_css.style)({
+	height: "28px",
+	width: "28px"
+});
+const sidebarRailStyle = (0, _vanilla_extract_css.style)({
+	position: "absolute",
+	top: 0,
+	bottom: 0,
+	zIndex: 20,
+	width: "16px",
+	cursor: "col-resize",
+	border: "none",
+	backgroundColor: "transparent",
+	padding: 0,
+	outline: "none",
+	display: "none",
+	"@media": { "(min-width: 640px)": { display: "flex" } },
+	selectors: {
+		"&::after": {
+			content: "\"\"",
+			position: "absolute",
+			top: 0,
+			bottom: 0,
+			left: "50%",
+			width: "2px"
+		},
+		"&:hover::after": { backgroundColor: _hydrotik_tokens.vars.color.border }
+	}
+});
+const sidebarInputStyle = (0, _vanilla_extract_css.style)({
+	height: "32px",
+	width: "100%",
+	backgroundColor: _hydrotik_tokens.vars.color.background,
+	boxShadow: "none"
+});
+const sidebarMenuSkeletonStyle = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	height: "32px",
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	paddingLeft: _hydrotik_tokens.vars.space["2"],
+	paddingRight: _hydrotik_tokens.vars.space["2"]
+});
+
+//#endregion
+//#region src/components/Sidebar/Sidebar.tsx
+const cx = (...classes) => classes.filter(Boolean).join(" ");
+const SIDEBAR_COOKIE_NAME = "sidebar:state";
+const SIDEBAR_COOKIE_MAX_AGE = 3600 * 24 * 7;
+const SIDEBAR_WIDTH = "16rem";
+const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH_ICON = "3rem";
+const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+const SidebarContext = react.default.createContext(null);
+function useSidebar() {
+	const context = react.default.useContext(SidebarContext);
+	if (!context) throw new Error("useSidebar must be used within a SidebarProvider.");
+	return context;
+}
+function useIsMobile(breakpoint = 768) {
+	const [isMobile, setIsMobile] = react.default.useState(false);
+	react.default.useEffect(() => {
+		const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+		const onChange = () => setIsMobile(mql.matches);
+		mql.addEventListener("change", onChange);
+		setIsMobile(mql.matches);
+		return () => mql.removeEventListener("change", onChange);
+	}, [breakpoint]);
+	return isMobile;
+}
+const SidebarProvider = react.default.forwardRef(({ defaultOpen = true, open: openProp, onOpenChange: setOpenProp, className, style, children, ...props }, ref) => {
+	const isMobile = useIsMobile();
+	const [openMobile, setOpenMobile] = react.default.useState(false);
+	const [_open, _setOpen] = react.default.useState(defaultOpen);
+	const open = openProp ?? _open;
+	const setOpen = react.default.useCallback((value) => {
+		const openState = typeof value === "function" ? value(open) : value;
+		if (setOpenProp) setOpenProp(openState);
+		else _setOpen(openState);
+		document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+	}, [setOpenProp, open]);
+	const toggleSidebar = react.default.useCallback(() => {
+		return isMobile ? setOpenMobile((o) => !o) : setOpen((o) => !o);
+	}, [isMobile, setOpen]);
+	react.default.useEffect(() => {
+		const handleKeyDown = (event) => {
+			if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+				event.preventDefault();
+				toggleSidebar();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [toggleSidebar]);
+	const state = open ? "expanded" : "collapsed";
+	const contextValue = react.default.useMemo(() => ({
+		state,
+		open,
+		setOpen,
+		isMobile,
+		openMobile,
+		setOpenMobile,
+		toggleSidebar
+	}), [
+		state,
+		open,
+		setOpen,
+		isMobile,
+		openMobile,
+		setOpenMobile,
+		toggleSidebar
+	]);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SidebarContext.Provider, {
+		value: contextValue,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipProvider, {
+			delayDuration: 0,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				ref,
+				className: cx(sidebarProviderStyle, className),
+				style,
+				"data-sidebar-provider": "",
+				...props,
+				children
+			})
+		})
+	});
+});
+SidebarProvider.displayName = "SidebarProvider";
+const Sidebar = react.default.forwardRef(({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, ...props }, ref) => {
+	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+	if (collapsible === "none") return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		ref,
+		className: cx(sidebarCollapsedNone, className),
+		...props,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: sidebarInnerStyle,
+			children
+		})
+	});
+	if (isMobile) return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Sheet, {
+		open: openMobile,
+		onOpenChange: setOpenMobile,
+		...props,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SheetContent, {
+			"data-sidebar": "sidebar",
+			"data-mobile": "true",
+			side,
+			style: {
+				width: SIDEBAR_WIDTH_MOBILE,
+				padding: 0
+			},
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				style: {
+					display: "flex",
+					height: "100%",
+					width: "100%",
+					flexDirection: "column"
+				},
+				children
+			})
+		})
+	});
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		className: cx(sidebarStyle, className),
+		"data-state": state,
+		"data-collapsible": state === "collapsed" ? collapsible : "",
+		"data-variant": variant,
+		"data-side": side,
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: cx(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
+			style: state === "collapsed" && collapsible === "offcanvas" ? { width: 0 } : void 0
+		}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+			className: cx(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
+			style: state === "collapsed" && collapsible === "icon" ? { width: `calc(${SIDEBAR_WIDTH_ICON} + 16px)` } : state === "collapsed" && collapsible === "offcanvas" ? side === "left" ? { left: `calc(-1 * ${SIDEBAR_WIDTH})` } : { right: `calc(-1 * ${SIDEBAR_WIDTH})` } : void 0,
+			...props,
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				"data-sidebar": "sidebar",
+				className: cx(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
+				children
+			})
+		})]
+	});
+});
+Sidebar.displayName = "Sidebar";
+const SidebarTrigger = react.default.forwardRef(({ className, onClick, ...props }, ref) => {
+	const { toggleSidebar } = useSidebar();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Button, {
+		ref,
+		"data-sidebar": "trigger",
+		variant: "ghost",
+		size: "icon",
+		className: cx(sidebarTriggerStyle, className),
+		onClick: (e) => {
+			onClick?.(e);
+			toggleSidebar();
+		},
+		...props,
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.PanelLeft, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+			style: {
+				position: "absolute",
+				width: 1,
+				height: 1,
+				padding: 0,
+				margin: -1,
+				overflow: "hidden",
+				clip: "rect(0,0,0,0)",
+				whiteSpace: "nowrap",
+				border: 0
+			},
+			children: "Toggle Sidebar"
+		})]
+	});
+});
+SidebarTrigger.displayName = "SidebarTrigger";
+const SidebarRail = react.default.forwardRef(({ className, ...props }, ref) => {
+	const { toggleSidebar } = useSidebar();
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("button", {
+		ref,
+		"data-sidebar": "rail",
+		"aria-label": "Toggle Sidebar",
+		tabIndex: -1,
+		onClick: toggleSidebar,
+		title: "Toggle Sidebar",
+		className: cx(sidebarRailStyle, className),
+		...props
+	});
+});
+SidebarRail.displayName = "SidebarRail";
+const SidebarInset = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("main", {
+	ref,
+	className: cx(sidebarInsetStyle, className),
+	...props
+}));
+SidebarInset.displayName = "SidebarInset";
+const SidebarInput = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+	ref,
+	"data-sidebar": "input",
+	className: cx(sidebarInputStyle, className),
+	...props
+}));
+SidebarInput.displayName = "SidebarInput";
+const SidebarHeader = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "header",
+	className: cx(sidebarHeaderStyle, className),
+	...props
+}));
+SidebarHeader.displayName = "SidebarHeader";
+const SidebarFooter = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "footer",
+	className: cx(sidebarFooterStyle, className),
+	...props
+}));
+SidebarFooter.displayName = "SidebarFooter";
+const SidebarSeparator = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Separator, {
+	ref,
+	"data-sidebar": "separator",
+	className: cx(sidebarSeparatorStyle, className),
+	...props
+}));
+SidebarSeparator.displayName = "SidebarSeparator";
+const SidebarContent = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "content",
+	className: cx(sidebarContentStyle, className),
+	...props
+}));
+SidebarContent.displayName = "SidebarContent";
+const SidebarGroup = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "group",
+	className: cx(sidebarGroupStyle, className),
+	...props
+}));
+SidebarGroup.displayName = "SidebarGroup";
+const SidebarGroupLabel = react.default.forwardRef(({ className, asChild = false, ...props }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(asChild ? _radix_ui_react_slot.Slot : "div", {
+		ref,
+		"data-sidebar": "group-label",
+		className: cx(sidebarGroupLabelStyle, className),
+		...props
+	});
+});
+SidebarGroupLabel.displayName = "SidebarGroupLabel";
+const SidebarGroupContent = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "group-content",
+	className: cx(sidebarGroupContentStyle, className),
+	...props
+}));
+SidebarGroupContent.displayName = "SidebarGroupContent";
+const SidebarMenu = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
+	ref,
+	"data-sidebar": "menu",
+	className: cx(sidebarMenuStyle, className),
+	...props
+}));
+SidebarMenu.displayName = "SidebarMenu";
+const SidebarMenuItem = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", {
+	ref,
+	"data-sidebar": "menu-item",
+	className: cx(sidebarMenuItemStyle, className),
+	...props
+}));
+SidebarMenuItem.displayName = "SidebarMenuItem";
+const SidebarMenuButton = react.default.forwardRef(({ asChild = false, isActive = false, variant = "default", size = "default", tooltip, className, ...props }, ref) => {
+	const Comp = asChild ? _radix_ui_react_slot.Slot : "button";
+	const { isMobile, state } = useSidebar();
+	const button = /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Comp, {
+		ref,
+		"data-sidebar": "menu-button",
+		"data-size": size,
+		"data-active": isActive,
+		className: cx(sidebarMenuButtonRecipe({
+			variant,
+			size
+		}), className),
+		...props
+	});
+	if (!tooltip) return button;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Tooltip, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTrigger, {
+		asChild: true,
+		children: button
+	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipContent, {
+		side: "right",
+		align: "center",
+		hidden: state !== "collapsed" || isMobile,
+		...typeof tooltip === "string" ? { children: tooltip } : tooltip
+	})] });
+});
+SidebarMenuButton.displayName = "SidebarMenuButton";
+const SidebarMenuBadge = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+	ref,
+	"data-sidebar": "menu-badge",
+	className: cx(sidebarMenuBadgeStyle, className),
+	...props
+}));
+SidebarMenuBadge.displayName = "SidebarMenuBadge";
+const SidebarMenuSkeleton = react.default.forwardRef(({ className, showIcon = false, ...props }, ref) => {
+	const width = react.default.useMemo(() => `${Math.floor(Math.random() * 40) + 50}%`, []);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+		ref,
+		"data-sidebar": "menu-skeleton",
+		className: cx(sidebarMenuSkeletonStyle, className),
+		...props,
+		children: [showIcon && /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
+			width: 16,
+			height: 16,
+			borderRadius: 4
+		} }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
+			height: 16,
+			flex: 1,
+			maxWidth: width
+		} })]
+	});
+});
+SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
+const SidebarMenuSub = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
+	ref,
+	"data-sidebar": "menu-sub",
+	className: cx(sidebarMenuSubStyle, className),
+	...props
+}));
+SidebarMenuSub.displayName = "SidebarMenuSub";
+const SidebarMenuSubItem = react.default.forwardRef(({ ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", {
+	ref,
+	...props
+}));
+SidebarMenuSubItem.displayName = "SidebarMenuSubItem";
+const SidebarMenuSubButton = react.default.forwardRef(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(asChild ? _radix_ui_react_slot.Slot : "a", {
+		ref,
+		"data-sidebar": "menu-sub-button",
+		"data-size": size,
+		"data-active": isActive,
+		className: cx(sidebarMenuSubButtonStyle, className),
+		style: size === "sm" ? { fontSize: "0.75rem" } : void 0,
+		...props
+	});
+});
+SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
+
+//#endregion
+//#region src/components/Sonner/Sonner.css.ts
+/**
+* Global styles for sonner toasts — targets the generated class names.
+* Sonner renders outside of React component scope, so we use globalStyle.
+*/
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast]", {
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	color: _hydrotik_tokens.vars.color.text,
+	borderColor: _hydrotik_tokens.vars.color.border,
+	boxShadow: _hydrotik_tokens.vars.shadow.lg,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans,
+	fontSize: _hydrotik_tokens.vars.font.size.sm
+});
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast] [data-description]", { color: _hydrotik_tokens.vars.color.textMuted });
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast] [data-button]", {
+	backgroundColor: _hydrotik_tokens.vars.color.primary,
+	color: _hydrotik_tokens.vars.color.primaryForeground
+});
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast] [data-cancel]", {
+	backgroundColor: _hydrotik_tokens.vars.color.secondary,
+	color: _hydrotik_tokens.vars.color.secondaryForeground
+});
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast][data-type=\"success\"]", {
+	backgroundColor: _hydrotik_tokens.vars.color.success,
+	color: _hydrotik_tokens.vars.color.successForeground,
+	borderColor: _hydrotik_tokens.vars.color.success
+});
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast][data-type=\"error\"]", {
+	backgroundColor: _hydrotik_tokens.vars.color.destructive,
+	color: _hydrotik_tokens.vars.color.destructiveForeground,
+	borderColor: _hydrotik_tokens.vars.color.destructive
+});
+(0, _vanilla_extract_css.globalStyle)("[data-sonner-toaster] [data-sonner-toast][data-type=\"warning\"]", {
+	backgroundColor: _hydrotik_tokens.vars.color.warning,
+	color: _hydrotik_tokens.vars.color.warningForeground,
+	borderColor: _hydrotik_tokens.vars.color.warning
+});
+
+//#endregion
+//#region src/components/Sonner/Sonner.tsx
+/**
+* Themed toast provider powered by sonner.
+* Place at your app root — uses design system tokens for all toast styling.
+*
+* Usage:
+* ```tsx
+* import { Toaster } from '@hydrotik/design-system';
+* import { toast } from 'sonner';
+*
+* // In app root:
+* <Toaster />
+*
+* // To trigger:
+* toast('Event has been created');
+* toast.success('Saved!');
+* toast.error('Something went wrong');
+* ```
+*/
+const Toaster = ({ theme = "dark", ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(sonner.Toaster, {
+	theme,
+	...props
+});
+Toaster.displayName = "Toaster";
+
+//#endregion
 exports.Accordion = Accordion;
 exports.AccordionContent = AccordionContent;
 exports.AccordionItem = AccordionItem;
@@ -7225,6 +8092,14 @@ exports.DropdownMenuSubTrigger = DropdownMenuSubTrigger;
 exports.DropdownMenuTrigger = DropdownMenuTrigger;
 exports.FieldMessage = FieldMessage;
 exports.FlagTag = FlagTag;
+exports.Form = Form;
+exports.FormControl = FormControl;
+exports.FormDescription = FormDescription;
+exports.FormField = FormField;
+exports.FormItem = FormItem;
+exports.FormLabel = FormLabel;
+exports.FormMessage = FormMessage;
+exports.Heading = Heading;
 exports.HoverCard = HoverCard;
 exports.HoverCardContent = HoverCardContent;
 exports.HoverCardTrigger = HoverCardTrigger;
@@ -7256,6 +8131,7 @@ exports.MenubarSub = MenubarSub;
 exports.MenubarSubContent = MenubarSubContent;
 exports.MenubarSubTrigger = MenubarSubTrigger;
 exports.MenubarTrigger = MenubarTrigger;
+exports.Modal = Modal;
 exports.NavigationMenu = NavigationMenu;
 exports.NavigationMenuContent = NavigationMenuContent;
 exports.NavigationMenuIndicator = NavigationMenuIndicator;
@@ -7308,6 +8184,27 @@ exports.SheetOverlay = SheetOverlay;
 exports.SheetPortal = SheetPortal;
 exports.SheetTitle = SheetTitle;
 exports.SheetTrigger = SheetTrigger;
+exports.Sidebar = Sidebar;
+exports.SidebarContent = SidebarContent;
+exports.SidebarFooter = SidebarFooter;
+exports.SidebarGroup = SidebarGroup;
+exports.SidebarGroupContent = SidebarGroupContent;
+exports.SidebarGroupLabel = SidebarGroupLabel;
+exports.SidebarHeader = SidebarHeader;
+exports.SidebarInput = SidebarInput;
+exports.SidebarInset = SidebarInset;
+exports.SidebarMenu = SidebarMenu;
+exports.SidebarMenuBadge = SidebarMenuBadge;
+exports.SidebarMenuButton = SidebarMenuButton;
+exports.SidebarMenuItem = SidebarMenuItem;
+exports.SidebarMenuSkeleton = SidebarMenuSkeleton;
+exports.SidebarMenuSub = SidebarMenuSub;
+exports.SidebarMenuSubButton = SidebarMenuSubButton;
+exports.SidebarMenuSubItem = SidebarMenuSubItem;
+exports.SidebarProvider = SidebarProvider;
+exports.SidebarRail = SidebarRail;
+exports.SidebarSeparator = SidebarSeparator;
+exports.SidebarTrigger = SidebarTrigger;
 exports.Skeleton = Skeleton;
 exports.Slider = Slider;
 exports.Spinner = Spinner;
@@ -7333,6 +8230,7 @@ exports.ToastDescription = ToastDescription;
 exports.ToastProvider = ToastProvider;
 exports.ToastTitle = ToastTitle;
 exports.ToastViewport = ToastViewport;
+exports.Toaster = Toaster;
 exports.Toggle = Toggle;
 exports.ToggleGroup = ToggleGroup;
 exports.ToggleGroupItem = ToggleGroupItem;
@@ -7356,5 +8254,13 @@ exports.TypographySmall = TypographySmall;
 exports.TypographyUl = TypographyUl;
 exports.createDataGrid = createDataGrid;
 exports.inputGroupInputClass = inputGroupInput;
+Object.defineProperty(exports, 'toast', {
+  enumerable: true,
+  get: function () {
+    return sonner.toast;
+  }
+});
 exports.useDataGrid = useDataGrid;
+exports.useFormField = useFormField;
+exports.useSidebar = useSidebar;
 //# sourceMappingURL=index.cjs.map

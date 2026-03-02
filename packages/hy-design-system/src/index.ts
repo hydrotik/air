@@ -391,5 +391,55 @@ export type {
 export { AddToCartButton } from './components/AddToCartButton';
 export type { AddToCartButtonProps } from './components/AddToCartButton';
 
+// ─── Heading ─────────────────────────────────────────────────────────────────
+export { Heading } from './components/Heading';
+export type { HeadingProps } from './components/Heading';
+
+// ─── Modal ───────────────────────────────────────────────────────────────────
+export { Modal } from './components/Modal';
+export type { ModalProps } from './components/Modal';
+
+// ─── Form ────────────────────────────────────────────────────────────────────
+export {
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+} from './components/Form';
+
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+} from './components/Sidebar';
+
+// ─── Sonner (Toast Notifications) ────────────────────────────────────────────
+export { Toaster, toast } from './components/Sonner';
+export type { ToasterProps } from './components/Sonner';
+
 // ─── Icons (re-export lucide-react) ──────────────────────────────────────────
 export * as Icons from 'lucide-react';

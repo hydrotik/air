@@ -1,8 +1,8 @@
 import React, { forwardRef, useId, useState } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import * as Icons from "lucide-react";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Heart, MoreHorizontal, Plus, Search, Trash2, X } from "lucide-react";
-import { globalStyle, keyframes, style } from "@vanilla-extract/css";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Heart, MoreHorizontal, PanelLeft, Plus, Search, Trash2, X } from "lucide-react";
+import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@hydrotik/tokens";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { recipe } from "@vanilla-extract/recipes";
@@ -32,6 +32,8 @@ import * as ToastPrimitive from "@radix-ui/react-toast";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { Controller, FormProvider, useFormContext } from "react-hook-form";
+import { Toaster as Toaster$1, toast } from "sonner";
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = keyframes({
@@ -3589,7 +3591,7 @@ const toastViewport = style({
 	zIndex: vars.zIndex.toast,
 	outline: "none"
 });
-const toast = recipe({
+const toast$1 = recipe({
 	base: {
 		position: "relative",
 		display: "grid",
@@ -3686,7 +3688,7 @@ const ToastViewport = React.forwardRef(({ className, ...props }, ref) => /* @__P
 ToastViewport.displayName = "ToastViewport";
 const Toast = React.forwardRef(({ className, variant = "default", ...props }, ref) => /* @__PURE__ */ jsx(ToastPrimitive.Root, {
 	ref,
-	className: [toast({ variant }), className].filter(Boolean).join(" "),
+	className: [toast$1({ variant }), className].filter(Boolean).join(" "),
 	...props
 }));
 Toast.displayName = "Toast";
@@ -7074,5 +7076,870 @@ const AddToCartButton = React.forwardRef(({ onAddToCart, quantity = 0, variant =
 AddToCartButton.displayName = "AddToCartButton";
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, useDataGrid };
+//#region src/components/Heading/Heading.css.ts
+const headingRoot = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["1"]
+});
+const headingTitle = style({
+	fontFamily: vars.font.family.sans,
+	fontWeight: vars.font.weight.bold,
+	letterSpacing: vars.font.letterSpacing.tight,
+	lineHeight: vars.font.lineHeight.tight,
+	color: vars.color.text,
+	margin: 0
+});
+const headingDescription = style({
+	fontFamily: vars.font.family.sans,
+	fontSize: vars.font.size.sm,
+	color: vars.color.textMuted,
+	margin: 0,
+	lineHeight: vars.font.lineHeight.normal
+});
+const headingSizeStyles = {
+	sm: style({ fontSize: vars.font.size.xl }),
+	md: style({ fontSize: vars.font.size["2xl"] }),
+	lg: style({ fontSize: vars.font.size["3xl"] }),
+	xl: style({ fontSize: vars.font.size["4xl"] })
+};
+
+//#endregion
+//#region src/components/Heading/Heading.tsx
+const Heading = React.forwardRef(({ title, description, size = "lg", as: Tag = "h2", className, ...props }, ref) => /* @__PURE__ */ jsxs("div", {
+	ref,
+	className: [headingRoot, className].filter(Boolean).join(" "),
+	...props,
+	children: [/* @__PURE__ */ jsx(Tag, {
+		className: [headingTitle, headingSizeStyles[size]].join(" "),
+		children: title
+	}), description && /* @__PURE__ */ jsx("p", {
+		className: headingDescription,
+		children: description
+	})]
+}));
+Heading.displayName = "Heading";
+
+//#endregion
+//#region src/components/Modal/Modal.tsx
+const Modal = ({ title, description, isOpen, onClose, children, className }) => {
+	const onChange = (open) => {
+		if (!open) onClose();
+	};
+	return /* @__PURE__ */ jsx(Dialog, {
+		open: isOpen,
+		onOpenChange: onChange,
+		children: /* @__PURE__ */ jsxs(DialogContent, {
+			className,
+			children: [/* @__PURE__ */ jsxs(DialogHeader, { children: [/* @__PURE__ */ jsx(DialogTitle, { children: title }), description && /* @__PURE__ */ jsx(DialogDescription, { children: description })] }), children && /* @__PURE__ */ jsx("div", { children })]
+		})
+	});
+};
+Modal.displayName = "Modal";
+
+//#endregion
+//#region src/components/Form/Form.css.ts
+const formItemStyle = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["2"],
+	marginBottom: vars.space["2"]
+});
+const formDescriptionStyle = style({
+	fontSize: vars.font.size.xs,
+	color: vars.color.textMuted,
+	lineHeight: vars.font.lineHeight.normal,
+	margin: 0
+});
+const formMessageStyle = style({
+	fontSize: vars.font.size.xs,
+	fontWeight: vars.font.weight.medium,
+	margin: 0
+});
+const formMessageErrorStyle = style({ color: vars.color.destructive });
+const formLabelErrorStyle = style({ color: vars.color.destructive });
+
+//#endregion
+//#region src/components/Form/Form.tsx
+const Form = FormProvider;
+const FormFieldContext = React.createContext({});
+const FormField = ({ ...props }) => /* @__PURE__ */ jsx(FormFieldContext.Provider, {
+	value: { name: props.name },
+	children: /* @__PURE__ */ jsx(Controller, { ...props })
+});
+const FormItemContext = React.createContext({});
+const useFormField = () => {
+	const fieldContext = React.useContext(FormFieldContext);
+	const itemContext = React.useContext(FormItemContext);
+	const { getFieldState, formState } = useFormContext();
+	const fieldState = getFieldState(fieldContext.name, formState);
+	if (!fieldContext) throw new Error("useFormField should be used within <FormField>");
+	const { id } = itemContext;
+	return {
+		id,
+		name: fieldContext.name,
+		formItemId: `${id}-form-item`,
+		formDescriptionId: `${id}-form-item-description`,
+		formMessageId: `${id}-form-item-message`,
+		...fieldState
+	};
+};
+const FormItem = React.forwardRef(({ className, ...props }, ref) => {
+	const id = React.useId();
+	return /* @__PURE__ */ jsx(FormItemContext.Provider, {
+		value: { id },
+		children: /* @__PURE__ */ jsx("div", {
+			ref,
+			className: [formItemStyle, className].filter(Boolean).join(" "),
+			...props
+		})
+	});
+});
+FormItem.displayName = "FormItem";
+const FormLabel = React.forwardRef(({ className, ...props }, ref) => {
+	const { error, formItemId } = useFormField();
+	return /* @__PURE__ */ jsx(Label, {
+		ref,
+		className: [error ? formLabelErrorStyle : "", className].filter(Boolean).join(" "),
+		htmlFor: formItemId,
+		...props
+	});
+});
+FormLabel.displayName = "FormLabel";
+const FormControl = React.forwardRef(({ ...props }, ref) => {
+	const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+	return /* @__PURE__ */ jsx(Slot, {
+		ref,
+		id: formItemId,
+		"aria-describedby": !error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`,
+		"aria-invalid": !!error,
+		...props
+	});
+});
+FormControl.displayName = "FormControl";
+const FormDescription = React.forwardRef(({ className, ...props }, ref) => {
+	const { formDescriptionId } = useFormField();
+	return /* @__PURE__ */ jsx("p", {
+		ref,
+		id: formDescriptionId,
+		className: [formDescriptionStyle, className].filter(Boolean).join(" "),
+		...props
+	});
+});
+FormDescription.displayName = "FormDescription";
+const FormMessage = React.forwardRef(({ className, children, ...props }, ref) => {
+	const { error, formMessageId } = useFormField();
+	const body = error ? String(error?.message) : children;
+	if (!body) return null;
+	return /* @__PURE__ */ jsx("p", {
+		ref,
+		id: formMessageId,
+		className: [
+			formMessageStyle,
+			error ? formMessageErrorStyle : "",
+			className
+		].filter(Boolean).join(" "),
+		...props,
+		children: body
+	});
+});
+FormMessage.displayName = "FormMessage";
+
+//#endregion
+//#region src/components/Sidebar/Sidebar.css.ts
+const sidebarWidthVar = createVar();
+const sidebarWidthIconVar = createVar();
+const sidebarProviderStyle = style({
+	vars: {
+		[sidebarWidthVar]: "16rem",
+		[sidebarWidthIconVar]: "3rem"
+	},
+	display: "flex",
+	minHeight: "100svh",
+	width: "100%",
+	color: vars.color.text
+});
+const sidebarStyle = style({
+	display: "none",
+	"@media": { "(min-width: 768px)": { display: "block" } }
+});
+const sidebarGapStyle = style({
+	position: "relative",
+	height: "100svh",
+	width: sidebarWidthVar,
+	backgroundColor: "transparent",
+	transition: "width 200ms ease-in-out"
+});
+const sidebarFixedStyle = style({
+	position: "fixed",
+	top: 0,
+	bottom: 0,
+	zIndex: 10,
+	display: "none",
+	height: "100svh",
+	width: sidebarWidthVar,
+	transition: "left 200ms ease-in-out, right 200ms ease-in-out, width 200ms ease-in-out",
+	"@media": { "(min-width: 768px)": { display: "flex" } }
+});
+const sidebarFixedLeftStyle = style({ left: 0 });
+const sidebarFixedRightStyle = style({ right: 0 });
+const sidebarInnerStyle = style({
+	display: "flex",
+	height: "100%",
+	width: "100%",
+	flexDirection: "column",
+	backgroundColor: vars.color.surface
+});
+const sidebarInnerFloatingStyle = style({
+	borderRadius: vars.radii.lg,
+	border: `1px solid ${vars.color.border}`,
+	boxShadow: vars.shadow.sm
+});
+const sidebarBorderLeftStyle = style({ borderRight: `1px solid ${vars.color.border}` });
+const sidebarBorderRightStyle = style({ borderLeft: `1px solid ${vars.color.border}` });
+const sidebarCollapsedNone = style({
+	width: sidebarWidthVar,
+	flex: "none"
+});
+const sidebarInsetStyle = style({
+	position: "relative",
+	display: "flex",
+	minHeight: "100svh",
+	flex: "1 1 0%",
+	flexDirection: "column",
+	backgroundColor: vars.color.background
+});
+const sidebarHeaderStyle = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["2"],
+	padding: vars.space["2"]
+});
+const sidebarFooterStyle = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["2"],
+	padding: vars.space["2"]
+});
+const sidebarContentStyle = style({
+	display: "flex",
+	minHeight: 0,
+	flex: "1 1 0%",
+	flexDirection: "column",
+	gap: vars.space["2"],
+	overflowY: "auto"
+});
+const sidebarSeparatorStyle = style({
+	marginLeft: vars.space["2"],
+	marginRight: vars.space["2"],
+	width: "auto",
+	backgroundColor: vars.color.border
+});
+const sidebarGroupStyle = style({
+	position: "relative",
+	display: "flex",
+	width: "100%",
+	minWidth: 0,
+	flexDirection: "column",
+	padding: vars.space["2"]
+});
+const sidebarGroupLabelStyle = style({
+	display: "flex",
+	height: "32px",
+	flexShrink: 0,
+	alignItems: "center",
+	borderRadius: vars.radii.md,
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"],
+	fontSize: vars.font.size.xs,
+	fontWeight: vars.font.weight.medium,
+	color: vars.color.textMuted,
+	outline: "none",
+	transition: "margin 200ms ease-in-out, opacity 200ms ease-in-out"
+});
+const sidebarGroupContentStyle = style({
+	width: "100%",
+	fontSize: vars.font.size.sm
+});
+const sidebarMenuStyle = style({
+	display: "flex",
+	width: "100%",
+	minWidth: 0,
+	flexDirection: "column",
+	gap: vars.space["1"],
+	listStyle: "none",
+	margin: 0,
+	padding: 0
+});
+const sidebarMenuItemStyle = style({
+	position: "relative",
+	listStyle: "none"
+});
+const sidebarMenuButtonRecipe = recipe({
+	base: {
+		display: "flex",
+		width: "100%",
+		alignItems: "center",
+		gap: vars.space["2"],
+		overflow: "hidden",
+		borderRadius: vars.radii.md,
+		padding: vars.space["2"],
+		textAlign: "left",
+		outline: "none",
+		border: "none",
+		backgroundColor: "transparent",
+		color: vars.color.text,
+		fontFamily: vars.font.family.sans,
+		cursor: "pointer",
+		transition: `background-color ${vars.motion.duration.fast} ${vars.motion.easing.default}, color ${vars.motion.duration.fast} ${vars.motion.easing.default}`,
+		selectors: {
+			"&:hover": { backgroundColor: vars.color.ghostHover },
+			"&:disabled, &[aria-disabled=\"true\"]": {
+				pointerEvents: "none",
+				opacity: .5
+			},
+			"&[data-active=\"true\"]": {
+				backgroundColor: vars.color.ghostHover,
+				fontWeight: vars.font.weight.medium
+			}
+		}
+	},
+	variants: {
+		variant: {
+			default: {},
+			outline: {
+				backgroundColor: vars.color.background,
+				boxShadow: `0 0 0 1px ${vars.color.border}`,
+				selectors: { "&:hover": {
+					backgroundColor: vars.color.ghostHover,
+					boxShadow: `0 0 0 1px ${vars.color.ghostHover}`
+				} }
+			}
+		},
+		size: {
+			default: {
+				height: "32px",
+				fontSize: vars.font.size.sm
+			},
+			sm: {
+				height: "28px",
+				fontSize: vars.font.size.xs
+			},
+			lg: {
+				height: "48px",
+				fontSize: vars.font.size.sm
+			}
+		}
+	},
+	defaultVariants: {
+		variant: "default",
+		size: "default"
+	}
+});
+const sidebarMenuBadgeStyle = style({
+	pointerEvents: "none",
+	position: "absolute",
+	right: vars.space["1"],
+	display: "flex",
+	height: "20px",
+	minWidth: "20px",
+	userSelect: "none",
+	alignItems: "center",
+	justifyContent: "center",
+	borderRadius: vars.radii.md,
+	paddingLeft: vars.space["1_5"],
+	paddingRight: vars.space["1_5"],
+	fontSize: vars.font.size.xs,
+	fontWeight: vars.font.weight.medium,
+	fontVariantNumeric: "tabular-nums",
+	color: vars.color.text
+});
+const sidebarMenuSubStyle = style({
+	marginLeft: "14px",
+	display: "flex",
+	minWidth: 0,
+	flexDirection: "column",
+	gap: vars.space["1"],
+	borderLeft: `1px solid ${vars.color.border}`,
+	paddingLeft: vars.space["2_5"],
+	paddingTop: vars.space["0_5"],
+	paddingBottom: vars.space["0_5"],
+	listStyle: "none",
+	margin: 0,
+	marginLeft: "14px"
+});
+const sidebarMenuSubButtonStyle = style({
+	display: "flex",
+	height: "28px",
+	minWidth: 0,
+	alignItems: "center",
+	gap: vars.space["2"],
+	overflow: "hidden",
+	borderRadius: vars.radii.md,
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"],
+	fontSize: vars.font.size.sm,
+	color: vars.color.text,
+	outline: "none",
+	textDecoration: "none",
+	border: "none",
+	backgroundColor: "transparent",
+	cursor: "pointer",
+	selectors: {
+		"&:hover": { backgroundColor: vars.color.ghostHover },
+		"&[data-active=\"true\"]": { backgroundColor: vars.color.ghostHover }
+	}
+});
+const sidebarTriggerStyle = style({
+	height: "28px",
+	width: "28px"
+});
+const sidebarRailStyle = style({
+	position: "absolute",
+	top: 0,
+	bottom: 0,
+	zIndex: 20,
+	width: "16px",
+	cursor: "col-resize",
+	border: "none",
+	backgroundColor: "transparent",
+	padding: 0,
+	outline: "none",
+	display: "none",
+	"@media": { "(min-width: 640px)": { display: "flex" } },
+	selectors: {
+		"&::after": {
+			content: "\"\"",
+			position: "absolute",
+			top: 0,
+			bottom: 0,
+			left: "50%",
+			width: "2px"
+		},
+		"&:hover::after": { backgroundColor: vars.color.border }
+	}
+});
+const sidebarInputStyle = style({
+	height: "32px",
+	width: "100%",
+	backgroundColor: vars.color.background,
+	boxShadow: "none"
+});
+const sidebarMenuSkeletonStyle = style({
+	display: "flex",
+	height: "32px",
+	alignItems: "center",
+	gap: vars.space["2"],
+	borderRadius: vars.radii.md,
+	paddingLeft: vars.space["2"],
+	paddingRight: vars.space["2"]
+});
+
+//#endregion
+//#region src/components/Sidebar/Sidebar.tsx
+const cx = (...classes) => classes.filter(Boolean).join(" ");
+const SIDEBAR_COOKIE_NAME = "sidebar:state";
+const SIDEBAR_COOKIE_MAX_AGE = 3600 * 24 * 7;
+const SIDEBAR_WIDTH = "16rem";
+const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH_ICON = "3rem";
+const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+const SidebarContext = React.createContext(null);
+function useSidebar() {
+	const context = React.useContext(SidebarContext);
+	if (!context) throw new Error("useSidebar must be used within a SidebarProvider.");
+	return context;
+}
+function useIsMobile(breakpoint = 768) {
+	const [isMobile, setIsMobile] = React.useState(false);
+	React.useEffect(() => {
+		const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+		const onChange = () => setIsMobile(mql.matches);
+		mql.addEventListener("change", onChange);
+		setIsMobile(mql.matches);
+		return () => mql.removeEventListener("change", onChange);
+	}, [breakpoint]);
+	return isMobile;
+}
+const SidebarProvider = React.forwardRef(({ defaultOpen = true, open: openProp, onOpenChange: setOpenProp, className, style, children, ...props }, ref) => {
+	const isMobile = useIsMobile();
+	const [openMobile, setOpenMobile] = React.useState(false);
+	const [_open, _setOpen] = React.useState(defaultOpen);
+	const open = openProp ?? _open;
+	const setOpen = React.useCallback((value) => {
+		const openState = typeof value === "function" ? value(open) : value;
+		if (setOpenProp) setOpenProp(openState);
+		else _setOpen(openState);
+		document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+	}, [setOpenProp, open]);
+	const toggleSidebar = React.useCallback(() => {
+		return isMobile ? setOpenMobile((o) => !o) : setOpen((o) => !o);
+	}, [isMobile, setOpen]);
+	React.useEffect(() => {
+		const handleKeyDown = (event) => {
+			if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+				event.preventDefault();
+				toggleSidebar();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [toggleSidebar]);
+	const state = open ? "expanded" : "collapsed";
+	const contextValue = React.useMemo(() => ({
+		state,
+		open,
+		setOpen,
+		isMobile,
+		openMobile,
+		setOpenMobile,
+		toggleSidebar
+	}), [
+		state,
+		open,
+		setOpen,
+		isMobile,
+		openMobile,
+		setOpenMobile,
+		toggleSidebar
+	]);
+	return /* @__PURE__ */ jsx(SidebarContext.Provider, {
+		value: contextValue,
+		children: /* @__PURE__ */ jsx(TooltipProvider, {
+			delayDuration: 0,
+			children: /* @__PURE__ */ jsx("div", {
+				ref,
+				className: cx(sidebarProviderStyle, className),
+				style,
+				"data-sidebar-provider": "",
+				...props,
+				children
+			})
+		})
+	});
+});
+SidebarProvider.displayName = "SidebarProvider";
+const Sidebar = React.forwardRef(({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, ...props }, ref) => {
+	const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+	if (collapsible === "none") return /* @__PURE__ */ jsx("div", {
+		ref,
+		className: cx(sidebarCollapsedNone, className),
+		...props,
+		children: /* @__PURE__ */ jsx("div", {
+			className: sidebarInnerStyle,
+			children
+		})
+	});
+	if (isMobile) return /* @__PURE__ */ jsx(Sheet, {
+		open: openMobile,
+		onOpenChange: setOpenMobile,
+		...props,
+		children: /* @__PURE__ */ jsx(SheetContent, {
+			"data-sidebar": "sidebar",
+			"data-mobile": "true",
+			side,
+			style: {
+				width: SIDEBAR_WIDTH_MOBILE,
+				padding: 0
+			},
+			children: /* @__PURE__ */ jsx("div", {
+				style: {
+					display: "flex",
+					height: "100%",
+					width: "100%",
+					flexDirection: "column"
+				},
+				children
+			})
+		})
+	});
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		className: cx(sidebarStyle, className),
+		"data-state": state,
+		"data-collapsible": state === "collapsed" ? collapsible : "",
+		"data-variant": variant,
+		"data-side": side,
+		children: [/* @__PURE__ */ jsx("div", {
+			className: cx(sidebarGapStyle, state === "collapsed" && collapsible === "offcanvas" && "sidebar-gap-collapsed"),
+			style: state === "collapsed" && collapsible === "offcanvas" ? { width: 0 } : void 0
+		}), /* @__PURE__ */ jsx("div", {
+			className: cx(sidebarFixedStyle, side === "left" ? sidebarFixedLeftStyle : sidebarFixedRightStyle),
+			style: state === "collapsed" && collapsible === "icon" ? { width: `calc(${SIDEBAR_WIDTH_ICON} + 16px)` } : state === "collapsed" && collapsible === "offcanvas" ? side === "left" ? { left: `calc(-1 * ${SIDEBAR_WIDTH})` } : { right: `calc(-1 * ${SIDEBAR_WIDTH})` } : void 0,
+			...props,
+			children: /* @__PURE__ */ jsx("div", {
+				"data-sidebar": "sidebar",
+				className: cx(sidebarInnerStyle, (variant === "floating" || variant === "inset") && sidebarInnerFloatingStyle, variant === "sidebar" && side === "left" && sidebarBorderLeftStyle, variant === "sidebar" && side === "right" && sidebarBorderRightStyle),
+				children
+			})
+		})]
+	});
+});
+Sidebar.displayName = "Sidebar";
+const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) => {
+	const { toggleSidebar } = useSidebar();
+	return /* @__PURE__ */ jsxs(Button, {
+		ref,
+		"data-sidebar": "trigger",
+		variant: "ghost",
+		size: "icon",
+		className: cx(sidebarTriggerStyle, className),
+		onClick: (e) => {
+			onClick?.(e);
+			toggleSidebar();
+		},
+		...props,
+		children: [/* @__PURE__ */ jsx(PanelLeft, {}), /* @__PURE__ */ jsx("span", {
+			style: {
+				position: "absolute",
+				width: 1,
+				height: 1,
+				padding: 0,
+				margin: -1,
+				overflow: "hidden",
+				clip: "rect(0,0,0,0)",
+				whiteSpace: "nowrap",
+				border: 0
+			},
+			children: "Toggle Sidebar"
+		})]
+	});
+});
+SidebarTrigger.displayName = "SidebarTrigger";
+const SidebarRail = React.forwardRef(({ className, ...props }, ref) => {
+	const { toggleSidebar } = useSidebar();
+	return /* @__PURE__ */ jsx("button", {
+		ref,
+		"data-sidebar": "rail",
+		"aria-label": "Toggle Sidebar",
+		tabIndex: -1,
+		onClick: toggleSidebar,
+		title: "Toggle Sidebar",
+		className: cx(sidebarRailStyle, className),
+		...props
+	});
+});
+SidebarRail.displayName = "SidebarRail";
+const SidebarInset = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("main", {
+	ref,
+	className: cx(sidebarInsetStyle, className),
+	...props
+}));
+SidebarInset.displayName = "SidebarInset";
+const SidebarInput = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Input, {
+	ref,
+	"data-sidebar": "input",
+	className: cx(sidebarInputStyle, className),
+	...props
+}));
+SidebarInput.displayName = "SidebarInput";
+const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "header",
+	className: cx(sidebarHeaderStyle, className),
+	...props
+}));
+SidebarHeader.displayName = "SidebarHeader";
+const SidebarFooter = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "footer",
+	className: cx(sidebarFooterStyle, className),
+	...props
+}));
+SidebarFooter.displayName = "SidebarFooter";
+const SidebarSeparator = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(Separator, {
+	ref,
+	"data-sidebar": "separator",
+	className: cx(sidebarSeparatorStyle, className),
+	...props
+}));
+SidebarSeparator.displayName = "SidebarSeparator";
+const SidebarContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "content",
+	className: cx(sidebarContentStyle, className),
+	...props
+}));
+SidebarContent.displayName = "SidebarContent";
+const SidebarGroup = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "group",
+	className: cx(sidebarGroupStyle, className),
+	...props
+}));
+SidebarGroup.displayName = "SidebarGroup";
+const SidebarGroupLabel = React.forwardRef(({ className, asChild = false, ...props }, ref) => {
+	return /* @__PURE__ */ jsx(asChild ? Slot : "div", {
+		ref,
+		"data-sidebar": "group-label",
+		className: cx(sidebarGroupLabelStyle, className),
+		...props
+	});
+});
+SidebarGroupLabel.displayName = "SidebarGroupLabel";
+const SidebarGroupContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "group-content",
+	className: cx(sidebarGroupContentStyle, className),
+	...props
+}));
+SidebarGroupContent.displayName = "SidebarGroupContent";
+const SidebarMenu = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
+	ref,
+	"data-sidebar": "menu",
+	className: cx(sidebarMenuStyle, className),
+	...props
+}));
+SidebarMenu.displayName = "SidebarMenu";
+const SidebarMenuItem = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("li", {
+	ref,
+	"data-sidebar": "menu-item",
+	className: cx(sidebarMenuItemStyle, className),
+	...props
+}));
+SidebarMenuItem.displayName = "SidebarMenuItem";
+const SidebarMenuButton = React.forwardRef(({ asChild = false, isActive = false, variant = "default", size = "default", tooltip, className, ...props }, ref) => {
+	const Comp = asChild ? Slot : "button";
+	const { isMobile, state } = useSidebar();
+	const button = /* @__PURE__ */ jsx(Comp, {
+		ref,
+		"data-sidebar": "menu-button",
+		"data-size": size,
+		"data-active": isActive,
+		className: cx(sidebarMenuButtonRecipe({
+			variant,
+			size
+		}), className),
+		...props
+	});
+	if (!tooltip) return button;
+	return /* @__PURE__ */ jsxs(Tooltip, { children: [/* @__PURE__ */ jsx(TooltipTrigger, {
+		asChild: true,
+		children: button
+	}), /* @__PURE__ */ jsx(TooltipContent, {
+		side: "right",
+		align: "center",
+		hidden: state !== "collapsed" || isMobile,
+		...typeof tooltip === "string" ? { children: tooltip } : tooltip
+	})] });
+});
+SidebarMenuButton.displayName = "SidebarMenuButton";
+const SidebarMenuBadge = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", {
+	ref,
+	"data-sidebar": "menu-badge",
+	className: cx(sidebarMenuBadgeStyle, className),
+	...props
+}));
+SidebarMenuBadge.displayName = "SidebarMenuBadge";
+const SidebarMenuSkeleton = React.forwardRef(({ className, showIcon = false, ...props }, ref) => {
+	const width = React.useMemo(() => `${Math.floor(Math.random() * 40) + 50}%`, []);
+	return /* @__PURE__ */ jsxs("div", {
+		ref,
+		"data-sidebar": "menu-skeleton",
+		className: cx(sidebarMenuSkeletonStyle, className),
+		...props,
+		children: [showIcon && /* @__PURE__ */ jsx(Skeleton, { style: {
+			width: 16,
+			height: 16,
+			borderRadius: 4
+		} }), /* @__PURE__ */ jsx(Skeleton, { style: {
+			height: 16,
+			flex: 1,
+			maxWidth: width
+		} })]
+	});
+});
+SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton";
+const SidebarMenuSub = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("ul", {
+	ref,
+	"data-sidebar": "menu-sub",
+	className: cx(sidebarMenuSubStyle, className),
+	...props
+}));
+SidebarMenuSub.displayName = "SidebarMenuSub";
+const SidebarMenuSubItem = React.forwardRef(({ ...props }, ref) => /* @__PURE__ */ jsx("li", {
+	ref,
+	...props
+}));
+SidebarMenuSubItem.displayName = "SidebarMenuSubItem";
+const SidebarMenuSubButton = React.forwardRef(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
+	return /* @__PURE__ */ jsx(asChild ? Slot : "a", {
+		ref,
+		"data-sidebar": "menu-sub-button",
+		"data-size": size,
+		"data-active": isActive,
+		className: cx(sidebarMenuSubButtonStyle, className),
+		style: size === "sm" ? { fontSize: "0.75rem" } : void 0,
+		...props
+	});
+});
+SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
+
+//#endregion
+//#region src/components/Sonner/Sonner.css.ts
+/**
+* Global styles for sonner toasts — targets the generated class names.
+* Sonner renders outside of React component scope, so we use globalStyle.
+*/
+globalStyle("[data-sonner-toaster] [data-sonner-toast]", {
+	backgroundColor: vars.color.surface,
+	color: vars.color.text,
+	borderColor: vars.color.border,
+	boxShadow: vars.shadow.lg,
+	fontFamily: vars.font.family.sans,
+	fontSize: vars.font.size.sm
+});
+globalStyle("[data-sonner-toaster] [data-sonner-toast] [data-description]", { color: vars.color.textMuted });
+globalStyle("[data-sonner-toaster] [data-sonner-toast] [data-button]", {
+	backgroundColor: vars.color.primary,
+	color: vars.color.primaryForeground
+});
+globalStyle("[data-sonner-toaster] [data-sonner-toast] [data-cancel]", {
+	backgroundColor: vars.color.secondary,
+	color: vars.color.secondaryForeground
+});
+globalStyle("[data-sonner-toaster] [data-sonner-toast][data-type=\"success\"]", {
+	backgroundColor: vars.color.success,
+	color: vars.color.successForeground,
+	borderColor: vars.color.success
+});
+globalStyle("[data-sonner-toaster] [data-sonner-toast][data-type=\"error\"]", {
+	backgroundColor: vars.color.destructive,
+	color: vars.color.destructiveForeground,
+	borderColor: vars.color.destructive
+});
+globalStyle("[data-sonner-toaster] [data-sonner-toast][data-type=\"warning\"]", {
+	backgroundColor: vars.color.warning,
+	color: vars.color.warningForeground,
+	borderColor: vars.color.warning
+});
+
+//#endregion
+//#region src/components/Sonner/Sonner.tsx
+/**
+* Themed toast provider powered by sonner.
+* Place at your app root — uses design system tokens for all toast styling.
+*
+* Usage:
+* ```tsx
+* import { Toaster } from '@hydrotik/design-system';
+* import { toast } from 'sonner';
+*
+* // In app root:
+* <Toaster />
+*
+* // To trigger:
+* toast('Event has been created');
+* toast.success('Saved!');
+* toast.error('Something went wrong');
+* ```
+*/
+const Toaster = ({ theme = "dark", ...props }) => /* @__PURE__ */ jsx(Toaster$1, {
+	theme,
+	...props
+});
+Toaster.displayName = "Toaster";
+
+//#endregion
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, Checkbox, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.mjs.map
