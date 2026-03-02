@@ -534,6 +534,34 @@ Toast variants: default, success, error, warning
     // docs dir doesn't exist
   }
 
+  // ── 10b. Sync .planning/ markdown files ────────────────────────────────
+  const planningDirs = [
+    join(MONO_ROOT, '.planning'),
+    join(MONO_ROOT, '.planning', 'codebase'),
+  ];
+  for (const planDir of planningDirs) {
+    try {
+      const planFiles = readdirSync(planDir).filter((f) => f.endsWith('.md'));
+      for (const file of planFiles) {
+        const content = safeRead(join(planDir, file));
+        if (!content) continue;
+        const title = file.replace('.md', '');
+        const relativePath = planDir.includes('codebase') ? `.planning/codebase/${file}` : `.planning/${file}`;
+        upsert(
+          makeChunk(
+            'docs',
+            `Planning: ${title}`,
+            content,
+            ['planning', 'architecture', 'publishing', 'ci', title.toLowerCase(), ...tokenize(title)],
+            relativePath,
+          ),
+        );
+      }
+    } catch {
+      // planning dir doesn't exist
+    }
+  }
+
   // ── 11. Architecture basics ────────────────────────────────────────────
   upsert(
     makeChunk(

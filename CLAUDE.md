@@ -281,6 +281,23 @@ import { AddToCartButton } from '@hydrotik/design-system';
 | `/datagrid`   | DataGrid   | Enterprise data grid demo                                                                                                              |
 | `/editorial`  | Editorial  | High-density data journalism with DataGrids, SegmentedRatingBars, FlagTags, timeline chart                                             |
 
+## AIr Publishing
+
+`@hydrotik/air` is published to **npm** and **GitHub Packages**. Source lives in `packages/hy-ai-rum/`, synced to public repo `hydrotik/air`.
+
+For the full publishing runbook (local + CI, dual registry, npm auth, troubleshooting):
+- `.planning/PUBLISHING.md`
+
+Quick local publish:
+```bash
+pnpm turbo run build --filter=@hydrotik/air
+cd packages/hy-ai-rum && pnpm run test
+npm version patch && npm login && npm publish --access public
+cd ../.. && git add -A && git commit --no-verify -m "release(air): v$(node -p \"require('./packages/hy-ai-rum/package.json').version\")"
+VERSION=$(node -p "require('./packages/hy-ai-rum/package.json').version") && git tag "air-v$VERSION" && git push origin main --tags
+git subtree push --prefix=packages/hy-ai-rum air-public main
+```
+
 ## Deep Reference
 
 For architecture, testing, directory structure, and tooling details, read on-demand:
@@ -291,3 +308,4 @@ For architecture, testing, directory structure, and tooling details, read on-dem
 - `.planning/codebase/TESTING.md` — Jest, Playwright, visual capture, Storybook
 - `.planning/codebase/INTEGRATIONS.md` — MCP, GSD, desloppify, fonts, CI/CD
 - `.planning/codebase/CONCERNS.md` — Tech debt, security, performance, fragile areas
+- `.planning/PUBLISHING.md` — npm + GitHub Packages publish runbook

@@ -41,12 +41,17 @@
 - Server: Fastify + SQLite (WAL mode) + WebSocket
 - Collectors: Pi, Claude Code, Codex CLI, SDK
 - Config: `.air.json` at monorepo root
-- Subtree-synced to public repo: `hydrotik/air` via post-commit hook
 - Port 5200 (configured in `@hydrotik/config`)
+- **Published**: `@hydrotik/air` on npm + GitHub Packages (see `.planning/PUBLISHING.md`)
+- **Public repo**: `github.com/hydrotik/air` — subtree-synced via post-commit hook + CI
+  - Sync: automatic on commit to `packages/hy-ai-rum/**`
+  - Manual: `git subtree push --prefix=packages/hy-ai-rum air-public main`
+  - CI: `sync-air.yml` + `publish-air.yml` workflows
 - **BYORAG integration**: `.air.json` declares providers, HTTP API for any language, SDK for TypeScript
   - Provider registry with auto-discovery
   - Simplified endpoints: `POST /api/rag/retrieval`, `/api/rag/embedding`, `/api/rag/index`
   - Dashboard: Integrations panel, RAG Pipeline stats, live event feed
+  - Integration Guide: `INTEGRATION_PROMPT_README.md` (copy-paste prompt for AI agents)
 - **Security**: 3-level redaction (none/preview/full), SHA-256 prompt hashing, no raw content storage
 - **Drift detection**: auto-alerts when latency, cost, or quality shifts from baseline
 
@@ -79,8 +84,18 @@ Self-hosted via `@fontsource-variable`:
 
 ### GitHub Actions
 - **`sync-air.yml`** — Syncs `packages/hy-ai-rum/` to public `hydrotik/air` repo
-  - Triggers: `workflow_dispatch` (manual) + post-commit hook via `git subtree push`
-  - Uses `SUBTREE_PUSH_TOKEN` secret for auth
+  - Triggers: push to main (paths: `packages/hy-ai-rum/**`) + `workflow_dispatch`
+  - Uses `AIR_DEPLOY_KEY` secret for SSH auth
+- **`publish-air.yml`** — Publishes `@hydrotik/air` to npm + GitHub Packages
+  - Triggers: `workflow_dispatch` (pick patch/minor/major) + tag push (`air-v*`)
+  - Dual registry: npmjs.com (`NPM_TOKEN` secret) + GitHub Packages (`GITHUB_TOKEN`)
+  - Auto: version bump → build → test → publish both → commit → tag → sync public repo
+
+### Secrets Required
+| Secret | Purpose | Where to create |
+|--------|---------|-----------------|
+| `NPM_TOKEN` | Publish to npmjs.com | npmjs.com → Access Tokens → Granular (bypass 2FA, write on `@hydrotik/air`) |
+| `AIR_DEPLOY_KEY` | Subtree push to `hydrotik/air` | SSH deploy key with write access |
 
 ### Not Yet Configured
 - No Vercel or deployment pipelines
