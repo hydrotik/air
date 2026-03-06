@@ -485,5 +485,8 @@ export type { TypingAnimationProps } from './components/TypingAnimation';
 export { ToolCallIndicator } from './components/ToolCallIndicator';
 export type { ToolCallIndicatorProps } from './components/ToolCallIndicator';
 
-// ─── Icons (re-export lucide-react) ──────────────────────────────────────────
-export * as Icons from 'lucide-react';
+// ─── Icons (re-export @tabler/icons-react) ──────────────────────────────────────────
+export * as Icons from '@tabler/icons-react';
+
+// ─── Showcase ────────────────────────────────────────────────────────────────
+export { ShowcaseGrid } from './ShowcaseGrid';

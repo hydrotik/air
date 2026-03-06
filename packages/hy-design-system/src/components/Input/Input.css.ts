@@ -9,7 +9,7 @@ export const inputWrapperRecipe = recipe({
   },
   variants: {
     fullWidth: {
-      true: { width: '100%' },
+      true: { width: '100%', flex: 1, minWidth: 0 },
       false: {},
     },
   },
@@ -43,7 +43,7 @@ export const inputRecipe = recipe({
       },
       '&:focus-visible': {
         borderColor: vars.color.focusRing,
-        boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
+        boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`,
       },
       '&:disabled': {
         opacity: '0.5',

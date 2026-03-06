@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@hydrotik/design-system';
-import { ArrowRight } from 'lucide-react';
+import { IconArrowRight } from '@tabler/icons-react';
 import {
   FieldDemo,
   EmptyAvatarGroup,
@@ -45,7 +45,7 @@ export function HomePage() {
         </p>
         <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
           <Button onClick={() => navigate('/sink')}>
-            View Components <ArrowRight size={14} />
+            View Components <IconArrowRight size={14} />
           </Button>
           <Button variant="outline" onClick={() => navigate('/dashboard')}>
             Dashboard Example

@@ -19,9 +19,19 @@ export const indicatorContainer = style({
 });
 
 export const indicatorSpinner = style({
-  animation: `${spin} 1s linear infinite`,
   color: vars.color.primary,
   flexShrink: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 16,
+  height: 16,
+  overflow: 'hidden',
+});
+
+export const indicatorSpinnerIcon = style({
+  animation: `${spin} 1s linear infinite`,
+  transformOrigin: 'center',
 });
 
 export const indicatorLabel = style({

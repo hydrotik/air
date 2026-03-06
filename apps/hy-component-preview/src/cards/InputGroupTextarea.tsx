@@ -3,7 +3,7 @@ import {
   Textarea, Button,
   InputGroup, InputGroupToolbar, inputGroupInputClass,
 } from '@hydrotik/design-system';
-import { Play, Copy } from 'lucide-react';
+import { IconPlayerPlay, IconCopy } from '@tabler/icons-react';
 
 /** Code editor textarea — matches shadcn input-group-textarea.tsx */
 export function InputGroupTextarea() {
@@ -22,10 +22,10 @@ export function InputGroupTextarea() {
         <span>Line 1, Column 1</span>
         <div style={{ flex: 1 }} />
         <Button variant="ghost" size="icon-sm" aria-label="Run">
-          <Play size={12} />
+          <IconPlayerPlay size={12} />
         </Button>
         <Button variant="ghost" size="icon-sm" aria-label="Copy">
-          <Copy size={12} />
+          <IconCopy size={12} />
         </Button>
         <span style={{ fontSize: '11px', opacity: 0.6 }}>script.js</span>
       </InputGroupToolbar>

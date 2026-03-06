@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, Check } from 'lucide-react';
+import { IconCopy, IconCheck } from '@tabler/icons-react';
 import { codeBlockWrapper, codeBlockPre, copyButton, languageBadge, inlineCode } from './CodeBlock.css';
 
 export interface CodeBlockProps {
@@ -50,7 +50,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
             onClick={handleCopy}
             aria-label={copied ? 'Copied' : 'Copy code'}
           >
-            {copied ? <Check size={12} /> : <Copy size={12} />}
+            {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
             {copied ? 'Copied' : 'Copy'}
           </button>
         )}

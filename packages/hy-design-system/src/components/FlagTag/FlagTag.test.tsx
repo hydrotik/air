@@ -10,14 +10,15 @@ describe('FlagTag', () => {
     render(<FlagTag data-testid="flag" />);
     const flag = screen.getByTestId('flag');
     expect(flag).toBeInTheDocument();
-    expect(flag).toHaveTextContent('⚠');
     expect(flag).toHaveTextContent('FLAG');
+    // Default icon is an SVG (IconAlertTriangle)
+    expect(flag.querySelector('svg')).toBeInTheDocument();
   });
 
   it('renders custom icon and label', () => {
-    render(<FlagTag icon="🔍" label="REVIEW" data-testid="flag" />);
+    render(<FlagTag icon={<span data-testid="search-icon">S</span>} label="REVIEW" data-testid="flag" />);
     const flag = screen.getByTestId('flag');
-    expect(flag).toHaveTextContent('🔍');
+    expect(screen.getByTestId('search-icon')).toBeInTheDocument();
     expect(flag).toHaveTextContent('REVIEW');
   });
 

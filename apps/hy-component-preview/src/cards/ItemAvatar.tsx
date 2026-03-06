@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, AvatarFallback, Button, Separator } from '@hydrotik/design-system';
-import { Plus } from 'lucide-react';
+import { IconPlus } from '@tabler/icons-react';
 
 /** Avatar list item + empty invite — matches shadcn item-avatar.tsx */
 export function ItemAvatar() {
@@ -42,7 +42,7 @@ export function ItemAvatar() {
           <div style={{ fontSize: '12px', opacity: 0.5 }}>Invite your team to collaborate.</div>
         </div>
         <Button variant="outline" size="sm">
-          <Plus size={14} /> Invite
+          <IconPlus size={14} /> Invite
         </Button>
       </div>
     </div>

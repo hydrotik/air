@@ -25,7 +25,10 @@ function findFiles(dir: string, pattern: RegExp): string[] {
 }
 
 const config: StorybookConfig = {
-  stories: ['../../../packages/hy-design-system/src/**/*.stories.@(ts|tsx)'],
+  stories: [
+    '../../../packages/hy-design-system/src/Introduction.mdx',
+    '../../../packages/hy-design-system/src/**/*.stories.@(ts|tsx)',
+  ],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',

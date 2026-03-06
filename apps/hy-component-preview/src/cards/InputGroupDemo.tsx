@@ -3,7 +3,7 @@ import {
   Input, Badge, Progress, Button, Separator,
   InputGroup, InputGroupAddon, inputGroupInputClass,
 } from '@hydrotik/design-system';
-import { ArrowUp } from 'lucide-react';
+import { IconArrowUp } from '@tabler/icons-react';
 
 /** Input group demos — matches shadcn input-group-demo.tsx */
 export function InputGroupDemo() {
@@ -35,7 +35,7 @@ export function InputGroupDemo() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <Input placeholder="" fullWidth />
         <Button size="sm">
-          Send <ArrowUp size={14} />
+          Send <IconArrowUp size={14} />
         </Button>
       </div>
     </div>

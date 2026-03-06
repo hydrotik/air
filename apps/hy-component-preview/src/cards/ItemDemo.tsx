@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Separator } from '@hydrotik/design-system';
-import { BadgeCheck, ChevronRight } from 'lucide-react';
+import { IconRosetteDiscountCheck, IconChevronRight } from '@tabler/icons-react';
 
 /** 2FA toggle + verified alert — matches shadcn item-demo.tsx */
 export function ItemDemo() {
@@ -19,11 +19,11 @@ export function ItemDemo() {
 
       {/* Verified profile item */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <BadgeCheck size={18} style={{ color: 'var(--color-primary, #3b82f6)', flexShrink: 0 }} />
+        <IconRosetteDiscountCheck size={18} style={{ color: 'var(--color-primary, #3b82f6)', flexShrink: 0 }} />
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '14px', fontWeight: 500 }}>Your profile has been verified.</div>
         </div>
-        <ChevronRight size={16} style={{ opacity: 0.4 }} />
+        <IconChevronRight size={16} style={{ opacity: 0.4 }} />
       </div>
     </div>
   );

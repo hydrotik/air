@@ -9,6 +9,7 @@ export const page = style({
   maxWidth: '1200px',
   marginLeft: 'auto',
   marginRight: 'auto',
+  overflowX: 'hidden',
 });
 
 export const section = style({
@@ -29,8 +30,13 @@ export const sectionTitle = style({
 
 export const grid = style({
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+  gridTemplateColumns: 'repeat(3, 1fr)',
   gap: vars.space['4'],
+  '@media': {
+    '(max-width: 768px)': {
+      gridTemplateColumns: '1fr',
+    },
+  },
 });
 
 export const chatDemo = style({
@@ -61,6 +67,8 @@ export const componentShowcase = style({
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.lg,
   backgroundColor: vars.color.surface,
+  overflow: 'hidden',
+  minWidth: 0,
 });
 
 export const showcaseLabel = style({

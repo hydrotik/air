@@ -1,6 +1,6 @@
 import React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 import {
   sheetOverlay,
   sheetContent,
@@ -49,7 +49,7 @@ export const SheetContent = React.forwardRef<
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close className={sheetClose} aria-label="Close">
-          <X size={16} />
+          <IconX size={16} />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       )}

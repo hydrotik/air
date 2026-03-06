@@ -3,7 +3,7 @@ import React from 'react';
 import { ChatMessage, ChatMessagePair, ChatContainer, ChatInputContainer, ChatEmptyState } from './ChatMessage';
 import { Input } from '../Input';
 import { Button } from '../Button';
-import { Bot, Send } from 'lucide-react';
+import { IconRobot, IconSend } from '@tabler/icons-react';
 
 const meta = {
   title: 'AI/ChatMessage',
@@ -55,7 +55,7 @@ export const EmptyStateStory: Story = {
   name: 'Empty State',
   render: () => (
     <ChatEmptyState
-      icon={<Bot size={32} />}
+      icon={<IconRobot size={32} />}
       title="What can I help with?"
       description="Ask me anything about your codebase, architecture, or design system."
     />
@@ -69,7 +69,7 @@ export const FullChat: Story = {
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
         <ChatContainer>
           <ChatEmptyState
-            icon={<Bot size={32} />}
+            icon={<IconRobot size={32} />}
             title="What can I help with?"
           />
           <ChatMessagePair
@@ -85,7 +85,7 @@ export const FullChat: Story = {
       <div style={{ padding: '16px' }}>
         <ChatInputContainer>
           <Input placeholder="Ask me anything..." style={{ flex: 1 }} />
-          <Button size="icon"><Send size={16} /></Button>
+          <Button size="icon"><IconSend size={16} /></Button>
         </ChatInputContainer>
       </div>
     </div>

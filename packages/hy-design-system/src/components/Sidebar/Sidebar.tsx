@@ -1,6 +1,6 @@
 import React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { PanelLeft } from 'lucide-react';
+import { IconLayoutSidebar } from '@tabler/icons-react';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Separator } from '../Separator';
@@ -252,7 +252,7 @@ const SidebarTrigger = React.forwardRef<
       onClick={(e) => { onClick?.(e); toggleSidebar(); }}
       {...props}
     >
-      <PanelLeft />
+      <IconLayoutSidebar />
       <span style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>
         Toggle Sidebar
       </span>

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { AlertCircle, Terminal, CheckCircle2, TriangleAlert } from 'lucide-react';
+import { IconAlertCircle, IconTerminal2, IconCircleCheck, IconAlertTriangle } from '@tabler/icons-react';
 import { Alert, AlertTitle, AlertDescription } from './Alert';
 
 const meta = {
@@ -19,7 +19,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div style={{ width: 450 }}>
-      <Alert icon={<Terminal size={16} />}>
+      <Alert icon={<IconTerminal2 size={16} />}>
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You can add components to your app using the CLI.
@@ -32,7 +32,7 @@ export const Default: Story = {
 export const Destructive: Story = {
   render: () => (
     <div style={{ width: 450 }}>
-      <Alert variant="destructive" icon={<AlertCircle size={16} />}>
+      <Alert variant="destructive" icon={<IconAlertCircle size={16} />}>
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
           Your session has expired. Please log in again.

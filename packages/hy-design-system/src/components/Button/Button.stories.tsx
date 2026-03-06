@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { Mail, Loader2 } from 'lucide-react';
+import { IconMail, IconLoader2 } from '@tabler/icons-react';
 import { Button } from './Button';
 
 const meta = {
@@ -50,13 +50,13 @@ export const Link: Story = {
 export const WithIcon: Story = {
   render: () => (
     <Button>
-      <Mail size={16} /> Login with Email
+      <IconMail size={16} /> Login with Email
     </Button>
   ),
 };
 
 export const IconOnly: Story = {
-  args: { children: <Mail size={16} />, size: 'icon', variant: 'outline' },
+  args: { children: <IconMail size={16} />, size: 'icon', variant: 'outline' },
 };
 
 export const Small: Story = {

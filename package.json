@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@rolldown/binding-darwin-arm64": "1.0.0-rc.6",
+    "@tabler/icons-react": "^3.38.0",
     "react-window": "^2.2.7"
   },
   "lint-staged": {

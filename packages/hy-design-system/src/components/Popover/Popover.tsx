@@ -1,6 +1,6 @@
 import React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 import { popoverContent, popoverArrow, popoverClose } from './Popover.css';
 
 export const Popover: typeof PopoverPrimitive.Root = PopoverPrimitive.Root;
@@ -36,7 +36,7 @@ export const PopoverClose = React.forwardRef<
     aria-label="Close"
     {...props}
   >
-    {children ?? <X size={14} />}
+    {children ?? <IconX size={14} />}
   </PopoverPrimitive.Close>
 ));
 PopoverClose.displayName = 'PopoverClose';

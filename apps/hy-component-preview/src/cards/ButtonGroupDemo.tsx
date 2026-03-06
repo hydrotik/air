@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Separator } from '@hydrotik/design-system';
-import { Archive, Flag, AlarmClock, MoreHorizontal } from 'lucide-react';
+import { IconArchive, IconFlag, IconAlarmFilled, IconDots } from '@tabler/icons-react';
 
 /** Action button group — matches shadcn button-group-demo.tsx */
 export function ButtonGroupDemo() {
@@ -9,13 +9,13 @@ export function ButtonGroupDemo() {
       {/* Primary action buttons */}
       <div style={{ display: 'flex', gap: '0' }}>
         <Button variant="outline" size="sm" style={{ borderRadius: '6px 0 0 6px', borderRight: 'none' }}>
-          <Archive size={14} /> Archive
+          <IconArchive size={14} /> Archive
         </Button>
         <Button variant="outline" size="sm" style={{ borderRadius: '0', borderRight: 'none' }}>
-          <Flag size={14} /> Report
+          <IconFlag size={14} /> Report
         </Button>
         <Button variant="outline" size="sm" style={{ borderRadius: '0 6px 6px 0' }}>
-          <AlarmClock size={14} /> Snooze
+          <IconAlarmFilled size={14} /> Snooze
         </Button>
       </div>
 
@@ -26,7 +26,7 @@ export function ButtonGroupDemo() {
         <Button variant="outline" size="sm">Mark as Read</Button>
         <div style={{ flex: 1 }} />
         <Button variant="ghost" size="icon-sm" aria-label="More options">
-          <MoreHorizontal size={14} />
+          <IconDots size={14} />
         </Button>
       </div>
     </div>

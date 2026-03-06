@@ -15,7 +15,7 @@ import {
   productCardActions,
   productCardSkeleton,
 } from './ProductCard.css';
-import { Heart } from 'lucide-react';
+import { IconHeart } from '@tabler/icons-react';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -125,7 +125,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                 onClick={() => onWishlistToggle(product)}
                 aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
               >
-                <Heart size={16} />
+                <IconHeart size={16} />
               </button>
             )}
           </div>

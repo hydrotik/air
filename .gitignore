@@ -42,5 +42,13 @@ playwright-report/
 test-results/
 blob-report/
 
+# Taxes — private/sensitive data (PII, W-2s, SSN, income, deductions)
+apps/hy-taxes/assets/*
+!apps/hy-taxes/assets/.gitkeep
+apps/hy-taxes/data/*
+!apps/hy-taxes/data/.gitkeep
+apps/hy-taxes/public/data/*
+!apps/hy-taxes/public/data/.gitkeep
+
 # Pi extension dependencies
 .pi/extensions/*/node_modules

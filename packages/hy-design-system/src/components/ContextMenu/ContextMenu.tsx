@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
-import { Check, ChevronRight, Circle } from 'lucide-react';
+import { IconCheck, IconChevronRight, IconCircle } from '@tabler/icons-react';
 import {
   contextMenuContent,
   contextMenuItem,
@@ -61,7 +61,7 @@ export const ContextMenuCheckboxItem = React.forwardRef<
   >
     <span className={contextMenuItemIndicator}>
       <ContextMenuPrimitive.ItemIndicator>
-        <Check size={16} />
+        <IconCheck size={16} />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -81,7 +81,7 @@ export const ContextMenuRadioItem = React.forwardRef<
   >
     <span className={contextMenuItemIndicator}>
       <ContextMenuPrimitive.ItemIndicator>
-        <Circle size={8} fill="currentColor" />
+        <IconCircle size={8} fill="currentColor" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -130,7 +130,7 @@ export const ContextMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <ChevronRight size={16} style={{ marginLeft: 'auto' }} aria-hidden />
+    <IconChevronRight size={16} style={{ marginLeft: 'auto' }} aria-hidden />
   </ContextMenuPrimitive.SubTrigger>
 ));
 ContextMenuSubTrigger.displayName = 'ContextMenuSubTrigger';

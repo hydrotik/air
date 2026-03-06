@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useEffect, useId, useRef, useState } from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import * as Icons from "lucide-react";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Circle, Copy, Heart, Loader2, MoreHorizontal, PanelLeft, Plus, Search, Trash2, Upload, Wrench, X } from "lucide-react";
+import * as Icons from "@tabler/icons-react";
+import { IconAlertCircle, IconAlertTriangle, IconAlignCenter, IconAlignLeft, IconAlignRight, IconBold, IconChartBar, IconCheck, IconChevronDown, IconChevronLeft, IconChevronRight, IconChevronUp, IconCircle, IconCircleCheck, IconCopy, IconCreditCard, IconDots, IconForms, IconGrid3x3, IconHeart, IconItalic, IconLayoutSidebar, IconLoader2, IconLogout, IconPlus, IconPointer, IconRobot, IconSearch, IconSettings, IconShoppingCart, IconSparkles, IconStack2, IconTool, IconTrash, IconTypography, IconUnderline, IconUpload, IconUser, IconX } from "@tabler/icons-react";
 import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@hydrotik/tokens";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
@@ -35,6 +35,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import * as RechartsPrimitive from "recharts";
 import { Controller, FormProvider, useFormContext } from "react-hook-form";
 import { Toaster as Toaster$1, toast } from "sonner";
+import { ThemeProvider } from "@hydrotik/theme-provider";
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = keyframes({
@@ -78,7 +79,7 @@ const accordionTrigger = style({
 		"&:focus-visible": {
 			outline: `2px solid ${vars.color.focusRing}`,
 			outlineOffset: "2px",
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -130,7 +131,7 @@ const AccordionTrigger = React.forwardRef(({ className, children, ...props }, re
 		ref,
 		className: [accordionTrigger, className].filter(Boolean).join(" "),
 		...props,
-		children: [children, /* @__PURE__ */ jsx(ChevronDown, {
+		children: [children, /* @__PURE__ */ jsx(IconChevronDown, {
 			className: accordionChevron,
 			"aria-hidden": true
 		})]
@@ -624,7 +625,7 @@ const BreadcrumbSeparator = ({ className, children, ...props }) => /* @__PURE__ 
 	"aria-hidden": "true",
 	className: [breadcrumbSeparator, className].filter(Boolean).join(" "),
 	...props,
-	children: children ?? /* @__PURE__ */ jsx(ChevronRight, { size: 16 })
+	children: children ?? /* @__PURE__ */ jsx(IconChevronRight, { size: 16 })
 });
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("span", {
@@ -632,7 +633,7 @@ const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("sp
 	"aria-hidden": "true",
 	className: [breadcrumbEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ jsx(MoreHorizontal, { size: 16 }), /* @__PURE__ */ jsx("span", {
+	children: [/* @__PURE__ */ jsx(IconDots, { size: 16 }), /* @__PURE__ */ jsx("span", {
 		className: "sr-only",
 		children: "More"
 	})]
@@ -686,7 +687,7 @@ const buttonRecipe = recipe({
 		selectors: {
 			"&:focus-visible": {
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
 				opacity: "0.5",
@@ -930,7 +931,7 @@ const checkboxRoot = style({
 	selectors: {
 		"&:focus-visible": {
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&[data-state=\"checked\"], &[data-state=\"indeterminate\"]": {
 			backgroundColor: vars.color.primary,
@@ -957,7 +958,7 @@ const Checkbox = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__
 	...props,
 	children: /* @__PURE__ */ jsx(CheckboxPrimitive.Indicator, {
 		className: checkboxIndicator,
-		children: /* @__PURE__ */ jsx(Check, { size: 14 })
+		children: /* @__PURE__ */ jsx(IconCheck, { size: 14 })
 	})
 }));
 Checkbox.displayName = "Checkbox";
@@ -1077,7 +1078,7 @@ const CommandInput = React.forwardRef(({ className, icon, ...props }, ref) => /*
 	className: commandInput,
 	children: [/* @__PURE__ */ jsx("div", {
 		className: commandInputIcon,
-		children: icon ?? /* @__PURE__ */ jsx(Search, { size: 15 })
+		children: icon ?? /* @__PURE__ */ jsx(IconSearch, { size: 15 })
 	}), /* @__PURE__ */ jsx("input", {
 		ref,
 		className: [commandInputField, className].filter(Boolean).join(" "),
@@ -1256,7 +1257,7 @@ const ContextMenuCheckboxItem = React.forwardRef(({ className, children, checked
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
+		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCheck, { size: 16 }) })
 	}), children]
 }));
 ContextMenuCheckboxItem.displayName = "ContextMenuCheckboxItem";
@@ -1267,7 +1268,7 @@ const ContextMenuRadioItem = React.forwardRef(({ className, children, ...props }
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+		children: /* @__PURE__ */ jsx(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -1297,7 +1298,7 @@ const ContextMenuSubTrigger = React.forwardRef(({ className, inset, children, ..
 	className: [contextMenuSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+	children: [children, /* @__PURE__ */ jsx(IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -1360,7 +1361,7 @@ const DialogContent = React.forwardRef(({ className, children, showCloseButton =
 	children: [children, showCloseButton && /* @__PURE__ */ jsxs(DialogPrimitive.Close, {
 		className: dialogClose,
 		"aria-label": "Close dialog",
-		children: [/* @__PURE__ */ jsx(X, { size: 16 }), /* @__PURE__ */ jsx("span", {
+		children: [/* @__PURE__ */ jsx(IconX, { size: 16 }), /* @__PURE__ */ jsx("span", {
 			className: "sr-only",
 			children: "Close"
 		})]
@@ -1483,7 +1484,7 @@ const DropdownMenuSubTrigger = React.forwardRef(({ className, inset, children, .
 	ref,
 	className: [dropdownSubTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+	children: [children, /* @__PURE__ */ jsx(IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -1518,7 +1519,7 @@ const DropdownMenuCheckboxItem = React.forwardRef(({ className, children, checke
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
+		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCheck, { size: 16 }) })
 	}), children]
 }));
 DropdownMenuCheckboxItem.displayName = "DropdownMenuCheckboxItem";
@@ -1528,7 +1529,7 @@ const DropdownMenuRadioItem = React.forwardRef(({ className, children, ...props 
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+		children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -1629,7 +1630,11 @@ const inputWrapperRecipe = recipe({
 		gap: vars.space["1_5"]
 	},
 	variants: { fullWidth: {
-		true: { width: "100%" },
+		true: {
+			width: "100%",
+			flex: 1,
+			minWidth: 0
+		},
 		false: {}
 	} },
 	defaultVariants: { fullWidth: false }
@@ -1656,7 +1661,7 @@ const inputRecipe = recipe({
 			"&::placeholder": { color: vars.color.placeholder },
 			"&:focus-visible": {
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -1763,7 +1768,7 @@ const inputGroupRoot = style({
 	transition: "color 0.15s, box-shadow 0.15s",
 	selectors: { "&:focus-within": {
 		borderColor: vars.color.focusRing,
-		boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+		boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 	} }
 });
 /** Auto-height variant (for textareas) */
@@ -2045,7 +2050,7 @@ const MenubarCheckboxItem = React.forwardRef(({ className, children, checked, ..
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
+		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCheck, { size: 16 }) })
 	}), children]
 }));
 MenubarCheckboxItem.displayName = "MenubarCheckboxItem";
@@ -2056,7 +2061,7 @@ const MenubarRadioItem = React.forwardRef(({ className, children, ...props }, re
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, {
+		children: /* @__PURE__ */ jsx(MenubarPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -2086,7 +2091,7 @@ const MenubarSubTrigger = React.forwardRef(({ className, inset, children, ...pro
 	className: [menubarSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ jsx(ChevronRight, {
+	children: [children, /* @__PURE__ */ jsx(IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -2260,7 +2265,7 @@ const NavigationMenuTrigger = React.forwardRef(({ className, children, ...props 
 	ref,
 	className: [navigationMenuTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ jsx(ChevronDown, {
+	children: [children, /* @__PURE__ */ jsx(IconChevronDown, {
 		size: 12,
 		"aria-hidden": true,
 		style: { transition: "transform 200ms" }
@@ -2396,21 +2401,21 @@ const PaginationPrevious = ({ className, ...props }) => /* @__PURE__ */ jsxs(Pag
 	"aria-label": "Go to previous page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ jsx(ChevronLeft, { size: 16 }), /* @__PURE__ */ jsx("span", { children: "Previous" })]
+	children: [/* @__PURE__ */ jsx(IconChevronLeft, { size: 16 }), /* @__PURE__ */ jsx("span", { children: "Previous" })]
 });
 PaginationPrevious.displayName = "PaginationPrevious";
 const PaginationNext = ({ className, ...props }) => /* @__PURE__ */ jsxs(PaginationLink, {
 	"aria-label": "Go to next page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ jsx("span", { children: "Next" }), /* @__PURE__ */ jsx(ChevronRight, { size: 16 })]
+	children: [/* @__PURE__ */ jsx("span", { children: "Next" }), /* @__PURE__ */ jsx(IconChevronRight, { size: 16 })]
 });
 PaginationNext.displayName = "PaginationNext";
 const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ jsxs("span", {
 	"aria-hidden": true,
 	className: [paginationEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ jsx(MoreHorizontal, { size: 16 }), /* @__PURE__ */ jsx("span", {
+	children: [/* @__PURE__ */ jsx(IconDots, { size: 16 }), /* @__PURE__ */ jsx("span", {
 		className: "sr-only",
 		children: "More pages"
 	})]
@@ -2494,7 +2499,7 @@ const PopoverClose = React.forwardRef(({ className, children, ...props }, ref) =
 	className: [popoverClose, className].filter(Boolean).join(" "),
 	"aria-label": "Close",
 	...props,
-	children: children ?? /* @__PURE__ */ jsx(X, { size: 14 })
+	children: children ?? /* @__PURE__ */ jsx(IconX, { size: 14 })
 }));
 PopoverClose.displayName = "PopoverClose";
 
@@ -2563,7 +2568,7 @@ const radioGroupItem = style({
 	selectors: {
 		"&:focus-visible": {
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&[data-state=\"checked\"]": { borderColor: vars.color.primary },
 		"&:disabled": {
@@ -2718,7 +2723,7 @@ const selectTrigger = recipe({
 		selectors: {
 			"&:focus-visible": {
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 			},
 			"&[data-placeholder]": { color: vars.color.placeholder },
 			"&[data-disabled]": {
@@ -2844,7 +2849,7 @@ const SelectTrigger = React.forwardRef(({ className, children, size = "md", isEr
 	...props,
 	children: [children, /* @__PURE__ */ jsx(SelectPrimitive.Icon, {
 		className: selectIcon,
-		children: /* @__PURE__ */ jsx(ChevronDown, { size: 16 })
+		children: /* @__PURE__ */ jsx(IconChevronDown, { size: 16 })
 	})]
 }));
 SelectTrigger.displayName = "SelectTrigger";
@@ -2852,14 +2857,14 @@ const SelectScrollUpButton = React.forwardRef(({ className, ...props }, ref) => 
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ jsx(ChevronUp, { size: 16 })
+	children: /* @__PURE__ */ jsx(IconChevronUp, { size: 16 })
 }));
 SelectScrollUpButton.displayName = "SelectScrollUpButton";
 const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.ScrollDownButton, {
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ jsx(ChevronDown, { size: 16 })
+	children: /* @__PURE__ */ jsx(IconChevronDown, { size: 16 })
 }));
 SelectScrollDownButton.displayName = "SelectScrollDownButton";
 const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsx(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsxs(SelectPrimitive.Content, {
@@ -2890,7 +2895,7 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: selectItemIndicator,
-		children: /* @__PURE__ */ jsx(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check, { size: 16 }) })
+		children: /* @__PURE__ */ jsx(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(IconCheck, { size: 16 }) })
 	}), /* @__PURE__ */ jsx(SelectPrimitive.ItemText, { children })]
 }));
 SelectItem.displayName = "SelectItem";
@@ -3087,7 +3092,7 @@ const SheetContent = React.forwardRef(({ side = "right", showCloseButton = true,
 	children: [children, showCloseButton && /* @__PURE__ */ jsxs(DialogPrimitive.Close, {
 		className: sheetClose,
 		"aria-label": "Close",
-		children: [/* @__PURE__ */ jsx(X, { size: 16 }), /* @__PURE__ */ jsx("span", {
+		children: [/* @__PURE__ */ jsx(IconX, { size: 16 }), /* @__PURE__ */ jsx("span", {
 			className: "sr-only",
 			children: "Close"
 		})]
@@ -3280,7 +3285,7 @@ const switchRoot = style({
 		"&[data-state=\"checked\"]": { backgroundColor: vars.color.primary },
 		"&:focus-visible": {
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3479,7 +3484,7 @@ const tabsTrigger = style({
 		},
 		"&:focus-visible": {
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3540,7 +3545,7 @@ const textarea = style({
 		"&::placeholder": { color: vars.color.placeholder },
 		"&:focus-visible": {
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3704,7 +3709,7 @@ const ToastClose = React.forwardRef(({ className, ...props }, ref) => /* @__PURE
 	className: [toastClose, className].filter(Boolean).join(" "),
 	"aria-label": "Dismiss notification",
 	...props,
-	children: /* @__PURE__ */ jsx(X, { size: 14 })
+	children: /* @__PURE__ */ jsx(IconX, { size: 14 })
 }));
 ToastClose.displayName = "ToastClose";
 const ToastTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(ToastPrimitive.Title, {
@@ -3756,7 +3761,7 @@ const toggleRecipe = recipe({
 			},
 			"&:focus-visible": {
 				borderColor: vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -4119,6 +4124,12 @@ const flagTagLabel = style({ lineHeight: 0 });
 
 //#endregion
 //#region src/components/FlagTag/FlagTag.tsx
+const ICON_SIZES = {
+	xs: 14,
+	sm: 15,
+	md: 17,
+	lg: 19
+};
 /**
 * FlagTag — Minimal inline status flag for forensic/editorial contexts.
 *
@@ -4131,16 +4142,16 @@ const flagTagLabel = style({ lineHeight: 0 });
 * <FlagTag />
 *
 * // Custom label + warning variant
-* <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+* <FlagTag variant="warning" label="REVIEW" icon={<IconSearch size={14} />} />
 *
-* // With Lucide icon
-* <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+* // With Tabler icon
+* <FlagTag icon={<Icons.IconAlertTriangle size={14} />} label="FLAGGED" />
 *
 * // Inline after a name
 * <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
 * ```
 */
-const FlagTag = React.forwardRef(({ variant = "destructive", size = "sm", icon = "⚠", label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ jsxs("span", {
+const FlagTag = React.forwardRef(({ variant = "destructive", size = "sm", icon, label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ jsxs("span", {
 	ref,
 	"data-flag-size": size,
 	className: [flagTagRecipe({
@@ -4154,7 +4165,7 @@ const FlagTag = React.forwardRef(({ variant = "destructive", size = "sm", icon =
 	...props,
 	children: [/* @__PURE__ */ jsx("span", {
 		className: flagTagIcon,
-		children: icon
+		children: icon ?? /* @__PURE__ */ jsx(IconAlertTriangle, { size: ICON_SIZES[size ?? "sm"] })
 	}), /* @__PURE__ */ jsx("span", {
 		className: flagTagLabel,
 		children: label
@@ -6636,7 +6647,7 @@ const ProductCard = React.forwardRef(({ product, isWishlisted = false, onWishlis
 						className: `${productCardWishlist} ${isWishlisted ? productCardWishlistFilled : ""}`,
 						onClick: () => onWishlistToggle(product),
 						"aria-label": isWishlisted ? "Remove from wishlist" : "Add to wishlist",
-						children: /* @__PURE__ */ jsx(Heart, { size: 16 })
+						children: /* @__PURE__ */ jsx(IconHeart, { size: 16 })
 					})
 				})]
 			}),
@@ -6802,7 +6813,7 @@ const cartItemRemove = style({
 	":focus-visible": {
 		outline: "none",
 		borderColor: vars.color.focusRing,
-		boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+		boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 	}
 });
 const shimmer = keyframes({
@@ -6873,7 +6884,7 @@ const CartItem = React.forwardRef(({ item, onRemove, renderQuantityPicker, rende
 					className: cartItemRemove,
 					onClick: onRemove,
 					"aria-label": `Remove ${item.name} from cart`,
-					children: /* @__PURE__ */ jsx(Trash2, { size: 14 })
+					children: /* @__PURE__ */ jsx(IconTrash, { size: 14 })
 				})]
 			})]
 		})]
@@ -6965,7 +6976,7 @@ const addToCartRoot = recipe({
 		":focus-visible": {
 			outline: "none",
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		}
 	},
 	variants: {
@@ -7064,7 +7075,7 @@ const AddToCartButton = React.forwardRef(({ onAddToCart, quantity = 0, variant =
 		children: [
 			/* @__PURE__ */ jsx("span", {
 				className: addToCartIcon,
-				children: isAdded ? /* @__PURE__ */ jsx(Check, { size: 14 }) : /* @__PURE__ */ jsx(Plus, { size: 14 })
+				children: isAdded ? /* @__PURE__ */ jsx(IconCheck, { size: 14 }) : /* @__PURE__ */ jsx(IconPlus, { size: 14 })
 			}),
 			/* @__PURE__ */ jsx("span", { children: children ?? (isAdded ? "Added" : "Add to Cart") }),
 			isAdded && quantity > 0 && /* @__PURE__ */ jsx("span", {
@@ -7941,7 +7952,7 @@ const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) 
 			toggleSidebar();
 		},
 		...props,
-		children: [/* @__PURE__ */ jsx(PanelLeft, {}), /* @__PURE__ */ jsx("span", {
+		children: [/* @__PURE__ */ jsx(IconLayoutSidebar, {}), /* @__PURE__ */ jsx("span", {
 			style: {
 				position: "absolute",
 				width: 1,
@@ -8221,7 +8232,7 @@ const dropzone = style({
 		"&:focus-visible": {
 			outline: "none",
 			borderColor: vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`
 		}
 	}
 });
@@ -8391,7 +8402,7 @@ const FileUploader = React.forwardRef(({ value: valueProp, onValueChange, onUplo
 				className: dropzoneContent,
 				children: [/* @__PURE__ */ jsx("div", {
 					className: dropzoneIcon,
-					children: /* @__PURE__ */ jsx(Upload, {
+					children: /* @__PURE__ */ jsx(IconUpload, {
 						size: 28,
 						"aria-hidden": true
 					})
@@ -8434,7 +8445,7 @@ const FileUploader = React.forwardRef(({ value: valueProp, onValueChange, onUplo
 							size: "icon-sm",
 							onClick: () => onRemove(index),
 							"aria-label": `Remove ${file.name}`,
-							children: /* @__PURE__ */ jsx(X, { size: 14 })
+							children: /* @__PURE__ */ jsx(IconX, { size: 14 })
 						})
 					]
 				}, index))
@@ -8543,7 +8554,7 @@ const CodeBlock = React.forwardRef(({ children, language, showCopy = true, showL
 				className: copyButton,
 				onClick: handleCopy,
 				"aria-label": copied ? "Copied" : "Copy code",
-				children: [copied ? /* @__PURE__ */ jsx(Check, { size: 12 }) : /* @__PURE__ */ jsx(Copy, { size: 12 }), copied ? "Copied" : "Copy"]
+				children: [copied ? /* @__PURE__ */ jsx(IconCheck, { size: 12 }) : /* @__PURE__ */ jsx(IconCopy, { size: 12 }), copied ? "Copied" : "Copy"]
 			}),
 			/* @__PURE__ */ jsx("pre", {
 				className: codeBlockPre,
@@ -8642,11 +8653,12 @@ const inputContainer = style({
 });
 const inputForm = style({
 	display: "flex",
-	gap: vars.space["4"],
+	alignItems: "center",
+	gap: vars.space["2"],
 	borderRadius: vars.radii.lg,
 	border: `1px solid ${vars.color.border}`,
 	backgroundColor: vars.color.surface,
-	padding: vars.space["4"]
+	padding: vars.space["2"]
 });
 const emptyState = style({
 	display: "flex",
@@ -8759,7 +8771,10 @@ const typingContainer = style({
 	fontFamily: vars.font.family.sans,
 	fontSize: vars.font.size.sm,
 	color: vars.color.text,
-	lineHeight: vars.font.lineHeight.relaxed
+	lineHeight: vars.font.lineHeight.relaxed,
+	overflowWrap: "break-word",
+	wordBreak: "break-word",
+	minWidth: 0
 });
 const cursorStyle = style({
 	animation: `${blink} 1s step-end infinite`,
@@ -8780,11 +8795,14 @@ const TypingAnimation = React.forwardRef(({ text, onComplete, speed = 100, showC
 		setDisplayedText("");
 		setIsTyping(true);
 		let currentIndex = 0;
+		let cancelled = false;
 		const words = text.split(" ");
 		const typeWord = () => {
+			if (cancelled) return;
 			if (currentIndex < words.length) {
-				setDisplayedText((prev) => prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]);
+				const word = words[currentIndex];
 				currentIndex++;
+				setDisplayedText((prev) => prev ? `${prev} ${word}` : word);
 				const delay = Math.random() < .8 ? speed : speed * 3;
 				setTimeout(typeWord, delay);
 			} else {
@@ -8793,7 +8811,10 @@ const TypingAnimation = React.forwardRef(({ text, onComplete, speed = 100, showC
 			}
 		};
 		const timer = setTimeout(typeWord, speed);
-		return () => clearTimeout(timer);
+		return () => {
+			cancelled = true;
+			clearTimeout(timer);
+		};
 	}, [
 		text,
 		speed,
@@ -8827,9 +8848,18 @@ const indicatorContainer = style({
 	padding: vars.space["2"]
 });
 const indicatorSpinner = style({
-	animation: `${spin} 1s linear infinite`,
 	color: vars.color.primary,
-	flexShrink: 0
+	flexShrink: 0,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: 16,
+	height: 16,
+	overflow: "hidden"
+});
+const indicatorSpinnerIcon = style({
+	animation: `${spin} 1s linear infinite`,
+	transformOrigin: "center"
 });
 const indicatorLabel = style({
 	fontSize: vars.font.size.sm,
@@ -8880,7 +8910,10 @@ const ToolCallIndicator = React.forwardRef(({ toolName, label, icon, showBadge =
 		children: [
 			/* @__PURE__ */ jsx("div", {
 				className: indicatorSpinner,
-				children: icon || /* @__PURE__ */ jsx(Loader2, { size: 16 })
+				children: icon || /* @__PURE__ */ jsx(IconLoader2, {
+					size: 16,
+					className: indicatorSpinnerIcon
+				})
 			}),
 			/* @__PURE__ */ jsxs("span", {
 				className: indicatorLabel,
@@ -8891,7 +8924,7 @@ const ToolCallIndicator = React.forwardRef(({ toolName, label, icon, showBadge =
 			}),
 			showBadge && toolName && /* @__PURE__ */ jsxs("span", {
 				className: toolBadge,
-				children: [/* @__PURE__ */ jsx(Wrench, { size: 10 }), toolName]
+				children: [/* @__PURE__ */ jsx(IconTool, { size: 10 }), toolName]
 			})
 		]
 	});
@@ -8899,5 +8932,1322 @@ const ToolCallIndicator = React.forwardRef(({ toolName, label, icon, showBadge =
 ToolCallIndicator.displayName = "ToolCallIndicator";
 
 //#endregion
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, ChatEmptyState, ChatInputContainer, ChatMessage, ChatMessagePair, Checkbox, CodeBlock, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FileUploader, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, ToolCallIndicator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
+//#region src/ShowcaseGrid.css.ts
+const page = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["6"],
+	padding: `${vars.space["6"]} ${vars.space["6"]} 80px`,
+	maxWidth: "1400px",
+	width: "100%",
+	margin: "0 auto"
+});
+const hero = style({
+	position: "relative",
+	display: "flex",
+	flexDirection: "column",
+	gap: vars.space["4"],
+	padding: `${vars.space["10"]} ${vars.space["6"]}`,
+	borderRadius: vars.radii.lg,
+	border: `1px solid ${vars.color.border}`,
+	background: `linear-gradient(135deg, color-mix(in srgb, ${vars.color.primary} 8%, transparent), color-mix(in srgb, ${vars.color.background} 100%, transparent))`,
+	overflow: "hidden"
+});
+const heroTitle = style({
+	fontSize: "clamp(28px, 4vw, 44px)",
+	fontWeight: 700,
+	letterSpacing: "-0.03em",
+	lineHeight: 1.05,
+	margin: 0,
+	color: vars.color.text,
+	fontFamily: vars.font.family.sans
+});
+const heroAccent = style({ color: vars.color.primary });
+const heroSub = style({
+	fontSize: vars.font.size.sm,
+	color: vars.color.textMuted,
+	margin: 0,
+	lineHeight: 1.6,
+	maxWidth: "520px"
+});
+const statsRow = style({
+	display: "flex",
+	gap: vars.space["6"],
+	flexWrap: "wrap",
+	marginTop: vars.space["1"]
+});
+const stat = style({
+	display: "flex",
+	alignItems: "baseline",
+	gap: vars.space["1"]
+});
+const statNumber = style({
+	fontSize: vars.font.size.xl,
+	fontWeight: 700,
+	color: vars.color.text,
+	fontFamily: vars.font.family.mono,
+	letterSpacing: "-0.02em"
+});
+const statLabel = style({
+	fontSize: "10px",
+	color: vars.color.textMuted,
+	textTransform: "uppercase",
+	letterSpacing: "0.5px",
+	fontFamily: vars.font.family.mono
+});
+const masonry = style({
+	columnCount: 3,
+	columnGap: "12px",
+	"@media": {
+		"(max-width: 1024px)": { columnCount: 2 },
+		"(max-width: 640px)": { columnCount: 1 }
+	}
+});
+const masonryItem = style({
+	breakInside: "avoid",
+	marginBottom: "12px",
+	display: "inline-block",
+	width: "100%"
+});
+const sectionCard = style({
+	border: `1px solid ${vars.color.border}`,
+	borderRadius: vars.radii.md,
+	backgroundColor: vars.color.surface,
+	overflow: "hidden"
+});
+const sectionHeader = style({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	padding: "6px 10px",
+	borderBottom: `1px solid ${vars.color.border}`,
+	backgroundColor: `color-mix(in srgb, ${vars.color.background} 50%, transparent)`
+});
+const sectionLabel = style({
+	fontSize: "10px",
+	fontWeight: 600,
+	color: vars.color.textMuted,
+	fontFamily: vars.font.family.mono,
+	textTransform: "uppercase",
+	letterSpacing: "1px",
+	display: "flex",
+	alignItems: "center",
+	gap: "4px"
+});
+const sectionTag = style({
+	fontSize: "9px",
+	fontFamily: vars.font.family.mono,
+	color: vars.color.primary,
+	backgroundColor: `color-mix(in srgb, ${vars.color.primary} 12%, transparent)`,
+	padding: "1px 5px",
+	borderRadius: vars.radii.sm
+});
+const sectionBody = style({
+	padding: "10px",
+	display: "flex",
+	flexDirection: "column",
+	gap: "8px"
+});
+const demoRow = style({
+	display: "flex",
+	flexWrap: "wrap",
+	alignItems: "center",
+	gap: "6px"
+});
+const demoCol = style({
+	display: "flex",
+	flexDirection: "column",
+	gap: "6px",
+	width: "100%"
+});
+const filterRow = style({
+	display: "flex",
+	flexWrap: "wrap",
+	gap: "4px"
+});
+
+//#endregion
+//#region src/ShowcaseGrid.tsx
+const CATEGORIES = [
+	{
+		id: "all",
+		label: "All",
+		icon: /* @__PURE__ */ jsx(IconGrid3x3, { size: 11 })
+	},
+	{
+		id: "primitives",
+		label: "Primitives",
+		icon: /* @__PURE__ */ jsx(IconStack2, { size: 11 })
+	},
+	{
+		id: "forms",
+		label: "Forms",
+		icon: /* @__PURE__ */ jsx(IconForms, { size: 11 })
+	},
+	{
+		id: "data",
+		label: "Data",
+		icon: /* @__PURE__ */ jsx(IconChartBar, { size: 11 })
+	},
+	{
+		id: "navigation",
+		label: "Nav",
+		icon: /* @__PURE__ */ jsx(IconPointer, { size: 11 })
+	},
+	{
+		id: "overlay",
+		label: "Overlays",
+		icon: /* @__PURE__ */ jsx(IconStack2, { size: 11 })
+	},
+	{
+		id: "feedback",
+		label: "Feedback",
+		icon: /* @__PURE__ */ jsx(IconSparkles, { size: 11 })
+	},
+	{
+		id: "ecommerce",
+		label: "Commerce",
+		icon: /* @__PURE__ */ jsx(IconShoppingCart, { size: 11 })
+	},
+	{
+		id: "ai",
+		label: "AI",
+		icon: /* @__PURE__ */ jsx(IconRobot, { size: 11 })
+	},
+	{
+		id: "editorial",
+		label: "Editorial",
+		icon: /* @__PURE__ */ jsx(IconTypography, { size: 11 })
+	}
+];
+function Section({ label, tag, category, activeCategory, children }) {
+	if (activeCategory !== "all" && activeCategory !== category) return null;
+	return /* @__PURE__ */ jsx("div", {
+		className: masonryItem,
+		children: /* @__PURE__ */ jsxs("div", {
+			className: sectionCard,
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: sectionHeader,
+				children: [/* @__PURE__ */ jsx("span", {
+					className: sectionLabel,
+					children: label
+				}), tag && /* @__PURE__ */ jsx("span", {
+					className: sectionTag,
+					children: tag
+				})]
+			}), /* @__PURE__ */ jsx("div", {
+				className: sectionBody,
+				children
+			})]
+		})
+	});
+}
+/**
+* Standalone showcase grid of all design system components.
+* Used in both the Component Preview app and Storybook Introduction page.
+*/
+function ShowcaseGrid() {
+	const [category, setCategory] = useState("all");
+	const [progress] = useState(42);
+	const [sliderVal, setSliderVal] = useState([33]);
+	const [switchOn, setSwitchOn] = useState(true);
+	const [quantity, setQuantity] = useState(2);
+	const [typingKey, setTypingKey] = useState(0);
+	return /* @__PURE__ */ jsx(ThemeProvider, {
+		defaultTheme: "dark",
+		children: /* @__PURE__ */ jsx(TooltipProvider, { children: /* @__PURE__ */ jsxs("div", {
+			className: page,
+			children: [
+				/* @__PURE__ */ jsxs("div", {
+					className: hero,
+					children: [
+						/* @__PURE__ */ jsxs("h1", {
+							className: heroTitle,
+							children: ["Hydrotik ", /* @__PURE__ */ jsx("span", {
+								className: heroAccent,
+								children: "Design System"
+							})]
+						}),
+						/* @__PURE__ */ jsx("p", {
+							className: heroSub,
+							children: "63 components built with vanilla-extract tokens and Radix primitives. Dark-first. Type-safe. High-density."
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: statsRow,
+							children: [
+								/* @__PURE__ */ jsxs("div", {
+									className: stat,
+									children: [/* @__PURE__ */ jsx("span", {
+										className: statNumber,
+										children: "63"
+									}), /* @__PURE__ */ jsx("span", {
+										className: statLabel,
+										children: "Components"
+									})]
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: stat,
+									children: [/* @__PURE__ */ jsx("span", {
+										className: statNumber,
+										children: "56"
+									}), /* @__PURE__ */ jsx("span", {
+										className: statLabel,
+										children: "Stories"
+									})]
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: stat,
+									children: [/* @__PURE__ */ jsx("span", {
+										className: statNumber,
+										children: "245"
+									}), /* @__PURE__ */ jsx("span", {
+										className: statLabel,
+										children: "Tests"
+									})]
+								})
+							]
+						})
+					]
+				}),
+				/* @__PURE__ */ jsx("div", {
+					className: filterRow,
+					children: CATEGORIES.map((c) => /* @__PURE__ */ jsxs(Button, {
+						size: "sm",
+						variant: category === c.id ? "default" : "ghost",
+						onClick: () => setCategory(c.id),
+						style: {
+							fontSize: 12,
+							padding: "4px 10px",
+							height: 28,
+							gap: 4
+						},
+						children: [
+							c.icon,
+							" ",
+							c.label
+						]
+					}, c.id))
+				}),
+				/* @__PURE__ */ jsxs("div", {
+					className: masonry,
+					children: [
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Button",
+							category: "primitives",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										children: "Default"
+									}),
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										variant: "secondary",
+										children: "Secondary"
+									}),
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										variant: "destructive",
+										children: "Destructive"
+									}),
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										variant: "outline",
+										children: "Outline"
+									}),
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										variant: "ghost",
+										children: "Ghost"
+									}),
+									/* @__PURE__ */ jsx(Button, {
+										size: "sm",
+										variant: "link",
+										children: "Link"
+									})
+								]
+							}), /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [/* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									disabled: true,
+									children: "Disabled"
+								}), /* @__PURE__ */ jsx(Button, {
+									size: "lg",
+									children: "Large"
+								})]
+							})]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Badge",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Badge, { children: "Default" }),
+									/* @__PURE__ */ jsx(Badge, {
+										variant: "secondary",
+										children: "Secondary"
+									}),
+									/* @__PURE__ */ jsx(Badge, {
+										variant: "outline",
+										children: "Outline"
+									}),
+									/* @__PURE__ */ jsx(Badge, {
+										variant: "destructive",
+										children: "Destructive"
+									}),
+									/* @__PURE__ */ jsx(Badge, {
+										variant: "success",
+										children: "Success"
+									}),
+									/* @__PURE__ */ jsx(Badge, {
+										variant: "warning",
+										children: "Warning"
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Avatar",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Avatar, { children: /* @__PURE__ */ jsx(AvatarFallback, { children: "CN" }) }),
+									/* @__PURE__ */ jsx(Avatar, { children: /* @__PURE__ */ jsx(AvatarFallback, { children: "AB" }) }),
+									/* @__PURE__ */ jsx(Avatar, { children: /* @__PURE__ */ jsx(AvatarFallback, { children: "JD" }) })
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Card",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Card, { children: [
+								/* @__PURE__ */ jsxs(CardHeader, { children: [/* @__PURE__ */ jsx(CardTitle, {
+									style: { fontSize: 14 },
+									children: "Card Title"
+								}), /* @__PURE__ */ jsx(CardDescription, { children: "Description text." })] }),
+								/* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("p", {
+									style: {
+										fontSize: 13,
+										margin: 0
+									},
+									children: "Content area."
+								}) }),
+								/* @__PURE__ */ jsx(CardFooter, { children: /* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									children: "Save"
+								}) })
+							] })
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Separator",
+							category: "primitives",
+							activeCategory: category,
+							children: [
+								/* @__PURE__ */ jsxs("div", {
+									style: { fontSize: 13 },
+									children: [/* @__PURE__ */ jsx("div", {
+										style: { fontWeight: 600 },
+										children: "Radix Primitives"
+									}), /* @__PURE__ */ jsx("div", {
+										style: {
+											color: vars.color.textMuted,
+											fontSize: 12
+										},
+										children: "Open-source UI library."
+									})]
+								}),
+								/* @__PURE__ */ jsx(Separator, {}),
+								/* @__PURE__ */ jsxs("div", {
+									style: {
+										display: "flex",
+										gap: 12,
+										alignItems: "center",
+										height: 16,
+										fontSize: 13
+									},
+									children: [
+										/* @__PURE__ */ jsx("span", { children: "Docs" }),
+										/* @__PURE__ */ jsx(Separator, { orientation: "vertical" }),
+										/* @__PURE__ */ jsx("span", { children: "API" }),
+										/* @__PURE__ */ jsx(Separator, { orientation: "vertical" }),
+										/* @__PURE__ */ jsx("span", { children: "Source" })
+									]
+								})
+							]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Kbd",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Kbd, { children: "⌘" }),
+									/* @__PURE__ */ jsx(Kbd, { children: "K" }),
+									/* @__PURE__ */ jsx("span", {
+										style: {
+											fontSize: 12,
+											color: vars.color.textMuted
+										},
+										children: "Command palette"
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Skeleton",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								style: {
+									display: "flex",
+									alignItems: "center",
+									gap: 10
+								},
+								children: [/* @__PURE__ */ jsx(Skeleton, { style: {
+									width: 32,
+									height: 32,
+									borderRadius: "50%"
+								} }), /* @__PURE__ */ jsxs("div", {
+									style: {
+										display: "flex",
+										flexDirection: "column",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ jsx(Skeleton, { style: {
+										width: 140,
+										height: 10
+									} }), /* @__PURE__ */ jsx(Skeleton, { style: {
+										width: 100,
+										height: 10
+									} })]
+								})]
+							})
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Typography",
+							category: "primitives",
+							activeCategory: category,
+							children: [
+								/* @__PURE__ */ jsx(TypographyH3, { children: "Heading" }),
+								/* @__PURE__ */ jsx(TypographyLead, { children: "Lead paragraph text." }),
+								/* @__PURE__ */ jsx(TypographyMuted, { children: "Muted helper text." })
+							]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Heading",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(Heading, {
+								title: "Page Title",
+								description: "Section description.",
+								size: "md",
+								as: "h3"
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Input",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								children: [
+									/* @__PURE__ */ jsx(Input, {
+										placeholder: "Email address",
+										type: "email",
+										size: "sm"
+									}),
+									/* @__PURE__ */ jsx(Input, {
+										placeholder: "Disabled",
+										disabled: true,
+										size: "sm"
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										style: {
+											display: "flex",
+											flexDirection: "column",
+											gap: 3
+										},
+										children: [/* @__PURE__ */ jsx(Label, {
+											htmlFor: "sc-n",
+											style: { fontSize: 12 },
+											children: "Name"
+										}), /* @__PURE__ */ jsx(Input, {
+											id: "sc-n",
+											placeholder: "Enter name...",
+											size: "sm"
+										})]
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Textarea",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(Textarea, {
+								placeholder: "Type your message...",
+								rows: 2,
+								style: { fontSize: 13 }
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Checkbox",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								style: { gap: 6 },
+								children: [/* @__PURE__ */ jsxs("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ jsx(Checkbox, {
+										id: "sc-t",
+										defaultChecked: true
+									}), /* @__PURE__ */ jsx(Label, {
+										htmlFor: "sc-t",
+										style: { fontSize: 12 },
+										children: "Accept terms"
+									})]
+								}), /* @__PURE__ */ jsxs("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ jsx(Checkbox, { id: "sc-n2" }), /* @__PURE__ */ jsx(Label, {
+										htmlFor: "sc-n2",
+										style: { fontSize: 12 },
+										children: "Newsletter"
+									})]
+								})]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Radio Group",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(RadioGroup, {
+								defaultValue: "comfortable",
+								children: [
+									"Default",
+									"Comfortable",
+									"Compact"
+								].map((v) => /* @__PURE__ */ jsxs("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ jsx(RadioGroupItem, {
+										value: v.toLowerCase(),
+										id: `sc-r-${v}`
+									}), /* @__PURE__ */ jsx(Label, {
+										htmlFor: `sc-r-${v}`,
+										style: { fontSize: 12 },
+										children: v
+									})]
+								}, v))
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Switch",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								style: {
+									display: "flex",
+									alignItems: "center",
+									gap: 6
+								},
+								children: [/* @__PURE__ */ jsx(Switch, {
+									id: "sc-sw",
+									checked: switchOn,
+									onCheckedChange: setSwitchOn
+								}), /* @__PURE__ */ jsx(Label, {
+									htmlFor: "sc-sw",
+									style: { fontSize: 12 },
+									children: "Airplane Mode"
+								})]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Select",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Select, { children: [/* @__PURE__ */ jsx(SelectTrigger, {
+								style: {
+									height: 28,
+									fontSize: 12
+								},
+								children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select a fruit" })
+							}), /* @__PURE__ */ jsxs(SelectContent, { children: [
+								/* @__PURE__ */ jsx(SelectItem, {
+									value: "apple",
+									children: "Apple"
+								}),
+								/* @__PURE__ */ jsx(SelectItem, {
+									value: "banana",
+									children: "Banana"
+								}),
+								/* @__PURE__ */ jsx(SelectItem, {
+									value: "blueberry",
+									children: "Blueberry"
+								})
+							] })] })
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Slider",
+							category: "forms",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsx(Slider, {
+								value: sliderVal,
+								onValueChange: setSliderVal,
+								max: 100,
+								step: 1
+							}), /* @__PURE__ */ jsx("span", {
+								style: {
+									fontSize: 11,
+									color: vars.color.textMuted,
+									fontFamily: vars.font.family.mono
+								},
+								children: sliderVal[0]
+							})]
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Toggle",
+							category: "forms",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Toggle, {
+										"aria-label": "Bold",
+										children: /* @__PURE__ */ jsx(IconBold, { size: 13 })
+									}),
+									/* @__PURE__ */ jsx(Toggle, {
+										"aria-label": "Italic",
+										children: /* @__PURE__ */ jsx(IconItalic, { size: 13 })
+									}),
+									/* @__PURE__ */ jsx(Toggle, {
+										"aria-label": "Underline",
+										children: /* @__PURE__ */ jsx(IconUnderline, { size: 13 })
+									})
+								]
+							}), /* @__PURE__ */ jsxs(ToggleGroup, {
+								type: "single",
+								defaultValue: "center",
+								children: [
+									/* @__PURE__ */ jsx(ToggleGroupItem, {
+										value: "left",
+										"aria-label": "Left",
+										children: /* @__PURE__ */ jsx(IconAlignLeft, { size: 13 })
+									}),
+									/* @__PURE__ */ jsx(ToggleGroupItem, {
+										value: "center",
+										"aria-label": "Center",
+										children: /* @__PURE__ */ jsx(IconAlignCenter, { size: 13 })
+									}),
+									/* @__PURE__ */ jsx(ToggleGroupItem, {
+										value: "right",
+										"aria-label": "Right",
+										children: /* @__PURE__ */ jsx(IconAlignRight, { size: 13 })
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "DataGrid",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(DataGrid, {
+								data: [
+									{
+										invoice: "INV001",
+										status: "Paid",
+										method: "Credit Card",
+										amount: 250
+									},
+									{
+										invoice: "INV002",
+										status: "Pending",
+										method: "PayPal",
+										amount: 150
+									},
+									{
+										invoice: "INV003",
+										status: "Unpaid",
+										method: "Bank Transfer",
+										amount: 350
+									}
+								],
+								columns: [
+									{
+										id: "invoice",
+										header: "Invoice",
+										accessorKey: "invoice"
+									},
+									{
+										id: "status",
+										header: "Status",
+										accessorKey: "status"
+									},
+									{
+										id: "amount",
+										header: "Amount",
+										accessorKey: "amount",
+										align: "right",
+										cell: ({ value }) => `$${Number(value).toFixed(2)}`
+									}
+								],
+								enableSorting: true,
+								enablePagination: false,
+								showToolbar: false,
+								density: "editorial",
+								borderless: true
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Tabs",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Tabs, {
+								defaultValue: "account",
+								children: [
+									/* @__PURE__ */ jsxs(TabsList, { children: [/* @__PURE__ */ jsx(TabsTrigger, {
+										value: "account",
+										children: "Account"
+									}), /* @__PURE__ */ jsx(TabsTrigger, {
+										value: "password",
+										children: "Password"
+									})] }),
+									/* @__PURE__ */ jsx(TabsContent, {
+										value: "account",
+										children: /* @__PURE__ */ jsxs("div", {
+											className: demoCol,
+											style: { paddingTop: 6 },
+											children: [
+												/* @__PURE__ */ jsx(Label, {
+													style: { fontSize: 12 },
+													children: "Name"
+												}),
+												/* @__PURE__ */ jsx(Input, {
+													defaultValue: "Pedro Duarte",
+													size: "sm"
+												}),
+												/* @__PURE__ */ jsx(Button, {
+													size: "sm",
+													children: "Save"
+												})
+											]
+										})
+									}),
+									/* @__PURE__ */ jsx(TabsContent, {
+										value: "password",
+										children: /* @__PURE__ */ jsxs("div", {
+											className: demoCol,
+											style: { paddingTop: 6 },
+											children: [/* @__PURE__ */ jsx(Label, {
+												style: { fontSize: 12 },
+												children: "Current"
+											}), /* @__PURE__ */ jsx(Input, {
+												type: "password",
+												size: "sm"
+											})]
+										})
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Accordion",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Accordion, {
+								type: "single",
+								collapsible: true,
+								children: [/* @__PURE__ */ jsxs(AccordionItem, {
+									value: "1",
+									children: [/* @__PURE__ */ jsx(AccordionTrigger, { children: "Is it accessible?" }), /* @__PURE__ */ jsx(AccordionContent, { children: "Yes — WAI-ARIA compliant." })]
+								}), /* @__PURE__ */ jsxs(AccordionItem, {
+									value: "2",
+									children: [/* @__PURE__ */ jsx(AccordionTrigger, { children: "Is it styled?" }), /* @__PURE__ */ jsx(AccordionContent, { children: "Vanilla-extract tokens." })]
+								})]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Breadcrumb",
+							category: "navigation",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(Breadcrumb, { children: /* @__PURE__ */ jsxs(BreadcrumbList, { children: [
+								/* @__PURE__ */ jsx(BreadcrumbItem, { children: /* @__PURE__ */ jsx(BreadcrumbLink, {
+									href: "#",
+									children: "Home"
+								}) }),
+								/* @__PURE__ */ jsx(BreadcrumbSeparator, {}),
+								/* @__PURE__ */ jsx(BreadcrumbItem, { children: /* @__PURE__ */ jsx(BreadcrumbLink, {
+									href: "#",
+									children: "Components"
+								}) }),
+								/* @__PURE__ */ jsx(BreadcrumbSeparator, {}),
+								/* @__PURE__ */ jsx(BreadcrumbItem, { children: /* @__PURE__ */ jsx(BreadcrumbPage, { children: "Breadcrumb" }) })
+							] }) })
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Pagination",
+							category: "navigation",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(Pagination, { children: /* @__PURE__ */ jsxs(PaginationContent, { children: [
+								/* @__PURE__ */ jsx(PaginationItem, { children: /* @__PURE__ */ jsx(PaginationPrevious, { href: "#" }) }),
+								/* @__PURE__ */ jsx(PaginationItem, { children: /* @__PURE__ */ jsx(PaginationLink, {
+									href: "#",
+									isActive: true,
+									children: "1"
+								}) }),
+								/* @__PURE__ */ jsx(PaginationItem, { children: /* @__PURE__ */ jsx(PaginationLink, {
+									href: "#",
+									children: "2"
+								}) }),
+								/* @__PURE__ */ jsx(PaginationItem, { children: /* @__PURE__ */ jsx(PaginationEllipsis, {}) }),
+								/* @__PURE__ */ jsx(PaginationItem, { children: /* @__PURE__ */ jsx(PaginationNext, { href: "#" }) })
+							] }) })
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Dialog",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Dialog, { children: [/* @__PURE__ */ jsx(DialogTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Edit Profile"
+								})
+							}), /* @__PURE__ */ jsx(DialogContent, { children: /* @__PURE__ */ jsxs(DialogHeader, { children: [/* @__PURE__ */ jsx(DialogTitle, { children: "Edit profile" }), /* @__PURE__ */ jsx(DialogDescription, { children: "Make changes here." })] }) })] })
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Dropdown Menu",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(DropdownMenu, { children: [/* @__PURE__ */ jsx(DropdownMenuTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Open Menu"
+								})
+							}), /* @__PURE__ */ jsxs(DropdownMenuContent, { children: [
+								/* @__PURE__ */ jsxs(DropdownMenuItem, { children: [/* @__PURE__ */ jsx(IconUser, { size: 13 }), " Profile"] }),
+								/* @__PURE__ */ jsxs(DropdownMenuItem, { children: [/* @__PURE__ */ jsx(IconCreditCard, { size: 13 }), " Billing"] }),
+								/* @__PURE__ */ jsxs(DropdownMenuItem, { children: [/* @__PURE__ */ jsx(IconSettings, { size: 13 }), " Settings"] }),
+								/* @__PURE__ */ jsx(DropdownMenuSeparator, {}),
+								/* @__PURE__ */ jsxs(DropdownMenuItem, { children: [/* @__PURE__ */ jsx(IconLogout, { size: 13 }), " Log out"] })
+							] })] })
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Popover",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Popover, { children: [/* @__PURE__ */ jsx(PopoverTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Open"
+								})
+							}), /* @__PURE__ */ jsx(PopoverContent, { children: /* @__PURE__ */ jsxs("div", {
+								style: {
+									display: "flex",
+									flexDirection: "column",
+									gap: 6,
+									fontSize: 13
+								},
+								children: [
+									/* @__PURE__ */ jsx("div", {
+										style: { fontWeight: 600 },
+										children: "Dimensions"
+									}),
+									/* @__PURE__ */ jsx(Label, {
+										style: { fontSize: 12 },
+										children: "Width"
+									}),
+									/* @__PURE__ */ jsx(Input, {
+										defaultValue: "100%",
+										size: "sm"
+									})
+								]
+							}) })] })
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Tooltip",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs(Tooltip, { children: [/* @__PURE__ */ jsx(TooltipTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ jsx(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Hover me"
+								})
+							}), /* @__PURE__ */ jsx(TooltipContent, { children: /* @__PURE__ */ jsx("p", { children: "Add to library" }) })] })
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Alert",
+							category: "feedback",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsxs(Alert, { children: [/* @__PURE__ */ jsx(AlertTitle, { children: "Heads up!" }), /* @__PURE__ */ jsx(AlertDescription, { children: "Components via CLI." })] }), /* @__PURE__ */ jsxs(Alert, {
+								variant: "destructive",
+								icon: /* @__PURE__ */ jsx(IconAlertCircle, { size: 14 }),
+								children: [/* @__PURE__ */ jsx(AlertTitle, { children: "Error" }), /* @__PURE__ */ jsx(AlertDescription, { children: "Session expired." })]
+							})]
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "Progress",
+							category: "feedback",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsx(Progress, { value: progress }), /* @__PURE__ */ jsxs("span", {
+								style: {
+									fontSize: 11,
+									color: vars.color.textMuted,
+									fontFamily: vars.font.family.mono
+								},
+								children: [progress, "%"]
+							})]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Spinner",
+							category: "feedback",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(Spinner, { size: "sm" }),
+									/* @__PURE__ */ jsx(Spinner, { size: "md" }),
+									/* @__PURE__ */ jsx(Spinner, { size: "lg" })
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "Price",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								children: [/* @__PURE__ */ jsx(Price, {
+									amount: 129.99,
+									size: "sm"
+								}), /* @__PURE__ */ jsx(Price, {
+									amount: 99.99,
+									originalAmount: 149.99,
+									size: "sm"
+								})]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "ColorSwatch",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ jsx(ColorSwatch, {
+										hex: "#1a2744",
+										name: "Navy",
+										size: "sm",
+										isSelected: true,
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ jsx(ColorSwatch, {
+										hex: "#d4c5a9",
+										name: "Cream",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ jsx(ColorSwatch, {
+										hex: "#000000",
+										name: "Black",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ jsx(ColorSwatch, {
+										hex: "#8b2252",
+										name: "Berry",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ jsx(ColorSwatch, {
+										hex: "#4a6741",
+										name: "Forest",
+										size: "sm",
+										disabled: true
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "QuantityPicker",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(QuantityPicker, {
+								quantity,
+								onIncrease: () => setQuantity((q) => Math.min(10, q + 1)),
+								onDecrease: () => setQuantity((q) => Math.max(1, q - 1)),
+								min: 1,
+								max: 10,
+								size: "sm"
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "AddToCartButton",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								children: [
+									/* @__PURE__ */ jsx(AddToCartButton, { onAddToCart: () => {} }),
+									/* @__PURE__ */ jsx(AddToCartButton, {
+										onAddToCart: () => {},
+										variant: "primary"
+									}),
+									/* @__PURE__ */ jsx(AddToCartButton, {
+										onAddToCart: () => {},
+										quantity: 2
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "SegmentedRatingBar",
+							tag: "editorial",
+							category: "editorial",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								style: { gap: 4 },
+								children: [
+									/* @__PURE__ */ jsxs("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ jsx(SegmentedRatingBar, {
+											value: 7,
+											total: 10,
+											color: "primary",
+											size: "sm"
+										}), /* @__PURE__ */ jsx("span", {
+											style: {
+												fontSize: 11,
+												color: vars.color.textMuted
+											},
+											children: "7/10"
+										})]
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ jsx(SegmentedRatingBar, {
+											value: 4,
+											total: 10,
+											color: "chart1",
+											size: "sm"
+										}), /* @__PURE__ */ jsx("span", {
+											style: {
+												fontSize: 11,
+												color: vars.color.textMuted
+											},
+											children: "4/10"
+										})]
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ jsx(SegmentedRatingBar, {
+											value: 9,
+											total: 10,
+											color: "success",
+											size: "sm"
+										}), /* @__PURE__ */ jsx("span", {
+											style: {
+												fontSize: 11,
+												color: vars.color.textMuted
+											},
+											children: "9/10"
+										})]
+									}),
+									/* @__PURE__ */ jsxs("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ jsx(SegmentedRatingBar, {
+											value: 2,
+											total: 10,
+											color: "destructive",
+											size: "sm"
+										}), /* @__PURE__ */ jsx("span", {
+											style: {
+												fontSize: 11,
+												color: vars.color.textMuted
+											},
+											children: "2/10"
+										})]
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "FlagTag",
+							tag: "editorial",
+							category: "editorial",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								style: {
+									display: "flex",
+									flexDirection: "column",
+									gap: 12
+								},
+								children: [
+									/* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(FlagTag, {
+										icon: /* @__PURE__ */ jsx(IconAlertTriangle, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(FlagTag, {
+										label: "FLAGGED",
+										variant: "destructive",
+										icon: /* @__PURE__ */ jsx(IconAlertTriangle, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(FlagTag, {
+										label: "REVIEW",
+										variant: "warning",
+										icon: /* @__PURE__ */ jsx(IconSearch, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(FlagTag, {
+										label: "VERIFIED",
+										variant: "success",
+										icon: /* @__PURE__ */ jsx(IconCircleCheck, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) })
+								]
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "CodeBlock",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsx(CodeBlock, {
+								language: "typescript",
+								children: `import { useChat } from 'ai/react';
+import { ChatContainer } from '@hydrotik/design-system';
+
+const { messages } = useChat({ maxSteps: 4 });`
+							})
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "InlineCode",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("p", {
+								style: {
+									fontSize: 12,
+									lineHeight: 1.7,
+									margin: 0,
+									color: vars.color.textMuted
+								},
+								children: [
+									"Use ",
+									/* @__PURE__ */ jsx(InlineCode, { children: "useChat" }),
+									" with ",
+									/* @__PURE__ */ jsx(InlineCode, { children: "maxSteps: 4" }),
+									" for multi-step tool calling."
+								]
+							})
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "ChatMessage",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsx(ChatMessage, {
+								role: "user",
+								avatar: "DA",
+								label: "User",
+								children: "How do I add a component?"
+							}), /* @__PURE__ */ jsxs(ChatMessage, {
+								role: "assistant",
+								avatar: "AI",
+								label: "Assistant",
+								children: [
+									"Create a folder under ",
+									/* @__PURE__ */ jsx(InlineCode, { children: "src/components/" }),
+									"."
+								]
+							})]
+						}),
+						/* @__PURE__ */ jsx(Section, {
+							label: "ToolCallIndicator",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ jsxs("div", {
+								className: demoCol,
+								style: { gap: 2 },
+								children: [
+									/* @__PURE__ */ jsx(ToolCallIndicator, {}),
+									/* @__PURE__ */ jsx(ToolCallIndicator, { toolName: "getInformation" }),
+									/* @__PURE__ */ jsx(ToolCallIndicator, { toolName: "rag_search" })
+								]
+							})
+						}),
+						/* @__PURE__ */ jsxs(Section, {
+							label: "TypingAnimation",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: [/* @__PURE__ */ jsx("div", {
+								style: {
+									display: "flex",
+									justifyContent: "flex-end",
+									marginBottom: -4
+								},
+								children: /* @__PURE__ */ jsx(Button, {
+									variant: "ghost",
+									size: "sm",
+									onClick: () => setTypingKey((k) => k + 1),
+									style: {
+										fontSize: 11,
+										height: 22,
+										padding: "0 6px"
+									},
+									children: "Replay"
+								})
+							}), /* @__PURE__ */ jsx(TypingAnimation, {
+								text: "Components for AI interfaces with streaming, tool calling, and real-time updates.",
+								speed: 50
+							}, typingKey)]
+						})
+					]
+				})
+			]
+		}) })
+	});
+}
+
+//#endregion
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger, AddToCartButton, Alert, AlertDescription, AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, AlertTitle, AspectRatio, Avatar, AvatarFallback, AvatarImage, Badge, Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator, Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CartItem, CartItemSkeleton, ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent, ChatContainer, ChatEmptyState, ChatInputContainer, ChatMessage, ChatMessagePair, Checkbox, CodeBlock, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorSwatch, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut, ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuLabel, ContextMenuPortal, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, DataGrid, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, FieldMessage, FileUploader, FlagTag, Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icons, InlineCode, Input, InputGroup, InputGroupAddon, InputGroupToolbar, Kbd, Label, Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarLabel, MenubarMenu, MenubarPortal, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger, Modal, NavigationMenu, NavigationMenuContent, NavigationMenuIndicator, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport, Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, Popover, PopoverAnchor, PopoverClose, PopoverContent, PopoverTrigger, Price, ProductCard, ProductCardSkeleton, Progress, QuantityPicker, RadioGroup, RadioGroupItem, ScrollArea, ScrollBar, SegmentedRatingBar, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger, ShowcaseGrid, Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarProvider, SidebarRail, SidebarSeparator, SidebarTrigger, Skeleton, Slider, Spinner, Switch, Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, TableWrapper, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport, Toaster, Toggle, ToggleGroup, ToggleGroupItem, ToolCallIndicator, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TypingAnimation, TypographyBlockquote, TypographyH1, TypographyH2, TypographyH3, TypographyH4, TypographyHr, TypographyInlineCode, TypographyLarge, TypographyLead, TypographyMuted, TypographyOl, TypographyP, TypographySmall, TypographyUl, createDataGrid, inputGroupInput as inputGroupInputClass, toast, useChart, useDataGrid, useFormField, useSidebar };
 //# sourceMappingURL=index.mjs.map

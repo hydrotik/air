@@ -30,8 +30,8 @@ let react = require("react");
 react = __toESM(react);
 let _radix_ui_react_accordion = require("@radix-ui/react-accordion");
 _radix_ui_react_accordion = __toESM(_radix_ui_react_accordion);
-let lucide_react = require("lucide-react");
-lucide_react = __toESM(lucide_react);
+let _tabler_icons_react = require("@tabler/icons-react");
+_tabler_icons_react = __toESM(_tabler_icons_react);
 let _vanilla_extract_css = require("@vanilla-extract/css");
 let _hydrotik_tokens = require("@hydrotik/tokens");
 let react_jsx_runtime = require("react/jsx-runtime");
@@ -91,6 +91,7 @@ let recharts = require("recharts");
 recharts = __toESM(recharts);
 let react_hook_form = require("react-hook-form");
 let sonner = require("sonner");
+let _hydrotik_theme_provider = require("@hydrotik/theme-provider");
 
 //#region src/components/Accordion/Accordion.css.ts
 const slideDown = (0, _vanilla_extract_css.keyframes)({
@@ -134,7 +135,7 @@ const accordionTrigger = (0, _vanilla_extract_css.style)({
 		"&:focus-visible": {
 			outline: `2px solid ${_hydrotik_tokens.vars.color.focusRing}`,
 			outlineOffset: "2px",
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -186,7 +187,7 @@ const AccordionTrigger = react.default.forwardRef(({ className, children, ...pro
 		ref,
 		className: [accordionTrigger, className].filter(Boolean).join(" "),
 		...props,
-		children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, {
+		children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronDown, {
 			className: accordionChevron,
 			"aria-hidden": true
 		})]
@@ -680,7 +681,7 @@ const BreadcrumbSeparator = ({ className, children, ...props }) => /* @__PURE__ 
 	"aria-hidden": "true",
 	className: [breadcrumbSeparator, className].filter(Boolean).join(" "),
 	...props,
-	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, { size: 16 })
+	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronRight, { size: 16 })
 });
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
@@ -688,7 +689,7 @@ const BreadcrumbEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, reac
 	"aria-hidden": "true",
 	className: [breadcrumbEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.MoreHorizontal, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconDots, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: "sr-only",
 		children: "More"
 	})]
@@ -742,7 +743,7 @@ const buttonRecipe = (0, _vanilla_extract_recipes.recipe)({
 		selectors: {
 			"&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled, &[aria-disabled=\"true\"]": {
 				opacity: "0.5",
@@ -986,7 +987,7 @@ const checkboxRoot = (0, _vanilla_extract_css.style)({
 	selectors: {
 		"&:focus-visible": {
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&[data-state=\"checked\"], &[data-state=\"indeterminate\"]": {
 			backgroundColor: _hydrotik_tokens.vars.color.primary,
@@ -1013,7 +1014,7 @@ const Checkbox = react.default.forwardRef(({ className, ...props }, ref) => /* @
 	...props,
 	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_checkbox.Indicator, {
 		className: checkboxIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 14 })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 14 })
 	})
 }));
 Checkbox.displayName = "Checkbox";
@@ -1133,7 +1134,7 @@ const CommandInput = react.default.forwardRef(({ className, icon, ...props }, re
 	className: commandInput,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 		className: commandInputIcon,
-		children: icon ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Search, { size: 15 })
+		children: icon ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconSearch, { size: 15 })
 	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
 		ref,
 		className: [commandInputField, className].filter(Boolean).join(" "),
@@ -1312,7 +1313,7 @@ const ContextMenuCheckboxItem = react.default.forwardRef(({ className, children,
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 16 }) })
 	}), children]
 }));
 ContextMenuCheckboxItem.displayName = "ContextMenuCheckboxItem";
@@ -1323,7 +1324,7 @@ const ContextMenuRadioItem = react.default.forwardRef(({ className, children, ..
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: contextMenuItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_context_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -1353,7 +1354,7 @@ const ContextMenuSubTrigger = react.default.forwardRef(({ className, inset, chil
 	className: [contextMenuSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -1416,7 +1417,7 @@ const DialogContent = react.default.forwardRef(({ className, children, showClose
 	children: [children, showCloseButton && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Close, {
 		className: dialogClose,
 		"aria-label": "Close dialog",
-		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconX, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 			className: "sr-only",
 			children: "Close"
 		})]
@@ -1539,7 +1540,7 @@ const DropdownMenuSubTrigger = react.default.forwardRef(({ className, inset, chi
 	ref,
 	className: [dropdownSubTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -1574,7 +1575,7 @@ const DropdownMenuCheckboxItem = react.default.forwardRef(({ className, children
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 16 }) })
 	}), children]
 }));
 DropdownMenuCheckboxItem.displayName = "DropdownMenuCheckboxItem";
@@ -1584,7 +1585,7 @@ const DropdownMenuRadioItem = react.default.forwardRef(({ className, children, .
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: dropdownItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_dropdown_menu.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -1685,7 +1686,11 @@ const inputWrapperRecipe = (0, _vanilla_extract_recipes.recipe)({
 		gap: _hydrotik_tokens.vars.space["1_5"]
 	},
 	variants: { fullWidth: {
-		true: { width: "100%" },
+		true: {
+			width: "100%",
+			flex: 1,
+			minWidth: 0
+		},
 		false: {}
 	} },
 	defaultVariants: { fullWidth: false }
@@ -1712,7 +1717,7 @@ const inputRecipe = (0, _vanilla_extract_recipes.recipe)({
 			"&::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
 			"&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -1819,7 +1824,7 @@ const inputGroupRoot = (0, _vanilla_extract_css.style)({
 	transition: "color 0.15s, box-shadow 0.15s",
 	selectors: { "&:focus-within": {
 		borderColor: _hydrotik_tokens.vars.color.focusRing,
-		boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+		boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 	} }
 });
 /** Auto-height variant (for textareas) */
@@ -2101,7 +2106,7 @@ const MenubarCheckboxItem = react.default.forwardRef(({ className, children, che
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 16 }) })
 	}), children]
 }));
 MenubarCheckboxItem.displayName = "MenubarCheckboxItem";
@@ -2112,7 +2117,7 @@ const MenubarRadioItem = react.default.forwardRef(({ className, children, ...pro
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: menubarItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Circle, {
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_menubar.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCircle, {
 			size: 8,
 			fill: "currentColor"
 		}) })
@@ -2142,7 +2147,7 @@ const MenubarSubTrigger = react.default.forwardRef(({ className, inset, children
 	className: [menubarSubTrigger, className].filter(Boolean).join(" "),
 	style: inset ? { paddingLeft: "2rem" } : void 0,
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, {
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronRight, {
 		size: 16,
 		style: { marginLeft: "auto" },
 		"aria-hidden": true
@@ -2316,7 +2321,7 @@ const NavigationMenuTrigger = react.default.forwardRef(({ className, children, .
 	ref,
 	className: [navigationMenuTrigger, className].filter(Boolean).join(" "),
 	...props,
-	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, {
+	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronDown, {
 		size: 12,
 		"aria-hidden": true,
 		style: { transition: "transform 200ms" }
@@ -2452,21 +2457,21 @@ const PaginationPrevious = ({ className, ...props }) => /* @__PURE__ */ (0, reac
 	"aria-label": "Go to previous page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronLeft, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Previous" })]
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronLeft, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Previous" })]
 });
 PaginationPrevious.displayName = "PaginationPrevious";
 const PaginationNext = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(PaginationLink, {
 	"aria-label": "Go to next page",
 	className,
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Next" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronRight, { size: 16 })]
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Next" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronRight, { size: 16 })]
 });
 PaginationNext.displayName = "PaginationNext";
 const PaginationEllipsis = ({ className, ...props }) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 	"aria-hidden": true,
 	className: [paginationEllipsis, className].filter(Boolean).join(" "),
 	...props,
-	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.MoreHorizontal, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconDots, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: "sr-only",
 		children: "More pages"
 	})]
@@ -2550,7 +2555,7 @@ const PopoverClose = react.default.forwardRef(({ className, children, ...props }
 	className: [popoverClose, className].filter(Boolean).join(" "),
 	"aria-label": "Close",
 	...props,
-	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 14 })
+	children: children ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconX, { size: 14 })
 }));
 PopoverClose.displayName = "PopoverClose";
 
@@ -2619,7 +2624,7 @@ const radioGroupItem = (0, _vanilla_extract_css.style)({
 	selectors: {
 		"&:focus-visible": {
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&[data-state=\"checked\"]": { borderColor: _hydrotik_tokens.vars.color.primary },
 		"&:disabled": {
@@ -2774,7 +2779,7 @@ const selectTrigger = (0, _vanilla_extract_recipes.recipe)({
 		selectors: {
 			"&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 			},
 			"&[data-placeholder]": { color: _hydrotik_tokens.vars.color.placeholder },
 			"&[data-disabled]": {
@@ -2900,7 +2905,7 @@ const SelectTrigger = react.default.forwardRef(({ className, children, size = "m
 	...props,
 	children: [children, /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.Icon, {
 		className: selectIcon,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, { size: 16 })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronDown, { size: 16 })
 	})]
 }));
 SelectTrigger.displayName = "SelectTrigger";
@@ -2908,14 +2913,14 @@ const SelectScrollUpButton = react.default.forwardRef(({ className, ...props }, 
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronUp, { size: 16 })
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronUp, { size: 16 })
 }));
 SelectScrollUpButton.displayName = "SelectScrollUpButton";
 const SelectScrollDownButton = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ScrollDownButton, {
 	ref,
 	className: [selectScrollButton, className].filter(Boolean).join(" "),
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.ChevronDown, { size: 16 })
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChevronDown, { size: 16 })
 }));
 SelectScrollDownButton.displayName = "SelectScrollDownButton";
 const SelectContent = react.default.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.Portal, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_select.Content, {
@@ -2946,7 +2951,7 @@ const SelectItem = react.default.forwardRef(({ className, children, ...props }, 
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: selectItemIndicator,
-		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 16 }) })
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemIndicator, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 16 }) })
 	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_select.ItemText, { children })]
 }));
 SelectItem.displayName = "SelectItem";
@@ -3143,7 +3148,7 @@ const SheetContent = react.default.forwardRef(({ side = "right", showCloseButton
 	children: [children, showCloseButton && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(_radix_ui_react_dialog.Close, {
 		className: sheetClose,
 		"aria-label": "Close",
-		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconX, { size: 16 }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 			className: "sr-only",
 			children: "Close"
 		})]
@@ -3336,7 +3341,7 @@ const switchRoot = (0, _vanilla_extract_css.style)({
 		"&[data-state=\"checked\"]": { backgroundColor: _hydrotik_tokens.vars.color.primary },
 		"&:focus-visible": {
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3535,7 +3540,7 @@ const tabsTrigger = (0, _vanilla_extract_css.style)({
 		},
 		"&:focus-visible": {
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3596,7 +3601,7 @@ const textarea = (0, _vanilla_extract_css.style)({
 		"&::placeholder": { color: _hydrotik_tokens.vars.color.placeholder },
 		"&:focus-visible": {
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		},
 		"&:disabled": {
 			opacity: "0.5",
@@ -3760,7 +3765,7 @@ const ToastClose = react.default.forwardRef(({ className, ...props }, ref) => /*
 	className: [toastClose, className].filter(Boolean).join(" "),
 	"aria-label": "Dismiss notification",
 	...props,
-	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 14 })
+	children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconX, { size: 14 })
 }));
 ToastClose.displayName = "ToastClose";
 const ToastTitle = react.default.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_radix_ui_react_toast.Title, {
@@ -3812,7 +3817,7 @@ const toggleRecipe = (0, _vanilla_extract_recipes.recipe)({
 			},
 			"&:focus-visible": {
 				borderColor: _hydrotik_tokens.vars.color.focusRing,
-				boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+				boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 			},
 			"&:disabled": {
 				opacity: "0.5",
@@ -4175,6 +4180,12 @@ const flagTagLabel = (0, _vanilla_extract_css.style)({ lineHeight: 0 });
 
 //#endregion
 //#region src/components/FlagTag/FlagTag.tsx
+const ICON_SIZES = {
+	xs: 14,
+	sm: 15,
+	md: 17,
+	lg: 19
+};
 /**
 * FlagTag — Minimal inline status flag for forensic/editorial contexts.
 *
@@ -4187,16 +4198,16 @@ const flagTagLabel = (0, _vanilla_extract_css.style)({ lineHeight: 0 });
 * <FlagTag />
 *
 * // Custom label + warning variant
-* <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+* <FlagTag variant="warning" label="REVIEW" icon={<IconSearch size={14} />} />
 *
-* // With Lucide icon
-* <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+* // With Tabler icon
+* <FlagTag icon={<Icons.IconAlertTriangle size={14} />} label="FLAGGED" />
 *
 * // Inline after a name
 * <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
 * ```
 */
-const FlagTag = react.default.forwardRef(({ variant = "destructive", size = "sm", icon = "⚠", label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+const FlagTag = react.default.forwardRef(({ variant = "destructive", size = "sm", icon, label = "FLAG", marginLeft = "8px", className, style, ...props }, ref) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 	ref,
 	"data-flag-size": size,
 	className: [flagTagRecipe({
@@ -4210,7 +4221,7 @@ const FlagTag = react.default.forwardRef(({ variant = "destructive", size = "sm"
 	...props,
 	children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: flagTagIcon,
-		children: icon
+		children: icon ?? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlertTriangle, { size: ICON_SIZES[size ?? "sm"] })
 	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 		className: flagTagLabel,
 		children: label
@@ -6692,7 +6703,7 @@ const ProductCard = react.default.forwardRef(({ product, isWishlisted = false, o
 						className: `${productCardWishlist} ${isWishlisted ? productCardWishlistFilled : ""}`,
 						onClick: () => onWishlistToggle(product),
 						"aria-label": isWishlisted ? "Remove from wishlist" : "Add to wishlist",
-						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Heart, { size: 16 })
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconHeart, { size: 16 })
 					})
 				})]
 			}),
@@ -6858,7 +6869,7 @@ const cartItemRemove = (0, _vanilla_extract_css.style)({
 	":focus-visible": {
 		outline: "none",
 		borderColor: _hydrotik_tokens.vars.color.focusRing,
-		boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+		boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 	}
 });
 const shimmer = (0, _vanilla_extract_css.keyframes)({
@@ -6929,7 +6940,7 @@ const CartItem = react.default.forwardRef(({ item, onRemove, renderQuantityPicke
 					className: cartItemRemove,
 					onClick: onRemove,
 					"aria-label": `Remove ${item.name} from cart`,
-					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Trash2, { size: 14 })
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconTrash, { size: 14 })
 				})]
 			})]
 		})]
@@ -7021,7 +7032,7 @@ const addToCartRoot = (0, _vanilla_extract_recipes.recipe)({
 		":focus-visible": {
 			outline: "none",
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		}
 	},
 	variants: {
@@ -7120,7 +7131,7 @@ const AddToCartButton = react.default.forwardRef(({ onAddToCart, quantity = 0, v
 		children: [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 				className: addToCartIcon,
-				children: isAdded ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 14 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Plus, { size: 14 })
+				children: isAdded ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 14 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconPlus, { size: 14 })
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: children ?? (isAdded ? "Added" : "Add to Cart") }),
 			isAdded && quantity > 0 && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
@@ -7997,7 +8008,7 @@ const SidebarTrigger = react.default.forwardRef(({ className, onClick, ...props 
 			toggleSidebar();
 		},
 		...props,
-		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.PanelLeft, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+		children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconLayoutSidebar, {}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
 			style: {
 				position: "absolute",
 				width: 1,
@@ -8277,7 +8288,7 @@ const dropzone = (0, _vanilla_extract_css.style)({
 		"&:focus-visible": {
 			outline: "none",
 			borderColor: _hydrotik_tokens.vars.color.focusRing,
-			boxShadow: `0 0 0 3px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 50%, transparent)`
+			boxShadow: `0 0 0 1px color-mix(in srgb, ${_hydrotik_tokens.vars.color.focusRing} 25%, transparent)`
 		}
 	}
 });
@@ -8447,7 +8458,7 @@ const FileUploader = react.default.forwardRef(({ value: valueProp, onValueChange
 				className: dropzoneContent,
 				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 					className: dropzoneIcon,
-					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Upload, {
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconUpload, {
 						size: 28,
 						"aria-hidden": true
 					})
@@ -8490,7 +8501,7 @@ const FileUploader = react.default.forwardRef(({ value: valueProp, onValueChange
 							size: "icon-sm",
 							onClick: () => onRemove(index),
 							"aria-label": `Remove ${file.name}`,
-							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.X, { size: 14 })
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconX, { size: 14 })
 						})
 					]
 				}, index))
@@ -8599,7 +8610,7 @@ const CodeBlock = react.default.forwardRef(({ children, language, showCopy = tru
 				className: copyButton,
 				onClick: handleCopy,
 				"aria-label": copied ? "Copied" : "Copy code",
-				children: [copied ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Check, { size: 12 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Copy, { size: 12 }), copied ? "Copied" : "Copy"]
+				children: [copied ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCheck, { size: 12 }) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCopy, { size: 12 }), copied ? "Copied" : "Copy"]
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("pre", {
 				className: codeBlockPre,
@@ -8698,11 +8709,12 @@ const inputContainer = (0, _vanilla_extract_css.style)({
 });
 const inputForm = (0, _vanilla_extract_css.style)({
 	display: "flex",
-	gap: _hydrotik_tokens.vars.space["4"],
+	alignItems: "center",
+	gap: _hydrotik_tokens.vars.space["2"],
 	borderRadius: _hydrotik_tokens.vars.radii.lg,
 	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
 	backgroundColor: _hydrotik_tokens.vars.color.surface,
-	padding: _hydrotik_tokens.vars.space["4"]
+	padding: _hydrotik_tokens.vars.space["2"]
 });
 const emptyState = (0, _vanilla_extract_css.style)({
 	display: "flex",
@@ -8815,7 +8827,10 @@ const typingContainer = (0, _vanilla_extract_css.style)({
 	fontFamily: _hydrotik_tokens.vars.font.family.sans,
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
 	color: _hydrotik_tokens.vars.color.text,
-	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed
+	lineHeight: _hydrotik_tokens.vars.font.lineHeight.relaxed,
+	overflowWrap: "break-word",
+	wordBreak: "break-word",
+	minWidth: 0
 });
 const cursorStyle = (0, _vanilla_extract_css.style)({
 	animation: `${blink} 1s step-end infinite`,
@@ -8836,11 +8851,14 @@ const TypingAnimation = react.default.forwardRef(({ text, onComplete, speed = 10
 		setDisplayedText("");
 		setIsTyping(true);
 		let currentIndex = 0;
+		let cancelled = false;
 		const words = text.split(" ");
 		const typeWord = () => {
+			if (cancelled) return;
 			if (currentIndex < words.length) {
-				setDisplayedText((prev) => prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]);
+				const word = words[currentIndex];
 				currentIndex++;
+				setDisplayedText((prev) => prev ? `${prev} ${word}` : word);
 				const delay = Math.random() < .8 ? speed : speed * 3;
 				setTimeout(typeWord, delay);
 			} else {
@@ -8849,7 +8867,10 @@ const TypingAnimation = react.default.forwardRef(({ text, onComplete, speed = 10
 			}
 		};
 		const timer = setTimeout(typeWord, speed);
-		return () => clearTimeout(timer);
+		return () => {
+			cancelled = true;
+			clearTimeout(timer);
+		};
 	}, [
 		text,
 		speed,
@@ -8883,9 +8904,18 @@ const indicatorContainer = (0, _vanilla_extract_css.style)({
 	padding: _hydrotik_tokens.vars.space["2"]
 });
 const indicatorSpinner = (0, _vanilla_extract_css.style)({
-	animation: `${spin} 1s linear infinite`,
 	color: _hydrotik_tokens.vars.color.primary,
-	flexShrink: 0
+	flexShrink: 0,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	width: 16,
+	height: 16,
+	overflow: "hidden"
+});
+const indicatorSpinnerIcon = (0, _vanilla_extract_css.style)({
+	animation: `${spin} 1s linear infinite`,
+	transformOrigin: "center"
 });
 const indicatorLabel = (0, _vanilla_extract_css.style)({
 	fontSize: _hydrotik_tokens.vars.font.size.sm,
@@ -8936,7 +8966,10 @@ const ToolCallIndicator = react.default.forwardRef(({ toolName, label, icon, sho
 		children: [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 				className: indicatorSpinner,
-				children: icon || /* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Loader2, { size: 16 })
+				children: icon || /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconLoader2, {
+					size: 16,
+					className: indicatorSpinnerIcon
+				})
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 				className: indicatorLabel,
@@ -8947,12 +8980,1329 @@ const ToolCallIndicator = react.default.forwardRef(({ toolName, label, icon, sho
 			}),
 			showBadge && toolName && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
 				className: toolBadge,
-				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(lucide_react.Wrench, { size: 10 }), toolName]
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconTool, { size: 10 }), toolName]
 			})
 		]
 	});
 });
 ToolCallIndicator.displayName = "ToolCallIndicator";
+
+//#endregion
+//#region src/ShowcaseGrid.css.ts
+const page = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["6"],
+	padding: `${_hydrotik_tokens.vars.space["6"]} ${_hydrotik_tokens.vars.space["6"]} 80px`,
+	maxWidth: "1400px",
+	width: "100%",
+	margin: "0 auto"
+});
+const hero = (0, _vanilla_extract_css.style)({
+	position: "relative",
+	display: "flex",
+	flexDirection: "column",
+	gap: _hydrotik_tokens.vars.space["4"],
+	padding: `${_hydrotik_tokens.vars.space["10"]} ${_hydrotik_tokens.vars.space["6"]}`,
+	borderRadius: _hydrotik_tokens.vars.radii.lg,
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	background: `linear-gradient(135deg, color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 8%, transparent), color-mix(in srgb, ${_hydrotik_tokens.vars.color.background} 100%, transparent))`,
+	overflow: "hidden"
+});
+const heroTitle = (0, _vanilla_extract_css.style)({
+	fontSize: "clamp(28px, 4vw, 44px)",
+	fontWeight: 700,
+	letterSpacing: "-0.03em",
+	lineHeight: 1.05,
+	margin: 0,
+	color: _hydrotik_tokens.vars.color.text,
+	fontFamily: _hydrotik_tokens.vars.font.family.sans
+});
+const heroAccent = (0, _vanilla_extract_css.style)({ color: _hydrotik_tokens.vars.color.primary });
+const heroSub = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.sm,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	margin: 0,
+	lineHeight: 1.6,
+	maxWidth: "520px"
+});
+const statsRow = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	gap: _hydrotik_tokens.vars.space["6"],
+	flexWrap: "wrap",
+	marginTop: _hydrotik_tokens.vars.space["1"]
+});
+const stat = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "baseline",
+	gap: _hydrotik_tokens.vars.space["1"]
+});
+const statNumber = (0, _vanilla_extract_css.style)({
+	fontSize: _hydrotik_tokens.vars.font.size.xl,
+	fontWeight: 700,
+	color: _hydrotik_tokens.vars.color.text,
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	letterSpacing: "-0.02em"
+});
+const statLabel = (0, _vanilla_extract_css.style)({
+	fontSize: "10px",
+	color: _hydrotik_tokens.vars.color.textMuted,
+	textTransform: "uppercase",
+	letterSpacing: "0.5px",
+	fontFamily: _hydrotik_tokens.vars.font.family.mono
+});
+const masonry = (0, _vanilla_extract_css.style)({
+	columnCount: 3,
+	columnGap: "12px",
+	"@media": {
+		"(max-width: 1024px)": { columnCount: 2 },
+		"(max-width: 640px)": { columnCount: 1 }
+	}
+});
+const masonryItem = (0, _vanilla_extract_css.style)({
+	breakInside: "avoid",
+	marginBottom: "12px",
+	display: "inline-block",
+	width: "100%"
+});
+const sectionCard = (0, _vanilla_extract_css.style)({
+	border: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	borderRadius: _hydrotik_tokens.vars.radii.md,
+	backgroundColor: _hydrotik_tokens.vars.color.surface,
+	overflow: "hidden"
+});
+const sectionHeader = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "space-between",
+	padding: "6px 10px",
+	borderBottom: `1px solid ${_hydrotik_tokens.vars.color.border}`,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.background} 50%, transparent)`
+});
+const sectionLabel = (0, _vanilla_extract_css.style)({
+	fontSize: "10px",
+	fontWeight: 600,
+	color: _hydrotik_tokens.vars.color.textMuted,
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	textTransform: "uppercase",
+	letterSpacing: "1px",
+	display: "flex",
+	alignItems: "center",
+	gap: "4px"
+});
+const sectionTag = (0, _vanilla_extract_css.style)({
+	fontSize: "9px",
+	fontFamily: _hydrotik_tokens.vars.font.family.mono,
+	color: _hydrotik_tokens.vars.color.primary,
+	backgroundColor: `color-mix(in srgb, ${_hydrotik_tokens.vars.color.primary} 12%, transparent)`,
+	padding: "1px 5px",
+	borderRadius: _hydrotik_tokens.vars.radii.sm
+});
+const sectionBody = (0, _vanilla_extract_css.style)({
+	padding: "10px",
+	display: "flex",
+	flexDirection: "column",
+	gap: "8px"
+});
+const demoRow = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexWrap: "wrap",
+	alignItems: "center",
+	gap: "6px"
+});
+const demoCol = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexDirection: "column",
+	gap: "6px",
+	width: "100%"
+});
+const filterRow = (0, _vanilla_extract_css.style)({
+	display: "flex",
+	flexWrap: "wrap",
+	gap: "4px"
+});
+
+//#endregion
+//#region src/ShowcaseGrid.tsx
+const CATEGORIES = [
+	{
+		id: "all",
+		label: "All",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconGrid3x3, { size: 11 })
+	},
+	{
+		id: "primitives",
+		label: "Primitives",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconStack2, { size: 11 })
+	},
+	{
+		id: "forms",
+		label: "Forms",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconForms, { size: 11 })
+	},
+	{
+		id: "data",
+		label: "Data",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconChartBar, { size: 11 })
+	},
+	{
+		id: "navigation",
+		label: "Nav",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconPointer, { size: 11 })
+	},
+	{
+		id: "overlay",
+		label: "Overlays",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconStack2, { size: 11 })
+	},
+	{
+		id: "feedback",
+		label: "Feedback",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconSparkles, { size: 11 })
+	},
+	{
+		id: "ecommerce",
+		label: "Commerce",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconShoppingCart, { size: 11 })
+	},
+	{
+		id: "ai",
+		label: "AI",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconRobot, { size: 11 })
+	},
+	{
+		id: "editorial",
+		label: "Editorial",
+		icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconTypography, { size: 11 })
+	}
+];
+function Section({ label, tag, category, activeCategory, children }) {
+	if (activeCategory !== "all" && activeCategory !== category) return null;
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+		className: masonryItem,
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: sectionCard,
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: sectionHeader,
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+					className: sectionLabel,
+					children: label
+				}), tag && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+					className: sectionTag,
+					children: tag
+				})]
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: sectionBody,
+				children
+			})]
+		})
+	});
+}
+/**
+* Standalone showcase grid of all design system components.
+* Used in both the Component Preview app and Storybook Introduction page.
+*/
+function ShowcaseGrid() {
+	const [category, setCategory] = (0, react.useState)("all");
+	const [progress] = (0, react.useState)(42);
+	const [sliderVal, setSliderVal] = (0, react.useState)([33]);
+	const [switchOn, setSwitchOn] = (0, react.useState)(true);
+	const [quantity, setQuantity] = (0, react.useState)(2);
+	const [typingKey, setTypingKey] = (0, react.useState)(0);
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_hydrotik_theme_provider.ThemeProvider, {
+		defaultTheme: "dark",
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipProvider, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: page,
+			children: [
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: hero,
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("h1", {
+							className: heroTitle,
+							children: ["Hydrotik ", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								className: heroAccent,
+								children: "Design System"
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							className: heroSub,
+							children: "63 components built with vanilla-extract tokens and Radix primitives. Dark-first. Type-safe. High-density."
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+							className: statsRow,
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									className: stat,
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statNumber,
+										children: "63"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statLabel,
+										children: "Components"
+									})]
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									className: stat,
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statNumber,
+										children: "56"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statLabel,
+										children: "Stories"
+									})]
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									className: stat,
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statNumber,
+										children: "245"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										className: statLabel,
+										children: "Tests"
+									})]
+								})
+							]
+						})
+					]
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+					className: filterRow,
+					children: CATEGORIES.map((c) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Button, {
+						size: "sm",
+						variant: category === c.id ? "default" : "ghost",
+						onClick: () => setCategory(c.id),
+						style: {
+							fontSize: 12,
+							padding: "4px 10px",
+							height: 28,
+							gap: 4
+						},
+						children: [
+							c.icon,
+							" ",
+							c.label
+						]
+					}, c.id))
+				}),
+				/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: masonry,
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Button",
+							category: "primitives",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										children: "Default"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "secondary",
+										children: "Secondary"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "destructive",
+										children: "Destructive"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "outline",
+										children: "Outline"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "ghost",
+										children: "Ghost"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+										size: "sm",
+										variant: "link",
+										children: "Link"
+									})
+								]
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									disabled: true,
+									children: "Disabled"
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "lg",
+									children: "Large"
+								})]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Badge",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, { children: "Default" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, {
+										variant: "secondary",
+										children: "Secondary"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, {
+										variant: "outline",
+										children: "Outline"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, {
+										variant: "destructive",
+										children: "Destructive"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, {
+										variant: "success",
+										children: "Success"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Badge, {
+										variant: "warning",
+										children: "Warning"
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Avatar",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Avatar, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AvatarFallback, { children: "CN" }) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Avatar, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AvatarFallback, { children: "AB" }) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Avatar, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AvatarFallback, { children: "JD" }) })
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Card",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Card, { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(CardHeader, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CardTitle, {
+									style: { fontSize: 14 },
+									children: "Card Title"
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CardDescription, { children: "Description text." })] }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CardContent, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+									style: {
+										fontSize: 13,
+										margin: 0
+									},
+									children: "Content area."
+								}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(CardFooter, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									children: "Save"
+								}) })
+							] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Separator",
+							category: "primitives",
+							activeCategory: category,
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: { fontSize: 13 },
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+										style: { fontWeight: 600 },
+										children: "Radix Primitives"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+										style: {
+											color: _hydrotik_tokens.vars.color.textMuted,
+											fontSize: 12
+										},
+										children: "Open-source UI library."
+									})]
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Separator, {}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: {
+										display: "flex",
+										gap: 12,
+										alignItems: "center",
+										height: 16,
+										fontSize: 13
+									},
+									children: [
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Docs" }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Separator, { orientation: "vertical" }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "API" }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Separator, { orientation: "vertical" }),
+										/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", { children: "Source" })
+									]
+								})
+							]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Kbd",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Kbd, { children: "⌘" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Kbd, { children: "K" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+										style: {
+											fontSize: 12,
+											color: _hydrotik_tokens.vars.color.textMuted
+										},
+										children: "Command palette"
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Skeleton",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								style: {
+									display: "flex",
+									alignItems: "center",
+									gap: 10
+								},
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
+									width: 32,
+									height: 32,
+									borderRadius: "50%"
+								} }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: {
+										display: "flex",
+										flexDirection: "column",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
+										width: 140,
+										height: 10
+									} }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Skeleton, { style: {
+										width: 100,
+										height: 10
+									} })]
+								})]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Typography",
+							category: "primitives",
+							activeCategory: category,
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TypographyH3, { children: "Heading" }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TypographyLead, { children: "Lead paragraph text." }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TypographyMuted, { children: "Muted helper text." })
+							]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Heading",
+							category: "primitives",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Heading, {
+								title: "Page Title",
+								description: "Section description.",
+								size: "md",
+								as: "h3"
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Input",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+										placeholder: "Email address",
+										type: "email",
+										size: "sm"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+										placeholder: "Disabled",
+										disabled: true,
+										size: "sm"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+										style: {
+											display: "flex",
+											flexDirection: "column",
+											gap: 3
+										},
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+											htmlFor: "sc-n",
+											style: { fontSize: 12 },
+											children: "Name"
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+											id: "sc-n",
+											placeholder: "Enter name...",
+											size: "sm"
+										})]
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Textarea",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Textarea, {
+								placeholder: "Type your message...",
+								rows: 2,
+								style: { fontSize: 13 }
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Checkbox",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								style: { gap: 6 },
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Checkbox, {
+										id: "sc-t",
+										defaultChecked: true
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+										htmlFor: "sc-t",
+										style: { fontSize: 12 },
+										children: "Accept terms"
+									})]
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Checkbox, { id: "sc-n2" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+										htmlFor: "sc-n2",
+										style: { fontSize: 12 },
+										children: "Newsletter"
+									})]
+								})]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Radio Group",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadioGroup, {
+								defaultValue: "comfortable",
+								children: [
+									"Default",
+									"Comfortable",
+									"Compact"
+								].map((v) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+									style: {
+										display: "flex",
+										alignItems: "center",
+										gap: 6
+									},
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(RadioGroupItem, {
+										value: v.toLowerCase(),
+										id: `sc-r-${v}`
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+										htmlFor: `sc-r-${v}`,
+										style: { fontSize: 12 },
+										children: v
+									})]
+								}, v))
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Switch",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								style: {
+									display: "flex",
+									alignItems: "center",
+									gap: 6
+								},
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Switch, {
+									id: "sc-sw",
+									checked: switchOn,
+									onCheckedChange: setSwitchOn
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+									htmlFor: "sc-sw",
+									style: { fontSize: 12 },
+									children: "Airplane Mode"
+								})]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Select",
+							category: "forms",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Select, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectTrigger, {
+								style: {
+									height: 28,
+									fontSize: 12
+								},
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectValue, { placeholder: "Select a fruit" })
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(SelectContent, { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectItem, {
+									value: "apple",
+									children: "Apple"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectItem, {
+									value: "banana",
+									children: "Banana"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SelectItem, {
+									value: "blueberry",
+									children: "Blueberry"
+								})
+							] })] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Slider",
+							category: "forms",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Slider, {
+								value: sliderVal,
+								onValueChange: setSliderVal,
+								max: 100,
+								step: 1
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+								style: {
+									fontSize: 11,
+									color: _hydrotik_tokens.vars.color.textMuted,
+									fontFamily: _hydrotik_tokens.vars.font.family.mono
+								},
+								children: sliderVal[0]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Toggle",
+							category: "forms",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
+										"aria-label": "Bold",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconBold, { size: 13 })
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
+										"aria-label": "Italic",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconItalic, { size: 13 })
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Toggle, {
+										"aria-label": "Underline",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconUnderline, { size: 13 })
+									})
+								]
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(ToggleGroup, {
+								type: "single",
+								defaultValue: "center",
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToggleGroupItem, {
+										value: "left",
+										"aria-label": "Left",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlignLeft, { size: 13 })
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToggleGroupItem, {
+										value: "center",
+										"aria-label": "Center",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlignCenter, { size: 13 })
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToggleGroupItem, {
+										value: "right",
+										"aria-label": "Right",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlignRight, { size: 13 })
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "DataGrid",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DataGrid, {
+								data: [
+									{
+										invoice: "INV001",
+										status: "Paid",
+										method: "Credit Card",
+										amount: 250
+									},
+									{
+										invoice: "INV002",
+										status: "Pending",
+										method: "PayPal",
+										amount: 150
+									},
+									{
+										invoice: "INV003",
+										status: "Unpaid",
+										method: "Bank Transfer",
+										amount: 350
+									}
+								],
+								columns: [
+									{
+										id: "invoice",
+										header: "Invoice",
+										accessorKey: "invoice"
+									},
+									{
+										id: "status",
+										header: "Status",
+										accessorKey: "status"
+									},
+									{
+										id: "amount",
+										header: "Amount",
+										accessorKey: "amount",
+										align: "right",
+										cell: ({ value }) => `$${Number(value).toFixed(2)}`
+									}
+								],
+								enableSorting: true,
+								enablePagination: false,
+								showToolbar: false,
+								density: "editorial",
+								borderless: true
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Tabs",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Tabs, {
+								defaultValue: "account",
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(TabsList, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabsTrigger, {
+										value: "account",
+										children: "Account"
+									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabsTrigger, {
+										value: "password",
+										children: "Password"
+									})] }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabsContent, {
+										value: "account",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+											className: demoCol,
+											style: { paddingTop: 6 },
+											children: [
+												/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+													style: { fontSize: 12 },
+													children: "Name"
+												}),
+												/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+													defaultValue: "Pedro Duarte",
+													size: "sm"
+												}),
+												/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+													size: "sm",
+													children: "Save"
+												})
+											]
+										})
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TabsContent, {
+										value: "password",
+										children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+											className: demoCol,
+											style: { paddingTop: 6 },
+											children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+												style: { fontSize: 12 },
+												children: "Current"
+											}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+												type: "password",
+												size: "sm"
+											})]
+										})
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Accordion",
+							category: "data",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Accordion, {
+								type: "single",
+								collapsible: true,
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(AccordionItem, {
+									value: "1",
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccordionTrigger, { children: "Is it accessible?" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccordionContent, { children: "Yes — WAI-ARIA compliant." })]
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(AccordionItem, {
+									value: "2",
+									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccordionTrigger, { children: "Is it styled?" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AccordionContent, { children: "Vanilla-extract tokens." })]
+								})]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Breadcrumb",
+							category: "navigation",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Breadcrumb, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(BreadcrumbList, { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbLink, {
+									href: "#",
+									children: "Home"
+								}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbSeparator, {}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbLink, {
+									href: "#",
+									children: "Components"
+								}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbSeparator, {}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(BreadcrumbPage, { children: "Breadcrumb" }) })
+							] }) })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Pagination",
+							category: "navigation",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Pagination, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(PaginationContent, { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationPrevious, { href: "#" }) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationLink, {
+									href: "#",
+									isActive: true,
+									children: "1"
+								}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationLink, {
+									href: "#",
+									children: "2"
+								}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationEllipsis, {}) }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationItem, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PaginationNext, { href: "#" }) })
+							] }) })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Dialog",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Dialog, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Edit Profile"
+								})
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogContent, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DialogHeader, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogTitle, { children: "Edit profile" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(DialogDescription, { children: "Make changes here." })] }) })] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Dropdown Menu",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenu, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DropdownMenuTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Open Menu"
+								})
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenuContent, { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenuItem, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconUser, { size: 13 }), " Profile"] }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenuItem, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCreditCard, { size: 13 }), " Billing"] }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenuItem, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconSettings, { size: 13 }), " Settings"] }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)(DropdownMenuSeparator, {}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(DropdownMenuItem, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconLogout, { size: 13 }), " Log out"] })
+							] })] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Popover",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Popover, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(PopoverTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Open"
+								})
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PopoverContent, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								style: {
+									display: "flex",
+									flexDirection: "column",
+									gap: 6,
+									fontSize: 13
+								},
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+										style: { fontWeight: 600 },
+										children: "Dimensions"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Label, {
+										style: { fontSize: 12 },
+										children: "Width"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Input, {
+										defaultValue: "100%",
+										size: "sm"
+									})
+								]
+							}) })] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Tooltip",
+							category: "overlay",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Tooltip, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipTrigger, {
+								asChild: true,
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									size: "sm",
+									variant: "outline",
+									children: "Hover me"
+								})
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TooltipContent, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "Add to library" }) })] })
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Alert",
+							category: "feedback",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Alert, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AlertTitle, { children: "Heads up!" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AlertDescription, { children: "Components via CLI." })] }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Alert, {
+								variant: "destructive",
+								icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlertCircle, { size: 14 }),
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AlertTitle, { children: "Error" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(AlertDescription, { children: "Session expired." })]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "Progress",
+							category: "feedback",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Progress, { value: progress }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("span", {
+								style: {
+									fontSize: 11,
+									color: _hydrotik_tokens.vars.color.textMuted,
+									fontFamily: _hydrotik_tokens.vars.font.family.mono
+								},
+								children: [progress, "%"]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Spinner",
+							category: "feedback",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Spinner, { size: "sm" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Spinner, { size: "md" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Spinner, { size: "lg" })
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "Price",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Price, {
+									amount: 129.99,
+									size: "sm"
+								}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Price, {
+									amount: 99.99,
+									originalAmount: 149.99,
+									size: "sm"
+								})]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "ColorSwatch",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoRow,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColorSwatch, {
+										hex: "#1a2744",
+										name: "Navy",
+										size: "sm",
+										isSelected: true,
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColorSwatch, {
+										hex: "#d4c5a9",
+										name: "Cream",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColorSwatch, {
+										hex: "#000000",
+										name: "Black",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColorSwatch, {
+										hex: "#8b2252",
+										name: "Berry",
+										size: "sm",
+										onClick: () => {}
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ColorSwatch, {
+										hex: "#4a6741",
+										name: "Forest",
+										size: "sm",
+										disabled: true
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "QuantityPicker",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(QuantityPicker, {
+								quantity,
+								onIncrease: () => setQuantity((q) => Math.min(10, q + 1)),
+								onDecrease: () => setQuantity((q) => Math.max(1, q - 1)),
+								min: 1,
+								max: 10,
+								size: "sm"
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "AddToCartButton",
+							tag: "commerce",
+							category: "ecommerce",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AddToCartButton, { onAddToCart: () => {} }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AddToCartButton, {
+										onAddToCart: () => {},
+										variant: "primary"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(AddToCartButton, {
+										onAddToCart: () => {},
+										quantity: 2
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "SegmentedRatingBar",
+							tag: "editorial",
+							category: "editorial",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								style: { gap: 4 },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SegmentedRatingBar, {
+											value: 7,
+											total: 10,
+											color: "primary",
+											size: "sm"
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+											style: {
+												fontSize: 11,
+												color: _hydrotik_tokens.vars.color.textMuted
+											},
+											children: "7/10"
+										})]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SegmentedRatingBar, {
+											value: 4,
+											total: 10,
+											color: "chart1",
+											size: "sm"
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+											style: {
+												fontSize: 11,
+												color: _hydrotik_tokens.vars.color.textMuted
+											},
+											children: "4/10"
+										})]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SegmentedRatingBar, {
+											value: 9,
+											total: 10,
+											color: "success",
+											size: "sm"
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+											style: {
+												fontSize: 11,
+												color: _hydrotik_tokens.vars.color.textMuted
+											},
+											children: "9/10"
+										})]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+										className: demoRow,
+										children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(SegmentedRatingBar, {
+											value: 2,
+											total: 10,
+											color: "destructive",
+											size: "sm"
+										}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+											style: {
+												fontSize: 11,
+												color: _hydrotik_tokens.vars.color.textMuted
+											},
+											children: "2/10"
+										})]
+									})
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "FlagTag",
+							tag: "editorial",
+							category: "editorial",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								style: {
+									display: "flex",
+									flexDirection: "column",
+									gap: 12
+								},
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FlagTag, {
+										icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlertTriangle, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FlagTag, {
+										label: "FLAGGED",
+										variant: "destructive",
+										icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconAlertTriangle, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FlagTag, {
+										label: "REVIEW",
+										variant: "warning",
+										icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconSearch, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(FlagTag, {
+										label: "VERIFIED",
+										variant: "success",
+										icon: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(_tabler_icons_react.IconCircleCheck, { size: 14 }),
+										marginLeft: "0",
+										size: "sm"
+									}) })
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "CodeBlock",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(CodeBlock, {
+								language: "typescript",
+								children: `import { useChat } from 'ai/react';
+import { ChatContainer } from '@hydrotik/design-system';
+
+const { messages } = useChat({ maxSteps: 4 });`
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "InlineCode",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+								style: {
+									fontSize: 12,
+									lineHeight: 1.7,
+									margin: 0,
+									color: _hydrotik_tokens.vars.color.textMuted
+								},
+								children: [
+									"Use ",
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(InlineCode, { children: "useChat" }),
+									" with ",
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(InlineCode, { children: "maxSteps: 4" }),
+									" for multi-step tool calling."
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "ChatMessage",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ChatMessage, {
+								role: "user",
+								avatar: "DA",
+								label: "User",
+								children: "How do I add a component?"
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(ChatMessage, {
+								role: "assistant",
+								avatar: "AI",
+								label: "Assistant",
+								children: [
+									"Create a folder under ",
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(InlineCode, { children: "src/components/" }),
+									"."
+								]
+							})]
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Section, {
+							label: "ToolCallIndicator",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: demoCol,
+								style: { gap: 2 },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCallIndicator, {}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCallIndicator, { toolName: "getInformation" }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(ToolCallIndicator, { toolName: "rag_search" })
+								]
+							})
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(Section, {
+							label: "TypingAnimation",
+							tag: "ai",
+							category: "ai",
+							activeCategory: category,
+							children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+								style: {
+									display: "flex",
+									justifyContent: "flex-end",
+									marginBottom: -4
+								},
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(Button, {
+									variant: "ghost",
+									size: "sm",
+									onClick: () => setTypingKey((k) => k + 1),
+									style: {
+										fontSize: 11,
+										height: 22,
+										padding: "0 6px"
+									},
+									children: "Replay"
+								})
+							}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(TypingAnimation, {
+								text: "Components for AI interfaces with streaming, tool calling, and real-time updates.",
+								speed: 50
+							}, typingKey)]
+						})
+					]
+				})
+			]
+		}) })
+	});
+}
 
 //#endregion
 exports.Accordion = Accordion;
@@ -9078,7 +10428,7 @@ exports.HoverCardTrigger = HoverCardTrigger;
 Object.defineProperty(exports, 'Icons', {
   enumerable: true,
   get: function () {
-    return lucide_react;
+    return _tabler_icons_react;
   }
 });
 exports.InlineCode = InlineCode;
@@ -9157,6 +10507,7 @@ exports.SheetOverlay = SheetOverlay;
 exports.SheetPortal = SheetPortal;
 exports.SheetTitle = SheetTitle;
 exports.SheetTrigger = SheetTrigger;
+exports.ShowcaseGrid = ShowcaseGrid;
 exports.Sidebar = Sidebar;
 exports.SidebarContent = SidebarContent;
 exports.SidebarFooter = SidebarFooter;

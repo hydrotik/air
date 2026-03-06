@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Upload, X } from 'lucide-react';
+import { IconUpload, IconX } from '@tabler/icons-react';
 import { Button } from '../Button';
 import { Progress } from '../Progress';
 import {
@@ -172,7 +172,7 @@ export const FileUploader = React.forwardRef<HTMLDivElement, FileUploaderProps>(
           />
           <div className={dropzoneContent}>
             <div className={dropzoneIcon}>
-              <Upload size={28} aria-hidden />
+              <IconUpload size={28} aria-hidden />
             </div>
             <div>
               <p className={dropzoneText}>
@@ -213,7 +213,7 @@ export const FileUploader = React.forwardRef<HTMLDivElement, FileUploaderProps>(
                     onClick={() => onRemove(index)}
                     aria-label={`Remove ${file.name}`}
                   >
-                    <X size={14} />
+                    <IconX size={14} />
                   </Button>
                 </div>
               ))}

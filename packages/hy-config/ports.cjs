@@ -5,6 +5,9 @@ const ports = {
   componentPreview: 3100,
   bffFastify: 4000,
   designMcp: 5100,
+  air: 5200,
+  airDashboard: 5201,
+  taxes: 3200,
   storybook: 6006,
 };
 

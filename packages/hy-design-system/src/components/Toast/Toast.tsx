@@ -1,6 +1,6 @@
 import React from 'react';
 import * as ToastPrimitive from '@radix-ui/react-toast';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 import {
   toastViewport,
   toast as toastRecipe,
@@ -61,7 +61,7 @@ export const ToastClose = React.forwardRef<
     aria-label="Dismiss notification"
     {...props}
   >
-    <X size={14} />
+    <IconX size={14} />
   </ToastPrimitive.Close>
 ));
 ToastClose.displayName = 'ToastClose';

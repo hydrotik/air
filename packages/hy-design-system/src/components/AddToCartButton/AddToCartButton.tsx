@@ -1,6 +1,6 @@
 import React from 'react';
 import { addToCartRoot, addToCartIcon, addToCartBadge } from './AddToCartButton.css';
-import { Check, Plus } from 'lucide-react';
+import { IconCheck, IconPlus } from '@tabler/icons-react';
 
 export interface AddToCartButtonProps {
   /** Click handler to add item to cart */
@@ -47,9 +47,9 @@ const AddToCartButton = React.forwardRef<HTMLButtonElement, AddToCartButtonProps
       >
         <span className={addToCartIcon}>
           {isAdded ? (
-            <Check size={14} />
+            <IconCheck size={14} />
           ) : (
-            <Plus size={14} />
+            <IconPlus size={14} />
           )}
         </span>
         <span>{children ?? (isAdded ? 'Added' : 'Add to Cart')}</span>

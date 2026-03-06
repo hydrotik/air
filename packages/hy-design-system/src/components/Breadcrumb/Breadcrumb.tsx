@@ -1,6 +1,6 @@
 import React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { ChevronRight, MoreHorizontal } from 'lucide-react';
+import { IconChevronRight, IconDots } from '@tabler/icons-react';
 import {
   breadcrumbNav,
   breadcrumbList,
@@ -72,14 +72,14 @@ BreadcrumbPage.displayName = 'BreadcrumbPage';
 
 export const BreadcrumbSeparator = ({ className, children, ...props }: React.LiHTMLAttributes<HTMLLIElement>) => (
   <li role="presentation" aria-hidden="true" className={[breadcrumbSeparator, className].filter(Boolean).join(' ')} {...props}>
-    {children ?? <ChevronRight size={16} />}
+    {children ?? <IconChevronRight size={16} />}
   </li>
 );
 BreadcrumbSeparator.displayName = 'BreadcrumbSeparator';
 
 export const BreadcrumbEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span role="presentation" aria-hidden="true" className={[breadcrumbEllipsis, className].filter(Boolean).join(' ')} {...props}>
-    <MoreHorizontal size={16} />
+    <IconDots size={16} />
     <span className="sr-only">More</span>
   </span>
 );

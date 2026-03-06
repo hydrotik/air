@@ -1,6 +1,6 @@
 import React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
+import { IconX } from '@tabler/icons-react';
 import {
   dialogOverlay,
   dialogContent,
@@ -47,7 +47,7 @@ export const DialogContent = React.forwardRef<
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close className={dialogClose} aria-label="Close dialog">
-          <X size={16} />
+          <IconX size={16} />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       )}

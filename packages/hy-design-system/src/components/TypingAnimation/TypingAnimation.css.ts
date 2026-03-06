@@ -11,6 +11,9 @@ export const typingContainer = style({
   fontSize: vars.font.size.sm,
   color: vars.color.text,
   lineHeight: vars.font.lineHeight.relaxed,
+  overflowWrap: 'break-word',
+  wordBreak: 'break-word',
+  minWidth: 0,
 });
 
 export const cursorStyle = style({

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Label, RadioGroup, RadioGroupItem, Input, Switch, Button, Separator,
 } from '@hydrotik/design-system';
-import { Minus, Plus } from 'lucide-react';
+import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { vars } from '@hydrotik/tokens';
 
 /** Appearance settings card — matches shadcn appearance-settings.tsx */
@@ -65,7 +65,7 @@ export function AppearanceSettings() {
           style={{ borderRadius: '6px 0 0 6px', borderRight: 'none' }}
           aria-label="Decrease"
         >
-          <Minus size={14} />
+          <IconMinus size={14} />
         </Button>
         <Input
           type="number"
@@ -84,7 +84,7 @@ export function AppearanceSettings() {
           style={{ borderRadius: '0 6px 6px 0', borderLeft: 'none' }}
           aria-label="Increase"
         >
-          <Plus size={14} />
+          <IconPlus size={14} />
         </Button>
       </div>
 

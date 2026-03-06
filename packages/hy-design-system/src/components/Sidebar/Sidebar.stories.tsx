@@ -17,7 +17,7 @@ import {
   SidebarInset,
   SidebarSeparator,
 } from './Sidebar';
-import { Home, Settings, Users, FileText, Bell, LogOut } from 'lucide-react';
+import { IconHome, IconSettings, IconUsers, IconFileText, IconBell, IconLogout } from '@tabler/icons-react';
 
 const meta = {
   title: 'Components/Sidebar',
@@ -69,7 +69,7 @@ export const Default: Story = {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton>
-                <LogOut size={16} />
+                <IconLogout size={16} />
                 <span>Log out</span>
               </SidebarMenuButton>
             </SidebarMenuItem>

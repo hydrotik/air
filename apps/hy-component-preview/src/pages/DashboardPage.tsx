@@ -17,8 +17,8 @@ import {
   TooltipProvider,
 } from '@hydrotik/design-system';
 import {
-  TrendingUp, TrendingDown, Download, Filter, Plus, MoreVertical,
-} from 'lucide-react';
+  IconTrendingUp, IconTrendingDown, IconDownload, IconFilter, IconPlus, IconDotsVertical,
+} from '@tabler/icons-react';
 import { vars } from '@hydrotik/tokens';
 import * as s from './DashboardPage.css';
 
@@ -142,7 +142,7 @@ function ChartRevenue() {
       </CardContent>
       <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
         <span className={`${s.kpiTrend} ${s.trendUp}`}>
-          Trending up by 5.2% this month <TrendingUp size={14} />
+          Trending up by 5.2% this month <IconTrendingUp size={14} />
         </span>
         <span className={s.kpiDesc}>Showing total visitors for the last 12 months</span>
       </CardFooter>
@@ -255,10 +255,10 @@ export function DashboardPage() {
             </TabsList>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Button variant="outline" size="sm">
-                <Download size={14} /> Export
+                <IconDownload size={14} /> Export
               </Button>
               <Button variant="outline" size="sm">
-                <Filter size={14} /> Filter
+                <IconFilter size={14} /> Filter
               </Button>
             </div>
           </div>
@@ -275,7 +275,7 @@ export function DashboardPage() {
                   <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
                     <span className={`${s.kpiTrend} ${kpi.up ? s.trendUp : s.trendDown}`}>
                       {kpi.trend}
-                      {kpi.up ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                      {kpi.up ? <IconTrendingUp size={14} /> : <IconTrendingDown size={14} />}
                     </span>
                     <span className={s.kpiDesc}>{kpi.desc}</span>
                   </CardFooter>
@@ -323,7 +323,7 @@ export function DashboardPage() {
                       </SelectContent>
                     </Select>
                     <Button variant="outline" size="sm">
-                      <Plus size={14} /> Add Product
+                      <IconPlus size={14} /> Add Product
                     </Button>
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export function DashboardPage() {
                     { id: 'actions', header: '', size: 48, enableSorting: false, enableFiltering: false, cell: ({ row }) => (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm"><MoreVertical size={14} /></Button>
+                          <Button variant="ghost" size="icon-sm"><IconDotsVertical size={14} /></Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem>Edit</DropdownMenuItem>

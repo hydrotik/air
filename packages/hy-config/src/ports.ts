@@ -24,6 +24,9 @@ export const ports = {
   /** AIr dashboard dev server (Vite, proxies to air) */
   airDashboard: 5201,
 
+  /** Taxes app (Vite) */
+  taxes: 3200,
+
   /** Storybook */
   storybook: 6006,
 } as const;

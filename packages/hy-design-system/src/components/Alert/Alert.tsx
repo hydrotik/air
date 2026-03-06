@@ -3,7 +3,7 @@ import { alertRecipe, alertWithIcon, alertTitle, alertDescription, alertIcon } f
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'destructive';
-  /** Pass a lucide-react icon component to render in the icon slot */
+  /** Pass a Tabler icon component to render in the icon slot */
   icon?: React.ReactNode;
 }
 

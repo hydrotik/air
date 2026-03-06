@@ -8,6 +8,7 @@ export const page = style({
   fontFamily: vars.font.family.sans,
   color: vars.color.text,
   backgroundColor: vars.color.background,
+  overflowX: 'hidden',
 });
 
 export const navbar = style({
@@ -22,6 +23,7 @@ export const navbar = style({
   borderBottom: `1px solid ${vars.color.border}`,
   backdropFilter: 'blur(12px)',
   backgroundColor: `color-mix(in srgb, ${vars.color.background} 85%, transparent)`,
+  overflowX: 'auto',
 });
 
 export const hero = style({

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
-import { ChevronDown } from 'lucide-react';
+import { IconChevronDown } from '@tabler/icons-react';
 import {
   navigationMenuRoot,
   navigationMenuList,
@@ -51,7 +51,7 @@ export const NavigationMenuTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <ChevronDown size={12} aria-hidden style={{ transition: 'transform 200ms' }} />
+    <IconChevronDown size={12} aria-hidden style={{ transition: 'transform 200ms' }} />
   </NavigationMenuPrimitive.Trigger>
 ));
 NavigationMenuTrigger.displayName = 'NavigationMenuTrigger';

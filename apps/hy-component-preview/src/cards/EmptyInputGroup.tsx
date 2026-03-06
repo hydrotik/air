@@ -3,7 +3,7 @@ import {
   Input, Kbd,
   InputGroup, InputGroupAddon, inputGroupInputClass,
 } from '@hydrotik/design-system';
-import { Search } from 'lucide-react';
+import { IconSearch } from '@tabler/icons-react';
 
 /** 404 search — matches shadcn empty-input-group.tsx */
 export function EmptyInputGroup() {
@@ -17,7 +17,7 @@ export function EmptyInputGroup() {
       </div>
       <InputGroup style={{ width: '100%' }}>
         <InputGroupAddon>
-          <Search size={14} />
+          <IconSearch size={14} />
         </InputGroupAddon>
         <Input placeholder="" className={inputGroupInputClass} fullWidth />
         <InputGroupAddon>

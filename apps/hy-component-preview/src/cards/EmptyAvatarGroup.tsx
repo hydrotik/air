@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, AvatarFallback, Button } from '@hydrotik/design-system';
-import { Plus } from 'lucide-react';
+import { IconPlus } from '@tabler/icons-react';
 
 /** Avatar group + empty state — matches shadcn empty-avatar-group.tsx */
 export function EmptyAvatarGroup() {
@@ -33,7 +33,7 @@ export function EmptyAvatarGroup() {
       </div>
 
       <Button variant="outline" size="sm">
-        <Plus size={14} /> Invite Members
+        <IconPlus size={14} /> Invite Members
       </Button>
     </div>
   );

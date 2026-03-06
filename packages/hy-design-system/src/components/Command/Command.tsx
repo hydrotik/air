@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search } from 'lucide-react';
+import { IconSearch } from '@tabler/icons-react';
 import {
   commandRoot,
   commandInput,
@@ -35,7 +35,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
   ({ className, icon, ...props }, ref) => (
     <div className={commandInput}>
       <div className={commandInputIcon}>
-        {icon ?? <Search size={15} />}
+        {icon ?? <IconSearch size={15} />}
       </div>
       <input
         ref={ref}

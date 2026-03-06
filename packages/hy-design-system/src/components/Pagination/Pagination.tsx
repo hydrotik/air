@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
+import { IconChevronLeft, IconChevronRight, IconDots } from '@tabler/icons-react';
 import {
   paginationNav,
   paginationContent,
@@ -47,7 +47,7 @@ PaginationLink.displayName = 'PaginationLink';
 
 export const PaginationPrevious = ({ className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
   <PaginationLink aria-label="Go to previous page" className={className} {...props}>
-    <ChevronLeft size={16} />
+    <IconChevronLeft size={16} />
     <span>Previous</span>
   </PaginationLink>
 );
@@ -56,14 +56,14 @@ PaginationPrevious.displayName = 'PaginationPrevious';
 export const PaginationNext = ({ className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
   <PaginationLink aria-label="Go to next page" className={className} {...props}>
     <span>Next</span>
-    <ChevronRight size={16} />
+    <IconChevronRight size={16} />
   </PaginationLink>
 );
 PaginationNext.displayName = 'PaginationNext';
 
 export const PaginationEllipsis = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span aria-hidden className={[paginationEllipsis, className].filter(Boolean).join(' ')} {...props}>
-    <MoreHorizontal size={16} />
+    <IconDots size={16} />
     <span className="sr-only">More pages</span>
   </span>
 );

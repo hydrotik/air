@@ -20,7 +20,7 @@ import {
   TypingAnimation,
   ToolCallIndicator,
 } from '@hydrotik/design-system';
-import { Bot, Send, Sparkles, Wrench, MessageSquare, Code2, Type } from 'lucide-react';
+import { IconRobot, IconSend, IconSparkles, IconTool, IconMessage, IconCode, IconTypography } from '@tabler/icons-react';
 import * as s from './AIToolsPage.css';
 
 /* ─── Mock conversation data ───────────────────────────────────────────── */
@@ -82,14 +82,14 @@ export function AIToolsPage() {
       {/* ─── Chat Demo ──────────────────────────────────────────── */}
       <div className={s.section}>
         <h2 className={s.sectionTitle}>
-          <MessageSquare size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
+          <IconMessage size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
           Chat Interface
         </h2>
         <div className={s.chatDemo}>
           <div className={s.chatScroll}>
             <ChatContainer>
               <ChatEmptyState
-                icon={<Bot size={32} />}
+                icon={<IconRobot size={32} />}
                 title="What can I help with?"
                 description="Ask about the design system, architecture, or component APIs."
               />
@@ -108,9 +108,9 @@ export function AIToolsPage() {
           </div>
           <div className={s.chatInput}>
             <ChatInputContainer>
-              <Input placeholder="Ask me anything..." style={{ flex: 1 }} />
-              <Button size="icon">
-                <Send size={16} />
+              <Input placeholder="Ask me anything..." fullWidth />
+              <Button size="icon" style={{ flexShrink: 0 }}>
+                <IconSend size={16} />
               </Button>
             </ChatInputContainer>
           </div>
@@ -120,14 +120,14 @@ export function AIToolsPage() {
       {/* ─── Component Showcase ──────────────────────────────────── */}
       <div className={s.section}>
         <h2 className={s.sectionTitle}>
-          <Sparkles size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
+          <IconSparkles size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
           Component Showcase
         </h2>
         <div className={s.grid}>
           {/* Code Block */}
           <div className={s.componentShowcase}>
             <span className={s.showcaseLabel}>
-              <Code2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
+              <IconCode size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
               CodeBlock
             </span>
             <CodeBlock language="typescript">{sampleCode}</CodeBlock>
@@ -136,7 +136,7 @@ export function AIToolsPage() {
           {/* Inline Code */}
           <div className={s.componentShowcase}>
             <span className={s.showcaseLabel}>
-              <Code2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
+              <IconCode size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
               InlineCode
             </span>
             <p style={{ fontSize: 14, lineHeight: 1.8, margin: 0 }}>
@@ -151,7 +151,7 @@ export function AIToolsPage() {
           <div className={s.componentShowcase}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className={s.showcaseLabel}>
-                <Type size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
+                <IconTypography size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
                 TypingAnimation
               </span>
               <Button
@@ -180,7 +180,7 @@ export function AIToolsPage() {
           {/* Tool Call Indicators */}
           <div className={s.componentShowcase}>
             <span className={s.showcaseLabel}>
-              <Wrench size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
+              <IconTool size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
               ToolCallIndicator
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -195,7 +195,7 @@ export function AIToolsPage() {
           {/* Chat Message Roles */}
           <div className={s.componentShowcase}>
             <span className={s.showcaseLabel}>
-              <MessageSquare size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
+              <IconMessage size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: -2 }} />
               ChatMessage Roles
             </span>
             <ChatMessage role="user" avatar="DA" label="User">
@@ -224,7 +224,7 @@ export function AIToolsPage() {
       {/* ─── Integration Example ─────────────────────────────────── */}
       <div className={s.section}>
         <h2 className={s.sectionTitle}>
-          <Code2 size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
+          <IconCode size={18} style={{ display: 'inline', marginRight: 8, verticalAlign: -3 }} />
           Integration Example
         </h2>
         <Card>

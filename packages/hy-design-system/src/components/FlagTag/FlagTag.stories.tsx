@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import {
+  IconAlertTriangle, IconSearch, IconCircleCheck,
+  IconPin, IconClock, IconBolt, IconArrowRight, IconDiamondFilled,
+  IconCircleFilled,
+} from '@tabler/icons-react';
 import { FlagTag } from './FlagTag';
 
 const meta = {
@@ -23,8 +28,8 @@ const meta = {
       description: 'Label text (uppercase, monospace)',
     },
     icon: {
-      control: 'text',
-      description: 'Icon character or element',
+      control: false,
+      description: 'Icon element (Tabler icon)',
     },
     marginLeft: {
       control: 'text',
@@ -50,10 +55,10 @@ export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'flex-start' }}>
       <FlagTag variant="destructive" label="FLAGGED" marginLeft="0" />
-      <FlagTag variant="warning" label="REVIEW" icon="🔍" marginLeft="0" />
-      <FlagTag variant="success" label="CLEARED" icon="✓" marginLeft="0" />
-      <FlagTag variant="primary" label="NOTED" icon="📌" marginLeft="0" />
-      <FlagTag variant="muted" label="PENDING" icon="⏳" marginLeft="0" />
+      <FlagTag variant="warning" label="REVIEW" icon={<IconSearch size={15} />} marginLeft="0" />
+      <FlagTag variant="success" label="CLEARED" icon={<IconCircleCheck size={15} />} marginLeft="0" />
+      <FlagTag variant="primary" label="NOTED" icon={<IconPin size={15} />} marginLeft="0" />
+      <FlagTag variant="muted" label="PENDING" icon={<IconClock size={15} />} marginLeft="0" />
     </div>
   ),
 };
@@ -137,12 +142,12 @@ export const TableContext: Story = {
 export const CustomIcons: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-start' }}>
-      <FlagTag icon="⚠" label="FLAG" marginLeft="0" />
-      <FlagTag icon="🔴" label="CRITICAL" variant="destructive" marginLeft="0" />
-      <FlagTag icon="⚡" label="ACTIVE" variant="warning" marginLeft="0" />
-      <FlagTag icon="✓" label="VERIFIED" variant="success" marginLeft="0" />
-      <FlagTag icon="→" label="REDIRECT" variant="primary" marginLeft="0" />
-      <FlagTag icon="◆" label="SAR FILED" variant="destructive" size="md" marginLeft="0" />
+      <FlagTag marginLeft="0" />
+      <FlagTag icon={<IconCircleFilled size={15} />} label="CRITICAL" variant="destructive" marginLeft="0" />
+      <FlagTag icon={<IconBolt size={15} />} label="ACTIVE" variant="warning" marginLeft="0" />
+      <FlagTag icon={<IconCircleCheck size={15} />} label="VERIFIED" variant="success" marginLeft="0" />
+      <FlagTag icon={<IconArrowRight size={15} />} label="REDIRECT" variant="primary" marginLeft="0" />
+      <FlagTag icon={<IconDiamondFilled size={17} />} label="SAR FILED" variant="destructive" size="md" marginLeft="0" />
     </div>
   ),
   name: 'Custom Icons',

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Loader2, Wrench } from 'lucide-react';
+import { IconLoader2, IconTool } from '@tabler/icons-react';
 import {
   indicatorContainer,
   indicatorSpinner,
+  indicatorSpinnerIcon,
   indicatorLabel,
   indicatorDot,
   toolBadge,
@@ -43,7 +44,7 @@ export const ToolCallIndicator = React.forwardRef<HTMLDivElement, ToolCallIndica
     return (
       <div ref={ref} className={[indicatorContainer, className].filter(Boolean).join(' ')}>
         <div className={indicatorSpinner}>
-          {icon || <Loader2 size={16} />}
+          {icon || <IconLoader2 size={16} className={indicatorSpinnerIcon} />}
         </div>
         <span className={indicatorLabel}>
           {displayLabel}
@@ -51,7 +52,7 @@ export const ToolCallIndicator = React.forwardRef<HTMLDivElement, ToolCallIndica
         </span>
         {showBadge && toolName && (
           <span className={toolBadge}>
-            <Wrench size={10} />
+            <IconTool size={10} />
             {toolName}
           </span>
         )}

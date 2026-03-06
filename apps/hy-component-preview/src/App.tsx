@@ -2,8 +2,8 @@ import React from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useTheme } from '@hydrotik/theme-provider';
 import { Button, Separator } from '@hydrotik/design-system';
-import { Sun, Moon, Github } from 'lucide-react';
-import { HomePage, SinkPage, DashboardPage, InventoryPage, EcommercePage, PluginPage, DataGridPage, EditorialPage, AIToolsPage } from './pages';
+import { IconSun, IconMoon, IconBrandGithub } from '@tabler/icons-react';
+import { HomePage, ShowcasePage, SinkPage, DashboardPage, InventoryPage, EcommercePage, PluginPage, DataGridPage, EditorialPage, AIToolsPage } from './pages';
 import * as s from './App.css';
 
 function cx(...classes: (string | false | undefined)[]) {
@@ -33,13 +33,7 @@ export default function App() {
               end
               className={({ isActive }) => cx(s.navLink, isActive && s.navLinkActive)}
             >
-              Home
-            </NavLink>
-            <NavLink
-              to="/sink"
-              className={({ isActive }) => cx(s.navLink, isActive && s.navLinkActive)}
-            >
-              Components
+              Showcase
             </NavLink>
             <NavLink
               to="/dashboard"
@@ -93,7 +87,7 @@ export default function App() {
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            {theme === 'dark' ? <IconSun size={15} /> : <IconMoon size={15} />}
           </Button>
           <Button
             variant="ghost"
@@ -101,14 +95,15 @@ export default function App() {
             onClick={() => window.open('https://github.com/hydrotik/hydrotik', '_blank')}
             aria-label="GitHub"
           >
-            <Github size={15} />
+            <IconBrandGithub size={15} />
           </Button>
         </div>
       </header>
 
       {/* ─── Routes ─────────────────────────────────────────────── */}
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<ShowcasePage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/sink" element={<SinkPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/inventory" element={<InventoryPage />} />

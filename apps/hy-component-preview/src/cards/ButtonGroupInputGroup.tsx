@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Button, InputGroup, inputGroupInputClass } from '@hydrotik/design-system';
-import { AudioLines, Plus, ArrowUp } from 'lucide-react';
+import { IconWaveSine, IconPlus, IconArrowUp } from '@tabler/icons-react';
 
 /** Prompt with voice toggle — matches shadcn button-group-input-group.tsx */
 export function ButtonGroupInputGroup() {
@@ -14,7 +14,7 @@ export function ButtonGroupInputGroup() {
         aria-label="Add"
         style={{ flexShrink: 0, borderRadius: 0 }}
       >
-        <Plus size={14} />
+        <IconPlus size={14} />
       </Button>
       <Input placeholder="" className={inputGroupInputClass} fullWidth />
       <Button
@@ -25,14 +25,14 @@ export function ButtonGroupInputGroup() {
         aria-pressed={voiceEnabled}
         style={{ flexShrink: 0, borderRadius: 0 }}
       >
-        <AudioLines size={14} />
+        <IconWaveSine size={14} />
       </Button>
       <Button
         size="icon-sm"
         aria-label="Send"
         style={{ flexShrink: 0, borderRadius: '0 5px 5px 0' }}
       >
-        <ArrowUp size={14} />
+        <IconArrowUp size={14} />
       </Button>
     </InputGroup>
   );

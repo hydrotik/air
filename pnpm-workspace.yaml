@@ -2,6 +2,7 @@ packages:
   - apps/hy-bff-fastify
   - apps/hy-component-preview
   - apps/hy-storybook
+  - apps/hy-taxes
   - packages/hy-ai-tools
   - packages/hy-component-template
   - packages/hy-design-system

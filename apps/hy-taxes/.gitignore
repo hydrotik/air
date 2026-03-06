@@ -1,0 +1,5 @@
+# Financial data (PII)
+data/
+assets/
+!data/.gitkeep
+!public/data/

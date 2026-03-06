@@ -1,4 +1,5 @@
 export { HomePage } from './HomePage';
+export { ShowcasePage } from './ShowcasePage';
 export { SinkPage } from './SinkPage';
 export { DashboardPage } from './DashboardPage';
 export { InventoryPage } from './InventoryPage';

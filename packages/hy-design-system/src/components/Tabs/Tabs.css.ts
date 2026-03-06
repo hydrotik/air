@@ -50,7 +50,7 @@ export const tabsTrigger = style({
     },
     '&:focus-visible': {
       borderColor: vars.color.focusRing,
-      boxShadow: `0 0 0 3px color-mix(in srgb, ${vars.color.focusRing} 50%, transparent)`,
+      boxShadow: `0 0 0 1px color-mix(in srgb, ${vars.color.focusRing} 25%, transparent)`,
     },
     '&:disabled': {
       opacity: '0.5',

@@ -1,13 +1,17 @@
 import React from 'react';
+import { IconAlertTriangle } from '@tabler/icons-react';
 import { flagTagRecipe, flagTagIcon, flagTagLabel } from './FlagTag.css';
 import type { FlagTagVariants } from './FlagTag.css';
+
+/* Icon sizes matched to FlagTag label sizes (+6px per CLAUDE.md spec) */
+const ICON_SIZES: Record<string, number> = { xs: 14, sm: 15, md: 17, lg: 19 };
 
 export interface FlagTagProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
     NonNullable<FlagTagVariants> {
   /**
-   * Icon element or string (emoji). Defaults to "⚠".
-   * Can also pass a Lucide icon: `<Icons.AlertTriangle size={14} />`
+   * Icon element or string. Defaults to `<IconAlertTriangle />` from @tabler/icons-react.
+   * Pass any Tabler icon: `<Icons.IconAlertTriangle size={14} />`
    */
   icon?: React.ReactNode;
 
@@ -35,10 +39,10 @@ export interface FlagTagProps
  * <FlagTag />
  *
  * // Custom label + warning variant
- * <FlagTag variant="warning" label="REVIEW" icon="🔍" />
+ * <FlagTag variant="warning" label="REVIEW" icon={<IconSearch size={14} />} />
  *
- * // With Lucide icon
- * <FlagTag icon={<Icons.AlertTriangle size={14} />} label="FLAGGED" />
+ * // With Tabler icon
+ * <FlagTag icon={<Icons.IconAlertTriangle size={14} />} label="FLAGGED" />
  *
  * // Inline after a name
  * <span>Belen Blackstone <FlagTag marginLeft="8px" /></span>
@@ -49,7 +53,7 @@ export const FlagTag = React.forwardRef<HTMLSpanElement, FlagTagProps>(
     {
       variant = 'destructive',
       size = 'sm',
-      icon = '⚠',
+      icon,
       label = 'FLAG',
       marginLeft = '8px',
       className,
@@ -67,7 +71,7 @@ export const FlagTag = React.forwardRef<HTMLSpanElement, FlagTagProps>(
       style={{ marginLeft, ...style }}
       {...props}
     >
-      <span className={flagTagIcon}>{icon}</span>
+      <span className={flagTagIcon}>{icon ?? <IconAlertTriangle size={ICON_SIZES[size ?? 'sm']} />}</span>
       <span className={flagTagLabel}>{label}</span>
     </span>
   ),

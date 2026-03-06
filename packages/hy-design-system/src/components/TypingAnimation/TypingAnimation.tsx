@@ -27,13 +27,15 @@ export const TypingAnimation = React.forwardRef<HTMLDivElement, TypingAnimationP
       setDisplayedText('');
       setIsTyping(true);
       let currentIndex = 0;
+      let cancelled = false;
       const words = text.split(' ');
 
       const typeWord = () => {
+        if (cancelled) return;
         if (currentIndex < words.length) {
-          setDisplayedText((prev) => (prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]));
+          const word = words[currentIndex];
           currentIndex++;
-          // Random delay variation to simulate thinking
+          setDisplayedText((prev) => (prev ? `${prev} ${word}` : word));
           const delay = Math.random() < 0.8 ? speed : speed * 3;
           setTimeout(typeWord, delay);
         } else {
@@ -43,7 +45,10 @@ export const TypingAnimation = React.forwardRef<HTMLDivElement, TypingAnimationP
       };
 
       const timer = setTimeout(typeWord, speed);
-      return () => clearTimeout(timer);
+      return () => {
+        cancelled = true;
+        clearTimeout(timer);
+      };
     }, [text, speed, onComplete]);
 
     return (

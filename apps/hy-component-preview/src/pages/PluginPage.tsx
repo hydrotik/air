@@ -14,76 +14,76 @@ import {
 } from '@hydrotik/design-system';
 import { vars } from '@hydrotik/tokens';
 import {
-  Download,
-  Play,
-  Activity,
-  AudioWaveform,
-  Waves,
-  BarChart3,
-  Timer,
-  Radio,
-  ScanLine,
-  Zap,
-  Check,
-  MonitorSpeaker,
-  Music,
-  Headphones,
-  Mic2,
-  Podcast,
-  Shield,
-  ArrowRight,
-  Sparkles,
-  Eye,
-  ChevronRight,
-  CircleDot,
-} from 'lucide-react';
+  IconDownload,
+  IconPlayerPlay,
+  IconActivity,
+  IconWaveSine,
+  IconRipple,
+  IconChartBar,
+  IconClock,
+  IconAntenna,
+  IconScan,
+  IconBolt,
+  IconCheck,
+  IconDeviceDesktop,
+  IconMusic,
+  IconHeadphones,
+  IconMicrophone,
+  IconMicrophone2,
+  IconShield,
+  IconArrowRight,
+  IconSparkles,
+  IconEye,
+  IconChevronRight,
+  IconPointFilled,
+} from '@tabler/icons-react';
 import * as s from './PluginPage.css';
 
 /* ─── Data ─── */
 
 const FEATURES = [
   {
-    icon: <AudioWaveform size={20} />,
+    icon: <IconWaveSine size={20} />,
     title: 'Dual-Resolution Spectrum',
     desc: 'Blended 32K + 4K FFT delivers 1.5 Hz bass detail AND transient-sharp highs. No mode switching needed.',
   },
   {
-    icon: <Waves size={20} />,
+    icon: <IconRipple size={20} />,
     title: 'Scrolling Spectrogram',
     desc: 'Time-frequency display with 4 scientific colormaps (Magma, Inferno, Viridis, Plasma). 2D or 3D waterfall.',
   },
   {
-    icon: <CircleDot size={20} />,
+    icon: <IconPointFilled size={20} />,
     title: 'Lissajous Vectorscope',
     desc: '5 modes: L/R, Mid/Side, RTW polar, multi-band view, and mono compatibility indicator.',
   },
   {
-    icon: <BarChart3 size={20} />,
+    icon: <IconChartBar size={20} />,
     title: 'EBU R128 Loudness',
     desc: 'Momentary, Short-term, Integrated LUFS with histogram, LRA, and 7 target presets.',
   },
   {
-    icon: <Timer size={20} />,
+    icon: <IconClock size={20} />,
     title: 'Timeline Loudness',
     desc: 'Scrolling loudness history with M/S/I traces, clip markers, and hover tooltip readouts.',
   },
   {
-    icon: <Activity size={20} />,
+    icon: <IconActivity size={20} />,
     title: 'Volume Metering',
     desc: 'VU & PPM ballistics with Katz scales (FS, K-20, K-14, K-12). Per-channel peak hold.',
   },
   {
-    icon: <Radio size={20} />,
+    icon: <IconAntenna size={20} />,
     title: 'Stereo Radar',
     desc: 'Polar display showing real-time stereo field distribution and image rotation.',
   },
   {
-    icon: <ScanLine size={20} />,
+    icon: <IconScan size={20} />,
     title: 'Panoramic Spectrum',
     desc: 'Frequency-dependent stereo width — see which frequencies are panned left, center, or right.',
   },
   {
-    icon: <Zap size={20} />,
+    icon: <IconBolt size={20} />,
     title: 'Bit Monitor & DC Offset',
     desc: 'Active bit display for true resolution detection. Per-channel DC offset metering.',
   },
@@ -124,25 +124,25 @@ const HOSTS = [
 
 const USE_CASES = [
   {
-    icon: <Headphones size={18} />,
+    icon: <IconHeadphones size={18} />,
     title: 'Mixing',
     quote:
       'The dual-resolution spectrum shows exactly where frequencies build up — 1.5 Hz resolution means you can see the difference between a kick at 55 Hz and a bass at 58 Hz. The velocity overlay highlights which frequencies are changing.',
   },
   {
-    icon: <Music size={18} />,
+    icon: <IconMusic size={18} />,
     title: 'Mastering',
     quote:
       'Set your target LUFS for the platform — Spotify (-14), Apple Music (-16), broadcast (-24) — and watch integrated loudness converge in real time. The histogram reveals whether your dynamics are healthy or crushed.',
   },
   {
-    icon: <Podcast size={18} />,
+    icon: <IconMicrophone2 size={18} />,
     title: 'Broadcast & Post',
     quote:
       'EBU R128 compliance in one glance. Momentary, short-term, and integrated LUFS with LRA. A-weighted spectrum for perceptual monitoring. Clip markers flag every true-peak overshoot.',
   },
   {
-    icon: <Mic2 size={18} />,
+    icon: <IconMicrophone size={18} />,
     title: 'Sound Design',
     quote:
       'The spectrogram with spectral reassignment shows exactly where harmonics sit and how they evolve. The multi-band vectorscope shows stereo movement across frequency bands.',
@@ -243,7 +243,7 @@ export function PluginPage() {
       {/* ─── Hero ─── */}
       <section className={s.hero}>
         <div className={s.heroBadge}>
-          <Sparkles size={12} />
+          <IconSparkles size={12} />
           Now available for macOS
         </div>
 
@@ -261,11 +261,11 @@ export function PluginPage() {
 
         <div className={s.heroCtas}>
           <Button size="lg">
-            <Download size={16} />
+            <IconDownload size={16} />
             Download Free Trial
           </Button>
           <Button variant="outline" size="lg">
-            <Play size={16} />
+            <IconPlayerPlay size={16} />
             Watch Demo
           </Button>
         </div>
@@ -341,7 +341,7 @@ export function PluginPage() {
         <div className={s.bulletGrid}>
           {FEATURE_BULLETS.map((bullet) => (
             <div key={bullet} className={s.bulletItem}>
-              <Check size={16} className={s.bulletCheck} />
+              <IconCheck size={16} className={s.bulletCheck} />
               {bullet}
             </div>
           ))}
@@ -375,21 +375,21 @@ export function PluginPage() {
                       <td>{row.feature}</td>
                       <td>
                         {row.tectra ? (
-                          <Check size={16} style={{ color: vars.color.chart3 }} />
+                          <IconCheck size={16} style={{ color: vars.color.chart3 }} />
                         ) : (
                           '—'
                         )}
                       </td>
                       <td>
                         {row.hawkeye ? (
-                          <Check size={16} style={{ color: vars.color.chart3 }} />
+                          <IconCheck size={16} style={{ color: vars.color.chart3 }} />
                         ) : (
                           '—'
                         )}
                       </td>
                       <td>
                         {row.insight ? (
-                          <Check size={16} style={{ color: vars.color.chart3 }} />
+                          <IconCheck size={16} style={{ color: vars.color.chart3 }} />
                         ) : (
                           '—'
                         )}
@@ -487,7 +487,7 @@ export function PluginPage() {
         <div className={s.hostsGrid}>
           {HOSTS.map((host) => (
             <div key={host.name} className={s.hostCard}>
-              <MonitorSpeaker size={24} style={{ opacity: 0.6 }} />
+              <IconDeviceDesktop size={24} style={{ opacity: 0.6 }} />
               <div className={s.hostName}>{host.name}</div>
               <div className={s.hostFormat}>{host.format}</div>
             </div>
@@ -515,12 +515,12 @@ export function PluginPage() {
             }}
           >
             <Button size="lg">
-              <Download size={16} />
+              <IconDownload size={16} />
               Download Free Trial
             </Button>
             <Button variant="outline" size="lg">
               View Pricing
-              <ArrowRight size={16} />
+              <IconArrowRight size={16} />
             </Button>
           </div>
         </div>

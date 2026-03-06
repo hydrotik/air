@@ -48,10 +48,10 @@ import {
   Tooltip, TooltipTrigger, TooltipContent, TooltipProvider,
 } from '@hydrotik/design-system';
 import {
-  AlertCircle, Terminal, ChevronDown, Bold, Italic, Underline,
-  AlignLeft, AlignCenter, AlignRight, Settings, User, LogOut,
-  CreditCard, Mail, Plus,
-} from 'lucide-react';
+  IconAlertCircle, IconTerminal2, IconChevronDown, IconBold, IconItalic, IconUnderline,
+  IconAlignLeft, IconAlignCenter, IconAlignRight, IconSettings, IconUser, IconLogout,
+  IconCreditCard, IconMail, IconPlus,
+} from '@tabler/icons-react';
 import * as s from './SinkPage.css';
 
 /* ── Wrapper per component section ── */
@@ -114,7 +114,7 @@ export function SinkPage() {
                 You can add components to your app using the cli.
               </AlertDescription>
             </Alert>
-            <Alert variant="destructive" icon={<AlertCircle size={16} />}>
+            <Alert variant="destructive" icon={<IconAlertCircle size={16} />}>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>
                 Your session has expired. Please log in again.
@@ -206,7 +206,7 @@ export function SinkPage() {
             <Button size="sm">Small</Button>
             <Button size="md">Medium</Button>
             <Button size="lg">Large</Button>
-            <Button size="icon-sm"><Plus size={14} /></Button>
+            <Button size="icon-sm"><IconPlus size={14} /></Button>
             <Button disabled>Disabled</Button>
           </div>
         </Section>
@@ -255,7 +255,7 @@ export function SinkPage() {
                 <span style={{ fontSize: '14px', fontWeight: 600 }}>@peduarte starred 3 repositories</span>
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" size="icon-sm">
-                    <ChevronDown size={14} />
+                    <IconChevronDown size={14} />
                   </Button>
                 </CollapsibleTrigger>
               </div>
@@ -333,11 +333,11 @@ export function SinkPage() {
                 <Button variant="outline">Open Menu</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem><User size={14} /> Profile</DropdownMenuItem>
-                <DropdownMenuItem><CreditCard size={14} /> Billing</DropdownMenuItem>
-                <DropdownMenuItem><Settings size={14} /> Settings</DropdownMenuItem>
+                <DropdownMenuItem><IconUser size={14} /> Profile</DropdownMenuItem>
+                <DropdownMenuItem><IconCreditCard size={14} /> Billing</DropdownMenuItem>
+                <DropdownMenuItem><IconSettings size={14} /> Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem><LogOut size={14} /> Log out</DropdownMenuItem>
+                <DropdownMenuItem><IconLogout size={14} /> Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -694,9 +694,9 @@ export function SinkPage() {
         {/* ─── Toggle ─── */}
         <Section name="Toggle">
           <div className={s.demoRow}>
-            <Toggle aria-label="Toggle bold"><Bold size={14} /></Toggle>
-            <Toggle aria-label="Toggle italic"><Italic size={14} /></Toggle>
-            <Toggle aria-label="Toggle underline"><Underline size={14} /></Toggle>
+            <Toggle aria-label="Toggle bold"><IconBold size={14} /></Toggle>
+            <Toggle aria-label="Toggle italic"><IconItalic size={14} /></Toggle>
+            <Toggle aria-label="Toggle underline"><IconUnderline size={14} /></Toggle>
           </div>
         </Section>
 
@@ -704,9 +704,9 @@ export function SinkPage() {
         <Section name="Toggle Group">
           <div className={s.demoRow}>
             <ToggleGroup type="single" defaultValue="center">
-              <ToggleGroupItem value="left" aria-label="Align left"><AlignLeft size={14} /></ToggleGroupItem>
-              <ToggleGroupItem value="center" aria-label="Align center"><AlignCenter size={14} /></ToggleGroupItem>
-              <ToggleGroupItem value="right" aria-label="Align right"><AlignRight size={14} /></ToggleGroupItem>
+              <ToggleGroupItem value="left" aria-label="Align left"><IconAlignLeft size={14} /></ToggleGroupItem>
+              <ToggleGroupItem value="center" aria-label="Align center"><IconAlignCenter size={14} /></ToggleGroupItem>
+              <ToggleGroupItem value="right" aria-label="Align right"><IconAlignRight size={14} /></ToggleGroupItem>
             </ToggleGroup>
           </div>
         </Section>

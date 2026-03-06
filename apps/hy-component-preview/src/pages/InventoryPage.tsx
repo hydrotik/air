@@ -21,28 +21,28 @@ import {
   TooltipProvider,
 } from '@hydrotik/design-system';
 import {
-  TrendingUp, TrendingDown, Download, Filter, Plus, MoreVertical,
-  Home, ChartLine, ShoppingBag, ShoppingCart, FileText, Users, Settings,
-  LifeBuoy, Send, Search, ChevronRight, Package, DollarSign, CreditCard,
-  Activity, Eye, Archive, Trash2, Copy, PenLine,
-} from 'lucide-react';
+  IconTrendingUp, IconTrendingDown, IconDownload, IconFilter, IconPlus, IconDotsVertical,
+  IconHome, IconChartLine, IconShoppingBag, IconShoppingCart, IconFileText, IconUsers, IconSettings,
+  IconLifebuoy, IconSend, IconSearch, IconChevronRight, IconPackage, IconCurrencyDollar, IconCreditCard,
+  IconActivity, IconEye, IconArchive, IconTrash, IconCopy, IconPencil,
+} from '@tabler/icons-react';
 import { vars } from '@hydrotik/tokens';
 import * as s from './InventoryPage.css';
 
 /* ── Sidebar data ── */
 const navMain = [
-  { title: 'Dashboard', icon: Home, count: undefined, id: 'dashboard' },
-  { title: 'Analytics', icon: ChartLine, count: undefined, id: 'analytics' },
-  { title: 'Orders', icon: ShoppingBag, count: 24, id: 'orders' },
-  { title: 'Products', icon: ShoppingCart, count: 156, id: 'products' },
-  { title: 'Invoices', icon: FileText, count: 12, id: 'invoices' },
-  { title: 'Customers', icon: Users, count: 573, id: 'customers' },
-  { title: 'Settings', icon: Settings, count: undefined, id: 'settings' },
+  { title: 'Dashboard', icon: IconHome, count: undefined, id: 'dashboard' },
+  { title: 'Analytics', icon: IconChartLine, count: undefined, id: 'analytics' },
+  { title: 'Orders', icon: IconShoppingBag, count: 24, id: 'orders' },
+  { title: 'Products', icon: IconShoppingCart, count: 156, id: 'products' },
+  { title: 'Invoices', icon: IconFileText, count: 12, id: 'invoices' },
+  { title: 'Customers', icon: IconUsers, count: 573, id: 'customers' },
+  { title: 'Settings', icon: IconSettings, count: undefined, id: 'settings' },
 ];
 
 const navSecondary = [
-  { title: 'Support', icon: LifeBuoy },
-  { title: 'Feedback', icon: Send },
+  { title: 'Support', icon: IconLifebuoy },
+  { title: 'Feedback', icon: IconSend },
 ];
 
 /* ── Product data ── */
@@ -61,10 +61,10 @@ const products = [
 
 /* ── KPI data ── */
 const kpis = [
-  { label: 'Total Revenue', value: '$45,231.89', trend: '+20.1%', up: true, desc: '+$4,201 from last month', icon: DollarSign },
-  { label: 'Orders', value: '2,350', trend: '+12.2%', up: true, desc: '+180 from last month', icon: ShoppingCart },
-  { label: 'Products Sold', value: '12,234', trend: '+8.1%', up: true, desc: '+942 from last month', icon: Package },
-  { label: 'Active Customers', value: '573', trend: '-2.5%', up: false, desc: '-14 from last month', icon: Users },
+  { label: 'Total Revenue', value: '$45,231.89', trend: '+20.1%', up: true, desc: '+$4,201 from last month', icon: IconCurrencyDollar },
+  { label: 'Orders', value: '2,350', trend: '+12.2%', up: true, desc: '+180 from last month', icon: IconShoppingCart },
+  { label: 'Products Sold', value: '12,234', trend: '+8.1%', up: true, desc: '+942 from last month', icon: IconPackage },
+  { label: 'Active Customers', value: '573', trend: '-2.5%', up: false, desc: '-14 from last month', icon: IconUsers },
 ];
 
 /* ── Chart data ── */
@@ -202,7 +202,7 @@ function RevenueChart() {
       </CardContent>
       <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
         <span className={`${s.kpiTrend} ${s.trendUp}`}>
-          Trending up by 5.2% this month <TrendingUp size={14} />
+          Trending up by 5.2% this month <IconTrendingUp size={14} />
         </span>
         <span className={s.kpiDesc}>Jan – Dec 2024</span>
       </CardFooter>
@@ -376,7 +376,7 @@ function ProductsTable() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm">
-              <Plus size={14} /> Add Product
+              <IconPlus size={14} /> Add Product
             </Button>
           </div>
         </div>
@@ -395,16 +395,16 @@ function ProductsTable() {
             { id: 'actions', header: '', size: 48, enableSorting: false, enableFiltering: false, cell: ({ row }) => (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon-sm"><MoreVertical size={14} /></Button>
+                  <Button variant="ghost" size="icon-sm"><IconDotsVertical size={14} /></Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem><Eye size={14} /> View</DropdownMenuItem>
-                  <DropdownMenuItem><PenLine size={14} /> Edit</DropdownMenuItem>
-                  <DropdownMenuItem><Copy size={14} /> Duplicate</DropdownMenuItem>
+                  <DropdownMenuItem><IconEye size={14} /> View</DropdownMenuItem>
+                  <DropdownMenuItem><IconPencil size={14} /> Edit</DropdownMenuItem>
+                  <DropdownMenuItem><IconCopy size={14} /> Duplicate</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem><Archive size={14} /> Archive</DropdownMenuItem>
+                  <DropdownMenuItem><IconArchive size={14} /> Archive</DropdownMenuItem>
                   <DropdownMenuItem style={{ color: vars.color.destructive }}>
-                    <Trash2 size={14} /> Delete
+                    <IconTrash size={14} /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -468,24 +468,24 @@ export function InventoryPage() {
           <div className={s.header}>
             <div className={s.breadcrumbs}>
               <span>Store</span>
-              <ChevronRight size={12} className={s.breadcrumbSep} />
+              <IconChevronRight size={12} className={s.breadcrumbSep} />
               <span className={s.breadcrumbCurrent}>
                 {navMain.find((n) => n.id === activeNav)?.title || 'Dashboard'}
               </span>
             </div>
             <div className={s.headerActions}>
               <div className={s.searchWrapper}>
-                <Search size={14} className={s.searchIcon} />
+                <IconSearch size={14} className={s.searchIcon} />
                 <Input
                   placeholder="Search products..."
                   style={{ paddingLeft: '32px' }}
                 />
               </div>
               <Button variant="outline" size="sm">
-                <Download size={14} /> Export
+                <IconDownload size={14} /> Export
               </Button>
               <Button variant="outline" size="sm">
-                <Filter size={14} /> Filter
+                <IconFilter size={14} /> Filter
               </Button>
             </div>
           </div>
@@ -506,7 +506,7 @@ export function InventoryPage() {
                   <CardFooter style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
                     <span className={`${s.kpiTrend} ${kpi.up ? s.trendUp : s.trendDown}`}>
                       {kpi.trend}
-                      {kpi.up ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                      {kpi.up ? <IconTrendingUp size={14} /> : <IconTrendingDown size={14} />}
                     </span>
                     <span className={s.kpiDesc}>{kpi.desc}</span>
                   </CardFooter>

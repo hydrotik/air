@@ -3,7 +3,7 @@ import {
   Textarea, Button, Badge,
   InputGroup, InputGroupToolbar, inputGroupInputClass,
 } from '@hydrotik/design-system';
-import { Paperclip, ArrowUp, Plus, Globe } from 'lucide-react';
+import { IconPaperclip, IconArrowUp, IconPlus, IconWorld } from '@tabler/icons-react';
 
 /** Simplified prompt form — inspired by shadcn notion-prompt-form.tsx */
 export function NotionPromptForm() {
@@ -21,18 +21,18 @@ export function NotionPromptForm() {
         />
         <InputGroupToolbar>
           <Button variant="ghost" size="icon-sm" aria-label="Mention">
-            <Plus size={14} />
+            <IconPlus size={14} />
           </Button>
           <Button variant="ghost" size="icon-sm" aria-label="Attach file">
-            <Paperclip size={14} />
+            <IconPaperclip size={14} />
           </Button>
           <div style={{ flex: 1 }} />
           <Badge variant="secondary">Auto</Badge>
           <Badge variant="outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            <Globe size={12} /> All Sources
+            <IconWorld size={12} /> All Sources
           </Badge>
           <Button size="icon-sm" aria-label="Send">
-            <ArrowUp size={14} />
+            <IconArrowUp size={14} />
           </Button>
         </InputGroupToolbar>
       </InputGroup>

@@ -94,11 +94,12 @@ export const inputContainer = style({
 
 export const inputForm = style({
   display: 'flex',
-  gap: vars.space['4'],
+  alignItems: 'center',
+  gap: vars.space['2'],
   borderRadius: vars.radii.lg,
   border: `1px solid ${vars.color.border}`,
   backgroundColor: vars.color.surface,
-  padding: vars.space['4'],
+  padding: vars.space['2'],
 });
 
 export const emptyState = style({

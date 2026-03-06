@@ -1,6 +1,6 @@
 import React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { IconChevronDown, IconChevronUp, IconCheck } from '@tabler/icons-react';
 import {
   selectTrigger,
   selectContent,
@@ -34,7 +34,7 @@ export const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon className={selectIcon}>
-      <ChevronDown size={16} />
+      <IconChevronDown size={16} />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -49,7 +49,7 @@ export const SelectScrollUpButton = React.forwardRef<
     className={[selectScrollButton, className].filter(Boolean).join(' ')}
     {...props}
   >
-    <ChevronUp size={16} />
+    <IconChevronUp size={16} />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = 'SelectScrollUpButton';
@@ -63,7 +63,7 @@ export const SelectScrollDownButton = React.forwardRef<
     className={[selectScrollButton, className].filter(Boolean).join(' ')}
     {...props}
   >
-    <ChevronDown size={16} />
+    <IconChevronDown size={16} />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName = 'SelectScrollDownButton';
@@ -111,7 +111,7 @@ export const SelectItem = React.forwardRef<
   >
     <span className={selectItemIndicator}>
       <SelectPrimitive.ItemIndicator>
-        <Check size={16} />
+        <IconCheck size={16} />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

@@ -14,7 +14,7 @@ import {
   cartItemRemove,
   cartItemSkeleton,
 } from './CartItem.css';
-import { Trash2 } from 'lucide-react';
+import { IconTrash } from '@tabler/icons-react';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -99,7 +99,7 @@ const CartItem = React.forwardRef<HTMLDivElement, CartItemProps>(
               onClick={onRemove}
               aria-label={`Remove ${item.name} from cart`}
             >
-              <Trash2 size={14} />
+              <IconTrash size={14} />
             </button>
           </div>
         </div>

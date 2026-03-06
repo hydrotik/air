@@ -1,0 +1,194 @@
+{
+  "findings": [
+    {
+      "dimension": "error_consistency",
+      "identifier": "air-server-mixed-error-shapes",
+      "summary": "AIr server routes return inconsistent error shapes: some return { error: string }, others { ok: false, error: string }, with no shared error type",
+      "related_files": ["packages/hy-ai-rum/src/server/index.ts"],
+      "evidence": ["Line 180: return { error: 'Session not found' }", "Line 322: return { ok: false, error: 'name is required' }", "Line 370: return { ok: false, error: String(err) }"],
+      "suggestion": "Define a shared ApiError type and use a consistent response envelope ({ ok: boolean, data?, error? }) across all routes",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "error_consistency",
+      "identifier": "air-sdk-catch-any",
+      "summary": "SDK client uses catch(err: any) in 3 places, losing type safety on error handling",
+      "related_files": ["packages/hy-ai-rum/src/sdk/client.ts"],
+      "evidence": ["Line 398: catch (err: any)", "Line 443: catch (err: any)", "Line 520: catch (err: any)"],
+      "suggestion": "Use catch(err: unknown) and narrow with instanceof Error or a type guard",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "error_consistency",
+      "identifier": "air-server-untyped-query-params",
+      "summary": "Server routes cast req.query to any for parameter access instead of using Fastify's typed querystring schemas",
+      "related_files": ["packages/hy-ai-rum/src/server/index.ts"],
+      "evidence": ["Line 173: (req.query as any).limit", "Line 259: (req.query as any).operation", "Line 287: (req.query as any).hash", "14 instances of (req.query as any)"],
+      "suggestion": "Define Fastify route schemas with querystring types so req.query is properly typed without any casts",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "cross_module_architecture",
+      "identifier": "design-mcp-god-module",
+      "summary": "packages/hy-design-mcp/src/index.ts is a 1468-line god module containing RAG store, TF-IDF search, chunk builders, MCP tool definitions, and server bootstrap in one file",
+      "related_files": ["packages/hy-design-mcp/src/index.ts"],
+      "evidence": ["1468 lines in a single file", "Mixes data access (RAG store), search algorithm (TF-IDF), domain logic (chunk builders), and transport (MCP server)"],
+      "suggestion": "Split into modules: rag-store.ts (load/save), search.ts (TF-IDF), chunks.ts (sync/build), tools.ts (MCP tool definitions), index.ts (bootstrap)",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "cross_module_architecture",
+      "identifier": "docs-reference-orphaned",
+      "summary": "docs/reference/ contains dashboard-03/ and sink/ with full React components that are not imported anywhere in the monorepo — dead reference code",
+      "related_files": ["docs/reference/dashboard-03/page.tsx", "docs/reference/dashboard-03/layout.tsx", "docs/reference/sink/component-wrapper.tsx"],
+      "evidence": ["grep for 'docs/reference' across all source files returns zero imports", "Contains Next.js app router patterns in a non-Next.js monorepo"],
+      "suggestion": "Move to a docs/archive/ folder or delete entirely — these appear to be copied reference implementations that are no longer used",
+      "confidence": "high",
+      "impact_scope": "codebase",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "abstraction_fitness",
+      "identifier": "air-collector-any-types",
+      "summary": "AIr collector uses 'any' type assertions to access model properties and message content, bypassing TypeScript safety",
+      "related_files": ["packages/hy-ai-rum/src/collector/index.ts"],
+      "evidence": ["Line 47: function contentToString(content: any)", "Line 316: (model as any)?.contextWindow", "Line 345: (m as any).content", "Line 389: (model as any)?.contextWindow"],
+      "suggestion": "Define proper interfaces for the collector message/model shapes and use type narrowing instead of any casts",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "abstraction_fitness",
+      "identifier": "datagrid-any-types",
+      "summary": "DataGrid component uses 'any' for cell edit value types, losing type safety in the editing API",
+      "related_files": ["packages/hy-design-system/src/components/DataGrid/DataGrid.tsx"],
+      "evidence": ["Line 389: value: any", "Line 390: onSave: (value: any) => void"],
+      "suggestion": "Use a generic type parameter on the edit cell interface: EditCellProps<T> with value: T and onSave: (value: T) => void",
+      "confidence": "medium",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "design_coherence",
+      "identifier": "menu-css-duplication",
+      "summary": "ContextMenu, DropdownMenu, and Menubar CSS files contain near-identical style definitions for items, separators, labels, and sub-triggers — tripled maintenance burden",
+      "related_files": ["packages/hy-design-system/src/components/ContextMenu/ContextMenu.css.ts", "packages/hy-design-system/src/components/DropdownMenu/DropdownMenu.css.ts", "packages/hy-design-system/src/components/Menubar/Menubar.css.ts"],
+      "evidence": ["All three define identical item hover, disabled, separator, and label styles", "Shared styles exist at packages/hy-design-system/src/styles/menu-item.css.ts but are not fully utilized"],
+      "suggestion": "Extract all shared menu styles into the existing menu-item.css.ts and compose them in each component's CSS file",
+      "confidence": "high",
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "authorization_consistency",
+      "identifier": "bff-no-auth-middleware",
+      "summary": "BFF server has JWT dependency installed but no auth middleware registered — /health is the only route and it's unprotected (acceptable for now, but JWT setup is cargo-culted)",
+      "related_files": ["apps/hy-bff-fastify/src/server.ts"],
+      "evidence": ["package.json lists @fastify/jwt, @fastify/helmet, @fastify/rate-limit but none are imported in server.ts", "Server only has a /health endpoint"],
+      "suggestion": "Either add auth middleware when real routes are added, or remove unused security dependencies to avoid false sense of security",
+      "confidence": "medium",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "authorization_consistency",
+      "identifier": "air-server-no-auth",
+      "summary": "AIr server exposes all API routes without any authentication — any client on the network can read telemetry, register providers, and send events",
+      "related_files": ["packages/hy-ai-rum/src/server/index.ts"],
+      "evidence": ["CORS origin: true allows all origins", "No auth middleware on any route", "Provider registration (POST /api/rag/provider) has no access control"],
+      "suggestion": "Add optional API key auth via AIR_API_KEY env var with middleware that validates Bearer token on write routes",
+      "confidence": "medium",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "ai_generated_debt",
+      "identifier": "air-server-event-casting",
+      "summary": "Server index uses (event as any).source and (event as any).serverName to extract provider info from events instead of extending the TelemetryEvent type",
+      "related_files": ["packages/hy-ai-rum/src/server/index.ts"],
+      "evidence": ["Line 89: const source = (event as any).source", "Line 108: const serverName = (event as any).serverName"],
+      "suggestion": "Add source and serverName to TelemetryEvent type or create typed event subtypes for RAG and MCP events",
+      "confidence": "high",
+      "impact_scope": "module",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "convention_outlier",
+      "identifier": "air-hardcoded-localhost",
+      "summary": "AIr CLI and start.ts hardcode localhost in user-facing output instead of using the actual bound host/port",
+      "related_files": ["packages/hy-ai-rum/src/server/cli.ts", "packages/hy-ai-rum/src/server/start.ts"],
+      "evidence": ["cli.ts line 64-67: hardcoded http://localhost:${port}", "start.ts line 8-11: hardcoded http://localhost:${PORT}"],
+      "suggestion": "Use the actual host/port from the Fastify server.addresses() after listen completes",
+      "confidence": "medium",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "high_level_elegance",
+      "identifier": "preview-page-inline-styles",
+      "summary": "Component preview pages use extensive inline style objects instead of vanilla-extract styles, inconsistent with the design system's CSS-in-TS conventions",
+      "related_files": ["apps/hy-component-preview/src/pages/DashboardPage.tsx", "apps/hy-component-preview/src/pages/InventoryPage.tsx", "apps/hy-component-preview/src/pages/EcommercePage.tsx"],
+      "evidence": ["DashboardPage.tsx uses inline style={{ }} for layout throughout instead of .css.ts file", "Mixed pattern: some pages have .css.ts files but still use heavy inline styles"],
+      "suggestion": "Move layout styles to the corresponding .css.ts files; reserve inline styles only for truly dynamic values",
+      "confidence": "medium",
+      "impact_scope": "subsystem",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "mid_level_elegance",
+      "identifier": "datagrid-core-complexity",
+      "summary": "DataGrid core.ts is 891 lines with 13 exported/internal functions handling state, columns, rows, filtering, sorting, pagination, grouping, and editing — too many responsibilities",
+      "related_files": ["packages/hy-design-system/src/components/DataGrid/core.ts"],
+      "evidence": ["891 lines, 13 functions", "Mixes column resolution, row model building, sorting, filtering, pagination, and state management"],
+      "suggestion": "Split into: state.ts (state management), columns.ts (resolution), row-models/ (filtering, sorting, pagination as separate files)",
+      "confidence": "medium",
+      "impact_scope": "module",
+      "fix_scope": "multi_file_refactor"
+    },
+    {
+      "dimension": "low_level_elegance",
+      "identifier": "air-server-uid-weak",
+      "summary": "Server uses Math.random() for generating UIDs — not cryptographically secure and collision-prone at scale",
+      "related_files": ["packages/hy-ai-rum/src/server/index.ts"],
+      "evidence": ["Line 16: function uid() { return Math.random().toString(36)... }"],
+      "suggestion": "Use crypto.randomUUID() (Node 19+) or import { randomUUID } from 'node:crypto'",
+      "confidence": "high",
+      "impact_scope": "local",
+      "fix_scope": "single_edit"
+    },
+    {
+      "dimension": "package_organization",
+      "identifier": "preview-cards-flat-dir",
+      "summary": "apps/hy-component-preview/src/cards/ is a flat directory with 20+ demo card files with no subdirectory organization",
+      "related_files": ["apps/hy-component-preview/src/cards/index.ts"],
+      "evidence": ["20+ card components in one flat directory", "Cards span different feature areas (buttons, inputs, avatars, spinners) without grouping"],
+      "suggestion": "Group cards into subdirectories by feature area: buttons/, inputs/, layout/, etc.",
+      "confidence": "low",
+      "impact_scope": "local",
+      "fix_scope": "multi_file_refactor"
+    }
+  ],
+  "retrospective": {
+    "root_causes": [
+      "AIr server grew organically without API typing discipline — all query params are any-cast",
+      "Design MCP was built as a single-file prototype and never decomposed",
+      "Menu component CSS was copy-pasted from shadcn without extracting shared patterns"
+    ],
+    "likely_symptoms": [
+      "preview-cards-flat-dir is cosmetic, not a defect",
+      "bff-no-auth-middleware is acceptable for a stub server"
+    ],
+    "possible_false_positives": [
+      "preview-page-inline-styles may be intentional for demo flexibility"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { ChevronDown } from 'lucide-react';
+import { IconChevronDown } from '@tabler/icons-react';
 import {
   accordionRoot,
   accordionItem,
@@ -45,7 +45,7 @@ export const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <ChevronDown className={accordionChevron} aria-hidden />
+      <IconChevronDown className={accordionChevron} aria-hidden />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));
