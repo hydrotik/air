@@ -1,0 +1,4822 @@
+{
+  "position": 8,
+  "status": "succeeded",
+  "prompt_path": "/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/.desloppify/subagents/runs/20260302_013834/prompts/batch-8.md",
+  "result_path": "/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/.desloppify/subagents/runs/20260302_013834/results/batch-8.raw.txt",
+  "log_path": "/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/.desloppify/subagents/runs/20260302_013834/logs/batch-8.log",
+  "started_at": "2026-03-02T01:41:01+00:00",
+  "elapsed_seconds": 202,
+  "exit_code": 0,
+  "completed_at": "2026-03-02T01:44:24+00:00",
+  "subjective_assessments": {
+    "abstraction_fitness": {
+      "score": 58.2,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00",
+      "components": [
+        "Abstraction Leverage",
+        "Indirection Cost",
+        "Interface Honesty"
+      ],
+      "component_scores": {
+        "Abstraction Leverage": 69.3,
+        "Indirection Cost": 76.2,
+        "Interface Honesty": 72.6
+      }
+    },
+    "ai_generated_debt": {
+      "score": 77.3,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "api_surface_coherence": {
+      "score": 51.3,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "authorization_consistency": {
+      "score": 26.4,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "convention_outlier": {
+      "score": 88.0,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "cross_module_architecture": {
+      "score": 50.8,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "design_coherence": {
+      "score": 75.3,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "error_consistency": {
+      "score": 60.8,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "high_level_elegance": {
+      "score": 55.0,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "incomplete_migration": {
+      "score": 61.5,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "low_level_elegance": {
+      "score": 64.7,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "mid_level_elegance": {
+      "score": 47.2,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    },
+    "package_organization": {
+      "score": 63.6,
+      "source": "holistic",
+      "assessed_at": "2026-03-02T01:44:24+00:00"
+    }
+  },
+  "potentials": {
+    "typescript": {
+      "logs": 37,
+      "unused": 37,
+      "exports": 0,
+      "deprecated": 0,
+      "structural": 37,
+      "flat_dirs": 11,
+      "props": 0,
+      "single_use": 19,
+      "coupling": 11,
+      "cycles": 37,
+      "orphaned": 37,
+      "patterns": 1,
+      "naming": 9,
+      "facade": 37,
+      "responsibility_cohesion": 1,
+      "test_coverage": 448,
+      "smells": 38,
+      "react": 3,
+      "security": 37,
+      "subjective_review": 28,
+      "boilerplate_duplication": 0,
+      "dupes": 70,
+      "stale_wontfix": 0
+    }
+  },
+  "version": 1,
+  "created": "2026-03-02T01:44:24+00:00",
+  "last_scan": "2026-03-02T01:44:34+00:00",
+  "scan_count": 2,
+  "overall_score": 61.8,
+  "objective_score": 67.6,
+  "strict_score": 61.8,
+  "verified_strict_score": 67.6,
+  "stats": {
+    "total": 127,
+    "open": 127,
+    "fixed": 0,
+    "auto_resolved": 0,
+    "wontfix": 0,
+    "false_positive": 0,
+    "by_tier": {
+      "1": {
+        "open": 6,
+        "fixed": 0,
+        "auto_resolved": 0,
+        "wontfix": 0,
+        "false_positive": 0
+      },
+      "2": {
+        "open": 8,
+        "fixed": 0,
+        "auto_resolved": 0,
+        "wontfix": 0,
+        "false_positive": 0
+      },
+      "3": {
+        "open": 113,
+        "fixed": 0,
+        "auto_resolved": 0,
+        "wontfix": 0,
+        "false_positive": 0
+      }
+    }
+  },
+  "findings": {
+    "review::.::holistic::cross_module_architecture::shared_events_god_boundary::ca5fca37": {
+      "id": "review::.::holistic::cross_module_architecture::shared_events_god_boundary::ca5fca37",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "`src/shared/events.ts` collapses protocol types, dashboard DTOs, and pricing logic into one shared dependency hub.",
+      "detail": {
+        "holistic": true,
+        "dimension": "cross_module_architecture",
+        "related_files": [
+          "src/shared/events.ts",
+          "src/dashboard/hooks/useTelemetry.ts"
+        ],
+        "evidence": [
+          "`src/shared/events.ts` defines low-level telemetry event unions, dashboard WebSocket message types, session summary read models, and also exports `MODEL_PRICING` plus `computeCost()` in the same module.",
+          "`src/dashboard/hooks/useTelemetry.ts` imports `TelemetryEvent`, `SessionSummary`, and `DashboardMessage` from that file, so dashboard read-side code is forced through the same module that also owns pricing/business logic unrelated to WebSocket consumption.",
+          "The blind packet already marks `src/shared/events.ts` as a 17-importer god module, which is consistent with this boundary collapse becoming the default dependency for unrelated concerns."
+        ],
+        "suggestion": "Split `src/shared/events.ts` by ownership: keep raw telemetry event protocol types in one module, move dashboard transport/read models into a dashboard-facing contract module, and move pricing tables/helpers into a separate pricing utility so changes in one concern do not ripple through all importers.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::cross_module_architecture::telemetry_hook_as_dashboard_service_locator::caed38ae": {
+      "id": "review::.::holistic::cross_module_architecture::telemetry_hook_as_dashboard_service_locator::caed38ae",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "`useTelemetry()` has become a subsystem-wide service locator that couples every dashboard feature to one hook surface.",
+      "detail": {
+        "holistic": true,
+        "dimension": "cross_module_architecture",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx"
+        ],
+        "evidence": [
+          "`src/dashboard/hooks/useTelemetry.ts` owns live event transport plus a long list of feature-specific fetchers: sessions, config, context, MCP stats/timeseries, RAG stats/timeseries, latency, cost, evals, prompts, and drift.",
+          "The hook returns all of these functions from one object, making feature additions depend on widening a central API instead of adding a new feature module.",
+          "`McpStatsPanel` and `RagStatsPanel` are leaf components that only need one slice of data each, but the current architecture offers no narrower MCP- or RAG-specific boundary; those features only exist as methods hanging off the general telemetry hook."
+        ],
+        "suggestion": "Refactor `useTelemetry()` into a small live-session transport/core hook and feature-scoped dashboard clients or hooks such as `useMcpStats`, `useRagStats`, and `useSessionContext`, so each panel depends on its own boundary instead of a central omnibus service.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::high_level_elegance::stats_panels_copy_specialize_pattern::07f1f458": {
+      "id": "review::.::holistic::high_level_elegance::stats_panels_copy_specialize_pattern::07f1f458",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The MCP and RAG panels duplicate the same table-panel design with separate local contracts, which hides a missing shared visualization boundary.",
+      "detail": {
+        "holistic": true,
+        "dimension": "high_level_elegance",
+        "related_files": [
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx",
+          "src/dashboard/hooks/useTelemetry.ts"
+        ],
+        "evidence": [
+          "Both panels define a local `*Stat` interface, a local color map, a local mono font constant, the same empty-state container pattern, and nearly identical `<table>` markup with row rendering.",
+          "Neither panel imports a shared stat contract from a dashboard domain module; instead, each re-declares the API payload shape locally while `useTelemetry()` returns untyped `res.json()` data for both endpoints.",
+          "This creates a copy-and-specialize growth path where every new stats panel will likely repeat the same structure with another local DTO and another untyped fetch function."
+        ],
+        "suggestion": "Introduce a shared dashboard stats-table primitive plus exported MCP/RAG read-model types near the data boundary, then let each panel provide only column definitions and domain-specific formatting.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::high_level_elegance::dashboard_styles_have_implicit_app_shell_side_effects::39d8ceb4": {
+      "id": "review::.::holistic::high_level_elegance::dashboard_styles_have_implicit_app_shell_side_effects::39d8ceb4",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "`dashboard.css.ts` combines reusable styles with document-level global mutations, so importing dashboard styling also changes the host app shell implicitly.",
+      "detail": {
+        "holistic": true,
+        "dimension": "high_level_elegance",
+        "related_files": [
+          "src/dashboard/dashboard.css.ts",
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx"
+        ],
+        "evidence": [
+          "`src/dashboard/dashboard.css.ts` executes `globalStyle('html, body', ...)` and `globalStyle('#root', ...)` at module load time in the same file that exports reusable classes like `panel`, `panelHeader`, and `panelBody`.",
+          "The visualization panels currently bypass those shared panel styles and use their own inline styles, which means the module is simultaneously trying to be a global shell stylesheet and a reusable component-style library.",
+          "That mixed role makes the dashboard\u2019s top-level styling boundary unclear: importing dashboard styles is not just opting into classes, it also imposes page-wide behavior through import-time side effects."
+        ],
+        "suggestion": "Move app-shell globals into a dedicated entry stylesheet loaded once by the dashboard root, and keep `dashboard.css.ts` focused on explicit component class exports that leaf panels can consume without also mutating document-level styling.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::error_consistency::silent_dashboard_transport_failures::0375bfbf": {
+      "id": "review::.::holistic::error_consistency::silent_dashboard_transport_failures::0375bfbf",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The dashboard hook swallows transport and parsing failures, turning backend faults into empty-but-valid data.",
+      "detail": {
+        "holistic": true,
+        "dimension": "error_consistency",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/server/start.ts"
+        ],
+        "evidence": [
+          "`useTelemetry` ignores malformed WebSocket payloads with a bare `catch` in `ws.onmessage` (lines 24-36).",
+          "Every REST helper in `useTelemetry` catches broadly and returns default values like `[]` or `{ segments: [] }` without checking `res.ok` (for example lines 51-75, 77-147, 151-261).",
+          "`start.ts` logs startup failures and exits at lines 14-16, so the server boundary is fail-fast while the client boundary is fail-silent for the same subsystem."
+        ],
+        "suggestion": "Introduce a shared dashboard request helper that checks `res.ok`, preserves the original error, and returns a typed `{ data, error }` or raises a domain-specific error. Keep fallback defaults only at the final rendering boundary, and surface WebSocket parse failures through logging or explicit connection/error state.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::mid_level_elegance::endpoint_mirror_hook_surface::0fd6662b": {
+      "id": "review::.::holistic::mid_level_elegance::endpoint_mirror_hook_surface::0fd6662b",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "`useTelemetry` mirrors backend endpoints one function at a time, forcing consumers to orchestrate integration details instead of consuming a cohesive dashboard data boundary.",
+      "detail": {
+        "holistic": true,
+        "dimension": "mid_level_elegance",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/server/start.ts"
+        ],
+        "evidence": [
+          "`useTelemetry` returns more than a dozen narrowly scoped fetch callbacks (`fetchToolCalls`, `fetchLatencyStats`, `fetchEvalTimeseries`, `fetchDriftSummary`, etc.) at lines 277-307.",
+          "The same hook mixes stateful concerns (`events`, `sessions`, `connected`) with raw endpoint wrappers and one-off fallback shaping (`fetchLatestBreakdown` returns `{ segments: [] }`, others return raw JSON) at lines 6-120 and 277-307.",
+          "`start.ts` stays as a single-purpose process entrypoint, so the seam complexity in this batch is concentrated in the dashboard hook rather than being distributed across clear collaborators."
+        ],
+        "suggestion": "Refactor the hook around a smaller client boundary, for example a typed dashboard service or session-scoped query object that groups related session data and performs response normalization in one place. Expose higher-level operations such as `loadSessionDashboard(sessionId)` and `refreshDerivedViews(sessionId, eventTypes)` rather than endpoint-by-endpoint fetch wrappers.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::abstraction_fitness::hidden_config_io_factory::dc96bc08": {
+      "id": "review::.::holistic::abstraction_fitness::hidden_config_io_factory::dc96bc08",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The SDK's config-driven RAG factory hides ambient filesystem I/O behind a helper that reads like a pure constructor.",
+      "detail": {
+        "holistic": true,
+        "dimension": "abstraction_fitness",
+        "related_files": [
+          "src/sdk/rag.ts",
+          "src/shared/config.ts",
+          "src/server/index.ts",
+          "src/server/cli.ts"
+        ],
+        "evidence": [
+          "`createRagTracersFromConfig()` in `src/sdk/rag.ts` unconditionally calls `loadConfig()`, which walks parent directories from `process.cwd()` and logs to the console from `src/shared/config.ts`.",
+          "The same config-loading policy is also embedded in the server boot path (`src/server/index.ts` and `src/server/cli.ts`), so config discovery is duplicated across runtime boundaries instead of being an explicit dependency passed in once."
+        ],
+        "suggestion": "Split config discovery from object construction: keep `loadConfig()` as an explicit server/CLI concern, and make the SDK factory accept `RagProviderConfig[]` or an `AirConfig` object directly. If a convenience loader is kept, name it as an I/O helper and isolate its logging so callers can opt into that behavior.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::abstraction_fitness::duplicate_server_entrypoints::42ea55fe": {
+      "id": "review::.::holistic::abstraction_fitness::duplicate_server_entrypoints::42ea55fe",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Two server boot wrappers expose different startup contracts around the same `createServer()` core.",
+      "detail": {
+        "holistic": true,
+        "dimension": "abstraction_fitness",
+        "related_files": [
+          "src/server/start.ts",
+          "src/server/cli.ts",
+          "src/server/index.ts",
+          "src/shared/config.ts"
+        ],
+        "evidence": [
+          "`src/server/start.ts` hard-codes port `5200`, host `0.0.0.0`, and bypasses config/redaction handling entirely.",
+          "`src/server/cli.ts` performs config loading, argument parsing, redaction selection, and richer startup reporting before calling the same `createServer()` function, so the extra wrapper in `start.ts` is a divergent duplicate rather than a meaningful abstraction."
+        ],
+        "suggestion": "Collapse startup into one supported entrypoint or extract a shared boot helper that both wrappers call with the same options model. If `start.ts` only exists for local dev, make it delegate to the CLI boot path instead of re-implementing defaults.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::mid_level_elegance::drift_api_leaks_storage_shape::6e29d1fc": {
+      "id": "review::.::holistic::mid_level_elegance::drift_api_leaks_storage_shape::6e29d1fc",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Drift data crosses the DB-to-UI seam as raw SQL column names, coupling the dashboard directly to table layout.",
+      "detail": {
+        "holistic": true,
+        "dimension": "mid_level_elegance",
+        "related_files": [
+          "src/db/queries.ts",
+          "src/dashboard/visualizations/DriftPanel.tsx",
+          "src/server/index.ts"
+        ],
+        "evidence": [
+          "`getDriftEvents()` and `getDriftSummary()` in `src/db/queries.ts` return `SELECT *`/snake_case rows such as `current_val`, `deviation_pct`, `window_size`, and `session_id`.",
+          "`src/dashboard/visualizations/DriftPanel.tsx` re-declares those DB-shaped interfaces locally and renders them directly, so any schema rename in storage becomes a frontend change even though the server already owns the API boundary in `src/server/index.ts`."
+        ],
+        "suggestion": "Introduce a drift DTO at the query or server layer with camelCase field names and domain semantics, and have the dashboard consume that mapped shape. That keeps SQL naming localized to storage concerns and gives the API room to evolve independently of SQLite schema details.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::mid_level_elegance::server_index_is_integration_hub::9f2e930d": {
+      "id": "review::.::holistic::mid_level_elegance::server_index_is_integration_hub::9f2e930d",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "`createServer()` concentrates unrelated orchestration concerns into one integration hub with no internal seams.",
+      "detail": {
+        "holistic": true,
+        "dimension": "mid_level_elegance",
+        "related_files": [
+          "src/server/index.ts",
+          "src/server/cli.ts",
+          "src/collector/index.ts"
+        ],
+        "evidence": [
+          "`src/server/index.ts` owns provider registry state, event ingestion, drift emission, static dashboard discovery, websocket endpoints, session APIs, provider APIs, RAG shim APIs, and health/config reporting in a single function.",
+          "Because that orchestration is centralized, changes in collector semantics (`src/collector/index.ts`) or boot/config behavior (`src/server/cli.ts`) both force edits into the same server file instead of isolated route or service modules."
+        ],
+        "suggestion": "Extract the server into explicit collaborators: an ingestion service, provider registry, route modules, and transport adapters for websocket/HTTP. Keep `createServer()` as composition only so each boundary can evolve without expanding a single hub file.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::low_level_elegance::drift_baseline_uses_current_sample::048c00dc": {
+      "id": "review::.::holistic::low_level_elegance::drift_baseline_uses_current_sample::048c00dc",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The drift detector mutates its rolling window before evaluating drift, which dilutes every spike against itself.",
+      "detail": {
+        "holistic": true,
+        "dimension": "low_level_elegance",
+        "related_files": [
+          "src/shared/drift.ts",
+          "src/shared/drift.test.ts",
+          "src/server/index.ts"
+        ],
+        "evidence": [
+          "In `src/shared/drift.ts`, `check()` pushes `value` into `window.values` and updates `window.sum` before computing `baseline` and `deviationPct`, so the candidate event is included in the baseline it is being judged against.",
+          "`src/shared/drift.test.ts` asserts severities produced by that diluted baseline instead of asserting against the prior window, so the current tests reinforce the misleading threshold behavior that `src/server/index.ts` relies on for live alerts."
+        ],
+        "suggestion": "Compute drift against the pre-existing window, then append the new sample after classification. Update the tests to build a baseline window first and assert severities against the untouched baseline so threshold meanings remain stable.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::authorization_consistency::missing_server_auth_boundary::88d66698": {
+      "id": "review::.::holistic::authorization_consistency::missing_server_auth_boundary::88d66698",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The server exposes all telemetry read/write surfaces without any authentication boundary.",
+      "detail": {
+        "holistic": true,
+        "dimension": "authorization_consistency",
+        "related_files": [
+          "src/server/index.ts",
+          "src/server/cli.ts",
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/collector/index.ts"
+        ],
+        "evidence": [
+          "`src/server/index.ts` registers every API and both WebSocket endpoints with direct handlers only; there is no shared auth middleware, route-level `preHandler`, API key check, or distinction between public and privileged routes.",
+          "The default CLI host in `src/server/cli.ts` is `0.0.0.0`, so the anonymous API is reachable off-box unless operators override it.",
+          "Dashboard and collector clients in `src/dashboard/hooks/useTelemetry.ts` and `src/collector/index.ts` call the server anonymously, which confirms that session listings, raw event streams, and ingest endpoints are all currently treated as open access."
+        ],
+        "suggestion": "Introduce a single server-side auth layer before route registration: require an API key or signed token for collector/ingest routes, separate a read-only dashboard credential from write-capable ingestion credentials, and leave only `/api/health` explicitly unauthenticated. Apply the policy through grouped route plugins so new endpoints inherit it by default.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::authorization_consistency::anonymous_mutation_endpoints_allow_spoofed_data::97738447": {
+      "id": "review::.::holistic::authorization_consistency::anonymous_mutation_endpoints_allow_spoofed_data::97738447",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Anonymous callers can inject fabricated telemetry and mutate provider registry state.",
+      "detail": {
+        "holistic": true,
+        "dimension": "authorization_consistency",
+        "related_files": [
+          "src/server/index.ts",
+          "src/db/queries.ts",
+          "src/dashboard/visualizations/ProviderRegistryPanel.tsx"
+        ],
+        "evidence": [
+          "`src/server/index.ts` accepts raw bodies on `/api/ingest`, `/api/ingest/batch`, `/api/rag/retrieval`, `/api/rag/embedding`, `/api/rag/index`, and `/api/providers/rag` and immediately persists or mutates in-memory provider state.",
+          "`ingestAndBroadcast()` auto-registers unknown providers from incoming events, so any unauthenticated caller can create provider entries just by posting crafted `rag_*` or `mcp_*` events.",
+          "`src/db/queries.ts` persists the forwarded events directly, meaning spoofed sessions, providers, costs, and drift data become indistinguishable from trusted collector output once written."
+        ],
+        "suggestion": "Require authenticated writer identities for all mutation endpoints, then split ingestion into validated DTOs per caller type instead of accepting raw `TelemetryEvent` objects. Disable auto-registration from anonymous event content; only allow provider creation through an authenticated admin path or startup config.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::mid_level_elegance::transport_to_storage_handoff_has_no_policy_seam::5550843f": {
+      "id": "review::.::holistic::mid_level_elegance::transport_to_storage_handoff_has_no_policy_seam::5550843f",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Request handlers pass anonymous transport payloads straight into storage and runtime state with no normalization seam.",
+      "detail": {
+        "holistic": true,
+        "dimension": "mid_level_elegance",
+        "related_files": [
+          "src/server/index.ts",
+          "src/db/queries.ts",
+          "src/shared/events.ts"
+        ],
+        "evidence": [
+          "Handlers in `src/server/index.ts` cast `req.body` and `req.query` directly (`as TelemetryEvent`, `as RagProviderConfig`, `as any`) and then call `ingestAndBroadcast()`, `ragProviders.set()`, or store getters without an intermediate boundary object.",
+          "`ingestAndBroadcast()` combines redaction, persistence, provider bookkeeping, drift generation, and dashboard broadcast, so the only seam between external callers and internal state is a single untyped event object.",
+          "`src/db/queries.ts` depends on event-type-specific JSON fields already being trustworthy, which means validation, authorization, and shape translation were never given a dedicated integration layer."
+        ],
+        "suggestion": "Refactor the server into route groups with explicit ingress services: one for dashboard reads, one for collector/event writes, and one for admin/provider operations. Each ingress service should authenticate the caller, validate a route-specific DTO, translate it into an internal command/event, and only then call storage/broadcast code.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::ai_generated_debt::thin_wrapper_tracer_surface::8f03b7ff": {
+      "id": "review::.::holistic::ai_generated_debt::thin_wrapper_tracer_surface::8f03b7ff",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "MCP and RAG helpers are mostly pass-through shells over AirClient",
+      "detail": {
+        "holistic": true,
+        "dimension": "ai_generated_debt",
+        "related_files": [
+          "src/sdk/mcp.ts",
+          "src/sdk/rag.ts"
+        ],
+        "evidence": [
+          "`createMcpTracer()` returns `traceToolCall`, `traceResourceRead`, `tracePromptGet`, `emit`, and `close`, each forwarding almost directly to `AirClient` with only fixed string literals.",
+          "`createRagTracer()` does the same for `traceRetrieval`, `traceEmbedding`, `traceIndex`, `trace`, `emit`, and `close`, so most of the file is wrapper ceremony rather than domain logic.",
+          "The duplicated wrapper style across both files points to a missing shared pattern for provider-specific tracing helpers rather than two independently justified APIs."
+        ],
+        "suggestion": "Collapse these hand-written forwarding objects into one smaller abstraction: either expose `AirClient` directly with provider-bound factory helpers, or extract a shared builder that declares only the genuinely different method mappings per subsystem.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::incomplete_migration::rag_default_model_migration_stalled::7492ce5f": {
+      "id": "review::.::holistic::incomplete_migration::rag_default_model_migration_stalled::7492ce5f",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Config-driven embedding defaults are wired in but unusable through the declared API",
+      "detail": {
+        "holistic": true,
+        "dimension": "incomplete_migration",
+        "related_files": [
+          "src/sdk/rag.ts",
+          "src/shared/config.ts"
+        ],
+        "evidence": [
+          "`createRagTracersFromConfig()` copies `provider.embeddingModel` into `defaultEmbeddingModel`, implying callers should be able to omit the model when using config-backed tracers.",
+          "`traceEmbedding()` still requires `model: string`, so normal TypeScript callers must always provide a model and never benefit from the config default.",
+          "The fallback expression `model ?? options?.defaultEmbeddingModel ?? 'unknown'` shows an unfinished migration from explicit model passing to config-derived defaults."
+        ],
+        "suggestion": "Finish the migration in one direction: either make `traceEmbedding(model, ...)` honestly require a model and remove `defaultEmbeddingModel`, or change the signature to allow omission and resolve the model from config before tracing.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::incomplete_migration::dual_config_filename_shim_has_no_end_state::bec594ca": {
+      "id": "review::.::holistic::incomplete_migration::dual_config_filename_shim_has_no_end_state::bec594ca",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Two config filename conventions remain active without a clear canonical endpoint",
+      "detail": {
+        "holistic": true,
+        "dimension": "incomplete_migration",
+        "related_files": [
+          "src/shared/config.ts",
+          "src/sdk/rag.ts"
+        ],
+        "evidence": [
+          "`CONFIG_FILENAMES` in `src/shared/config.ts` searches both `.air.json` and `air.config.json`.",
+          "`src/sdk/rag.ts` examples and prose describe `.air.json` as the config source, not the two-file compatibility mode.",
+          "Keeping both names live without deprecation or precedence guidance leaves migration debt in the runtime contract and documentation."
+        ],
+        "suggestion": "Pick one canonical filename, document it consistently, and treat the other as an explicitly deprecated compatibility path with a warning and planned removal date, or remove the shim if external support is no longer required.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::low_level_elegance::config_loader_has_hidden_console_side_effects::8d321428": {
+      "id": "review::.::holistic::low_level_elegance::config_loader_has_hidden_console_side_effects::8d321428",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Low-level config loading performs unsolicited logging and silent fallback on every read",
+      "detail": {
+        "holistic": true,
+        "dimension": "low_level_elegance",
+        "related_files": [
+          "src/shared/config.ts",
+          "src/sdk/rag.ts"
+        ],
+        "evidence": [
+          "`loadConfig()` logs successful loads with `console.log` and parse failures with `console.warn`, even though it is a shared library helper rather than a CLI entrypoint.",
+          "On parse failure it returns `{}` after warning, so callers like `createRagTracersFromConfig()` quietly degrade to an empty tracer map instead of letting the caller choose how to handle bad config.",
+          "Because `createRagTracersFromConfig()` calls `loadConfig()` internally, simply constructing SDK helpers can emit stdout noise and hide broken configuration."
+        ],
+        "suggestion": "Keep `loadConfig()` side-effect free: return `{ config, path }` or throw a typed error, and move all user-facing logging/warning decisions to CLI/server entrypoints that can choose the right behavior.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::package_organization::visualizations_flat_overload::80659741": {
+      "id": "review::.::holistic::package_organization::visualizations_flat_overload::80659741",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The dashboard visualization package is overloaded with unrelated chart and panel types instead of feature-oriented subfolders.",
+      "detail": {
+        "holistic": true,
+        "dimension": "package_organization",
+        "related_files": [
+          "src/dashboard/visualizations/ActivitySparklines.tsx",
+          "src/dashboard/visualizations/ContextTreemap.tsx",
+          "src/dashboard/visualizations/ContextUtilizationChart.tsx"
+        ],
+        "evidence": [
+          "The assigned files all live in `src/dashboard/visualizations`, which already contains more than 10 siblings spanning context charts, latency/cost panels, provider registry UI, and tool waterfalls.",
+          "`DashboardPage.tsx` imports these context/activity views from the same flat folder as unrelated panels, so navigation is by filename recall rather than by feature area.",
+          "The three assigned files share page-level concern boundaries around context/activity monitoring, but their placement does not reflect that affinity."
+        ],
+        "suggestion": "Stage the reorg by first creating `src/dashboard/visualizations/context/` and `src/dashboard/visualizations/activity/`, then move `ContextTreemap.tsx` and `ContextUtilizationChart.tsx` into `context/`, move `ActivitySparklines.tsx` into `activity/`, update imports in the page, and validate with `rg -n \"visualizations/(ContextTreemap|ContextUtilizationChart|ActivitySparklines)\" src` followed by the project test/build command used for the dashboard.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::package_organization::shared_bucket_blurs_runtime_boundaries::755f4ac0": {
+      "id": "review::.::holistic::package_organization::shared_bucket_blurs_runtime_boundaries::755f4ac0",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "`src/shared` is a catch-all package that mixes portable contracts, server-only config loading, analytics logic, and tests under one misleading boundary.",
+      "detail": {
+        "holistic": true,
+        "dimension": "package_organization",
+        "related_files": [
+          "src/shared/config.ts",
+          "src/shared/drift.ts",
+          "src/shared/drift.test.ts"
+        ],
+        "evidence": [
+          "`src/shared/config.ts` imports `node:fs` and `node:path`, searches parent directories, and reads `.air.json`, which makes it host-environment/server code rather than generally shared domain code.",
+          "`src/shared/drift.ts` is runtime analytics state and `src/shared/drift.test.ts` is test-only code, yet both live beside the config loader under the same package name.",
+          "Adjacent imports show the ambiguity leaking outward: dashboard code imports shared event contracts, server code imports shared config and drift, and SDK-adjacent code imports shared config for factory creation."
+        ],
+        "suggestion": "Stage the reorg by creating `src/core/telemetry/` for portable contracts, `src/server/config/` for file-backed config loading, and `src/server/analytics/` for drift detection; move `drift.ts` after the new analytics folder exists, move `config.ts` next, relocate `drift.test.ts` under a mirrored test folder such as `src/server/analytics/__tests__/` or the repo test convention, then update imports with `rg -n \"shared/(config|drift|events)\" src` and validate using the repository test/build commands.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::high_level_elegance::sdk_public_surface_crosses_host_specific_layers::236ee72a": {
+      "id": "review::.::holistic::high_level_elegance::sdk_public_surface_crosses_host_specific_layers::236ee72a",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The SDK entry surface presents a single embeddable package even though parts of that surface depend on host-local config discovery outside the SDK boundary.",
+      "detail": {
+        "holistic": true,
+        "dimension": "high_level_elegance",
+        "related_files": [
+          "src/sdk/index.ts",
+          "src/sdk/client.ts",
+          "src/shared/config.ts"
+        ],
+        "evidence": [
+          "`src/sdk/client.ts` and `src/sdk/mcp.ts` are transport/instrumentation primitives that can plausibly belong to a portable SDK package.",
+          "`src/sdk/index.ts` re-exports the full SDK surface, and adjacent `src/sdk/rag.ts` brings in `loadConfig` from `src/shared/config.ts`, which is implemented with filesystem and cwd scanning.",
+          "That makes the top-level SDK namespace mix pure client primitives with environment-coupled convenience factories, so the package role is not honest about what belongs to the SDK versus host integration."
+        ],
+        "suggestion": "Stage the reorg by keeping `src/sdk/client.ts` and `src/sdk/mcp.ts` in a portable `src/sdk/core/` area, move config-driven helpers behind a separate `src/sdk/factories/` or `src/integrations/configured-sdk/` entry point, update `src/sdk/index.ts` to export only the portable core first, then add an explicit secondary entry for config-backed factories; verify with `rg -n \"from '../shared/config'|from './rag'|from '@hydrotik/air/sdk'\" src` and the package build/tests to ensure imports and published entry points stay correct.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::api_surface_coherence::dashboard_api_contract_fragmentation::2f48a27f": {
+      "id": "review::.::holistic::api_surface_coherence::dashboard_api_contract_fragmentation::2f48a27f",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The dashboard consumes SQL-shaped JSON directly, so the public API contract is split across queries, routes, and individual panels instead of being defined once.",
+      "detail": {
+        "holistic": true,
+        "dimension": "api_surface_coherence",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/db/queries.ts",
+          "src/server/index.ts",
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx"
+        ],
+        "evidence": [
+          "`useTelemetry()` returns raw `await res.json()` for nearly every endpoint and does not publish typed response models for the rest of the dashboard to rely on.",
+          "`TelemetryStore` query methods expose backend column aliases such as `server_name`, `tool_name`, `avg_ms`, `tokens_used`, and `context_window`, and the panels re-declare matching local interfaces instead of importing a shared DTO.",
+          "The `/api/sessions/:id/context/latest` route returns `{ ...row, breakdown: [...] }`, while the hook's fallback returns `{ segments: [] }`, showing that even one endpoint's shape is already ambiguous at the boundary."
+        ],
+        "suggestion": "Introduce a shared dashboard API contract layer: define response DTOs in one module, map DB rows to those DTOs inside `src/server/index.ts` or a dedicated presenter, and have `useTelemetry()` return typed results instead of raw JSON.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::api_surface_coherence::silent_empty_fallbacks_hide_request_failures::33507443": {
+      "id": "review::.::holistic::api_surface_coherence::silent_empty_fallbacks_hide_request_failures::33507443",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Dashboard fetch helpers collapse transport errors into empty data, so callers cannot distinguish 'no telemetry yet' from 'API failed'.",
+      "detail": {
+        "holistic": true,
+        "dimension": "api_surface_coherence",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/server/index.ts",
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx"
+        ],
+        "evidence": [
+          "In `useTelemetry.ts`, methods such as `fetchSessionEvents`, `fetchToolStats`, `fetchMcpStats`, `fetchRagStats`, `fetchDriftEvents`, and many others `catch` and return `[]`; `fetchLatestBreakdown` returns `{ segments: [] }` on failure.",
+          "The corresponding routes in `src/server/index.ts` legitimately return empty arrays or empty objects for valid states, so the fallback values are indistinguishable from a healthy-but-empty response.",
+          "Panels like `McpStatsPanel` and `RagStatsPanel` render 'No ... recorded' for empty arrays, which means backend outages are rendered as lack of activity instead of an error state."
+        ],
+        "suggestion": "Change the hook helpers to return an explicit result shape such as `{ ok: true, data } | { ok: false, error }`, or at minimum surface a per-request error flag so empty telemetry and failed requests remain distinguishable.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::api_surface_coherence::sdk_semantic_fields_are_overloaded::9b32624d": {
+      "id": "review::.::holistic::api_surface_coherence::sdk_semantic_fields_are_overloaded::9b32624d",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The SDK writes unrelated identifiers into `model`, which corrupts downstream prompt and latency aggregations that assume `model` really means model.",
+      "detail": {
+        "holistic": true,
+        "dimension": "api_surface_coherence",
+        "related_files": [
+          "src/sdk/client.ts",
+          "src/shared/events.ts",
+          "src/db/queries.ts",
+          "src/sdk/rag.ts",
+          "src/sdk/mcp.ts"
+        ],
+        "evidence": [
+          "`ratePrompt()` in `src/sdk/client.ts` emits `model: this.provider`, even though `PromptRatingEvent` in `src/shared/events.ts` defines `model` and `provider` as separate semantic fields.",
+          "`traceMcp()` and `traceRetrieval()` auto-record latency with `recordLatency('api_call', durationMs, { model: serverName })` and `{ model: source }`, so non-model identifiers are stored in the latency model column.",
+          "`getPromptVariantComparison()` and `getLatencyStats()` in `src/db/queries.ts` group and label results by `model`, so provider names, MCP server names, and RAG source names become indistinguishable from actual LLM models in the reported API surface."
+        ],
+        "suggestion": "Stop overloading `model` for non-model concepts. Add explicit fields for source/system identity in the emitted event payloads or make the latency/prompt helpers require real `model` and `provider` inputs before populating those columns.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::api_surface_coherence::tracer_failure_contracts_diverge::cbb03ab6": {
+      "id": "review::.::holistic::api_surface_coherence::tracer_failure_contracts_diverge::cbb03ab6",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Peer tracer methods in the SDK have incompatible success and failure telemetry behavior, so the tracing API is not predictable to consumers.",
+      "detail": {
+        "holistic": true,
+        "dimension": "api_surface_coherence",
+        "related_files": [
+          "src/sdk/client.ts",
+          "src/sdk/rag.ts",
+          "src/sdk/index.ts"
+        ],
+        "evidence": [
+          "`traceMcp()` and `traceRetrieval()` both catch failures, emit error telemetry, and rethrow.",
+          "`traceEmbedding()` and `traceIndex()` directly await `fn()` and emit only on success, so failed embedding/index operations disappear from telemetry entirely.",
+          "`createRagTracer()` in `src/sdk/rag.ts` exposes `traceRetrieval`, `traceEmbedding`, and `traceIndex` as same-level API methods, but they do not share a consistent contract for emitted events or failure observability."
+        ],
+        "suggestion": "Normalize all trace helpers to the same contract: emit start/end or success/error telemetry for every traced operation, and document whether automatic latency events are included. If one operation type intentionally differs, expose it under a distinct API name.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::design_coherence::dashboard_visualizations_form_style_islands::16f6e430": {
+      "id": "review::.::holistic::design_coherence::dashboard_visualizations_form_style_islands::16f6e430",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "The dashboard\u2019s visualization layer uses incompatible styling and composition patterns, so presentation changes require many one-off edits instead of flowing through shared primitives.",
+      "detail": {
+        "holistic": true,
+        "dimension": "design_coherence",
+        "related_files": [
+          "src/dashboard/dashboard.css.ts",
+          "src/dashboard/visualizations/McpStatsPanel.tsx",
+          "src/dashboard/visualizations/RagStatsPanel.tsx",
+          "src/dashboard/visualizations/ActivitySparklines.tsx",
+          "src/dashboard/visualizations/ContextUtilizationChart.tsx",
+          "src/dashboard/visualizations/DriftPanel.tsx"
+        ],
+        "evidence": [
+          "`src/dashboard/dashboard.css.ts` defines shared shell, panel, header, body, and event-feed styles backed by tokens, but the visualization components hardcode their own `fontFamily`, `rgba(...)` palette, spacing, and borders inline.",
+          "`McpStatsPanel` and `RagStatsPanel` hand-roll nearly identical table layouts independently instead of sharing a common stats-table primitive.",
+          "`DriftPanel` uses the design-system `DataGrid`, while `ActivitySparklines` and `ContextUtilizationChart` use bespoke inline-rendered widgets with unrelated color and typography conventions, creating multiple structural patterns for the same dashboard area."
+        ],
+        "suggestion": "Create a small shared visualization kit for this dashboard: token-backed typography/color helpers plus a reusable stats-table/panel shell. Then migrate the existing panels onto those primitives so visual changes and accessibility fixes land once.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::cross_module_architecture::session_cost_double_count::49cd6e16": {
+      "id": "review::.::holistic::cross_module_architecture::session_cost_double_count::49cd6e16",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Collector and store both count the same spend twice in session totals",
+      "detail": {
+        "holistic": true,
+        "dimension": "cross_module_architecture",
+        "related_files": [
+          "src/collector/index.ts",
+          "src/db/queries.ts",
+          "src/dashboard/pages/DashboardPage.tsx"
+        ],
+        "evidence": [
+          "The collector sends a `token_usage` event carrying `u.cost` and then sends a separate `cost` event for the same assistant turn in [src/collector/index.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/collector/index.ts).",
+          "`TelemetryStore.ingestEvent()` adds `e.cost.total` to `sessions.total_cost` for `token_usage` and adds `e.totalCost` again for `cost` in [src/db/queries.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/db/queries.ts).",
+          "`DashboardPage` renders `activeSession.totalCost` as the KPI, so the double-counted storage value is shown directly in the UI in [src/dashboard/pages/DashboardPage.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/pages/DashboardPage.tsx)."
+        ],
+        "suggestion": "Choose one canonical accounting path. Either keep `token_usage.cost` purely informational and stop mutating `sessions.total_cost` from that event, or stop emitting a separate `cost` event from the collector when token usage already carries priced totals. Then backfill or invalidate old session totals so historical dashboards are not permanently inflated.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::low_level_elegance::dashboard_session_events_reduplicated::7a3664eb": {
+      "id": "review::.::holistic::low_level_elegance::dashboard_session_events_reduplicated::7a3664eb",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "DashboardPage re-appends the full session event history on every websocket update",
+      "detail": {
+        "holistic": true,
+        "dimension": "low_level_elegance",
+        "related_files": [
+          "src/dashboard/pages/DashboardPage.tsx",
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/dashboard/visualizations/TokenFlowChart.tsx"
+        ],
+        "evidence": [
+          "`useTelemetry()` stores `events` as the rolling full websocket history in [src/dashboard/hooks/useTelemetry.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/hooks/useTelemetry.ts).",
+          "`DashboardPage` filters that whole array by `activeSessionId` and then does `setSessionEvents((prev) => [...prev, ...relevant])` whenever `events` changes, so each new event re-appends all previously relevant events in [src/dashboard/pages/DashboardPage.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/pages/DashboardPage.tsx).",
+          "`TokenFlowChart` derives its series by filtering `sessionEvents`, so duplicated local history inflates chart rows and any other session-scoped visualization that trusts this state in [src/dashboard/visualizations/TokenFlowChart.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/visualizations/TokenFlowChart.tsx)."
+        ],
+        "suggestion": "Replace the append logic with a derivation that only adds newly seen event IDs for the active session, or stop storing `sessionEvents` separately and derive it from the fetched base plus incremental websocket deltas keyed by event ID.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::error_consistency::dashboard_swallows_server_failures::98c5d049": {
+      "id": "review::.::holistic::error_consistency::dashboard_swallows_server_failures::98c5d049",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The API and dashboard collapse real failures into empty-data states",
+      "detail": {
+        "holistic": true,
+        "dimension": "error_consistency",
+        "related_files": [
+          "src/server/index.ts",
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/dashboard/pages/DashboardPage.tsx"
+        ],
+        "evidence": [
+          "The server returns mixed ad hoc error payloads like `{ error: 'Session not found' }` and `{ ok: false, error: String(err) }` without status-code distinctions in [src/server/index.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/server/index.ts).",
+          "Every dashboard fetch helper catches and returns `[]` or a dummy object in [src/dashboard/hooks/useTelemetry.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/hooks/useTelemetry.ts), so missing resources, parse failures, and transport errors all look identical to the UI.",
+          "`DashboardPage` uses those fallbacks as if they were authoritative empty datasets, which turns real server failures into silent empty panels in [src/dashboard/pages/DashboardPage.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/pages/DashboardPage.tsx)."
+        ],
+        "suggestion": "Standardize the API on explicit HTTP status codes plus one error envelope shape, and have `useTelemetry()` surface `{ data, error, loading }` per resource instead of converting failures into empty arrays. That lets panels render true empty states only when the request succeeded with no data.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::abstraction_fitness::dashboard_hook_is_a_pass_through_bag::c733bd4a": {
+      "id": "review::.::holistic::abstraction_fitness::dashboard_hook_is_a_pass_through_bag::c733bd4a",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "useTelemetry adds a boundary but leaves all orchestration complexity in the page",
+      "detail": {
+        "holistic": true,
+        "dimension": "abstraction_fitness",
+        "related_files": [
+          "src/dashboard/hooks/useTelemetry.ts",
+          "src/dashboard/pages/DashboardPage.tsx"
+        ],
+        "evidence": [
+          "`useTelemetry()` exports websocket state plus more than a dozen endpoint-specific callbacks in [src/dashboard/hooks/useTelemetry.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/hooks/useTelemetry.ts), but it does not assemble session-scoped dashboard data.",
+          "`DashboardPage` still owns separate state for events, tool calls, context snapshots, breakdown, MCP, RAG, latency, cost, evals, prompts, drift, and timeseries in [src/dashboard/pages/DashboardPage.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/pages/DashboardPage.tsx).",
+          "The hook/page split therefore introduces indirection while preserving the full fetch choreography, refresh policy, and data-shape patching in the consumer."
+        ],
+        "suggestion": "Refactor the dashboard data layer around one session-scoped hook such as `useSessionDashboard(sessionId)` that owns resource loading, incremental refresh, and normalized return types. Keep the websocket connection in `useTelemetry()`, but move panel-level resource orchestration behind typed selectors so `DashboardPage` becomes composition instead of transport glue.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::authorization_consistency::network_exposed_mutation_endpoints_have_no_gate::a61b1583": {
+      "id": "review::.::holistic::authorization_consistency::network_exposed_mutation_endpoints_have_no_gate::a61b1583",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The server exposes write endpoints to any reachable origin without authentication",
+      "detail": {
+        "holistic": true,
+        "dimension": "authorization_consistency",
+        "related_files": [
+          "src/server/index.ts",
+          "src/server/cli.ts",
+          "src/server/start.ts"
+        ],
+        "evidence": [
+          "The CLI binds to `0.0.0.0` by default in [src/server/cli.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/server/cli.ts), and the alternate launcher does the same in [src/server/start.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/server/start.ts).",
+          "The server enables `cors({ origin: true })` and accepts unauthenticated writes on `/api/ingest`, `/api/ingest/batch`, `/api/rag/*`, and `/api/providers/rag` in [src/server/index.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/server/index.ts).",
+          "Because there is no shared auth or shared-origin check, any browser origin or host on the reachable network can inject telemetry, create fake providers, or poison the local dashboard dataset."
+        ],
+        "suggestion": "Add a single ingress policy for all mutating routes: require a bearer token or local-only bind by default, restrict CORS to an explicit allowlist, and apply the same guard to websocket collector ingress plus every POST route. If this server is intentionally single-user, invert the defaults so `127.0.0.1` is the default host and remote exposure requires an explicit flag.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "review::.::holistic::incomplete_migration::context_taxonomy_and_boot_paths_are_half_migrated::a984e202": {
+      "id": "review::.::holistic::incomplete_migration::context_taxonomy_and_boot_paths_are_half_migrated::a984e202",
+      "detector": "review",
+      "file": ".",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "The codebase still carries both old and new context and startup protocols",
+      "detail": {
+        "holistic": true,
+        "dimension": "incomplete_migration",
+        "related_files": [
+          "src/shared/events.ts",
+          "src/collector/index.ts",
+          "src/dashboard/visualizations/ContextTreemap.tsx",
+          "src/server/cli.ts",
+          "src/server/start.ts"
+        ],
+        "evidence": [
+          "`ContextSegment` documents new fine-grained categories and explicitly labels `system_prompt`, `context_files`, `skills`, and `tool_results` as legacy in [src/shared/events.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/shared/events.ts).",
+          "`ContextTreemap` still dedicates palette entries to both generations in [src/dashboard/visualizations/ContextTreemap.tsx](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/dashboard/visualizations/ContextTreemap.tsx), while the collector continues emitting the coarse legacy buckets in [src/collector/index.ts](/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/src/collector/index.ts).",
+          "`src/server/start.ts` is a second bootstrap path beside the richer `src/server/cli.ts`, which indicates the startup surface was not fully consolidated."
+        ],
+        "suggestion": "Finish the migration in two passes. First, update the collector to emit the new category taxonomy and keep a temporary mapping layer in the treemap so old stored events still render. Second, remove `src/server/start.ts` after redirecting all package entrypoints to `cli.ts`. Validate by running `rg -n \"system_prompt|context_files|skills|tool_results|start.ts\" src` and then exercising the dashboard with fresh telemetry to confirm only the new taxonomy and single CLI path remain.",
+        "reasoning": ""
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "logs::src/collector/index.ts::AIr": {
+      "id": "logs::src/collector/index.ts::AIr",
+      "detector": "logs",
+      "file": "src/collector/index.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "1 tagged logs [AIr]",
+      "detail": {
+        "count": 1,
+        "lines": [
+          85
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "logs::src/dashboard/hooks/useTelemetry.ts::AIr": {
+      "id": "logs::src/dashboard/hooks/useTelemetry.ts::AIr",
+      "detector": "logs",
+      "file": "src/dashboard/hooks/useTelemetry.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "1 tagged logs [AIr]",
+      "detail": {
+        "count": 1,
+        "lines": [
+          21
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "logs::src/server/index.ts::AIr": {
+      "id": "logs::src/server/index.ts::AIr",
+      "detector": "logs",
+      "file": "src/server/index.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "7 tagged logs [AIr]",
+      "detail": {
+        "count": 7,
+        "lines": [
+          40,
+          59,
+          141,
+          153,
+          161,
+          166,
+          324
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "logs::src/shared/config.ts::AIr": {
+      "id": "logs::src/shared/config.ts::AIr",
+      "detector": "logs",
+      "file": "src/shared/config.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "2 tagged logs [AIr]",
+      "detail": {
+        "count": 2,
+        "lines": [
+          94,
+          97
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:24+00:00",
+      "last_seen": "2026-03-02T01:44:24+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "unused::src/shared/events.test.ts::model": {
+      "id": "unused::src/shared/events.test.ts::model",
+      "detector": "unused",
+      "file": "src/shared/events.test.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "Unused imports: model",
+      "detail": {
+        "line": 70,
+        "category": "imports"
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:29+00:00",
+      "last_seen": "2026-03-02T01:44:34+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "unused::src/shared/redaction.test.ts::createRedactionConfig": {
+      "id": "unused::src/shared/redaction.test.ts::createRedactionConfig",
+      "detector": "unused",
+      "file": "src/shared/redaction.test.ts",
+      "tier": 1,
+      "confidence": "high",
+      "summary": "Unused imports: createRedactionConfig",
+      "detail": {
+        "line": 1,
+        "category": "imports"
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:29+00:00",
+      "last_seen": "2026-03-02T01:44:29+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "structural::src/db/queries.ts": {
+      "id": "structural::src/db/queries.ts",
+      "detector": "structural",
+      "file": "src/db/queries.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Needs decomposition: large (681 LOC) / complexity score 45",
+      "detail": {
+        "loc": 681,
+        "complexity_score": 45,
+        "complexity_signals": [
+          "17 nested ternaries"
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "structural::src/sdk/client.ts": {
+      "id": "structural::src/sdk/client.ts",
+      "detector": "structural",
+      "file": "src/sdk/client.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Needs decomposition: large (533 LOC)",
+      "detail": {
+        "loc": 533
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "structural::src/shared/events.ts": {
+      "id": "structural::src/shared/events.ts",
+      "detector": "structural",
+      "file": "src/shared/events.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Needs decomposition: large (529 LOC) / complexity score 33",
+      "detail": {
+        "loc": 529,
+        "complexity_score": 33,
+        "complexity_signals": [
+          "36 inline types"
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "structural::src/dashboard/pages/DashboardPage.tsx": {
+      "id": "structural::src/dashboard/pages/DashboardPage.tsx",
+      "detector": "structural",
+      "file": "src/dashboard/pages/DashboardPage.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Needs decomposition: large (513 LOC) / 22 hooks (19 useStates, 22 total hooks)",
+      "detail": {
+        "loc": 513,
+        "hook_total": 22,
+        "hook_reasons": [
+          "19 useStates",
+          "22 total hooks"
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "orphaned::src/server/cli.ts": {
+      "id": "orphaned::src/server/cli.ts",
+      "detector": "orphaned",
+      "file": "src/server/cli.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Orphaned file (76 LOC): zero importers, not an entry point",
+      "detail": {
+        "loc": 76
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "orphaned::src/server/start.ts": {
+      "id": "orphaned::src/server/start.ts",
+      "detector": "orphaned",
+      "file": "src/server/start.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "Orphaned file (17 LOC): zero importers, not an entry point",
+      "detail": {
+        "loc": 17
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "facade::src/shared/index.ts": {
+      "id": "facade::src/shared/index.ts",
+      "detector": "facade",
+      "file": "src/shared/index.ts",
+      "tier": 2,
+      "confidence": "high",
+      "summary": "Re-export facade (4 LOC): imports from ./events, ./redaction, ./drift, +1 (0 importers)",
+      "detail": {
+        "loc": 4,
+        "importers": 0,
+        "imports_from": [
+          "./events",
+          "./redaction",
+          "./drift",
+          "./config"
+        ],
+        "kind": "file"
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "facade::src/index.ts": {
+      "id": "facade::src/index.ts",
+      "detector": "facade",
+      "file": "src/index.ts",
+      "tier": 2,
+      "confidence": "high",
+      "summary": "Re-export facade (3 LOC): imports from ./shared/events, ./sdk (0 importers)",
+      "detail": {
+        "loc": 3,
+        "importers": 0,
+        "imports_from": [
+          "./shared/events",
+          "./sdk"
+        ],
+        "kind": "file"
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "facade::src/db/index.ts": {
+      "id": "facade::src/db/index.ts",
+      "detector": "facade",
+      "file": "src/db/index.ts",
+      "tier": 2,
+      "confidence": "medium",
+      "summary": "Re-export facade (2 LOC): imports from ./schema, ./queries (1 importers)",
+      "detail": {
+        "loc": 2,
+        "importers": 1,
+        "imports_from": [
+          "./schema",
+          "./queries"
+        ],
+        "kind": "file"
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:31+00:00",
+      "last_seen": "2026-03-02T01:44:31+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "responsibility_cohesion::src/db/queries.ts::cohesion::src/db/queries.ts": {
+      "id": "responsibility_cohesion::src/db/queries.ts::cohesion::src/db/queries.ts",
+      "detector": "responsibility_cohesion",
+      "file": "src/db/queries.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "18 disconnected function clusters (32 functions) \u2014 likely mixed responsibilities",
+      "detail": "Clusters: getLatestContextBreakdown, getCostTimeSeries, getDriftEvents, getLatencyStats",
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/server/start.ts::untested_module": {
+      "id": "test_coverage::src/server/start.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/server/start.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (17 LOC, 0 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 17,
+        "importer_count": 0,
+        "loc_weight": 4.123105625617661
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/server/index.ts::untested_module": {
+      "id": "test_coverage::src/server/index.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/server/index.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (499 LOC, 2 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 499,
+        "importer_count": 2,
+        "loc_weight": 22.338307903688676
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/ContextTreemap.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/ContextTreemap.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/ContextTreemap.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (216 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 216,
+        "importer_count": 1,
+        "loc_weight": 14.696938456699069
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/dashboard.css.ts::untested_module": {
+      "id": "test_coverage::src/dashboard/dashboard.css.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/dashboard.css.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (251 LOC, 6 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 251,
+        "importer_count": 6,
+        "loc_weight": 15.84297951775486
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/server/cli.ts::untested_module": {
+      "id": "test_coverage::src/server/cli.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/server/cli.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (76 LOC, 0 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 76,
+        "importer_count": 0,
+        "loc_weight": 8.717797887081348
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/TokenFlowChart.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/TokenFlowChart.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/TokenFlowChart.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (85 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 85,
+        "importer_count": 1,
+        "loc_weight": 9.219544457292887
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/pages/DashboardPage.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/pages/DashboardPage.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/pages/DashboardPage.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (513 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 513,
+        "importer_count": 1,
+        "loc_weight": 22.64950330581225
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/components/KpiCard.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/components/KpiCard.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/components/KpiCard.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (19 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 19,
+        "importer_count": 1,
+        "loc_weight": 4.358898943540674
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/sdk/rag.ts::untested_module": {
+      "id": "test_coverage::src/sdk/rag.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/sdk/rag.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (186 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 186,
+        "importer_count": 1,
+        "loc_weight": 13.638181696985855
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/ToolWaterfall.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/ToolWaterfall.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/ToolWaterfall.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (132 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 132,
+        "importer_count": 1,
+        "loc_weight": 11.489125293076057
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/QualityPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/QualityPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/QualityPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (152 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 152,
+        "importer_count": 1,
+        "loc_weight": 12.328828005937952
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/LatencyPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/LatencyPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/LatencyPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (132 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 132,
+        "importer_count": 1,
+        "loc_weight": 11.489125293076057
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/hooks/useTelemetry.ts::untested_module": {
+      "id": "test_coverage::src/dashboard/hooks/useTelemetry.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/hooks/useTelemetry.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (308 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 308,
+        "importer_count": 1,
+        "loc_weight": 17.549928774784245
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/sdk/client.ts::untested_module": {
+      "id": "test_coverage::src/sdk/client.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/sdk/client.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (533 LOC, 3 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 533,
+        "importer_count": 3,
+        "loc_weight": 23.08679276123039
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/ActivitySparklines.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/ActivitySparklines.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/ActivitySparklines.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (306 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 306,
+        "importer_count": 1,
+        "loc_weight": 17.4928556845359
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/McpStatsPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/McpStatsPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/McpStatsPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (96 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 96,
+        "importer_count": 1,
+        "loc_weight": 9.797958971132712
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/RagStatsPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/RagStatsPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/RagStatsPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (102 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 102,
+        "importer_count": 1,
+        "loc_weight": 10.099504938362077
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/sdk/mcp.ts::untested_module": {
+      "id": "test_coverage::src/sdk/mcp.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/sdk/mcp.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (112 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 112,
+        "importer_count": 1,
+        "loc_weight": 10.583005244258363
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/ProviderRegistryPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/ProviderRegistryPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/ProviderRegistryPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (142 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 142,
+        "importer_count": 1,
+        "loc_weight": 11.916375287812984
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/main.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/main.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/main.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (12 LOC, 0 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 12,
+        "importer_count": 0,
+        "loc_weight": 3.4641016151377544
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/db/schema.ts::untested_module": {
+      "id": "test_coverage::src/db/schema.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/db/schema.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (212 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 212,
+        "importer_count": 1,
+        "loc_weight": 14.560219778561036
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/shared/config.ts::untested_module": {
+      "id": "test_coverage::src/shared/config.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/shared/config.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (132 LOC, 4 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 132,
+        "importer_count": 4,
+        "loc_weight": 11.489125293076057
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/ContextUtilizationChart.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/ContextUtilizationChart.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/ContextUtilizationChart.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (87 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 87,
+        "importer_count": 1,
+        "loc_weight": 9.327379053088816
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/db/queries.ts::untested_critical": {
+      "id": "test_coverage::src/db/queries.ts::untested_critical",
+      "detector": "test_coverage",
+      "file": "src/db/queries.ts",
+      "tier": 2,
+      "confidence": "high",
+      "summary": "Untested critical module (681 LOC, 1 importers) \u2014 high blast radius",
+      "detail": {
+        "kind": "untested_critical",
+        "loc": 681,
+        "importer_count": 1,
+        "loc_weight": 26.095976701399778,
+        "complexity_score": 45
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/PromptPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/PromptPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/PromptPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (107 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 107,
+        "importer_count": 1,
+        "loc_weight": 10.344080432788601
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/components/SessionSelector.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/components/SessionSelector.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/components/SessionSelector.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (84 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 84,
+        "importer_count": 1,
+        "loc_weight": 9.16515138991168
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/CostPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/CostPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/CostPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (139 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 139,
+        "importer_count": 1,
+        "loc_weight": 11.789826122551595
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/visualizations/DriftPanel.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/visualizations/DriftPanel.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/visualizations/DriftPanel.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (251 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 251,
+        "importer_count": 1,
+        "loc_weight": 15.84297951775486
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/dashboard/components/EventFeed.tsx::untested_module": {
+      "id": "test_coverage::src/dashboard/components/EventFeed.tsx::untested_module",
+      "detector": "test_coverage",
+      "file": "src/dashboard/components/EventFeed.tsx",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (150 LOC, 1 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 150,
+        "importer_count": 1,
+        "loc_weight": 12.24744871391589
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "test_coverage::src/collector/index.ts::untested_module": {
+      "id": "test_coverage::src/collector/index.ts::untested_module",
+      "detector": "test_coverage",
+      "file": "src/collector/index.ts",
+      "tier": 3,
+      "confidence": "high",
+      "summary": "Untested module (487 LOC, 0 importers)",
+      "detail": {
+        "kind": "untested_module",
+        "loc": 487,
+        "importer_count": 0,
+        "loc_weight": 22.06807649071391
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/collector/index.ts::monster_function": {
+      "id": "smells::src/collector/index.ts::monster_function",
+      "detector": "smells",
+      "file": "src/collector/index.ts",
+      "tier": 2,
+      "confidence": "medium",
+      "summary": "1x Monster function (>150 LOC)",
+      "detail": {
+        "smell_id": "monster_function",
+        "severity": "high",
+        "count": 1,
+        "lines": [
+          63
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/hooks/useTelemetry.ts::monster_function": {
+      "id": "smells::src/dashboard/hooks/useTelemetry.ts::monster_function",
+      "detector": "smells",
+      "file": "src/dashboard/hooks/useTelemetry.ts",
+      "tier": 2,
+      "confidence": "medium",
+      "summary": "1x Monster function (>150 LOC)",
+      "detail": {
+        "smell_id": "monster_function",
+        "severity": "high",
+        "count": 1,
+        "lines": [
+          6
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/pages/DashboardPage.tsx::monster_function": {
+      "id": "smells::src/dashboard/pages/DashboardPage.tsx::monster_function",
+      "detector": "smells",
+      "file": "src/dashboard/pages/DashboardPage.tsx",
+      "tier": 2,
+      "confidence": "medium",
+      "summary": "1x Monster function (>150 LOC)",
+      "detail": {
+        "smell_id": "monster_function",
+        "severity": "high",
+        "count": 1,
+        "lines": [
+          43
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/db/schema.ts::monster_function": {
+      "id": "smells::src/db/schema.ts::monster_function",
+      "detector": "smells",
+      "file": "src/db/schema.ts",
+      "tier": 2,
+      "confidence": "medium",
+      "summary": "1x Monster function (>150 LOC)",
+      "detail": {
+        "smell_id": "monster_function",
+        "severity": "high",
+        "count": 1,
+        "lines": [
+          18
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/collector/index.ts::any_type": {
+      "id": "smells::src/collector/index.ts::any_type",
+      "detector": "smells",
+      "file": "src/collector/index.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "2x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 2,
+        "lines": [
+          47,
+          51
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/hooks/useTelemetry.ts::any_type": {
+      "id": "smells::src/dashboard/hooks/useTelemetry.ts::any_type",
+      "detector": "smells",
+      "file": "src/dashboard/hooks/useTelemetry.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          11
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/pages/DashboardPage.tsx::any_type": {
+      "id": "smells::src/dashboard/pages/DashboardPage.tsx::any_type",
+      "detector": "smells",
+      "file": "src/dashboard/pages/DashboardPage.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "18x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 18,
+        "lines": [
+          72,
+          73,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ContextTreemap.tsx::any_type": {
+      "id": "smells::src/dashboard/visualizations/ContextTreemap.tsx::any_type",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ContextTreemap.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "13x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 13,
+        "lines": [
+          79,
+          91,
+          96,
+          97,
+          99,
+          104,
+          105,
+          107,
+          145,
+          152
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/db/queries.ts::any_type": {
+      "id": "smells::src/db/queries.ts::any_type",
+      "detector": "smells",
+      "file": "src/db/queries.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          662
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/sdk/client.ts::any_type": {
+      "id": "smells::src/sdk/client.ts::any_type",
+      "detector": "smells",
+      "file": "src/sdk/client.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "5x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 5,
+        "lines": [
+          140,
+          362,
+          398,
+          443,
+          520
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/sdk/mcp.ts::any_type": {
+      "id": "smells::src/sdk/mcp.ts::any_type",
+      "detector": "smells",
+      "file": "src/sdk/mcp.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "4x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 4,
+        "lines": [
+          34,
+          70,
+          95,
+          107
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/sdk/rag.ts::any_type": {
+      "id": "smells::src/sdk/rag.ts::any_type",
+      "detector": "smells",
+      "file": "src/sdk/rag.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          118
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/redaction.test.ts::any_type": {
+      "id": "smells::src/shared/redaction.test.ts::any_type",
+      "detector": "smells",
+      "file": "src/shared/redaction.test.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          4
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/redaction.ts::any_type": {
+      "id": "smells::src/shared/redaction.ts::any_type",
+      "detector": "smells",
+      "file": "src/shared/redaction.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x Explicit `any` types",
+      "detail": {
+        "smell_id": "any_type",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          91,
+          140,
+          141
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/components/SessionSelector.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/components/SessionSelector.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/components/SessionSelector.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "5x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 5,
+        "lines": [
+          25,
+          26,
+          27,
+          28,
+          29
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/pages/DashboardPage.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/pages/DashboardPage.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/pages/DashboardPage.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "8x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 8,
+        "lines": [
+          38,
+          39,
+          40,
+          266,
+          267,
+          268,
+          269,
+          270
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ActivitySparklines.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/ActivitySparklines.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ActivitySparklines.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          100
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ContextUtilizationChart.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/ContextUtilizationChart.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ContextUtilizationChart.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          73,
+          74,
+          79
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/CostPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/CostPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/CostPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "8x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 8,
+        "lines": [
+          84,
+          86,
+          87,
+          88,
+          91,
+          127,
+          129,
+          132
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/DriftPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/DriftPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/DriftPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          145
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/LatencyPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/LatencyPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/LatencyPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          86,
+          87,
+          125
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/McpStatsPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/McpStatsPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/McpStatsPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "2x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 2,
+        "lines": [
+          69,
+          83
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/PromptPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/PromptPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/PromptPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "4x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 4,
+        "lines": [
+          84,
+          87,
+          91,
+          95
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ProviderRegistryPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/ProviderRegistryPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ProviderRegistryPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          82,
+          93,
+          124
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/QualityPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/QualityPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/QualityPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "5x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 5,
+        "lines": [
+          93,
+          97,
+          102,
+          144,
+          145
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/RagStatsPanel.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/RagStatsPanel.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/RagStatsPanel.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "2x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 2,
+        "lines": [
+          79,
+          85
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/TokenFlowChart.tsx::hardcoded_color": {
+      "id": "smells::src/dashboard/visualizations/TokenFlowChart.tsx::hardcoded_color",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/TokenFlowChart.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x Hardcoded color values",
+      "detail": {
+        "smell_id": "hardcoded_color",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          79,
+          80,
+          81
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/collector/index.ts::as_any_cast": {
+      "id": "smells::src/collector/index.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/collector/index.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "3x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 3,
+        "lines": [
+          316,
+          345,
+          389
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ContextTreemap.tsx::as_any_cast": {
+      "id": "smells::src/dashboard/visualizations/ContextTreemap.tsx::as_any_cast",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ContextTreemap.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          85
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ToolWaterfall.tsx::as_any_cast": {
+      "id": "smells::src/dashboard/visualizations/ToolWaterfall.tsx::as_any_cast",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ToolWaterfall.tsx",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          61
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/db/queries.ts::as_any_cast": {
+      "id": "smells::src/db/queries.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/db/queries.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "9x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 9,
+        "lines": [
+          196,
+          302,
+          307,
+          312,
+          317,
+          330,
+          334,
+          343,
+          538
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/sdk/mcp.ts::as_any_cast": {
+      "id": "smells::src/sdk/mcp.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/sdk/mcp.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          66
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/server/index.ts::as_any_cast": {
+      "id": "smells::src/server/index.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/server/index.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "13x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 13,
+        "lines": [
+          89,
+          108,
+          173,
+          186,
+          213,
+          259,
+          287,
+          298,
+          299,
+          304
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/drift.ts::as_any_cast": {
+      "id": "smells::src/shared/drift.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/shared/drift.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "2x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 2,
+        "lines": [
+          181,
+          182
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/redaction.test.ts::as_any_cast": {
+      "id": "smells::src/shared/redaction.test.ts::as_any_cast",
+      "detector": "smells",
+      "file": "src/shared/redaction.test.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "11x `as any` type casts",
+      "detail": {
+        "smell_id": "as_any_cast",
+        "severity": "medium",
+        "count": 11,
+        "lines": [
+          35,
+          43,
+          52,
+          61,
+          69,
+          75,
+          96,
+          108,
+          114,
+          129
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/server/cli.ts::console_error_no_throw": {
+      "id": "smells::src/server/cli.ts::console_error_no_throw",
+      "detector": "smells",
+      "file": "src/server/cli.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x console.error without throw/return",
+      "detail": {
+        "smell_id": "console_error_no_throw",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          74
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/server/index.ts::console_error_no_throw": {
+      "id": "smells::src/server/index.ts::console_error_no_throw",
+      "detector": "smells",
+      "file": "src/server/index.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x console.error without throw/return",
+      "detail": {
+        "smell_id": "console_error_no_throw",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          148
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/server/start.ts::console_error_no_throw": {
+      "id": "smells::src/server/start.ts::console_error_no_throw",
+      "detector": "smells",
+      "file": "src/server/start.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x console.error without throw/return",
+      "detail": {
+        "smell_id": "console_error_no_throw",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          15
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/drift.test.ts::dead_function": {
+      "id": "smells::src/shared/drift.test.ts::dead_function",
+      "detector": "smells",
+      "file": "src/shared/drift.test.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "2x Dead function (body is empty/return-only)",
+      "detail": {
+        "smell_id": "dead_function",
+        "severity": "medium",
+        "count": 2,
+        "lines": [
+          4,
+          20
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/redaction.test.ts::dead_function": {
+      "id": "smells::src/shared/redaction.test.ts::dead_function",
+      "detector": "smells",
+      "file": "src/shared/redaction.test.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Dead function (body is empty/return-only)",
+      "detail": {
+        "smell_id": "dead_function",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          4
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/server/index.ts::swallowed_error": {
+      "id": "smells::src/server/index.ts::swallowed_error",
+      "detector": "smells",
+      "file": "src/server/index.ts",
+      "tier": 3,
+      "confidence": "medium",
+      "summary": "1x Catch blocks that only log (swallowed errors)",
+      "detail": {
+        "smell_id": "swallowed_error",
+        "severity": "medium",
+        "count": 1,
+        "lines": [
+          147
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/events.test.ts::non_null_assert": {
+      "id": "smells::src/shared/events.test.ts::non_null_assert",
+      "detector": "smells",
+      "file": "src/shared/events.test.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "11x Non-null assertions (!.)",
+      "detail": {
+        "smell_id": "non_null_assert",
+        "severity": "low",
+        "count": 11,
+        "lines": [
+          11,
+          12,
+          13,
+          19,
+          20,
+          21,
+          22,
+          28,
+          35,
+          41
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "test",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/CostPanel.tsx::magic_number": {
+      "id": "smells::src/dashboard/visualizations/CostPanel.tsx::magic_number",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/CostPanel.tsx",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "2x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 2,
+        "lines": [
+          61,
+          62
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/DriftPanel.tsx::magic_number": {
+      "id": "smells::src/dashboard/visualizations/DriftPanel.tsx::magic_number",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/DriftPanel.tsx",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          68
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/TokenFlowChart.tsx::magic_number": {
+      "id": "smells::src/dashboard/visualizations/TokenFlowChart.tsx::magic_number",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/TokenFlowChart.tsx",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          64
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/dashboard/visualizations/ToolWaterfall.tsx::magic_number": {
+      "id": "smells::src/dashboard/visualizations/ToolWaterfall.tsx::magic_number",
+      "detector": "smells",
+      "file": "src/dashboard/visualizations/ToolWaterfall.tsx",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          49
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/sdk/client.ts::magic_number": {
+      "id": "smells::src/sdk/client.ts::magic_number",
+      "detector": "smells",
+      "file": "src/sdk/client.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          267
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/shared/drift.ts::magic_number": {
+      "id": "smells::src/shared/drift.ts::magic_number",
+      "detector": "smells",
+      "file": "src/shared/drift.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "2x Magic numbers (>1000 in logic)",
+      "detail": {
+        "smell_id": "magic_number",
+        "severity": "low",
+        "count": 2,
+        "lines": [
+          183,
+          184
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::src/collector/index.ts::switch_no_default": {
+      "id": "smells::src/collector/index.ts::switch_no_default",
+      "detector": "smells",
+      "file": "src/collector/index.ts",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x Switch without default case",
+      "detail": {
+        "smell_id": "switch_no_default",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          347
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    },
+    "smells::README.md::docs_scripts_drift": {
+      "id": "smells::README.md::docs_scripts_drift",
+      "detector": "smells",
+      "file": "README.md",
+      "tier": 3,
+      "confidence": "low",
+      "summary": "1x README missing key package scripts",
+      "detail": {
+        "smell_id": "docs_scripts_drift",
+        "severity": "low",
+        "count": 1,
+        "lines": [
+          1
+        ]
+      },
+      "status": "open",
+      "note": null,
+      "first_seen": "2026-03-02T01:44:32+00:00",
+      "last_seen": "2026-03-02T01:44:32+00:00",
+      "resolved_at": null,
+      "reopen_count": 0,
+      "lang": "typescript",
+      "zone": "production",
+      "suppressed": false,
+      "suppressed_at": null,
+      "suppression_pattern": null
+    }
+  },
+  "scan_coverage": {
+    "typescript": {
+      "status": "full",
+      "confidence": 1.0,
+      "detectors": {
+        "security": {
+          "detector": "security",
+          "status": "full",
+          "confidence": 1.0,
+          "summary": "Security coverage complete for enabled detectors.",
+          "impact": "",
+          "remediation": "",
+          "tool": "",
+          "reason": ""
+        }
+      },
+      "warnings": [],
+      "updated_at": "2026-03-02T01:44:34+00:00"
+    }
+  },
+  "score_confidence": {
+    "status": "full",
+    "confidence": 1.0,
+    "detectors": [],
+    "dimensions": []
+  },
+  "subjective_integrity": {
+    "status": "pass",
+    "target_score": 95.0,
+    "matched_count": 0,
+    "matched_dimensions": [],
+    "reset_dimensions": []
+  },
+  "scan_history": [
+    {
+      "timestamp": "2026-03-02T01:44:24+00:00",
+      "lang": "typescript",
+      "strict_score": 41.5,
+      "verified_strict_score": 100.0,
+      "objective_score": 100.0,
+      "overall_score": 41.5,
+      "open": 32,
+      "diff_new": 32,
+      "diff_resolved": 0,
+      "ignored": 0,
+      "raw_findings": 32,
+      "suppressed_pct": 0.0,
+      "ignore_patterns": 0,
+      "subjective_integrity": {
+        "status": "disabled",
+        "matched_count": 0,
+        "reset_count": 0,
+        "target_score": null
+      },
+      "score_confidence": {
+        "status": "full",
+        "confidence": 1.0,
+        "detector_count": 0,
+        "dimension_count": 0
+      },
+      "dimension_scores": {
+        "Naming quality": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Logic clarity": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Type safety": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Contracts": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Error consistency": {
+          "score": 60.8,
+          "strict": 60.8
+        },
+        "Abstraction fit": {
+          "score": 58.2,
+          "strict": 58.2
+        },
+        "AI generated debt": {
+          "score": 77.3,
+          "strict": 77.3
+        },
+        "High elegance": {
+          "score": 55.0,
+          "strict": 55.0
+        },
+        "Mid elegance": {
+          "score": 47.2,
+          "strict": 47.2
+        },
+        "Low elegance": {
+          "score": 64.7,
+          "strict": 64.7
+        },
+        "Cross-module arch": {
+          "score": 50.8,
+          "strict": 50.8
+        },
+        "Init coupling": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Convention drift": {
+          "score": 88.0,
+          "strict": 88.0
+        },
+        "Dep health": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "Test strategy": {
+          "score": 0.0,
+          "strict": 0.0
+        },
+        "API coherence": {
+          "score": 51.3,
+          "strict": 51.3
+        },
+        "Auth consistency": {
+          "score": 26.4,
+          "strict": 26.4
+        },
+        "Stale migration": {
+          "score": 61.5,
+          "strict": 61.5
+        },
+        "Structure nav": {
+          "score": 63.6,
+          "strict": 63.6
+        },
+        "Design coherence": {
+          "score": 75.3,
+          "strict": 75.3
+        }
+      }
+    },
+    {
+      "timestamp": "2026-03-02T01:44:34+00:00",
+      "lang": "typescript",
+      "strict_score": 61.8,
+      "verified_strict_score": 67.6,
+      "objective_score": 67.6,
+      "overall_score": 61.8,
+      "open": 127,
+      "diff_new": 96,
+      "diff_resolved": 0,
+      "ignored": 0,
+      "raw_findings": 97,
+      "suppressed_pct": 0.0,
+      "ignore_patterns": 0,
+      "subjective_integrity": {
+        "status": "pass",
+        "matched_count": 0,
+        "reset_count": 0,
+        "target_score": 95.0
+      },
+      "score_confidence": {
+        "status": "full",
+        "confidence": 1.0,
+        "detector_count": 0,
+        "dimension_count": 0
+      },
+      "dimension_scores": {
+        "File health": {
+          "score": 92.4,
+          "strict": 92.4
+        },
+        "Code quality": {
+          "score": 86.3,
+          "strict": 86.3
+        },
+        "Duplication": {
+          "score": 100.0,
+          "strict": 100.0
+        },
+        "Test health": {
+          "score": 16.4,
+          "strict": 16.4
+        },
+        "Security": {
+          "score": 100.0,
+          "strict": 100.0
+        },
+        "Error consistency": {
+          "score": 60.8,
+          "strict": 60.8
+        },
+        "Abstraction fit": {
+          "score": 58.2,
+          "strict": 58.2
+        },
+        "AI generated debt": {
+          "score": 77.3,
+          "strict": 77.3
+        },
+        "High elegance": {
+          "score": 55.0,
+          "strict": 55.0
+        },
+        "Mid elegance": {
+          "score": 47.2,
+          "strict": 47.2
+        },
+        "Low elegance": {
+          "score": 64.7,
+          "strict": 64.7
+        },
+        "Cross-module arch": {
+          "score": 50.8,
+          "strict": 50.8
+        },
+        "Convention drift": {
+          "score": 88.0,
+          "strict": 88.0
+        },
+        "API coherence": {
+          "score": 51.3,
+          "strict": 51.3
+        },
+        "Auth consistency": {
+          "score": 26.4,
+          "strict": 26.4
+        },
+        "Stale migration": {
+          "score": 61.5,
+          "strict": 61.5
+        },
+        "Structure nav": {
+          "score": 63.6,
+          "strict": 63.6
+        },
+        "Design coherence": {
+          "score": 75.3,
+          "strict": 75.3
+        }
+      }
+    }
+  ],
+  "tool_hash": "e073c6da67fa",
+  "scan_path": "src",
+  "scan_completeness": {
+    "typescript": "full"
+  },
+  "dimension_scores": {
+    "File health": {
+      "score": 92.4,
+      "strict_score": 92.4,
+      "verified_strict_score": 92.4,
+      "checks": 37,
+      "issues": 4,
+      "tier": 3,
+      "detectors": {
+        "structural": {
+          "potential": 37,
+          "pass_rate": 0.9243243243243244,
+          "issues": 4,
+          "weighted_failures": 2.8
+        }
+      },
+      "strict": 92.4
+    },
+    "Code quality": {
+      "score": 86.3,
+      "strict_score": 86.3,
+      "verified_strict_score": 86.3,
+      "checks": 241,
+      "issues": 54,
+      "tier": 3,
+      "detectors": {
+        "unused": {
+          "potential": 37,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "logs": {
+          "potential": 37,
+          "pass_rate": 0.8918918918918919,
+          "issues": 4,
+          "weighted_failures": 4.0
+        },
+        "smells": {
+          "potential": 38,
+          "pass_rate": 0.36052631578947364,
+          "issues": 44,
+          "weighted_failures": 24.3
+        },
+        "react": {
+          "potential": 3,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "orphaned": {
+          "potential": 37,
+          "pass_rate": 0.9621621621621622,
+          "issues": 2,
+          "weighted_failures": 1.4
+        },
+        "flat_dirs": {
+          "potential": 11,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "naming": {
+          "potential": 9,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "facade": {
+          "potential": 37,
+          "pass_rate": 0.927027027027027,
+          "issues": 3,
+          "weighted_failures": 2.7
+        },
+        "patterns": {
+          "potential": 1,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "single_use": {
+          "potential": 19,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "coupling": {
+          "potential": 11,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "responsibility_cohesion": {
+          "potential": 1,
+          "pass_rate": 0.30000000000000004,
+          "issues": 1,
+          "weighted_failures": 0.7
+        }
+      },
+      "strict": 86.3
+    },
+    "Duplication": {
+      "score": 100.0,
+      "strict_score": 100.0,
+      "verified_strict_score": 100.0,
+      "checks": 70,
+      "issues": 0,
+      "tier": 3,
+      "detectors": {
+        "dupes": {
+          "potential": 70,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        }
+      },
+      "strict": 100.0
+    },
+    "Test health": {
+      "score": 16.4,
+      "strict_score": 16.4,
+      "verified_strict_score": 16.4,
+      "checks": 476,
+      "issues": 30,
+      "tier": 4,
+      "detectors": {
+        "test_coverage": {
+          "potential": 448,
+          "pass_rate": 0.11202427866611611,
+          "issues": 30,
+          "weighted_failures": 397.81312315758
+        },
+        "subjective_review": {
+          "potential": 28,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        }
+      },
+      "strict": 16.4
+    },
+    "Security": {
+      "score": 100.0,
+      "strict_score": 100.0,
+      "verified_strict_score": 100.0,
+      "checks": 74,
+      "issues": 0,
+      "tier": 4,
+      "detectors": {
+        "security": {
+          "potential": 37,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        },
+        "cycles": {
+          "potential": 37,
+          "pass_rate": 1.0,
+          "issues": 0,
+          "weighted_failures": 0.0
+        }
+      },
+      "strict": 100.0
+    },
+    "Error consistency": {
+      "score": 60.8,
+      "strict_score": 60.8,
+      "verified_strict_score": 60.8,
+      "checks": 10,
+      "issues": 2,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.608,
+          "issues": 2,
+          "weighted_failures": 3.92,
+          "assessment_score": 60.8,
+          "placeholder": false,
+          "dimension_key": "error_consistency",
+          "configured_weight": 3.0,
+          "components": []
+        }
+      },
+      "strict": 60.8
+    },
+    "Abstraction fit": {
+      "score": 58.2,
+      "strict_score": 58.2,
+      "verified_strict_score": 58.2,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.582,
+          "issues": 3,
+          "weighted_failures": 4.18,
+          "assessment_score": 58.2,
+          "placeholder": false,
+          "dimension_key": "abstraction_fitness",
+          "configured_weight": 8.0,
+          "components": [
+            "Abstraction Leverage",
+            "Indirection Cost",
+            "Interface Honesty"
+          ],
+          "component_scores": {
+            "Abstraction Leverage": 69.3,
+            "Indirection Cost": 76.2,
+            "Interface Honesty": 72.6
+          }
+        }
+      },
+      "strict": 58.2
+    },
+    "AI generated debt": {
+      "score": 77.3,
+      "strict_score": 77.3,
+      "verified_strict_score": 77.3,
+      "checks": 10,
+      "issues": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.773,
+          "issues": 1,
+          "weighted_failures": 2.27,
+          "assessment_score": 77.3,
+          "placeholder": false,
+          "dimension_key": "ai_generated_debt",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 77.3
+    },
+    "High elegance": {
+      "score": 55.0,
+      "strict_score": 55.0,
+      "verified_strict_score": 55.0,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.55,
+          "issues": 3,
+          "weighted_failures": 4.5,
+          "assessment_score": 55.0,
+          "placeholder": false,
+          "dimension_key": "high_level_elegance",
+          "configured_weight": 22.0,
+          "components": []
+        }
+      },
+      "strict": 55.0
+    },
+    "Mid elegance": {
+      "score": 47.2,
+      "strict_score": 47.2,
+      "verified_strict_score": 47.2,
+      "checks": 10,
+      "issues": 4,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.472,
+          "issues": 4,
+          "weighted_failures": 5.28,
+          "assessment_score": 47.2,
+          "placeholder": false,
+          "dimension_key": "mid_level_elegance",
+          "configured_weight": 22.0,
+          "components": []
+        }
+      },
+      "strict": 47.2
+    },
+    "Low elegance": {
+      "score": 64.7,
+      "strict_score": 64.7,
+      "verified_strict_score": 64.7,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.647,
+          "issues": 3,
+          "weighted_failures": 3.53,
+          "assessment_score": 64.7,
+          "placeholder": false,
+          "dimension_key": "low_level_elegance",
+          "configured_weight": 12.0,
+          "components": []
+        }
+      },
+      "strict": 64.7
+    },
+    "Cross-module arch": {
+      "score": 50.8,
+      "strict_score": 50.8,
+      "verified_strict_score": 50.8,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.508,
+          "issues": 3,
+          "weighted_failures": 4.92,
+          "assessment_score": 50.8,
+          "placeholder": false,
+          "dimension_key": "cross_module_architecture",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 50.8
+    },
+    "Convention drift": {
+      "score": 88.0,
+      "strict_score": 88.0,
+      "verified_strict_score": 88.0,
+      "checks": 10,
+      "issues": 0,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.88,
+          "issues": 0,
+          "weighted_failures": 1.2,
+          "assessment_score": 88.0,
+          "placeholder": false,
+          "dimension_key": "convention_outlier",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 88.0
+    },
+    "API coherence": {
+      "score": 51.3,
+      "strict_score": 51.3,
+      "verified_strict_score": 51.3,
+      "checks": 10,
+      "issues": 4,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.513,
+          "issues": 4,
+          "weighted_failures": 4.87,
+          "assessment_score": 51.3,
+          "placeholder": false,
+          "dimension_key": "api_surface_coherence",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 51.3
+    },
+    "Auth consistency": {
+      "score": 26.4,
+      "strict_score": 26.4,
+      "verified_strict_score": 26.4,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.264,
+          "issues": 3,
+          "weighted_failures": 7.36,
+          "assessment_score": 26.4,
+          "placeholder": false,
+          "dimension_key": "authorization_consistency",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 26.4
+    },
+    "Stale migration": {
+      "score": 61.5,
+      "strict_score": 61.5,
+      "verified_strict_score": 61.5,
+      "checks": 10,
+      "issues": 3,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.615,
+          "issues": 3,
+          "weighted_failures": 3.85,
+          "assessment_score": 61.5,
+          "placeholder": false,
+          "dimension_key": "incomplete_migration",
+          "configured_weight": 1.0,
+          "components": []
+        }
+      },
+      "strict": 61.5
+    },
+    "Structure nav": {
+      "score": 63.6,
+      "strict_score": 63.6,
+      "verified_strict_score": 63.6,
+      "checks": 10,
+      "issues": 2,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.636,
+          "issues": 2,
+          "weighted_failures": 3.64,
+          "assessment_score": 63.6,
+          "placeholder": false,
+          "dimension_key": "package_organization",
+          "configured_weight": 5.0,
+          "components": []
+        }
+      },
+      "strict": 63.6
+    },
+    "Design coherence": {
+      "score": 75.3,
+      "strict_score": 75.3,
+      "verified_strict_score": 75.3,
+      "checks": 10,
+      "issues": 1,
+      "tier": 4,
+      "detectors": {
+        "subjective_assessment": {
+          "potential": 10,
+          "pass_rate": 0.753,
+          "issues": 1,
+          "weighted_failures": 2.47,
+          "assessment_score": 75.3,
+          "placeholder": false,
+          "dimension_key": "design_coherence",
+          "configured_weight": 10.0,
+          "components": []
+        }
+      },
+      "strict": 75.3
+    }
+  },
+  "review_cache": {
+    "files": {
+      "src/shared/events.ts": {
+        "content_hash": "031110e5f53f7b11",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/dashboard.css.ts": {
+        "content_hash": "85a9cd7f1d58e1bc",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/hooks/useTelemetry.ts": {
+        "content_hash": "b64e7edbe50f8739",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/McpStatsPanel.tsx": {
+        "content_hash": "f4f7605bef57e32b",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/RagStatsPanel.tsx": {
+        "content_hash": "a660db95605b1337",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "dashboard/dashboard.css.ts": {
+        "content_hash": "",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "dashboard/hooks/useTelemetry.ts": {
+        "content_hash": "",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "server/start.ts": {
+        "content_hash": "",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/db/queries.ts": {
+        "content_hash": "25550fbad06103a7",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/drift.ts": {
+        "content_hash": "5809989cfbc5e958",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/components/EventFeed.tsx": {
+        "content_hash": "bc86a081a7eb4014",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/server/cli.ts": {
+        "content_hash": "2c822b123f15e20d",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/server/start.ts": {
+        "content_hash": "f2d0d2007f11130b",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/ContextTreemap.tsx": {
+        "content_hash": "62aa2c17f96a72c4",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/drift.test.ts": {
+        "content_hash": "11a7d492d8355eaa",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/collector/index.ts": {
+        "content_hash": "ef28ee6044896636",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/DriftPanel.tsx": {
+        "content_hash": "e4aa0ebb9d28adab",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/sdk/client.ts": {
+        "content_hash": "fc43d1eba79cf5c8",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/server/index.ts": {
+        "content_hash": "93e9e8c06ba3b3ac",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/sdk/rag.ts": {
+        "content_hash": "926a4536754c4c37",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/redaction.test.ts": {
+        "content_hash": "5506ede6c623ae31",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/config.ts": {
+        "content_hash": "f55a755af37f4a01",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/sdk/mcp.ts": {
+        "content_hash": "a4c810e5131c7371",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/ActivitySparklines.tsx": {
+        "content_hash": "5d66151288783738",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/ContextUtilizationChart.tsx": {
+        "content_hash": "083148ed64f6f564",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/sdk/index.ts": {
+        "content_hash": "f64a492a599fe646",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/components/KpiCard.tsx": {
+        "content_hash": "180e3d5a88750bc1",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/components/SessionSelector.tsx": {
+        "content_hash": "79ea318d9778bdb4",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/main.tsx": {
+        "content_hash": "b3e92c3c9b4526ba",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/pages/DashboardPage.tsx": {
+        "content_hash": "7a60b0037014f712",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/CostPanel.tsx": {
+        "content_hash": "13b2c7c7662ef360",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/LatencyPanel.tsx": {
+        "content_hash": "527a0c2dcf13213d",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/PromptPanel.tsx": {
+        "content_hash": "f98579061cafb964",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/ProviderRegistryPanel.tsx": {
+        "content_hash": "9a2082e4e0831d22",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/QualityPanel.tsx": {
+        "content_hash": "f958567e951cc798",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/TokenFlowChart.tsx": {
+        "content_hash": "6eda6650b565c593",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/dashboard/visualizations/ToolWaterfall.tsx": {
+        "content_hash": "9ae3ccac5b357196",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/db/index.ts": {
+        "content_hash": "91ee4970e8c9c1a1",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/db/schema.ts": {
+        "content_hash": "db5e965c31d5652e",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/index.ts": {
+        "content_hash": "b60c9c2b585dd2a6",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/index.ts": {
+        "content_hash": "aaddf13d9236629b",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      },
+      "src/shared/redaction.ts": {
+        "content_hash": "0b9aaf3e48dd2ae8",
+        "reviewed_at": "2026-03-02T01:44:24+00:00",
+        "finding_count": 0
+      }
+    },
+    "holistic": {
+      "reviewed_at": "2026-03-02T01:44:24+00:00",
+      "file_count_at_review": 40,
+      "finding_count": 32,
+      "reviewed_files_count": 42,
+      "full_sweep_included": true
+    }
+  },
+  "assessment_import_audit": [
+    {
+      "timestamp": "2026-03-02T01:44:24+00:00",
+      "mode": "trusted_internal",
+      "trusted": true,
+      "reason": "trusted internal run-batches import",
+      "override_used": false,
+      "attested_external": false,
+      "provisional": false,
+      "provisional_count": 0,
+      "attest": "",
+      "import_file": "/Users/donovanadams/Desktop/hydrotik/packages/hy-ai-rum/.desloppify/subagents/runs/20260302_013834/holistic_findings_merged.json"
+    }
+  ],
+  "lang_capabilities": {
+    "typescript": {
+      "fixers": [
+        "dead-useeffect",
+        "debug-logs",
+        "empty-if-chain",
+        "unused-imports",
+        "unused-params",
+        "unused-vars"
+      ],
+      "typecheck_cmd": "npx tsc --noEmit"
+    }
+  },
+  "zone_distribution": {
+    "production": 37,
+    "test": 3
+  },
+  "codebase_metrics": {
+    "typescript": {
+      "total_files": 40,
+      "total_loc": 7566,
+      "total_directories": 11
+    }
+  }
+}
