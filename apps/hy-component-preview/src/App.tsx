@@ -2,7 +2,8 @@ import React from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useTheme } from '@hydrotik/theme-provider';
 import { Button, Separator } from '@hydrotik/design-system';
-import { IconSun, IconMoon, IconBrandGithub } from '@tabler/icons-react';
+import { IconSun, IconMoon } from '@tabler/icons-react';
+import { SiGithub } from '@icons-pack/react-simple-icons';
 import { HomePage, ShowcasePage, SinkPage, DashboardPage, InventoryPage, EcommercePage, PluginPage, DataGridPage, EditorialPage, AIToolsPage } from './pages';
 import * as s from './App.css';
 
@@ -95,7 +96,7 @@ export default function App() {
             onClick={() => window.open('https://github.com/hydrotik/hydrotik', '_blank')}
             aria-label="GitHub"
           >
-            <IconBrandGithub size={15} />
+            <SiGithub size={15} />
           </Button>
         </div>
       </header>

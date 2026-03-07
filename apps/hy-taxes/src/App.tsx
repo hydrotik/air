@@ -27,24 +27,20 @@ import {
   IconCreditCard,
   IconBuildingBank,
   IconBolt,
-  IconBrandPaypal,
   IconMusic,
   IconShoppingBag,
-  IconBrandAmazon,
   IconPlane,
-  IconServer,
-  IconReceipt,
   IconDeviceDesktop,
   IconVinyl,
-  IconBrandBandcamp,
   IconWorld,
   IconCash,
   IconTransfer,
   IconCheck,
   IconSelector,
 } from '@tabler/icons-react';
+import { SiPaypal, SiBandcamp } from '@icons-pack/react-simple-icons';
 import { loadTaxData } from './data';
-import { formatCurrency, genId } from './utils';
+import { formatCurrency } from './utils';
 import { STATUS_LABELS, TAX_YEAR, USERS, USER_IDS } from './constants';
 import type { UserId } from './types';
 import { DeductionsView } from './views/DeductionsView';
@@ -73,13 +69,13 @@ const SOURCE_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   'td-hydrotik': IconBuildingBank,
   'catapult': IconMusic,
   'navy-federal': IconBuildingBank,
-  'paypal': IconBrandPaypal,
+  'paypal': SiPaypal,
   'fios': IconWorld,
   'ascap': IconMusic,
   'venmo': IconTransfer,
   'capitalone-ing': IconBuildingBank,
   'coned': IconBolt,
-  'bandcamp': IconBrandBandcamp,
+  'bandcamp': SiBandcamp,
   'vintage-king': IconVinyl,
   'perfect-circuit': IconDeviceDesktop,
   'reverb': IconVinyl,

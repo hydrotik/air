@@ -10,7 +10,8 @@ The Hydrotik design system is a **CSS-in-TypeScript** component library with **5
 | Theming | `@hydrotik/theme-provider` React context + `data-theme` attribute |
 | Components | Radix UI primitives + vanilla-extract styles |
 | Variants | `@vanilla-extract/recipes` |
-| Icons | `lucide-react` (re-exported as `Icons`) |
+| UI Icons | `@tabler/icons-react` (re-exported as `Icons`) |
+| Brand Icons | `@icons-pack/react-simple-icons` (re-exported as `BrandIcons`) |
 | Fonts | Inter Variable (sans) + JetBrains Mono Variable (mono) via `@fontsource-variable` |
 
 No Tailwind. No runtime CSS injection. All styles are statically extracted at build time. **Dark mode first.**
@@ -36,15 +37,39 @@ Both are bundled via `@fontsource-variable` — no external CDN requests.
 
 ### Icons
 
-All [Lucide](https://lucide.dev) icons are available:
+#### UI Icons
+All [Tabler](https://tabler.io/icons) icons are available via re-export:
 
 ```tsx
 import { Icons } from '@hydrotik/design-system';
 
-<Icons.Search className="..." />
-<Icons.ChevronDown />
-<Icons.Settings size={20} />
+<Icons.IconSearch size={16} />
+<Icons.IconChevronDown />
+<Icons.IconSettings size={20} />
 ```
+
+#### Brand Icons
+Brand/logo icons use [Simple Icons](https://simpleicons.org/) via `@icons-pack/react-simple-icons`:
+
+```tsx
+import { BrandIcons } from '@hydrotik/design-system';
+
+<BrandIcons.SiGithub size={16} />
+<BrandIcons.SiPaypal size={16} />
+<BrandIcons.SiBandcamp size={16} />
+```
+
+Or import directly in app code:
+```tsx
+import { SiGithub } from '@icons-pack/react-simple-icons';
+```
+
+#### Cross-Platform (JUCE Plugins)
+TectraScope and Sanroka use [Lucide](https://lucide.dev) SVG icons embedded as binary resources:
+- SVGs stored in `Assets/icons/*.svg`
+- Loaded via `LucideIcons.h` (replaces `currentColor` and parses via JUCE XML)
+- TectraScope's `Icons.h` wraps Lucide SVGs with cached `juce::Path` accessors
+- All icons are 24×24 viewBox, stroke-based, scaled with `Icons::fitTo(bounds)`
 
 ---
 

@@ -91,6 +91,8 @@ let recharts = require("recharts");
 recharts = __toESM(recharts);
 let react_hook_form = require("react-hook-form");
 let sonner = require("sonner");
+let _icons_pack_react_simple_icons = require("@icons-pack/react-simple-icons");
+_icons_pack_react_simple_icons = __toESM(_icons_pack_react_simple_icons);
 let _hydrotik_theme_provider = require("@hydrotik/theme-provider");
 
 //#region src/components/Accordion/Accordion.css.ts
@@ -10329,6 +10331,12 @@ exports.Avatar = Avatar;
 exports.AvatarFallback = AvatarFallback;
 exports.AvatarImage = AvatarImage;
 exports.Badge = Badge;
+Object.defineProperty(exports, 'BrandIcons', {
+  enumerable: true,
+  get: function () {
+    return _icons_pack_react_simple_icons;
+  }
+});
 exports.Breadcrumb = Breadcrumb;
 exports.BreadcrumbEllipsis = BreadcrumbEllipsis;
 exports.BreadcrumbItem = BreadcrumbItem;

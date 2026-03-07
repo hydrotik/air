@@ -13,6 +13,7 @@
     "@hydrotik/design-system": "workspace:*",
     "@hydrotik/theme-provider": "workspace:*",
     "@hydrotik/tokens": "workspace:*",
+    "@icons-pack/react-simple-icons": "^13.12.0",
     "@tabler/icons-react": "^3.38.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

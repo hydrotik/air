@@ -485,8 +485,11 @@ export type { TypingAnimationProps } from './components/TypingAnimation';
 export { ToolCallIndicator } from './components/ToolCallIndicator';
 export type { ToolCallIndicatorProps } from './components/ToolCallIndicator';
 
-// ─── Icons (re-export @tabler/icons-react) ──────────────────────────────────────────
+// ─── Icons ──────────────────────────────────────────────────────────────────
+// UI icons: @tabler/icons-react (general purpose)
 export * as Icons from '@tabler/icons-react';
+// Brand icons: @icons-pack/react-simple-icons (brand logos)
+export * as BrandIcons from '@icons-pack/react-simple-icons';
 
 // ─── Showcase ────────────────────────────────────────────────────────────────
 export { ShowcaseGrid } from './ShowcaseGrid';
