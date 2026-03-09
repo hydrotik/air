@@ -11,7 +11,7 @@ import {
   statSync,
   mkdirSync,
 } from 'node:fs';
-import { join, resolve, dirname, relative, extname } from 'node:path';
+import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
@@ -978,6 +978,83 @@ Re-exports all shared styles for internal use within the design system package.
     ),
   );
 
+  // ── 21. JUCE Plugin Projects ────────────────────────────────────────────
+  // Sync design tokens and docs from TectraScope and Sanroka
+  const HOME = process.env.HOME ?? '/Users/donovanadams';
+  const juceProjects: Array<{ name: string; root: string; tokenFiles: string[]; docFiles: string[] }> = [
+    {
+      name: 'TectraScope',
+      root: join(HOME, 'Desktop/tectrascope'),
+      tokenFiles: ['Source/DesignTokens.h', 'Source/EditorTypes.h'],
+      docFiles: ['docs/ARCHITECTURE.md', 'docs/GOTCHAS.md', 'docs/TIMELINE.md'],
+    },
+    {
+      name: 'Sanroka',
+      root: join(HOME, 'Desktop/sanroka'),
+      tokenFiles: ['Source/DesignTokens.h', 'Source/Theme.h'],
+      docFiles: ['docs/DESIGN_GUIDELINES.md', 'docs/ARCHITECTURE.md', 'docs/GOTCHAS.md', 'docs/TIMELINE.md'],
+    },
+  ];
+
+  for (const proj of juceProjects) {
+    // Sync token/theme source files
+    for (const tf of proj.tokenFiles) {
+      const fullPath = join(proj.root, tf);
+      const src = safeRead(fullPath);
+      if (!src) continue;
+      const fileName = tf.split('/').pop() ?? tf;
+      upsert(
+        makeChunk(
+          'tokens',
+          `${proj.name}: ${fileName}`,
+          `# ${proj.name} — ${fileName}\n\n\`\`\`cpp\n${src}\n\`\`\``,
+          ['juce', proj.name.toLowerCase(), 'tokens', 'theme', 'colors', 'spacing', 'typography', fileName.toLowerCase().replace('.h', '')],
+          `${proj.root}/${tf}`,
+        ),
+      );
+    }
+
+    // Sync markdown docs
+    for (const df of proj.docFiles) {
+      const fullPath = join(proj.root, df);
+      const src = safeRead(fullPath);
+      if (!src) continue;
+      const fileName = df.split('/').pop()?.replace('.md', '') ?? df;
+      upsert(
+        makeChunk(
+          'docs',
+          `${proj.name}: ${fileName}`,
+          src,
+          ['juce', proj.name.toLowerCase(), 'documentation', fileName.toLowerCase(), ...tokenize(fileName)],
+          `${proj.root}/${df}`,
+        ),
+      );
+    }
+  }
+
+  // ── 22. Shared JUCE Design References ─────────────────────────────────
+  // Sync the global skill's reference docs
+  const globalSkillRefs = join(HOME, '.pi/agent/skills/hydrotik-design/references');
+  try {
+    const refFiles = readdirSync(globalSkillRefs).filter((f) => f.endsWith('.md'));
+    for (const file of refFiles) {
+      const content = safeRead(join(globalSkillRefs, file));
+      if (!content) continue;
+      const title = file.replace('.md', '');
+      upsert(
+        makeChunk(
+          'docs',
+          `Hydrotik Global: ${title}`,
+          content,
+          ['juce', 'web', 'cross-platform', 'design', 'shared', title.toLowerCase(), ...tokenize(title)],
+          `~/.pi/agent/skills/hydrotik-design/references/${file}`,
+        ),
+      );
+    }
+  } catch {
+    // global skill refs dir doesn't exist
+  }
+
   // Finalize
   store.chunks = newChunks;
   store.syncedAt = new Date().toISOString();
@@ -1374,6 +1451,65 @@ server.tool(
     let text = `⚠️ Token issues:\n${issues.map((i) => `- ${i}`).join('\n')}`;
     if (suggestions.length > 0) {
       text += `\n\n💡 Suggestions:\n${[...new Set(suggestions)].map((s) => `- ${s}`).join('\n')}`;
+    }
+    return { content: [{ type: 'text', text }] };
+  },
+);
+
+// ── JUCE-specific search ─────────────────────────────────────────────────
+server.tool(
+  'search_juce',
+  'Search JUCE plugin design knowledge (TectraScope + Sanroka). Filters RAG to JUCE-related chunks only. Use for color values, font sizes, spacing, component rules, architecture questions about the JUCE plugins.',
+  {
+    query: z.string().describe('Search query about JUCE plugin design (e.g. "panel text color", "knob focus border", "typography scale")'),
+    project: z
+      .enum(['tectrascope', 'sanroka', 'both'])
+      .optional()
+      .default('both')
+      .describe('Filter to specific JUCE project. Default: both'),
+    topK: z.number().optional().default(5).describe('Number of results. Default: 5'),
+  },
+  async ({ query, project, topK }) => {
+    const t0 = Date.now();
+    let store = loadRagStore();
+    if (store.chunks.length === 0) {
+      syncRagStore();
+      store = loadRagStore();
+    }
+
+    // Filter to JUCE-related chunks
+    let chunks = store.chunks.filter((c) => {
+      const isJuce = c.tags.includes('juce') || c.tags.includes('cross-platform') ||
+                     c.source.includes('tectrascope') || c.source.includes('sanroka') ||
+                     c.id.includes('juce') || c.title.toLowerCase().includes('juce');
+      if (!isJuce) return false;
+      if (project === 'both') return true;
+      return c.tags.includes(project) || c.source.toLowerCase().includes(project) ||
+             c.title.toLowerCase().includes(project);
+    });
+
+    const results = tfidfSearch(query, chunks, topK);
+    const durationMs = Date.now() - t0;
+
+    airToolCall('search_juce', durationMs, {
+      success: results.length > 0,
+      inputSize: query.length,
+      outputSize: results.reduce((s, r) => s + r.content.length, 0),
+      metadata: { resultCount: results.length, project, corpusSize: chunks.length },
+    });
+
+    if (results.length === 0) {
+      const msg = 'No JUCE results for "' + query + '". Try `rag_sync` to refresh, or use `rag_search` for broader results.';
+      return {
+        content: [{ type: 'text', text: msg }],
+      };
+    }
+
+    const projectSuffix = project !== 'both' ? ' (' + project + ')' : '';
+    let text = '# JUCE search: "' + query + '"' + projectSuffix + '\n\n';
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i]!;
+      text += '---\n## ' + (i + 1) + '. ' + r.title + '\n*Source: ' + r.source + ' | Tags: ' + r.tags.join(', ') + '*\n\n' + r.content + '\n\n';
     }
     return { content: [{ type: 'text', text }] };
   },
