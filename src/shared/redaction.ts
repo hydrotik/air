@@ -169,3 +169,4 @@ export function createRedactionConfig(): RedactionConfig {
     level: parseRedactionLevel(process.env.AIR_REDACTION_LEVEL),
   };
 }
+

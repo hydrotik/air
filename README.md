@@ -985,3 +985,4 @@ The watcher processes the 3 most recent files on startup. Older sessions need `-
 ## License
 
 MIT
+
