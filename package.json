@@ -1,6 +1,6 @@
 {
   "name": "@hydrotik/air",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Real-time AI observability — monitor context windows, tool calls, token costs, and compaction for coding agents.",
   "license": "MIT",
   "type": "module",
