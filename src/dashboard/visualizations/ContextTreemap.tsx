@@ -7,39 +7,45 @@ interface Props {
   segments: ContextSegment[];
   totalTokens: number;
   contextWindow: number;
+  height?: number;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
   // System prompt sub-sections
-  sp_base: '#6366f1',          // indigo
-  sp_claude_md: '#818cf8',     // indigo-light
-  sp_skills: '#a855f7',        // purple
-  sp_tools: '#7c3aed',         // violet
+  sp_base: '#6366f1', // indigo
+  sp_claude_md: '#818cf8', // indigo-light
+  sp_skills: '#a855f7', // purple
+  sp_tools: '#7c3aed', // violet
   sp_prompt_templates: '#8b5cf6', // violet-light
-  sp_extensions: '#c084fc',    // purple-light
-  sp_other: '#6366f1',         // indigo
-  system_prompt: '#6366f1',    // indigo (legacy)
-  context_files: '#8b5cf6',    // violet
-  skills: '#a855f7',           // purple
+  sp_extensions: '#c084fc', // purple-light
+  sp_other: '#6366f1', // indigo
+  system_prompt: '#6366f1', // indigo (legacy)
+  context_files: '#8b5cf6', // violet
+  skills: '#a855f7', // purple
   // Messages
-  user_messages: '#3b82f6',    // blue
+  user_messages: '#3b82f6', // blue
   assistant_messages: '#06b6d4', // cyan
-  tool_results: '#f59e0b',     // amber (legacy blob)
+  tool_results: '#f59e0b', // amber (legacy blob)
   compaction_summary: '#10b981', // emerald
-  custom_messages: '#ec4899',   // pink
-  thinking: '#64748b',         // slate
+  custom_messages: '#ec4899', // pink
+  thinking: '#64748b', // slate
   // File-level tool results
-  tr_gsd: '#f97316',           // orange
-  tr_desloppify: '#fb923c',    // orange-light
-  tr_source_code: '#eab308',   // yellow
-  tr_config: '#a3a3a3',        // neutral
-  tr_docs: '#d97706',          // amber-dark
-  tr_tests: '#84cc16',         // lime
-  tr_styles: '#14b8a6',        // teal
+  tr_gsd: '#f97316', // orange
+  tr_desloppify: '#fb923c', // orange-light
+  tr_source_code: '#eab308', // yellow
+  tr_config: '#a3a3a3', // neutral
+  tr_docs: '#d97706', // amber-dark
+  tr_tests: '#84cc16', // lime
+  tr_styles: '#14b8a6', // teal
   tool_results_other: '#ca8a04', // yellow-dark
 };
 
-export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, contextWindow }) => {
+export const ContextTreemap: React.FC<Props> = ({
+  segments,
+  totalTokens,
+  contextWindow,
+  height: heightProp,
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -50,7 +56,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
     const container = containerRef.current;
     const tooltip = tooltipRef.current!;
     const width = container.clientWidth;
-    const height = 200;
+    const height = heightProp ?? 200;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -79,10 +85,7 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .sum((d: any) => d.value)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
-    d3.treemap<typeof data>()
-      .size([width, height])
-      .padding(2)
-      .round(true)(root as any);
+    d3.treemap<typeof data>().size([width, height]).padding(2).round(true)(root as any);
 
     const leaf = svg
       .selectAll('g')
@@ -102,12 +105,15 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
         return CATEGORY_COLORS[cat] ?? '#64748b';
       })
       .attr('fill-opacity', (d: any) => (d.data.category === 'unused' ? 0.3 : 0.8))
-      .attr('stroke', (d: any) => (d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'))
+      .attr('stroke', (d: any) =>
+        d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none',
+      )
       .style('cursor', 'pointer')
       .on('mouseover', function (_event, d: any) {
         d3.select(this).attr('fill-opacity', 1);
         const cat = d.data.category;
-        const color = cat === 'unused' ? 'rgba(255,255,255,0.5)' : (CATEGORY_COLORS[cat] ?? '#64748b');
+        const color =
+          cat === 'unused' ? 'rgba(255,255,255,0.5)' : (CATEGORY_COLORS[cat] ?? '#64748b');
         const pct = ((d.data.value / contextWindow) * 100).toFixed(1);
 
         // Build tooltip via DOM (no innerHTML — safe from XSS)
@@ -170,13 +176,24 @@ export const ContextTreemap: React.FC<Props> = ({ segments, totalTokens, context
       .attr('font-size', '8px')
       .attr('font-family', "'JetBrains Mono', monospace")
       .style('pointer-events', 'none')
-      .text((d: any) => `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`);
-  }, [segments, totalTokens, contextWindow]);
+      .text(
+        (d: any) =>
+          `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`,
+      );
+  }, [segments, totalTokens, contextWindow, heightProp]);
 
   if (segments.length === 0) {
     return (
       <div className={treemapContainer}>
-        <div style={{ padding: 24, textAlign: 'center', opacity: 0.5, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+        <div
+          style={{
+            padding: 24,
+            textAlign: 'center',
+            opacity: 0.5,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 12,
+          }}
+        >
           Waiting for context data…
         </div>
       </div>

@@ -35,6 +35,7 @@ interface CostPoint {
 interface Props {
   breakdown: CostBreakdown[];
   timeseries: CostPoint[];
+  compact?: boolean;
 }
 
 const font = "'JetBrains Mono', monospace";
@@ -45,16 +46,18 @@ function formatCost(n: number): string {
   return `$${n.toFixed(4)}`;
 }
 
-export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
+export const CostPanel: React.FC<Props> = ({ breakdown, timeseries, compact }) => {
   if (breakdown.length === 0 && timeseries.length === 0) {
     return (
-      <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
+      <div
+        style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}
+      >
         No cost data recorded yet
       </div>
     );
   }
 
-  const budgetLimit = timeseries.find(p => p.budget_limit)?.budget_limit ?? null;
+  const budgetLimit = timeseries.find((p) => p.budget_limit)?.budget_limit ?? null;
 
   const chartData = timeseries.map((p, i) => ({
     index: i + 1,
@@ -65,16 +68,26 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
-      {/* Breakdown table */}
-      {breakdown.length > 0 && (
+      {/* Breakdown table — hidden in compact mode */}
+      {!compact && breakdown.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 8 }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
               {['Model', 'Events', 'Input', 'Output', 'Cache', 'Total'].map((h) => (
-                <th key={h} style={{
-                  textAlign: 'left', padding: '3px 6px', fontSize: 8, fontWeight: 600,
-                  textTransform: 'uppercase', letterSpacing: '0.5px', color: 'rgba(255,255,255,0.4)',
-                }}>{h}</th>
+                <th
+                  key={h}
+                  style={{
+                    textAlign: 'left',
+                    padding: '3px 6px',
+                    fontSize: 8,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    color: 'rgba(255,255,255,0.4)',
+                  }}
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
@@ -82,13 +95,21 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
             {breakdown.map((s, i) => (
               <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>{s.model}</td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>{s.event_count}</td>
-                <td style={{ padding: '3px 6px', color: '#3b82f6' }}>{formatCost(s.total_input_cost)}</td>
-                <td style={{ padding: '3px 6px', color: '#f97316' }}>{formatCost(s.total_output_cost)}</td>
+                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
+                  {s.event_count}
+                </td>
+                <td style={{ padding: '3px 6px', color: '#3b82f6' }}>
+                  {formatCost(s.total_input_cost)}
+                </td>
+                <td style={{ padding: '3px 6px', color: '#f97316' }}>
+                  {formatCost(s.total_output_cost)}
+                </td>
                 <td style={{ padding: '3px 6px', color: '#10b981' }}>
                   {formatCost(s.total_cache_read_cost + s.total_cache_write_cost)}
                 </td>
-                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 600 }}>{formatCost(s.total_cost)}</td>
+                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 600 }}>
+                  {formatCost(s.total_cost)}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -97,7 +118,7 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
 
       {/* Cumulative cost chart */}
       {chartData.length > 2 && (
-        <div style={{ height: 120 }}>
+        <div style={{ height: compact ? '100%' : 120, flex: compact ? 1 : undefined }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 2, right: 2, left: 0, bottom: 0 }}>
               <defs>
@@ -110,14 +131,18 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
               <XAxis dataKey="index" hide />
               <YAxis
                 tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: font }}
-                axisLine={false} tickLine={false}
+                axisLine={false}
+                tickLine={false}
                 tickFormatter={(v: number) => `$${v}`}
                 width={40}
               />
               <Tooltip
                 contentStyle={{
-                  background: 'rgba(15, 15, 20, 0.95)', border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 8, fontFamily: font, fontSize: 11,
+                  background: 'rgba(15, 15, 20, 0.95)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 8,
+                  fontFamily: font,
+                  fontSize: 11,
                 }}
                 formatter={(value: number, name: string) => [formatCost(value), name]}
               />
@@ -129,7 +154,15 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries }) => {
                   label={{ value: `Budget $${budgetLimit}`, fill: '#ef4444', fontSize: 9 }}
                 />
               )}
-              <Area type="monotone" dataKey="cost" name="Cumulative" stroke="#10b981" fill="url(#costGrad)" strokeWidth={1.5} dot={false} />
+              <Area
+                type="monotone"
+                dataKey="cost"
+                name="Cumulative"
+                stroke="#10b981"
+                fill="url(#costGrad)"
+                strokeWidth={1.5}
+                dot={false}
+              />
             </AreaChart>
           </ResponsiveContainer>
         </div>
