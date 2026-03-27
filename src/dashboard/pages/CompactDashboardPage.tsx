@@ -2,12 +2,18 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useTelemetry } from '../hooks/useTelemetry';
 import { TabBar } from '../components/TabBar';
+import { EventFeed } from '../components/EventFeed';
+import { SessionSelector } from '../components/SessionSelector';
 import { ContextTreemap } from '../visualizations/ContextTreemap';
 import { ContextUtilizationChart } from '../visualizations/ContextUtilizationChart';
 import { TokenFlowChart } from '../visualizations/TokenFlowChart';
 import { CostPanel } from '../visualizations/CostPanel';
 import { LatencyPanel } from '../visualizations/LatencyPanel';
 import { ActivitySparklines } from '../visualizations/ActivitySparklines';
+import { DriftPanel } from '../visualizations/DriftPanel';
+import { McpStatsPanel } from '../visualizations/McpStatsPanel';
+import { RagStatsPanel } from '../visualizations/RagStatsPanel';
+import { ProviderRegistryPanel } from '../visualizations/ProviderRegistryPanel';
 import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
 import {
   compactShell,
@@ -25,8 +31,10 @@ import {
   compactPanel,
   compactPanelHeader,
   compactPanelBody,
+  compactTwoCol,
   compactTickerSlot,
   compactEmptyState,
+  compactSessionSummary,
 } from '../compact.css';
 
 // ─── Constants ────────────────────────────────────────────────────────────
@@ -74,7 +82,7 @@ const CompactKpiCard: React.FC<{ label: string; value: string | number; color?: 
 
 export const CompactDashboardPage: React.FC = () => {
   const telemetry = useTelemetry();
-  const { events, sessions, connected, redactionLevel } = telemetry;
+  const { events, sessions, connected, redactionLevel, providers } = telemetry;
 
   const [activeTab, setActiveTab] = useState('overview');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -85,10 +93,14 @@ export const CompactDashboardPage: React.FC = () => {
     tokens_used: number;
     context_window: number;
   } | null>(null);
+  const [mcpStats, setMcpStats] = useState<any[]>([]);
+  const [ragStats, setRagStats] = useState<any[]>([]);
   const [latencyStats, setLatencyStats] = useState<any[]>([]);
   const [latencyTs, setLatencyTs] = useState<any[]>([]);
   const [costBreakdown, setCostBreakdown] = useState<any[]>([]);
   const [costTs, setCostTs] = useState<any[]>([]);
+  const [driftEvents, setDriftEvents] = useState<any[]>([]);
+  const [driftSummary, setDriftSummary] = useState<any[]>([]);
   const [mcpTs, setMcpTs] = useState<any[]>([]);
   const [ragTs, setRagTs] = useState<any[]>([]);
   const [toolTs, setToolTs] = useState<any[]>([]);
@@ -109,17 +121,21 @@ export const CompactDashboardPage: React.FC = () => {
     }
   }, [sessions, activeSessionId]);
 
-  // Load session data when active session changes
+  // Load all session data when active session changes
   useEffect(() => {
     if (!activeSessionId) return;
 
     telemetry.fetchSessionEvents(activeSessionId).then(setSessionEvents);
     telemetry.fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
     telemetry.fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
+    telemetry.fetchMcpStats(activeSessionId).then(setMcpStats);
+    telemetry.fetchRagStats(activeSessionId).then(setRagStats);
     telemetry.fetchLatencyStats(activeSessionId).then(setLatencyStats);
     telemetry.fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
     telemetry.fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
     telemetry.fetchCostTimeseries(activeSessionId).then(setCostTs);
+    telemetry.fetchDriftEvents(activeSessionId).then(setDriftEvents);
+    telemetry.fetchDriftSummary(activeSessionId).then(setDriftSummary);
     telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
     telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
     telemetry.fetchToolTimeseries(activeSessionId).then(setToolTs);
@@ -150,10 +166,16 @@ export const CompactDashboardPage: React.FC = () => {
       setSessionEvents((prev) => [...prev, ...relevant]);
     }
     if (types.has('mcp_response')) {
+      telemetry.fetchMcpStats(activeSessionId).then(setMcpStats);
       telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
     }
     if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
+      telemetry.fetchRagStats(activeSessionId).then(setRagStats);
       telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
+    }
+    if (types.has('drift')) {
+      telemetry.fetchDriftEvents(activeSessionId).then(setDriftEvents);
+      telemetry.fetchDriftSummary(activeSessionId).then(setDriftSummary);
     }
   }, [events, activeSessionId, telemetry]);
 
@@ -193,6 +215,12 @@ export const CompactDashboardPage: React.FC = () => {
       contextColor: ctxColor,
     };
   }, [activeSession, contextSnapshots, latencyStats]);
+
+  // Filter error events for Errors tab
+  const errorEvents = useMemo(
+    () => events.filter((e) => e.type === 'tool_call_end' && (e as any).isError),
+    [events],
+  );
 
   const redBadge = REDACTION_BADGE[redactionLevel] ?? REDACTION_BADGE.preview;
 
@@ -261,9 +289,9 @@ export const CompactDashboardPage: React.FC = () => {
       {/* Content Area */}
       <div className={compactMain}>
         <div className={compactTabContent}>
+          {/* ═══ OVERVIEW TAB ═══ */}
           {activeTab === 'overview' && (
             <>
-              {/* KPI Row — no sub line per user decision */}
               <div className={compactKpiRow}>
                 <CompactKpiCard label="Total Tokens" value={kpis.totalTokens} color="#3b82f6" />
                 <CompactKpiCard label="Total Cost" value={kpis.totalCost} color="#10b981" />
@@ -273,9 +301,7 @@ export const CompactDashboardPage: React.FC = () => {
                 <CompactKpiCard label="Context" value={kpis.contextPct} color={kpis.contextColor} />
               </div>
 
-              {/* 3×2 Visualization Grid */}
               <div className={compactVizGrid}>
-                {/* Row 1 */}
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Context Window</div>
@@ -289,7 +315,6 @@ export const CompactDashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Utilization</div>
@@ -298,7 +323,6 @@ export const CompactDashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Token Flow</div>
@@ -307,8 +331,6 @@ export const CompactDashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Row 2 */}
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Cost</div>
@@ -317,7 +339,6 @@ export const CompactDashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Latency</div>
@@ -326,7 +347,6 @@ export const CompactDashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className={compactVizCell}>
                   <div className={compactPanel} style={{ flex: 1 }}>
                     <div className={compactPanelHeader}>Activity</div>
@@ -346,20 +366,151 @@ export const CompactDashboardPage: React.FC = () => {
             </>
           )}
 
+          {/* ═══ ERRORS TAB ═══ */}
           {activeTab === 'errors' && (
-            <div className={compactEmptyState}>Errors content — wired in Plan 01-03</div>
+            <div className={compactTwoCol}>
+              <div className={compactPanel} style={{ flex: 1 }}>
+                <div className={compactPanelHeader}>
+                  <span>Tool Errors</span>
+                  <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                    {errorEvents.length}
+                  </span>
+                </div>
+                <div className={compactPanelBody} style={{ flex: 1 }}>
+                  {errorEvents.length > 0 ? (
+                    <EventFeed events={errorEvents} maxItems={50} />
+                  ) : (
+                    <div className={compactEmptyState}>No tool errors</div>
+                  )}
+                </div>
+              </div>
+              <div className={compactPanel} style={{ flex: 1 }}>
+                <div className={compactPanelHeader}>
+                  <span>Drift Alerts</span>
+                  <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                    {driftEvents.length}
+                  </span>
+                </div>
+                <div className={compactPanelBody} style={{ flex: 1 }}>
+                  {driftEvents.length > 0 ? (
+                    <DriftPanel events={driftEvents} summary={[]} maxVisibleRows={8} />
+                  ) : (
+                    <div className={compactEmptyState}>No drift alerts</div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
 
+          {/* ═══ SESSIONS TAB ═══ */}
           {activeTab === 'sessions' && (
-            <div className={compactEmptyState}>Sessions content — wired in Plan 01-03</div>
+            <div className={compactPanel} style={{ flex: 1 }}>
+              <div className={compactPanelHeader}>
+                <span>Sessions</span>
+                <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                  {sessions.length}
+                </span>
+              </div>
+              <div className={compactPanelBody} style={{ flex: 1 }}>
+                <SessionSelector
+                  sessions={sessions}
+                  activeSessionId={activeSessionId}
+                  onSelect={setActiveSessionId}
+                />
+              </div>
+              {activeSession && (
+                <div className={compactSessionSummary}>
+                  <span style={{ fontWeight: 600, color: '#fff' }}>
+                    {activeSession.provider}/{activeSession.model}
+                  </span>
+                  <span>${activeSession.totalCost.toFixed(4)}</span>
+                  <span>{activeSession.turnCount} turns</span>
+                  <span>{activeSession.toolCallCount} tools</span>
+                  <span>{activeSession.contextUtilizationPct.toFixed(1)}% ctx</span>
+                </div>
+              )}
+            </div>
           )}
 
+          {/* ═══ INTEGRATIONS TAB ═══ */}
           {activeTab === 'integrations' && (
-            <div className={compactEmptyState}>Integrations content — wired in Plan 01-03</div>
+            <div className={compactTwoCol}>
+              <div className={compactPanel} style={{ flex: 1 }}>
+                <div className={compactPanelHeader}>
+                  <span>MCP Servers</span>
+                  <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                    {mcpStats.length > 0
+                      ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls`
+                      : '—'}
+                  </span>
+                </div>
+                <div className={compactPanelBody} style={{ flex: 1 }}>
+                  {mcpStats.length > 0 ? (
+                    <McpStatsPanel stats={mcpStats} />
+                  ) : (
+                    <div className={compactEmptyState}>No MCP data</div>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden' }}>
+                <div className={compactPanel} style={{ flex: 1 }}>
+                  <div className={compactPanelHeader}>
+                    <span>RAG Pipeline</span>
+                    <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                      {ragStats.length > 0
+                        ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops`
+                        : '—'}
+                    </span>
+                  </div>
+                  <div className={compactPanelBody} style={{ flex: 1 }}>
+                    {ragStats.length > 0 ? (
+                      <RagStatsPanel stats={ragStats} />
+                    ) : (
+                      <div className={compactEmptyState}>No RAG data</div>
+                    )}
+                  </div>
+                </div>
+                {(providers.rag.length > 0 || providers.mcp.length > 0) && (
+                  <div className={compactPanel}>
+                    <div className={compactPanelHeader}>Providers</div>
+                    <div className={compactPanelBody}>
+                      <ProviderRegistryPanel rag={providers.rag} mcp={providers.mcp} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
 
+          {/* ═══ DRIFT TAB ═══ */}
           {activeTab === 'drift' && (
-            <div className={compactEmptyState}>Drift content — wired in Plan 01-03</div>
+            <div className={compactTwoCol}>
+              <div className={compactPanel} style={{ flex: 1 }}>
+                <div className={compactPanelHeader}>
+                  <span>Events</span>
+                  <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                    {driftEvents.length}
+                  </span>
+                </div>
+                <div className={compactPanelBody} style={{ flex: 1 }}>
+                  {driftEvents.length > 0 ? (
+                    <DriftPanel events={driftEvents} summary={[]} maxVisibleRows={15} />
+                  ) : (
+                    <div className={compactEmptyState}>No drift events</div>
+                  )}
+                </div>
+              </div>
+              <div className={compactPanel} style={{ flex: 1 }}>
+                <div className={compactPanelHeader}>Summary</div>
+                <div className={compactPanelBody} style={{ flex: 1 }}>
+                  {driftSummary.length > 0 ? (
+                    <DriftPanel events={[]} summary={driftSummary} maxVisibleRows={15} />
+                  ) : (
+                    <div className={compactEmptyState}>No drift summary data</div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
