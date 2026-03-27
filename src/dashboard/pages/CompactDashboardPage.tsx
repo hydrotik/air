@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useTelemetry } from '../hooks/useTelemetry';
 import { TabBar } from '../components/TabBar';
 import { EventFeed } from '../components/EventFeed';
+import { EventTicker } from '../components/EventTicker';
 import { SessionSelector } from '../components/SessionSelector';
 import { ContextTreemap } from '../visualizations/ContextTreemap';
 import { ContextUtilizationChart } from '../visualizations/ContextUtilizationChart';
@@ -515,8 +516,10 @@ export const CompactDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Ticker Slot — wired in Plan 01-04 */}
-      <div className={compactTickerSlot} />
+      {/* Event Ticker */}
+      <div className={compactTickerSlot}>
+        <EventTicker events={events} />
+      </div>
     </div>
   );
 };
