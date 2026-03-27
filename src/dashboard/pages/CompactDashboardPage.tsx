@@ -2,7 +2,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useTelemetry } from '../hooks/useTelemetry';
 import { TabBar } from '../components/TabBar';
-import type { SessionSummary } from '../../shared/events';
+import { ContextTreemap } from '../visualizations/ContextTreemap';
+import { ContextUtilizationChart } from '../visualizations/ContextUtilizationChart';
+import { TokenFlowChart } from '../visualizations/TokenFlowChart';
+import { CostPanel } from '../visualizations/CostPanel';
+import { LatencyPanel } from '../visualizations/LatencyPanel';
+import { ActivitySparklines } from '../visualizations/ActivitySparklines';
+import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
 import {
   compactShell,
   compactHeader,
@@ -14,6 +20,11 @@ import {
   compactKpiCard,
   compactKpiLabel,
   compactKpiValue,
+  compactVizGrid,
+  compactVizCell,
+  compactPanel,
+  compactPanelHeader,
+  compactPanelBody,
   compactTickerSlot,
   compactEmptyState,
 } from '../compact.css';
@@ -67,8 +78,29 @@ export const CompactDashboardPage: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState('overview');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [sessionEvents, setSessionEvents] = useState<TelemetryEvent[]>([]);
   const [contextSnapshots, setContextSnapshots] = useState<any[]>([]);
+  const [breakdown, setBreakdown] = useState<{
+    segments: ContextSegment[];
+    tokens_used: number;
+    context_window: number;
+  } | null>(null);
   const [latencyStats, setLatencyStats] = useState<any[]>([]);
+  const [latencyTs, setLatencyTs] = useState<any[]>([]);
+  const [costBreakdown, setCostBreakdown] = useState<any[]>([]);
+  const [costTs, setCostTs] = useState<any[]>([]);
+  const [mcpTs, setMcpTs] = useState<any[]>([]);
+  const [ragTs, setRagTs] = useState<any[]>([]);
+  const [toolTs, setToolTs] = useState<any[]>([]);
+
+  const mapBreakdown = (data: any) => {
+    if (!data) return null;
+    return {
+      segments: data.breakdown ?? data.segments ?? [],
+      tokens_used: data.tokens_used ?? 0,
+      context_window: data.context_window ?? 200_000,
+    };
+  };
 
   // Auto-select most recent session
   useEffect(() => {
@@ -81,8 +113,16 @@ export const CompactDashboardPage: React.FC = () => {
   useEffect(() => {
     if (!activeSessionId) return;
 
+    telemetry.fetchSessionEvents(activeSessionId).then(setSessionEvents);
     telemetry.fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
+    telemetry.fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
     telemetry.fetchLatencyStats(activeSessionId).then(setLatencyStats);
+    telemetry.fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
+    telemetry.fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
+    telemetry.fetchCostTimeseries(activeSessionId).then(setCostTs);
+    telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+    telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
+    telemetry.fetchToolTimeseries(activeSessionId).then(setToolTs);
   }, [activeSessionId, telemetry]);
 
   // Refresh on relevant events
@@ -95,9 +135,25 @@ export const CompactDashboardPage: React.FC = () => {
 
     if (types.has('context_breakdown') || types.has('context_usage')) {
       telemetry.fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
+      telemetry.fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
     }
     if (types.has('latency')) {
       telemetry.fetchLatencyStats(activeSessionId).then(setLatencyStats);
+      telemetry.fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
+    }
+    if (types.has('cost') || types.has('token_usage')) {
+      telemetry.fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
+      telemetry.fetchCostTimeseries(activeSessionId).then(setCostTs);
+    }
+    if (types.has('tool_call_end') || types.has('tool_call')) {
+      telemetry.fetchToolTimeseries(activeSessionId).then(setToolTs);
+      setSessionEvents((prev) => [...prev, ...relevant]);
+    }
+    if (types.has('mcp_response')) {
+      telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+    }
+    if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
+      telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
     }
   }, [events, activeSessionId, telemetry]);
 
@@ -217,9 +273,75 @@ export const CompactDashboardPage: React.FC = () => {
                 <CompactKpiCard label="Context" value={kpis.contextPct} color={kpis.contextColor} />
               </div>
 
-              {/* Placeholder: 3×2 viz grid — wired in Plan 01-02 */}
-              <div className={compactEmptyState}>
-                <span>Visualization grid loading…</span>
+              {/* 3×2 Visualization Grid */}
+              <div className={compactVizGrid}>
+                {/* Row 1 */}
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Context Window</div>
+                    <div className={compactPanelBody} style={{ padding: 2 }}>
+                      <ContextTreemap
+                        segments={breakdown?.segments ?? []}
+                        totalTokens={breakdown?.tokens_used ?? 0}
+                        contextWindow={breakdown?.context_window ?? 200_000}
+                        height={115}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Utilization</div>
+                    <div className={compactPanelBody} style={{ padding: 0, flex: 1 }}>
+                      <ContextUtilizationChart snapshots={contextSnapshots} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Token Flow</div>
+                    <div className={compactPanelBody} style={{ padding: 0, flex: 1 }}>
+                      <TokenFlowChart events={sessionEvents} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 2 */}
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Cost</div>
+                    <div className={compactPanelBody} style={{ padding: 0, flex: 1 }}>
+                      <CostPanel breakdown={costBreakdown} timeseries={costTs} compact />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Latency</div>
+                    <div className={compactPanelBody} style={{ padding: 0, flex: 1 }}>
+                      <LatencyPanel stats={latencyStats} timeseries={latencyTs} compact />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={compactVizCell}>
+                  <div className={compactPanel} style={{ flex: 1 }}>
+                    <div className={compactPanelHeader}>Activity</div>
+                    <div
+                      className={compactPanelBody}
+                      style={{ padding: 0, overflow: 'auto', maxHeight: 130 }}
+                    >
+                      <ActivitySparklines
+                        mcpTimeseries={mcpTs}
+                        ragTimeseries={ragTs}
+                        toolTimeseries={toolTs}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </>
           )}
