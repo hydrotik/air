@@ -184,6 +184,15 @@ const columns: ColumnDef<DriftEventRow>[] = [
 ];
 
 export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 4 }) => {
+  // Newest first — DB returns DESC but enforce here as a safety net.
+  // This must stay above the empty-state early return: hooks have to run in the
+  // same order on every render, and `events` going from empty to non-empty would
+  // otherwise add a hook mid-life and crash React.
+  const sortedEvents = React.useMemo(
+    () => [...events].sort((a, b) => b.timestamp - a.timestamp).slice(0, 20),
+    [events],
+  );
+
   if (events.length === 0 && summary.length === 0) {
     return (
       <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
@@ -191,12 +200,6 @@ export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 
       </div>
     );
   }
-
-  // Newest first — DB returns DESC but enforce here as a safety net
-  const sortedEvents = React.useMemo(
-    () => [...events].sort((a, b) => b.timestamp - a.timestamp).slice(0, 20),
-    [events],
-  );
 
   // Fixed grid height: header + maxVisibleRows rows
   const gridHeight = EDITORIAL_HEADER_HEIGHT + EDITORIAL_ROW_HEIGHT * maxVisibleRows;
