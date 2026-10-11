@@ -68,6 +68,7 @@ telemetry system running at `http://localhost:5200`. All reporting is fire-and-f
 ### What to instrument
 
 For each operation in my service, add a lightweight HTTP POST that reports:
+
 1. **What happened** (retrieval, embedding, indexing, tool call)
 2. **How long it took** (durationMs)
 3. **Whether it succeeded** (success/failure + error message)
@@ -95,6 +96,7 @@ function airPost(path, data) {
 ### Endpoints to use
 
 **For RAG/search operations:**
+
 ```
 POST /api/rag/retrieval
 {
@@ -110,6 +112,7 @@ POST /api/rag/retrieval
 ```
 
 **For embedding generation:**
+
 ```
 POST /api/rag/embedding
 {
@@ -123,6 +126,7 @@ POST /api/rag/embedding
 ```
 
 **For document indexing:**
+
 ```
 POST /api/rag/index
 {
@@ -135,6 +139,7 @@ POST /api/rag/index
 ```
 
 **For any tool/function call (MCP tools, API calls, etc.):**
+
 ```
 POST /api/ingest
 {
@@ -154,6 +159,7 @@ POST /api/ingest
 ```
 
 **For latency tracking (charted over time):**
+
 ```
 POST /api/ingest
 {
@@ -168,6 +174,7 @@ POST /api/ingest
 ```
 
 ### Rules
+
 - **Never store sensitive data** — truncate queries to 50 chars, no API keys, no PII
 - **Fire and forget** — use a 2-second timeout, catch and ignore errors
 - **Controllable** — respect `AIR_ENABLED=false` environment variable
@@ -176,6 +183,7 @@ POST /api/ingest
 - **Session ID** — use a stable ID per service instance (e.g., `my-service-${Date.now().toString(36)}`)
 
 ### Instrument every public function/endpoint in the service with:
+
 1. `const t0 = Date.now()` at the start
 2. The operation logic
 3. `const durationMs = Date.now() - t0` after
@@ -197,6 +205,7 @@ node dist/server/cli.js --port 5200 --redaction preview
 ```
 
 You should see:
+
 ```
 ⚡ AIr — Real-time AI Observability
 ────────────────────────────────────
@@ -235,21 +244,21 @@ Create `.air.json` in your project root. This registers your services so the das
     ]
   },
   "redaction": "preview",
-  "budgetLimit": 10.00
+  "budgetLimit": 10.0
 }
 ```
 
 **Supported `type` values** (for display — AIr works with any backend):
 
-| Type | Icon | Examples |
-|------|------|----------|
-| `pinecone` | 🌲 | Pinecone |
-| `qdrant` | 🔷 | Qdrant |
-| `weaviate` | 🕸 | Weaviate |
-| `chroma` | 🎨 | ChromaDB |
-| `pgvector` | 🐘 | PostgreSQL + pgvector |
-| `milvus` | 🔬 | Milvus |
-| `custom` | ⚙️ | Anything else |
+| Type       | Icon | Examples              |
+| ---------- | ---- | --------------------- |
+| `pinecone` | 🌲   | Pinecone              |
+| `qdrant`   | 🔷   | Qdrant                |
+| `weaviate` | 🕸    | Weaviate              |
+| `chroma`   | 🎨   | ChromaDB              |
+| `pgvector` | 🐘   | PostgreSQL + pgvector |
+| `milvus`   | 🔬   | Milvus                |
+| `custom`   | ⚙️   | Anything else         |
 
 ### 3. Verify Your Setup
 
@@ -265,6 +274,7 @@ curl http://localhost:5200/api/config
 ```
 
 Expected response from `/api/providers`:
+
 ```json
 {
   "rag": [
@@ -393,21 +403,22 @@ For any function invocation — MCP tools, API calls, internal operations.
 ```
 
 **Fields:**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `id` | Yes | Unique event ID |
-| `sessionId` | Yes | Groups events — auto-creates session if new |
-| `timestamp` | Yes | Unix epoch milliseconds |
-| `type` | Yes | `"tool_call"` |
-| `toolName` | Yes | Function/tool name |
-| `toolCallId` | Yes | Unique per invocation |
-| `provider` | No | Service name (shown in dashboard) |
-| `durationMs` | No | Execution time in ms |
-| `isError` | No | `true` if the call failed |
-| `errorMessage` | No | Error description (redacted by server) |
-| `inputTokens` | No | Input size (bytes or tokens) |
-| `outputTokens` | No | Output size (bytes or tokens) |
-| `metadata` | No | Arbitrary JSON metadata |
+
+| Field          | Required | Description                                 |
+| -------------- | -------- | ------------------------------------------- |
+| `id`           | Yes      | Unique event ID                             |
+| `sessionId`    | Yes      | Groups events — auto-creates session if new |
+| `timestamp`    | Yes      | Unix epoch milliseconds                     |
+| `type`         | Yes      | `"tool_call"`                               |
+| `toolName`     | Yes      | Function/tool name                          |
+| `toolCallId`   | Yes      | Unique per invocation                       |
+| `provider`     | No       | Service name (shown in dashboard)           |
+| `durationMs`   | No       | Execution time in ms                        |
+| `isError`      | No       | `true` if the call failed                   |
+| `errorMessage` | No       | Error description (redacted by server)      |
+| `inputTokens`  | No       | Input size (bytes or tokens)                |
+| `outputTokens` | No       | Output size (bytes or tokens)               |
+| `metadata`     | No       | Arbitrary JSON metadata                     |
 
 ### Latency Events
 
@@ -535,17 +546,28 @@ async function search(query) {
       durationMs,
     });
     airPost('/api/ingest', {
-      id: uid(), sessionId: SESSION_ID, timestamp: Date.now(),
-      type: 'latency', operation: 'search', totalMs: durationMs, model: 'my-service',
+      id: uid(),
+      sessionId: SESSION_ID,
+      timestamp: Date.now(),
+      type: 'latency',
+      operation: 'search',
+      totalMs: durationMs,
+      model: 'my-service',
     });
 
     return results;
   } catch (err) {
     const durationMs = Date.now() - t0;
     airPost('/api/ingest', {
-      id: uid(), sessionId: SESSION_ID, timestamp: Date.now(),
-      type: 'tool_call', toolName: 'search', toolCallId: uid(),
-      provider: 'my-service', durationMs, isError: true,
+      id: uid(),
+      sessionId: SESSION_ID,
+      timestamp: Date.now(),
+      type: 'tool_call',
+      toolName: 'search',
+      toolCallId: uid(),
+      provider: 'my-service',
+      durationMs,
+      isError: true,
       errorMessage: err.message?.slice(0, 100),
     });
     throw err;
@@ -658,23 +680,24 @@ curl http://localhost:5200/api/events/recent?limit=1
 
 Once events flow, the AIr dashboard at `http://localhost:5200` shows:
 
-| Panel | What You'll See |
-|-------|----------------|
-| **Integrations** | Your providers with status dots (🟢 active / 🟡 seen / ⚫ registered), type icons, event counts |
-| **RAG Pipeline** | Stats table — source, operation type, call count, avg latency, result counts, relevance scores |
-| **Tool Waterfall** | Timeline of all tool/function calls with duration bars, success/failure coloring |
-| **Latency Panel** | Stats table + time series chart for operation latency over time |
-| **Cost Panel** | Cost breakdown by model + cumulative cost chart (if token costs reported) |
-| **Quality Panel** | Success rates, cache hit rates, retry counts |
-| **Drift Detection** | Alerts when latency or quality shifts significantly from baseline |
-| **Live Event Feed** | Real-time stream of all events with human-readable summaries |
-| **KPI Cards** | Tokens, tool calls, errors, avg latency at a glance |
+| Panel               | What You'll See                                                                                 |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
+| **Integrations**    | Your providers with status dots (🟢 active / 🟡 seen / ⚫ registered), type icons, event counts |
+| **RAG Pipeline**    | Stats table — source, operation type, call count, avg latency, result counts, relevance scores  |
+| **Tool Waterfall**  | Timeline of all tool/function calls with duration bars, success/failure coloring                |
+| **Latency Panel**   | Stats table + time series chart for operation latency over time                                 |
+| **Cost Panel**      | Cost breakdown by model + cumulative cost chart (if token costs reported)                       |
+| **Quality Panel**   | Success rates, cache hit rates, retry counts                                                    |
+| **Drift Detection** | Alerts when latency or quality shifts significantly from baseline                               |
+| **Live Event Feed** | Real-time stream of all events with human-readable summaries                                    |
+| **KPI Cards**       | Tokens, tool calls, errors, avg latency at a glance                                             |
 
 ---
 
 ## Troubleshooting
 
 ### Server won't start
+
 ```bash
 # Check if port is in use
 lsof -i :5200
@@ -684,6 +707,7 @@ node dist/server/cli.js --port 8080
 ```
 
 ### Events not appearing
+
 ```bash
 # Verify server is receiving events
 curl http://localhost:5200/api/events/recent?limit=5
@@ -698,15 +722,19 @@ curl -X POST http://localhost:5200/api/rag/retrieval \
 ```
 
 ### Provider shows "never seen"
+
 Your service is registered in `.air.json` but hasn't sent any events yet. The `source` field in your events must match the `name` in `.air.json`.
 
 ### Dashboard blank
+
 - Check WebSocket connection: open browser DevTools → Network → WS
 - Verify sessions exist: `curl http://localhost:5200/api/sessions`
 - Select a session in the dropdown
 
 ### Telemetry slowing down my service
+
 The telemetry helper uses fire-and-forget with a 2-second timeout. If it's still too slow:
+
 1. Increase the timeout: `AbortSignal.timeout(5000)`
 2. Batch events: collect and POST to `/api/ingest/batch` periodically
 3. Disable entirely: `AIR_ENABLED=false`
@@ -723,4 +751,4 @@ The telemetry helper uses fire-and-forget with a 2-second timeout. If it's still
 
 ---
 
-*See the main [AIr README](./README.md) for full documentation on all features, collectors, and the SDK.*
+_See the main [AIr README](./README.md) for full documentation on all features, collectors, and the SDK._

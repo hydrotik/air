@@ -59,7 +59,9 @@ if (existsSync(pidFile)) {
   } catch {
     // Already dead — clean up
   }
-  try { unlinkSync(pidFile); } catch {}
+  try {
+    unlinkSync(pidFile);
+  } catch {}
 }
 
 // ─── Start detached ─────────────────────────────────────────────────────────
@@ -76,7 +78,9 @@ const child = spawn(process.execPath, [cliPath, ...args], {
 
 // Capture initial output to confirm startup
 let startupOutput = '';
-const onData = (chunk) => { startupOutput += chunk.toString(); };
+const onData = (chunk) => {
+  startupOutput += chunk.toString();
+};
 child.stdout.on('data', onData);
 child.stderr.on('data', onData);
 

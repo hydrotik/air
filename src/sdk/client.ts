@@ -168,7 +168,7 @@ export class AirClient {
       phases?: Array<{ name: string; durationMs: number }>;
       model?: string;
       provider?: string;
-    },
+    }
   ) {
     this.emit({
       type: 'latency',
@@ -187,7 +187,7 @@ export class AirClient {
   async measureLatency<T>(
     operation: 'turn' | 'tool_call' | 'api_call' | 'ttft' | 'custom',
     fn: () => Promise<T>,
-    opts?: { model?: string; provider?: string },
+    opts?: { model?: string; provider?: string }
   ): Promise<T> {
     const start = Date.now();
     const result = await fn();
@@ -208,9 +208,10 @@ export class AirClient {
       outputCost: number;
       cacheReadCost?: number;
       cacheWriteCost?: number;
-    },
+    }
   ) {
-    const totalCost = costs.inputCost + costs.outputCost + (costs.cacheReadCost ?? 0) + (costs.cacheWriteCost ?? 0);
+    const totalCost =
+      costs.inputCost + costs.outputCost + (costs.cacheReadCost ?? 0) + (costs.cacheWriteCost ?? 0);
     this.cumulativeCost += totalCost;
     const budgetExceeded = this.budgetLimit != null && this.cumulativeCost > this.budgetLimit;
 
@@ -249,11 +250,12 @@ export class AirClient {
       responseLatencyMs: number;
       cacheHitRate?: number;
     },
-    opts?: { userRating?: number; tags?: string[] },
+    opts?: { userRating?: number; tags?: string[] }
   ) {
-    const successRate = metrics.toolCallCount > 0
-      ? (metrics.toolCallCount - metrics.toolErrorCount) / metrics.toolCallCount
-      : 1;
+    const successRate =
+      metrics.toolCallCount > 0
+        ? (metrics.toolCallCount - metrics.toolErrorCount) / metrics.toolCallCount
+        : 1;
 
     this.emit({
       type: 'output_eval',
@@ -304,7 +306,7 @@ export class AirClient {
       requiredCompaction: boolean;
     },
     rating?: number,
-    notes?: string,
+    notes?: string
   ) {
     this.emit({
       type: 'prompt_rating',
@@ -338,7 +340,7 @@ export class AirClient {
       requiredCompaction: boolean;
     },
     rating?: number,
-    notes?: string,
+    notes?: string
   ) {
     this.emit({
       type: 'prompt_rating',
@@ -360,7 +362,7 @@ export class AirClient {
     serverName: string,
     method: string,
     opts: { toolName?: string; resourceUri?: string; input?: any },
-    fn: () => Promise<T>,
+    fn: () => Promise<T>
   ): Promise<T> {
     const inputStr = opts.input ? JSON.stringify(opts.input) : '';
     this.emit({
@@ -417,7 +419,9 @@ export class AirClient {
     source: string,
     query: string,
     fn: () => Promise<T>,
-    opts?: { extractResults?: (result: T) => { count: number; topScore?: number; chunkSizes?: number[] } },
+    opts?: {
+      extractResults?: (result: T) => { count: number; topScore?: number; chunkSizes?: number[] };
+    }
   ): Promise<T> {
     const start = Date.now();
     try {
@@ -460,7 +464,7 @@ export class AirClient {
     model: string,
     inputTokens: number,
     fn: () => Promise<T>,
-    opts?: { dimensions?: number; batchSize?: number },
+    opts?: { dimensions?: number; batchSize?: number }
   ): Promise<T> {
     const start = Date.now();
     const result = await fn();
@@ -482,7 +486,7 @@ export class AirClient {
     documentCount: number,
     totalTokens: number,
     fn: () => Promise<T>,
-    metadata?: Record<string, unknown>,
+    metadata?: Record<string, unknown>
   ): Promise<T> {
     const start = Date.now();
     const result = await fn();
@@ -503,7 +507,7 @@ export class AirClient {
   async trace<T>(
     eventName: string,
     data: Record<string, unknown>,
-    fn: () => Promise<T>,
+    fn: () => Promise<T>
   ): Promise<T> {
     const start = Date.now();
     try {

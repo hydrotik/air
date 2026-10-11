@@ -54,14 +54,18 @@ function deterministicToolCallId(sessionId, toolName) {
     if (fs.existsSync(counterFile)) {
       counters = JSON.parse(fs.readFileSync(counterFile, 'utf8'));
     }
-  } catch { /* fresh start */ }
+  } catch {
+    /* fresh start */
+  }
 
   const key = `${sessionId}:${toolName}`;
   counters[key] = (counters[key] || 0) + 1;
 
   try {
     fs.writeFileSync(counterFile, JSON.stringify(counters));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   // Hash to a stable ID
   return crypto.createHash('md5').update(`${key}:${counters[key]}`).digest('hex').slice(0, 16);
@@ -86,15 +90,25 @@ function postEvents(events) {
   return new Promise((resolve) => {
     const url = new URL('/api/ingest/batch', AIR_URL);
     const payload = JSON.stringify(events);
-    const req = http.request(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
-    }, (res) => {
-      res.resume();
+    const req = http.request(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        res.resume();
+        resolve();
+      }
+    );
+    req.on('error', () => resolve());
+    req.setTimeout(2000, () => {
+      req.destroy();
       resolve();
     });
-    req.on('error', () => resolve());
-    req.setTimeout(2000, () => { req.destroy(); resolve(); });
     req.write(payload);
     req.end();
   });
@@ -102,9 +116,12 @@ function postEvents(events) {
 
 let input = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => input += chunk);
+process.stdin.on('data', (chunk) => (input += chunk));
 process.stdin.on('end', async () => {
-  if (!ENABLED) { process.exit(0); return; }
+  if (!ENABLED) {
+    process.exit(0);
+    return;
+  }
 
   try {
     const data = JSON.parse(input);
@@ -117,12 +134,14 @@ process.stdin.on('end', async () => {
 
     // ─── Tool call events ─────────────────────────────────────────
     if (data.tool_name) {
-      const outputStr = typeof data.tool_output === 'string'
-        ? data.tool_output
-        : JSON.stringify(data.tool_output || '');
-      const inputStr = typeof data.tool_input === 'string'
-        ? data.tool_input
-        : JSON.stringify(data.tool_input || '');
+      const outputStr =
+        typeof data.tool_output === 'string'
+          ? data.tool_output
+          : JSON.stringify(data.tool_output || '');
+      const inputStr =
+        typeof data.tool_input === 'string'
+          ? data.tool_input
+          : JSON.stringify(data.tool_input || '');
 
       const toolCallId = deterministicToolCallId(sessionId, data.tool_name);
 
@@ -173,7 +192,9 @@ process.stdin.on('end', async () => {
             utilizationPct: Math.round(used * 10) / 10,
           });
         }
-      } catch { /* ignore stale metrics */ }
+      } catch {
+        /* ignore stale metrics */
+      }
     }
 
     if (batch.length > 0) {

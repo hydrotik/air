@@ -16,5 +16,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         {isCompact ? <CompactDashboardPage /> : <DashboardPage />}
       </CompactModeProvider>
     </ThemeProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

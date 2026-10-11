@@ -44,18 +44,31 @@ function uid() {
 
 function postEvents(events) {
   return new Promise((resolve) => {
-    if (events.length === 0) { resolve(); return; }
+    if (events.length === 0) {
+      resolve();
+      return;
+    }
     const url = new URL('/api/ingest/batch', AIR_URL);
     const payload = JSON.stringify(events);
-    const req = http.request(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
-    }, (res) => {
-      res.resume();
+    const req = http.request(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        res.resume();
+        resolve();
+      }
+    );
+    req.on('error', () => resolve());
+    req.setTimeout(5000, () => {
+      req.destroy();
       resolve();
     });
-    req.on('error', () => resolve());
-    req.setTimeout(5000, () => { req.destroy(); resolve(); });
     req.write(payload);
     req.end();
   });
@@ -216,7 +229,9 @@ class CodexSessionMapper {
                 const match = outputStr.match(/Wall time:\s*([\d.]+)\s*seconds/);
                 if (match) durationMs = Math.round(parseFloat(match[1]) * 1000);
               }
-            } catch { /* ignore */ }
+            } catch {
+              /* ignore */
+            }
 
             events.push({
               id: uid(),
@@ -283,7 +298,9 @@ class CodexSessionMapper {
               if (parsed.metadata?.exit_code !== 0 && parsed.metadata?.exit_code != null) {
                 isError = true;
               }
-            } catch { /* raw output */ }
+            } catch {
+              /* raw output */
+            }
 
             events.push({
               id: uid(),
@@ -394,7 +411,9 @@ function findJsonlFiles(dir) {
         files.push(full);
       }
     }
-  } catch { /* dir might not exist yet */ }
+  } catch {
+    /* dir might not exist yet */
+  }
   return files;
 }
 
@@ -407,7 +426,7 @@ function startWatching() {
   // Initial scan — process only the most recent file(s) to avoid flooding
   const allFiles = findJsonlFiles(SESSIONS_DIR);
   const recentFiles = allFiles
-    .map(f => ({ path: f, mtime: fs.statSync(f).mtimeMs }))
+    .map((f) => ({ path: f, mtime: fs.statSync(f).mtimeMs }))
     .sort((a, b) => b.mtime - a.mtime)
     .slice(0, 3);
 
@@ -456,7 +475,9 @@ async function replaySession(filePath) {
       const entry = JSON.parse(line);
       const events = mapper.map(entry);
       batch.push(...events);
-    } catch { /* skip */ }
+    } catch {
+      /* skip */
+    }
   }
 
   if (batch.length > 0) {
@@ -468,7 +489,9 @@ async function replaySession(filePath) {
     }
   }
 
-  console.log(`[AIr Codex] Replay complete: ${batch.length} events from session ${sessionId.slice(0, 12)}`);
+  console.log(
+    `[AIr Codex] Replay complete: ${batch.length} events from session ${sessionId.slice(0, 12)}`
+  );
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────

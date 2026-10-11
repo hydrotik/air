@@ -30,7 +30,7 @@ const port = Number(getArg('port', String(config.port ?? 5200)));
 const host = getArg('host', '0.0.0.0');
 const redactionLevel = getArg(
   'redaction',
-  process.env.AIR_REDACTION_LEVEL ?? config.redaction ?? 'preview',
+  process.env.AIR_REDACTION_LEVEL ?? config.redaction ?? 'preview'
 ) as RedactionLevel;
 
 const redaction: RedactionConfig = { level: redactionLevel };
@@ -39,20 +39,21 @@ async function main() {
   const { app } = await createServer(port, { redaction, config });
   await app.listen({ port, host });
 
-  const redactionLabel = redactionLevel === 'none'
-    ? '⚠️  NONE (development only — content stored as-is)'
-    : redactionLevel === 'full'
-      ? '🔒 FULL (all content stripped)'
-      : '🛡️  PREVIEW (content truncated + scrubbed)';
+  const redactionLabel =
+    redactionLevel === 'none'
+      ? '⚠️  NONE (development only — content stored as-is)'
+      : redactionLevel === 'full'
+        ? '🔒 FULL (all content stripped)'
+        : '🛡️  PREVIEW (content truncated + scrubbed)';
 
   const ragProviders = config.providers?.rag ?? [];
   const mcpProviders = config.providers?.mcp ?? [];
   const providerLines: string[] = [];
   if (ragProviders.length > 0) {
-    providerLines.push(`  RAG:        ${ragProviders.map(p => p.name).join(', ')}`);
+    providerLines.push(`  RAG:        ${ragProviders.map((p) => p.name).join(', ')}`);
   }
   if (mcpProviders.length > 0) {
-    providerLines.push(`  MCP:        ${mcpProviders.map(p => p.name).join(', ')}`);
+    providerLines.push(`  MCP:        ${mcpProviders.map((p) => p.name).join(', ')}`);
   }
   if (config.budgetLimit) {
     providerLines.push(`  Budget:     $${config.budgetLimit.toFixed(2)}`);

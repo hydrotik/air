@@ -30,17 +30,17 @@ npx air-codex-watcher --replay ~/.codex/sessions/2026/02/20/rollout-2026-02-20T2
 
 ## What It Collects
 
-| Codex Event | AIr Event | Data |
-|-------------|-----------|------|
-| `session_meta` | `session_start` | session_id, model, cwd, agent=codex |
-| `event_msg:task_started` | `turn_start` | turn index |
-| `event_msg:task_complete` | `turn_end` | tool call count |
-| `event_msg:token_count` | `token_usage` | input/output tokens (when available) |
-| `response_item:function_call` | `tool_call_start` | tool name, call_id, input preview |
-| `response_item:function_call_output` | `tool_call_end` | call_id, output preview, duration, errors |
-| `response_item:custom_tool_call` | `tool_call_start` | apply_patch etc. |
-| `response_item:custom_tool_call_output` | `tool_call_end` | duration from metadata |
-| `compacted` | `compaction` | summary length |
+| Codex Event                             | AIr Event         | Data                                      |
+| --------------------------------------- | ----------------- | ----------------------------------------- |
+| `session_meta`                          | `session_start`   | session_id, model, cwd, agent=codex       |
+| `event_msg:task_started`                | `turn_start`      | turn index                                |
+| `event_msg:task_complete`               | `turn_end`        | tool call count                           |
+| `event_msg:token_count`                 | `token_usage`     | input/output tokens (when available)      |
+| `response_item:function_call`           | `tool_call_start` | tool name, call_id, input preview         |
+| `response_item:function_call_output`    | `tool_call_end`   | call_id, output preview, duration, errors |
+| `response_item:custom_tool_call`        | `tool_call_start` | apply_patch etc.                          |
+| `response_item:custom_tool_call_output` | `tool_call_end`   | duration from metadata                    |
+| `compacted`                             | `compaction`      | summary length                            |
 
 ## Alternative: SDK Instrumentation
 
@@ -70,11 +70,11 @@ const traced = instrumentMcp(mcpClient, 'my-mcp-server');
 
 ## Configuration
 
-| Env Variable | Default | Description |
-|-------------|---------|-------------|
-| `AIR_URL` | `http://localhost:5200` | AIr server HTTP endpoint |
-| `AIR_ENABLED` | `true` | Set to `"false"` to disable |
-| `CODEX_HOME` | `~/.codex` | Codex home directory |
+| Env Variable  | Default                 | Description                 |
+| ------------- | ----------------------- | --------------------------- |
+| `AIR_URL`     | `http://localhost:5200` | AIr server HTTP endpoint    |
+| `AIR_ENABLED` | `true`                  | Set to `"false"` to disable |
+| `CODEX_HOME`  | `~/.codex`              | Codex home directory        |
 
 ## How It Works
 

@@ -39,8 +39,18 @@ function Sparkline({
 }) {
   if (data.length < 2) {
     return (
-      <div style={{ width: SPARK_W, height: SPARK_H, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.2)' }}>{label ? `${label}: —` : '—'}</span>
+      <div
+        style={{
+          width: SPARK_W,
+          height: SPARK_H,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span style={{ fontSize: 8, color: 'rgba(255,255,255,0.2)' }}>
+          {label ? `${label}: —` : '—'}
+        </span>
       </div>
     );
   }
@@ -62,7 +72,13 @@ function Sparkline({
   return (
     <svg width={SPARK_W} height={SPARK_H} style={{ display: 'block' }}>
       <polygon points={areaPoints} fill={fillColor} />
-      <polyline points={polyline} fill="none" stroke={color} strokeWidth={1.5} strokeLinejoin="round" />
+      <polyline
+        points={polyline}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -110,7 +126,11 @@ function SparkRow({
 
       {/* Sparkline */}
       <div style={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-        <Sparkline data={sparkData} color={color} fillColor={color.replace(')', ',0.1)').replace('rgb', 'rgba')} />
+        <Sparkline
+          data={sparkData}
+          color={color}
+          fillColor={color.replace(')', ',0.1)').replace('rgb', 'rgba')}
+        />
       </div>
     </div>
   );
@@ -119,10 +139,23 @@ function SparkRow({
 function StatPill({ label, value, isError }: { label: string; value: string; isError?: boolean }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-      <span style={{ fontSize: 7, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'rgba(255,255,255,0.3)' }}>
+      <span
+        style={{
+          fontSize: 7,
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          color: 'rgba(255,255,255,0.3)',
+        }}
+      >
         {label}
       </span>
-      <span style={{ fontSize: 11, fontWeight: 600, color: isError ? '#ef4444' : 'rgba(255,255,255,0.8)' }}>
+      <span
+        style={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: isError ? '#ef4444' : 'rgba(255,255,255,0.8)',
+        }}
+      >
         {value}
       </span>
     </div>
@@ -172,14 +205,14 @@ function groupBy<T>(items: T[], keyFn: (item: T) => string): Record<string, T[]>
 // ─── Main Component ─────────────────────────────────────────────────────
 
 const TOOL_COLORS = [
-  'rgb(59,130,246)',   // blue
-  'rgb(249,115,22)',   // orange
-  'rgb(168,85,247)',   // purple
-  'rgb(34,197,94)',    // green
-  'rgb(236,72,153)',   // pink
-  'rgb(234,179,8)',    // yellow
-  'rgb(6,182,212)',    // cyan
-  'rgb(239,68,68)',    // red
+  'rgb(59,130,246)', // blue
+  'rgb(249,115,22)', // orange
+  'rgb(168,85,247)', // purple
+  'rgb(34,197,94)', // green
+  'rgb(236,72,153)', // pink
+  'rgb(234,179,8)', // yellow
+  'rgb(6,182,212)', // cyan
+  'rgb(239,68,68)', // red
 ];
 
 const RAG_COLORS: Record<string, string> = {
@@ -188,7 +221,11 @@ const RAG_COLORS: Record<string, string> = {
   rag_index: 'rgb(101,163,13)',
 };
 
-export const ActivitySparklines: React.FC<Props> = ({ mcpTimeseries, ragTimeseries, toolTimeseries }) => {
+export const ActivitySparklines: React.FC<Props> = ({
+  mcpTimeseries,
+  ragTimeseries,
+  toolTimeseries,
+}) => {
   const sections = useMemo(() => {
     const result: {
       title: string;
@@ -263,7 +300,9 @@ export const ActivitySparklines: React.FC<Props> = ({ mcpTimeseries, ragTimeseri
 
   if (sections.length === 0) {
     return (
-      <div style={{ padding: 20, textAlign: 'center', opacity: 0.3, fontFamily: font, fontSize: 10 }}>
+      <div
+        style={{ padding: 20, textAlign: 'center', opacity: 0.3, fontFamily: font, fontSize: 10 }}
+      >
         No activity data yet — tool calls, MCP, and RAG events will appear here as sparklines
       </div>
     );

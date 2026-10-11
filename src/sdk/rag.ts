@@ -66,7 +66,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
           topScore?: number;
           chunkSizes?: number[];
         };
-      },
+      }
     ) => air.traceRetrieval(source, query, fn, opts),
 
     /**
@@ -81,7 +81,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
       model: string,
       inputTokens: number,
       fn: () => Promise<T>,
-      opts?: { dimensions?: number; batchSize?: number },
+      opts?: { dimensions?: number; batchSize?: number }
     ) =>
       air.traceEmbedding(
         source,
@@ -91,7 +91,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
         {
           dimensions: opts?.dimensions ?? options?.defaultDimensions,
           batchSize: opts?.batchSize,
-        },
+        }
       ),
 
     /**
@@ -105,7 +105,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
       documentCount: number,
       totalTokens: number,
       fn: () => Promise<T>,
-      metadata?: Record<string, unknown>,
+      metadata?: Record<string, unknown>
     ) => air.traceIndex(source, documentCount, totalTokens, fn, metadata),
 
     /**
@@ -152,9 +152,7 @@ export type RagTracerMap = Record<string, ReturnType<typeof createRagTracer>>;
  * });
  * ```
  */
-export function createRagTracersFromConfig(
-  options?: AirClientOptions,
-): RagTracerMap {
+export function createRagTracersFromConfig(options?: AirClientOptions): RagTracerMap {
   const config = loadConfig();
   const providers = config.providers?.rag ?? [];
   const tracers: RagTracerMap = {};
@@ -176,7 +174,7 @@ export function createRagTracersFromConfig(
  */
 export function createRagTracerFromProvider(
   provider: RagProviderConfig,
-  options?: AirClientOptions,
+  options?: AirClientOptions
 ): ReturnType<typeof createRagTracer> {
   return createRagTracer(provider.name, {
     ...options,

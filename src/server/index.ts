@@ -9,7 +9,12 @@ import { getDb, TelemetryStore } from '../db';
 import type { TelemetryEvent, DashboardMessage, RedactionConfig } from '../shared/events';
 import { redactEvent, createRedactionConfig } from '../shared/redaction';
 import { DriftDetector } from '../shared/drift';
-import { loadConfig, type AirConfig, type RagProviderConfig, type McpProviderConfig } from '../shared/config';
+import {
+  loadConfig,
+  type AirConfig,
+  type RagProviderConfig,
+  type McpProviderConfig,
+} from '../shared/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,7 +22,10 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
 }
 
-export async function createServer(port = 5200, options?: { redaction?: RedactionConfig; config?: AirConfig }) {
+export async function createServer(
+  port = 5200,
+  options?: { redaction?: RedactionConfig; config?: AirConfig }
+) {
   const app = Fastify({ logger: false });
   const db = getDb();
   const store = new TelemetryStore(db);
@@ -27,8 +35,14 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
 
   // ─── Provider Registry ──────────────────────────────────────────────────
   // Tracks registered RAG/MCP providers from config + runtime registration
-  const ragProviders = new Map<string, RagProviderConfig & { lastSeen?: number; eventCount: number }>();
-  const mcpProviders = new Map<string, McpProviderConfig & { lastSeen?: number; eventCount: number }>();
+  const ragProviders = new Map<
+    string,
+    RagProviderConfig & { lastSeen?: number; eventCount: number }
+  >();
+  const mcpProviders = new Map<
+    string,
+    McpProviderConfig & { lastSeen?: number; eventCount: number }
+  >();
 
   // Seed from config file
   for (const p of airConfig.providers?.rag ?? []) {
@@ -37,7 +51,8 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
   for (const p of airConfig.providers?.mcp ?? []) {
     mcpProviders.set(p.name, { ...p, eventCount: 0 });
   }
-  if (ragProviders.size > 0) console.log(`[AIr] Registered RAG providers: ${[...ragProviders.keys()].join(', ')}`);
+  if (ragProviders.size > 0)
+    console.log(`[AIr] Registered RAG providers: ${[...ragProviders.keys()].join(', ')}`);
 
   // Track connected dashboard clients for live broadcast
   const dashboardClients = new Set<WebSocket>();
@@ -85,7 +100,11 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
     }
 
     // Step 4: Track provider activity
-    if (event.type === 'rag_retrieval' || event.type === 'rag_embedding' || event.type === 'rag_index') {
+    if (
+      event.type === 'rag_retrieval' ||
+      event.type === 'rag_embedding' ||
+      event.type === 'rag_index'
+    ) {
       const source = (event as any).source;
       if (source) {
         const existing = ragProviders.get(source);
@@ -184,9 +203,7 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
   app.get('/api/sessions/:id/events', async (req) => {
     const { id } = req.params as { id: string };
     const limit = (req.query as any).limit;
-    return limit
-      ? store.getRecentEvents(id, Number(limit))
-      : store.getEvents(id);
+    return limit ? store.getRecentEvents(id, Number(limit)) : store.getEvents(id);
   });
 
   app.get('/api/sessions/:id/tool-calls', async (req) => {
@@ -476,10 +493,16 @@ export async function createServer(port = 5200, options?: { redaction?: Redactio
     budgetLimit: airConfig.budgetLimit ?? null,
     providers: {
       rag: [...ragProviders.values()].map(({ eventCount, lastSeen, ...p }) => ({
-        ...p, eventCount, lastSeen, active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
+        ...p,
+        eventCount,
+        lastSeen,
+        active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
       })),
       mcp: [...mcpProviders.values()].map(({ eventCount, lastSeen, ...p }) => ({
-        ...p, eventCount, lastSeen, active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
+        ...p,
+        eventCount,
+        lastSeen,
+        active: lastSeen ? Date.now() - lastSeen < 300_000 : false,
       })),
     },
     features: [

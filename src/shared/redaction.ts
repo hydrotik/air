@@ -34,13 +34,7 @@ const SENSITIVE_PATTERNS: RegExp[] = [
 ];
 
 /** Fields that contain content eligible for redaction */
-const CONTENT_FIELDS = new Set([
-  'inputPreview',
-  'outputPreview',
-  'query',
-  'errorMessage',
-  'notes',
-]);
+const CONTENT_FIELDS = new Set(['inputPreview', 'outputPreview', 'query', 'errorMessage', 'notes']);
 
 /** Fields that are always stripped at 'full' redaction level */
 const FULL_STRIP_FIELDS = new Set([
@@ -116,10 +110,7 @@ export function redactEvent(event: TelemetryEvent, config: RedactionConfig): Tel
   // 'preview' level — truncate and scrub
   for (const field of CONTENT_FIELDS) {
     if (field in redacted && typeof redacted[field] === 'string') {
-      redacted[field] = scrubSensitive(
-        truncate(redacted[field], 50),
-        config.customPatterns,
-      );
+      redacted[field] = scrubSensitive(truncate(redacted[field], 50), config.customPatterns);
     }
   }
 
@@ -169,4 +160,3 @@ export function createRedactionConfig(): RedactionConfig {
     level: parseRedactionLevel(process.env.AIR_REDACTION_LEVEL),
   };
 }
-

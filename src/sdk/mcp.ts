@@ -22,7 +22,14 @@ import { AirClient, type AirClientOptions } from './client';
 
 export interface InstrumentMcpOptions extends AirClientOptions {
   /** Only instrument these methods (default: all) */
-  methods?: ('callTool' | 'readResource' | 'getPrompt' | 'listTools' | 'listResources' | 'listPrompts')[];
+  methods?: (
+    | 'callTool'
+    | 'readResource'
+    | 'getPrompt'
+    | 'listTools'
+    | 'listResources'
+    | 'listPrompts'
+  )[];
 }
 
 /**
@@ -34,7 +41,7 @@ export interface InstrumentMcpOptions extends AirClientOptions {
 export function instrumentMcp<T extends Record<string, any>>(
   client: T,
   serverName: string,
-  options?: InstrumentMcpOptions,
+  options?: InstrumentMcpOptions
 ): T {
   const air = new AirClient({
     ...options,
@@ -73,7 +80,7 @@ export function instrumentMcp<T extends Record<string, any>>(
         const resourceUri = prop === 'readResource' ? args[0] : undefined;
 
         return air.traceMcp(serverName, method, { toolName, resourceUri, input: args }, () =>
-          original.apply(target, args),
+          original.apply(target, args)
         );
       };
     },

@@ -71,7 +71,11 @@ export const DashboardPage: React.FC = () => {
   const [sessionEvents, setSessionEvents] = useState<TelemetryEvent[]>([]);
   const [toolCalls, setToolCalls] = useState<any[]>([]);
   const [contextSnapshots, setContextSnapshots] = useState<any[]>([]);
-  const [breakdown, setBreakdown] = useState<{ segments: ContextSegment[]; tokens_used: number; context_window: number } | null>(null);
+  const [breakdown, setBreakdown] = useState<{
+    segments: ContextSegment[];
+    tokens_used: number;
+    context_window: number;
+  } | null>(null);
   const [mcpStats, setMcpStats] = useState<any[]>([]);
   const [ragStats, setRagStats] = useState<any[]>([]);
   const [latencyStats, setLatencyStats] = useState<any[]>([]);
@@ -126,11 +130,27 @@ export const DashboardPage: React.FC = () => {
     fetchMcpTimeseries(activeSessionId).then(setMcpTs);
     fetchRagTimeseries(activeSessionId).then(setRagTs2);
     fetchToolTimeseries(activeSessionId).then(setToolTs);
-  }, [activeSessionId, fetchSessionEvents, fetchToolCalls, fetchContextSnapshots,
-    fetchLatestBreakdown, fetchMcpStats, fetchRagStats, fetchLatencyStats,
-    fetchLatencyTimeseries, fetchCostBreakdown, fetchCostTimeseries,
-    fetchEvalStats, fetchEvalTimeseries, fetchPromptVariants,
-    fetchDriftEvents, fetchDriftSummary, fetchMcpTimeseries, fetchRagTimeseries, fetchToolTimeseries]);
+  }, [
+    activeSessionId,
+    fetchSessionEvents,
+    fetchToolCalls,
+    fetchContextSnapshots,
+    fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchEvalStats,
+    fetchEvalTimeseries,
+    fetchPromptVariants,
+    fetchDriftEvents,
+    fetchDriftSummary,
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
+  ]);
 
   // Refresh data when new events arrive for active session
   useEffect(() => {
@@ -177,24 +197,48 @@ export const DashboardPage: React.FC = () => {
         fetchDriftSummary(activeSessionId).then(setDriftSummary);
       }
     }
-  }, [events, activeSessionId, fetchToolCalls, fetchContextSnapshots, fetchLatestBreakdown,
-    fetchMcpStats, fetchRagStats, fetchLatencyStats, fetchLatencyTimeseries,
-    fetchCostBreakdown, fetchCostTimeseries, fetchEvalStats, fetchEvalTimeseries,
-    fetchPromptVariants, fetchDriftEvents, fetchDriftSummary,
-    fetchMcpTimeseries, fetchRagTimeseries, fetchToolTimeseries]);
+  }, [
+    events,
+    activeSessionId,
+    fetchToolCalls,
+    fetchContextSnapshots,
+    fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchEvalStats,
+    fetchEvalTimeseries,
+    fetchPromptVariants,
+    fetchDriftEvents,
+    fetchDriftSummary,
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
+  ]);
 
   // Compute KPIs from active session
-  const activeSession: SessionSummary | undefined = sessions.find((s) => s.sessionId === activeSessionId);
+  const activeSession: SessionSummary | undefined = sessions.find(
+    (s) => s.sessionId === activeSessionId
+  );
 
   const kpis = useMemo(() => {
     if (!activeSession) {
       return {
-        totalTokens: '—', totalCost: '—', toolCalls: '—',
-        turns: '—', compactions: '—', contextPct: '—',
-        contextColor: '#ec4899', avgLatency: '—',
+        totalTokens: '—',
+        totalCost: '—',
+        toolCalls: '—',
+        turns: '—',
+        compactions: '—',
+        contextPct: '—',
+        contextColor: '#ec4899',
+        avgLatency: '—',
       };
     }
-    const latestCtx = contextSnapshots.length > 0 ? contextSnapshots[contextSnapshots.length - 1] : null;
+    const latestCtx =
+      contextSnapshots.length > 0 ? contextSnapshots[contextSnapshots.length - 1] : null;
     const ctxTokens = latestCtx?.tokens_used ?? 0;
     const ctxPct = activeSession.contextUtilizationPct;
     const ctxColor = ctxPct >= 90 ? '#ef4444' : ctxPct >= 80 ? '#f59e0b' : '#ec4899';
@@ -245,13 +289,21 @@ export const DashboardPage: React.FC = () => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Redaction badge */}
-          <span style={{
-            fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 600,
-            color: redBadge.color, background: `${redBadge.color}12`,
-            border: `1px solid ${redBadge.color}25`,
-            padding: '2px 6px', borderRadius: 4,
-            textTransform: 'uppercase', letterSpacing: '0.5px',
-          }} title={`Data redaction: ${redactionLevel}`}>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 8,
+              fontWeight: 600,
+              color: redBadge.color,
+              background: `${redBadge.color}12`,
+              border: `1px solid ${redBadge.color}25`,
+              padding: '2px 6px',
+              borderRadius: 4,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+            }}
+            title={`Data redaction: ${redactionLevel}`}
+          >
             {redBadge.icon} {redBadge.label}
           </span>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, opacity: 0.4 }}>
@@ -263,12 +315,22 @@ export const DashboardPage: React.FC = () => {
       <div className={main}>
         {/* KPI Row */}
         <div className={kpiRow}>
-          <KpiCard label="Total Tokens" value={kpis.totalTokens} sub="context window" color="#3b82f6" />
+          <KpiCard
+            label="Total Tokens"
+            value={kpis.totalTokens}
+            sub="context window"
+            color="#3b82f6"
+          />
           <KpiCard label="Total Cost" value={kpis.totalCost} sub="this session" color="#10b981" />
           <KpiCard label="Tool Calls" value={kpis.toolCalls} sub="executions" color="#f59e0b" />
           <KpiCard label="Turns" value={kpis.turns} sub="LLM roundtrips" color="#8b5cf6" />
           <KpiCard label="Avg Latency" value={kpis.avgLatency} sub="per turn" color="#3b82f6" />
-          <KpiCard label="Context" value={kpis.contextPct} sub="window used" color={kpis.contextColor} />
+          <KpiCard
+            label="Context"
+            value={kpis.contextPct}
+            sub="window used"
+            color={kpis.contextColor}
+          />
         </div>
 
         {/* Drift alerts (top of dashboard when present) */}
@@ -395,7 +457,9 @@ export const DashboardPage: React.FC = () => {
               <div className={panelHeader}>
                 <span>Output Quality</span>
                 <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                  {evalStats.length > 0 ? `${evalStats.reduce((s: number, r: any) => s + r.eval_count, 0)} evals` : 'metrics'}
+                  {evalStats.length > 0
+                    ? `${evalStats.reduce((s: number, r: any) => s + r.eval_count, 0)} evals`
+                    : 'metrics'}
                 </span>
               </div>
               <div className={panelBody} style={{ overflow: 'auto', maxHeight: 300 }}>
@@ -407,7 +471,9 @@ export const DashboardPage: React.FC = () => {
               <div className={panelHeader}>
                 <span>Prompt Variants</span>
                 <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                  {promptVariants.length > 0 ? `${promptVariants.length} variant${promptVariants.length !== 1 ? 's' : ''}` : 'A/B'}
+                  {promptVariants.length > 0
+                    ? `${promptVariants.length} variant${promptVariants.length !== 1 ? 's' : ''}`
+                    : 'A/B'}
                 </span>
               </div>
               <div className={panelBody} style={{ overflow: 'auto', maxHeight: 280 }}>
@@ -442,7 +508,9 @@ export const DashboardPage: React.FC = () => {
                   <div className={panelHeader}>
                     <span>MCP Servers</span>
                     <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                      {hasMcpData ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls` : 'no data'}
+                      {hasMcpData
+                        ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls`
+                        : 'no data'}
                     </span>
                   </div>
                   <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
@@ -454,7 +522,9 @@ export const DashboardPage: React.FC = () => {
                   <div className={panelHeader}>
                     <span>RAG Pipeline</span>
                     <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
-                      {hasRagData ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops` : 'no data'}
+                      {hasRagData
+                        ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops`
+                        : 'no data'}
                     </span>
                   </div>
                   <div className={panelBody} style={{ overflow: 'auto', maxHeight: 200 }}>
@@ -484,7 +554,9 @@ export const DashboardPage: React.FC = () => {
           <div className={panel}>
             <div className={panelHeader}>
               <span>Live Event Feed</span>
-              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>{events.length} events</span>
+              <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
+                {events.length} events
+              </span>
             </div>
             <div className={panelBody} style={{ padding: 0 }}>
               <EventFeed events={events} />

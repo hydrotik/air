@@ -46,8 +46,8 @@ if (!settings.hooks.SessionStart) {
   settings.hooks.SessionStart = [sessionStartHook];
 } else {
   const existing = settings.hooks.SessionStart;
-  const alreadyInstalled = existing.some(h =>
-    h.hooks?.some(hh => hh.command?.includes('air-session-start'))
+  const alreadyInstalled = existing.some((h) =>
+    h.hooks?.some((hh) => hh.command?.includes('air-session-start'))
   );
   if (!alreadyInstalled) {
     existing.push(sessionStartHook);
@@ -62,8 +62,8 @@ if (!settings.hooks.PostToolUse) {
   settings.hooks.PostToolUse = [postToolHook];
 } else {
   const existing = settings.hooks.PostToolUse;
-  const alreadyInstalled = existing.some(h =>
-    h.hooks?.some(hh => hh.command?.includes('air-post-tool-use'))
+  const alreadyInstalled = existing.some((h) =>
+    h.hooks?.some((hh) => hh.command?.includes('air-post-tool-use'))
   );
   if (!alreadyInstalled) {
     existing.push(postToolHook);

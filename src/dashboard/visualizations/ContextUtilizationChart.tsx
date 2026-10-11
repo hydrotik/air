@@ -24,7 +24,15 @@ interface Props {
 export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
   if (snapshots.length === 0) {
     return (
-      <div style={{ padding: 24, textAlign: 'center', opacity: 0.5, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+      <div
+        style={{
+          padding: 24,
+          textAlign: 'center',
+          opacity: 0.5,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 12,
+        }}
+      >
         No context snapshots yet
       </div>
     );
@@ -51,7 +59,11 @@ export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
         <XAxis dataKey="index" hide />
         <YAxis
           domain={[0, 100]}
-          tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
+          tick={{
+            fill: 'rgba(255,255,255,0.35)',
+            fontSize: 9,
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v: number) => `${v}%`}
@@ -70,7 +82,12 @@ export const ContextUtilizationChart: React.FC<Props> = ({ snapshots }) => {
             return [value, name];
           }}
         />
-        <ReferenceLine y={80} stroke="#ef4444" strokeDasharray="4 4" label={{ value: '80%', fill: '#ef4444', fontSize: 10 }} />
+        <ReferenceLine
+          y={80}
+          stroke="#ef4444"
+          strokeDasharray="4 4"
+          label={{ value: '80%', fill: '#ef4444', fontSize: 10 }}
+        />
         <ReferenceLine y={95} stroke="#ef4444" strokeWidth={2} strokeDasharray="2 2" />
         <Area
           type="monotone"

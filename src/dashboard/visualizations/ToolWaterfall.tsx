@@ -46,7 +46,9 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
     svg.attr('width', width).attr('height', height);
 
     const minTime = d3.min(toolCalls, (d) => d.start_time) ?? 0;
-    const maxTime = d3.max(toolCalls, (d) => d.end_time ?? d.start_time + (d.duration_ms ?? 100)) ?? minTime + 1000;
+    const maxTime =
+      d3.max(toolCalls, (d) => d.end_time ?? d.start_time + (d.duration_ms ?? 100)) ??
+      minTime + 1000;
 
     const xScale = d3
       .scaleLinear()
@@ -54,7 +56,10 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
       .range([margin.left, width - margin.right]);
 
     // Grid lines
-    const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat((d) => `${d}ms`);
+    const xAxis = d3
+      .axisBottom(xScale)
+      .ticks(5)
+      .tickFormat((d) => `${d}ms`);
     svg
       .append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -117,7 +122,15 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
   if (toolCalls.length === 0) {
     return (
       <div className={waterfallContainer}>
-        <div style={{ padding: 24, textAlign: 'center', opacity: 0.5, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+        <div
+          style={{
+            padding: 24,
+            textAlign: 'center',
+            opacity: 0.5,
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 12,
+          }}
+        >
           No tool calls recorded
         </div>
       </div>

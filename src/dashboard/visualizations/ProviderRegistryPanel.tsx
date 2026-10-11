@@ -48,8 +48,11 @@ const TYPE_ICONS: Record<string, string> = {
 export const ProviderRegistryPanel: React.FC<Props> = ({ rag, mcp }) => {
   if (rag.length === 0 && mcp.length === 0) {
     return (
-      <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
-        No providers registered — add a <code>.air.json</code> config or POST to <code>/api/providers/rag</code>
+      <div
+        style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}
+      >
+        No providers registered — add a <code>.air.json</code> config or POST to{' '}
+        <code>/api/providers/rag</code>
       </div>
     );
   }
@@ -59,23 +62,41 @@ export const ProviderRegistryPanel: React.FC<Props> = ({ rag, mcp }) => {
       {/* RAG providers */}
       {rag.length > 0 && (
         <>
-          <div style={{
-            fontSize: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px',
-            color: 'rgba(255,255,255,0.4)', padding: '4px 6px', marginBottom: 2,
-          }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              color: 'rgba(255,255,255,0.4)',
+              padding: '4px 6px',
+              marginBottom: 2,
+            }}
+          >
             RAG Providers
           </div>
           {rag.map((p, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '5px 6px', borderBottom: '1px solid rgba(255,255,255,0.04)',
-            }}>
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '5px 6px',
+                borderBottom: '1px solid rgba(255,255,255,0.04)',
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 {/* Status dot */}
-                <span style={{
-                  width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                  background: p.active ? '#22c55e' : p.eventCount > 0 ? '#f59e0b' : '#64748b',
-                }} />
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    flexShrink: 0,
+                    background: p.active ? '#22c55e' : p.eventCount > 0 ? '#f59e0b' : '#64748b',
+                  }}
+                />
                 {/* Icon + name */}
                 <span style={{ fontSize: 12 }}>{TYPE_ICONS[p.type] ?? TYPE_ICONS.custom}</span>
                 <div>
@@ -93,7 +114,9 @@ export const ProviderRegistryPanel: React.FC<Props> = ({ rag, mcp }) => {
                   <span style={{ color: '#a855f7', fontSize: 9 }}>{p.embeddingModel}</span>
                 )}
                 <span style={{ color: 'rgba(255,255,255,0.5)' }}>{p.eventCount} events</span>
-                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 9 }}>{timeAgo(p.lastSeen)}</span>
+                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 9 }}>
+                  {timeAgo(p.lastSeen)}
+                </span>
               </div>
             </div>
           ))}
@@ -103,22 +126,41 @@ export const ProviderRegistryPanel: React.FC<Props> = ({ rag, mcp }) => {
       {/* MCP providers */}
       {mcp.length > 0 && (
         <>
-          <div style={{
-            fontSize: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px',
-            color: 'rgba(255,255,255,0.4)', padding: '4px 6px', marginTop: 8, marginBottom: 2,
-          }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              color: 'rgba(255,255,255,0.4)',
+              padding: '4px 6px',
+              marginTop: 8,
+              marginBottom: 2,
+            }}
+          >
             MCP Servers
           </div>
           {mcp.map((p, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '5px 6px', borderBottom: '1px solid rgba(255,255,255,0.04)',
-            }}>
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '5px 6px',
+                borderBottom: '1px solid rgba(255,255,255,0.04)',
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{
-                  width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                  background: p.active ? '#22c55e' : p.eventCount > 0 ? '#f59e0b' : '#64748b',
-                }} />
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    flexShrink: 0,
+                    background: p.active ? '#22c55e' : p.eventCount > 0 ? '#f59e0b' : '#64748b',
+                  }}
+                />
                 <span style={{ fontSize: 12 }}>🔌</span>
                 <div>
                   <div style={{ fontWeight: 600, color: '#fff' }}>{p.name}</div>
@@ -131,7 +173,9 @@ export const ProviderRegistryPanel: React.FC<Props> = ({ rag, mcp }) => {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ color: 'rgba(255,255,255,0.5)' }}>{p.eventCount} events</span>
-                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 9 }}>{timeAgo(p.lastSeen)}</span>
+                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 9 }}>
+                  {timeAgo(p.lastSeen)}
+                </span>
               </div>
             </div>
           ))}

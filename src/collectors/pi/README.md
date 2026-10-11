@@ -43,23 +43,23 @@ The server persists after pi exits — it's a standalone process.
 
 ## Configuration
 
-| Env Variable | Default | Description |
-|-------------|---------|-------------|
-| `AIR_URL` | `ws://localhost:5200/ws/collector` | Server WebSocket endpoint |
-| `AIR_ENABLED` | `true` | Set to `"false"` to disable collection |
-| `AIR_PORT` | `5200` | Server port (used by auto-start) |
-| `AIR_AUTOSTART` | `true` | Set to `"false"` to disable auto-start |
+| Env Variable    | Default                            | Description                            |
+| --------------- | ---------------------------------- | -------------------------------------- |
+| `AIR_URL`       | `ws://localhost:5200/ws/collector` | Server WebSocket endpoint              |
+| `AIR_ENABLED`   | `true`                             | Set to `"false"` to disable collection |
+| `AIR_PORT`      | `5200`                             | Server port (used by auto-start)       |
+| `AIR_AUTOSTART` | `true`                             | Set to `"false"` to disable auto-start |
 
 ## What It Collects
 
-| Event | Source | Data |
-|-------|--------|------|
-| Tool calls | `tool_execution_start/end` | Name, duration, I/O size, errors |
-| Turns | `turn_start/end` | Index, tool count per turn |
-| Token usage | Assistant message `.usage` | Input, output, cache read/write, cost |
-| Context usage | `ctx.getContextUsage()` | Real token count, utilization % |
-| Context breakdown | `ctx.sessionManager.getBranch()` | Per-category token distribution |
-| Compactions | `session_compact` | Tokens before, summary length |
-| Model changes | `model_select` | Previous/new model, trigger source |
+| Event             | Source                           | Data                                  |
+| ----------------- | -------------------------------- | ------------------------------------- |
+| Tool calls        | `tool_execution_start/end`       | Name, duration, I/O size, errors      |
+| Turns             | `turn_start/end`                 | Index, tool count per turn            |
+| Token usage       | Assistant message `.usage`       | Input, output, cache read/write, cost |
+| Context usage     | `ctx.getContextUsage()`          | Real token count, utilization %       |
+| Context breakdown | `ctx.sessionManager.getBranch()` | Per-category token distribution       |
+| Compactions       | `session_compact`                | Tokens before, summary length         |
+| Model changes     | `model_select`                   | Previous/new model, trigger source    |
 
 The collector is **non-blocking** — if the server isn't running or auto-start fails, events are silently dropped and it reconnects every 5 seconds.

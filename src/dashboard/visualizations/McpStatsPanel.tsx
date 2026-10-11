@@ -29,7 +29,9 @@ const font = "'JetBrains Mono', monospace";
 export const McpStatsPanel: React.FC<Props> = ({ stats }) => {
   if (stats.length === 0) {
     return (
-      <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
+      <div
+        style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}
+      >
         No MCP calls recorded — connect an MCP server with <code>instrumentMcp()</code>
       </div>
     );
@@ -40,22 +42,24 @@ export const McpStatsPanel: React.FC<Props> = ({ stats }) => {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-            {['Server', 'Method', 'Tool/Resource', 'Calls', 'Avg', 'Min', 'Max', 'Errors'].map((h) => (
-              <th
-                key={h}
-                style={{
-                  textAlign: 'left',
-                  padding: '3px 6px',
-                  fontSize: 8,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                }}
-              >
-                {h}
-              </th>
-            ))}
+            {['Server', 'Method', 'Tool/Resource', 'Calls', 'Avg', 'Min', 'Max', 'Errors'].map(
+              (h) => (
+                <th
+                  key={h}
+                  style={{
+                    textAlign: 'left',
+                    padding: '3px 6px',
+                    fontSize: 8,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    color: 'rgba(255,255,255,0.4)',
+                  }}
+                >
+                  {h}
+                </th>
+              )
+            )}
           </tr>
         </thead>
         <tbody>
@@ -66,7 +70,9 @@ export const McpStatsPanel: React.FC<Props> = ({ stats }) => {
                 borderBottom: '1px solid rgba(255,255,255,0.04)',
               }}
             >
-              <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>{s.server_name}</td>
+              <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>
+                {s.server_name}
+              </td>
               <td style={{ padding: '3px 6px' }}>
                 <span
                   style={{
@@ -81,10 +87,17 @@ export const McpStatsPanel: React.FC<Props> = ({ stats }) => {
                 {s.tool_name ?? '—'}
               </td>
               <td style={{ padding: '3px 6px', color: '#fff' }}>{s.call_count}</td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>{Math.round(s.avg_ms)}ms</td>
+              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>
+                {Math.round(s.avg_ms)}ms
+              </td>
               <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>{s.min_ms}ms</td>
               <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>{s.max_ms}ms</td>
-              <td style={{ padding: '3px 6px', color: s.errors > 0 ? '#ef4444' : 'rgba(255,255,255,0.3)' }}>
+              <td
+                style={{
+                  padding: '3px 6px',
+                  color: s.errors > 0 ? '#ef4444' : 'rgba(255,255,255,0.3)',
+                }}
+              >
                 {s.errors}
               </td>
             </tr>

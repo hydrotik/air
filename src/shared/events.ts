@@ -161,7 +161,7 @@ export interface SessionEndEvent extends BaseEvent {
 
 export interface McpRequestEvent extends BaseEvent {
   type: 'mcp_request';
-  method: string;        // 'tools/call' | 'resources/read' | 'prompts/get' | etc.
+  method: string; // 'tools/call' | 'resources/read' | 'prompts/get' | etc.
   toolName?: string;
   resourceUri?: string;
   serverName: string;
@@ -187,12 +187,12 @@ export interface McpResponseEvent extends BaseEvent {
 
 export interface RagRetrievalEvent extends BaseEvent {
   type: 'rag_retrieval';
-  source: string;         // name of the retrieval source / vector DB
-  query: string;          // search query — redacted by server
+  source: string; // name of the retrieval source / vector DB
+  query: string; // search query — redacted by server
   resultCount: number;
-  topScore?: number;      // relevance score of best result (0-1)
+  topScore?: number; // relevance score of best result (0-1)
   durationMs: number;
-  chunkSizes?: number[];  // token/char sizes of returned chunks
+  chunkSizes?: number[]; // token/char sizes of returned chunks
   totalChunkTokens?: number;
   metadata?: Record<string, unknown>;
 }
@@ -200,10 +200,10 @@ export interface RagRetrievalEvent extends BaseEvent {
 export interface RagEmbeddingEvent extends BaseEvent {
   type: 'rag_embedding';
   source: string;
-  model: string;          // embedding model name
+  model: string; // embedding model name
   inputTokens: number;
   durationMs: number;
-  dimensions?: number;    // embedding vector dimensions
+  dimensions?: number; // embedding vector dimensions
   batchSize?: number;
 }
 
@@ -221,8 +221,8 @@ export interface RagIndexEvent extends BaseEvent {
 
 export interface CustomEvent extends BaseEvent {
   type: 'custom';
-  provider: string;       // provider name (e.g. 'my-rag', 'langchain', 'llamaindex')
-  eventName: string;      // provider-specific event name
+  provider: string; // provider name (e.g. 'my-rag', 'langchain', 'llamaindex')
+  eventName: string; // provider-specific event name
   data: Record<string, unknown>;
   durationMs?: number;
   isError?: boolean;
@@ -257,7 +257,7 @@ export interface LatencyEvent extends BaseEvent {
 }
 
 export interface LatencyPhase {
-  name: string;    // 'thinking' | 'tool_execution' | 'response_generation' | 'network' | custom
+  name: string; // 'thinking' | 'tool_execution' | 'response_generation' | 'network' | custom
   durationMs: number;
 }
 
@@ -476,20 +476,45 @@ export interface ModelPricing {
 /** Built-in pricing table — updated periodically. Override via server config. */
 export const MODEL_PRICING: Record<string, ModelPricing> = {
   // Anthropic
-  'claude-sonnet-4-20250514': { inputPer1M: 3, outputPer1M: 15, cacheReadPer1M: 0.3, cacheWritePer1M: 3.75 },
+  'claude-sonnet-4-20250514': {
+    inputPer1M: 3,
+    outputPer1M: 15,
+    cacheReadPer1M: 0.3,
+    cacheWritePer1M: 3.75,
+  },
   'claude-4-sonnet': { inputPer1M: 3, outputPer1M: 15, cacheReadPer1M: 0.3, cacheWritePer1M: 3.75 },
-  'claude-opus-4-20250514': { inputPer1M: 15, outputPer1M: 75, cacheReadPer1M: 1.5, cacheWritePer1M: 18.75 },
+  'claude-opus-4-20250514': {
+    inputPer1M: 15,
+    outputPer1M: 75,
+    cacheReadPer1M: 1.5,
+    cacheWritePer1M: 18.75,
+  },
   'claude-4-opus': { inputPer1M: 15, outputPer1M: 75, cacheReadPer1M: 1.5, cacheWritePer1M: 18.75 },
-  'claude-3-7-sonnet-20250219': { inputPer1M: 3, outputPer1M: 15, cacheReadPer1M: 0.3, cacheWritePer1M: 3.75 },
-  'claude-3-5-sonnet-20241022': { inputPer1M: 3, outputPer1M: 15, cacheReadPer1M: 0.3, cacheWritePer1M: 3.75 },
-  'claude-3-5-haiku-20241022': { inputPer1M: 0.8, outputPer1M: 4, cacheReadPer1M: 0.08, cacheWritePer1M: 1 },
+  'claude-3-7-sonnet-20250219': {
+    inputPer1M: 3,
+    outputPer1M: 15,
+    cacheReadPer1M: 0.3,
+    cacheWritePer1M: 3.75,
+  },
+  'claude-3-5-sonnet-20241022': {
+    inputPer1M: 3,
+    outputPer1M: 15,
+    cacheReadPer1M: 0.3,
+    cacheWritePer1M: 3.75,
+  },
+  'claude-3-5-haiku-20241022': {
+    inputPer1M: 0.8,
+    outputPer1M: 4,
+    cacheReadPer1M: 0.08,
+    cacheWritePer1M: 1,
+  },
   // OpenAI
   'gpt-4o': { inputPer1M: 2.5, outputPer1M: 10, cacheReadPer1M: 1.25 },
   'gpt-4o-mini': { inputPer1M: 0.15, outputPer1M: 0.6, cacheReadPer1M: 0.075 },
   'gpt-4.1': { inputPer1M: 2, outputPer1M: 8, cacheReadPer1M: 0.5 },
   'gpt-4.1-mini': { inputPer1M: 0.4, outputPer1M: 1.6, cacheReadPer1M: 0.1 },
   'gpt-4.1-nano': { inputPer1M: 0.1, outputPer1M: 0.4, cacheReadPer1M: 0.025 },
-  'o3': { inputPer1M: 2, outputPer1M: 8, cacheReadPer1M: 0.5 },
+  o3: { inputPer1M: 2, outputPer1M: 8, cacheReadPer1M: 0.5 },
   'o3-mini': { inputPer1M: 1.1, outputPer1M: 4.4, cacheReadPer1M: 0.275 },
   'o4-mini': { inputPer1M: 1.1, outputPer1M: 4.4, cacheReadPer1M: 0.275 },
   'codex-mini-latest': { inputPer1M: 1.5, outputPer1M: 6 },
@@ -508,10 +533,11 @@ export function computeCost(
   input: number,
   output: number,
   cacheRead = 0,
-  cacheWrite = 0,
+  cacheWrite = 0
 ): { input: number; output: number; cacheRead: number; cacheWrite: number; total: number } | null {
   // Try exact match, then fuzzy match (model IDs often have date suffixes)
-  const pricing = MODEL_PRICING[model] ?? Object.entries(MODEL_PRICING).find(([k]) => model.startsWith(k))?.[1];
+  const pricing =
+    MODEL_PRICING[model] ?? Object.entries(MODEL_PRICING).find(([k]) => model.startsWith(k))?.[1];
   if (!pricing) return null;
 
   const inputCost = (input / 1_000_000) * pricing.inputPer1M;

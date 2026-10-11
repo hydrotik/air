@@ -261,9 +261,10 @@ export default function airCollector(pi: ExtensionAPI) {
       send(tokenEvt);
 
       // ─── Auto-compute cost if not provided by API ─────────────────
-      const costData = u.cost?.total > 0
-        ? u.cost
-        : computeCost(msg.model ?? '', u.input, u.output, u.cacheRead, u.cacheWrite);
+      const costData =
+        u.cost?.total > 0
+          ? u.cost
+          : computeCost(msg.model ?? '', u.input, u.output, u.cacheRead, u.cacheWrite);
 
       if (costData && costData.total > 0) {
         cumulativeCost += costData.total;
@@ -376,13 +377,55 @@ export default function airCollector(pi: ExtensionAPI) {
       const systemPrompt = ctx.getSystemPrompt?.() ?? '';
       const systemChars = systemPrompt.length;
 
-      if (systemChars > 0) segments.push({ category: 'system_prompt', label: 'System Prompt + Context Files', estimatedTokens: estimateTokens(systemPrompt), charCount: systemChars });
-      if (userChars > 0) segments.push({ category: 'user_messages', label: 'User Messages', estimatedTokens: estimateTokens('x'.repeat(userChars)), charCount: userChars });
-      if (assistantChars > 0) segments.push({ category: 'assistant_messages', label: 'Assistant Messages', estimatedTokens: estimateTokens('x'.repeat(assistantChars)), charCount: assistantChars });
-      if (toolResultChars > 0) segments.push({ category: 'tool_results', label: 'Tool Results', estimatedTokens: estimateTokens('x'.repeat(toolResultChars)), charCount: toolResultChars });
-      if (thinkingChars > 0) segments.push({ category: 'thinking', label: 'Thinking Blocks', estimatedTokens: estimateTokens('x'.repeat(thinkingChars)), charCount: thinkingChars });
-      if (compactionChars > 0) segments.push({ category: 'compaction_summary', label: 'Compaction Summaries', estimatedTokens: estimateTokens('x'.repeat(compactionChars)), charCount: compactionChars });
-      if (customChars > 0) segments.push({ category: 'custom_messages', label: 'Extension Messages', estimatedTokens: estimateTokens('x'.repeat(customChars)), charCount: customChars });
+      if (systemChars > 0)
+        segments.push({
+          category: 'system_prompt',
+          label: 'System Prompt + Context Files',
+          estimatedTokens: estimateTokens(systemPrompt),
+          charCount: systemChars,
+        });
+      if (userChars > 0)
+        segments.push({
+          category: 'user_messages',
+          label: 'User Messages',
+          estimatedTokens: estimateTokens('x'.repeat(userChars)),
+          charCount: userChars,
+        });
+      if (assistantChars > 0)
+        segments.push({
+          category: 'assistant_messages',
+          label: 'Assistant Messages',
+          estimatedTokens: estimateTokens('x'.repeat(assistantChars)),
+          charCount: assistantChars,
+        });
+      if (toolResultChars > 0)
+        segments.push({
+          category: 'tool_results',
+          label: 'Tool Results',
+          estimatedTokens: estimateTokens('x'.repeat(toolResultChars)),
+          charCount: toolResultChars,
+        });
+      if (thinkingChars > 0)
+        segments.push({
+          category: 'thinking',
+          label: 'Thinking Blocks',
+          estimatedTokens: estimateTokens('x'.repeat(thinkingChars)),
+          charCount: thinkingChars,
+        });
+      if (compactionChars > 0)
+        segments.push({
+          category: 'compaction_summary',
+          label: 'Compaction Summaries',
+          estimatedTokens: estimateTokens('x'.repeat(compactionChars)),
+          charCount: compactionChars,
+        });
+      if (customChars > 0)
+        segments.push({
+          category: 'custom_messages',
+          label: 'Extension Messages',
+          estimatedTokens: estimateTokens('x'.repeat(customChars)),
+          charCount: customChars,
+        });
 
       const totalTokens = segments.reduce((sum, s) => sum + s.estimatedTokens, 0);
       const model = ctx.model;
@@ -432,9 +475,7 @@ export default function airCollector(pi: ExtensionAPI) {
     turnToolCount++;
     if (event.isError) turnToolErrors++;
 
-    const outputStr = event.result
-      ? JSON.stringify(event.result)
-      : '';
+    const outputStr = event.result ? JSON.stringify(event.result) : '';
 
     const evt: ToolCallEndEvent = {
       id: uid(),

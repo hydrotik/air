@@ -39,7 +39,9 @@ function formatTokens(n: number): string {
 export const RagStatsPanel: React.FC<Props> = ({ stats }) => {
   if (stats.length === 0) {
     return (
-      <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
+      <div
+        style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}
+      >
         No RAG events recorded — connect with <code>createRagTracer()</code>
       </div>
     );
@@ -83,7 +85,9 @@ export const RagStatsPanel: React.FC<Props> = ({ stats }) => {
                 </span>
               </td>
               <td style={{ padding: '3px 6px', color: '#fff' }}>{s.call_count}</td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>{Math.round(s.avg_ms)}ms</td>
+              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>
+                {Math.round(s.avg_ms)}ms
+              </td>
               <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
                 {s.avg_results != null ? s.avg_results.toFixed(1) : '—'}
               </td>

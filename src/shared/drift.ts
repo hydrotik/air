@@ -7,7 +7,14 @@
  * Runs server-side — no sensitive data involved, purely numeric analysis.
  */
 
-import type { DriftEvent, TelemetryEvent, TokenUsageEvent, ToolCallEndEvent, LatencyEvent, CostEvent } from './events';
+import type {
+  DriftEvent,
+  TelemetryEvent,
+  TokenUsageEvent,
+  ToolCallEndEvent,
+  LatencyEvent,
+  CostEvent,
+} from './events';
 
 export interface DriftConfig {
   /** Minimum samples before drift detection activates (default: 10) */
@@ -16,8 +23,8 @@ export interface DriftConfig {
   windowSize: number;
   /** Deviation thresholds (percentage) for each severity level */
   thresholds: {
-    info: number;     // default: 25%
-    warning: number;  // default: 50%
+    info: number; // default: 25%
+    warning: number; // default: 50%
     critical: number; // default: 100%
   };
   /** Which metrics to monitor */
@@ -74,11 +81,17 @@ export class DriftDetector {
         const e = event as ToolCallEndEvent;
         if (e.durationMs > 0 && this.config.metrics.has('latency')) {
           const d = this.check(`latency:${e.toolName}`, e.durationMs, event);
-          if (d) { d.metric = 'latency'; drifts.push(d); }
+          if (d) {
+            d.metric = 'latency';
+            drifts.push(d);
+          }
         }
         if (this.config.metrics.has('error_rate')) {
           const d = this.check(`error_rate:${e.toolName}`, e.isError ? 1 : 0, event);
-          if (d) { d.metric = 'error_rate'; drifts.push(d); }
+          if (d) {
+            d.metric = 'error_rate';
+            drifts.push(d);
+          }
         }
         break;
       }
@@ -87,20 +100,32 @@ export class DriftDetector {
         const e = event as TokenUsageEvent;
         if (this.config.metrics.has('token_usage')) {
           const d = this.check(`token_usage:${e.model}`, e.totalTokens, event);
-          if (d) { d.metric = 'token_usage'; drifts.push(d); }
+          if (d) {
+            d.metric = 'token_usage';
+            drifts.push(d);
+          }
         }
         if (this.config.metrics.has('output_tokens')) {
           const d = this.check(`output_tokens:${e.model}`, e.output, event);
-          if (d) { d.metric = 'output_tokens'; drifts.push(d); }
+          if (d) {
+            d.metric = 'output_tokens';
+            drifts.push(d);
+          }
         }
         if (this.config.metrics.has('cost') && e.cost?.total > 0) {
           const d = this.check(`cost:${e.model}`, e.cost.total, event);
-          if (d) { d.metric = 'cost'; drifts.push(d); }
+          if (d) {
+            d.metric = 'cost';
+            drifts.push(d);
+          }
         }
         if (this.config.metrics.has('cache_hit_rate') && e.totalTokens > 0) {
           const rate = e.cacheRead / e.totalTokens;
           const d = this.check(`cache_hit_rate:${e.model}`, rate, event);
-          if (d) { d.metric = 'cache_hit_rate'; drifts.push(d); }
+          if (d) {
+            d.metric = 'cache_hit_rate';
+            drifts.push(d);
+          }
         }
         break;
       }
@@ -109,7 +134,10 @@ export class DriftDetector {
         const e = event as LatencyEvent;
         if (this.config.metrics.has('latency')) {
           const d = this.check(`latency:${e.operation}`, e.totalMs, event);
-          if (d) { d.metric = 'latency'; drifts.push(d); }
+          if (d) {
+            d.metric = 'latency';
+            drifts.push(d);
+          }
         }
         break;
       }
@@ -118,7 +146,10 @@ export class DriftDetector {
         const e = event as CostEvent;
         if (this.config.metrics.has('cost')) {
           const d = this.check(`cost:${e.model}`, e.totalCost, event);
-          if (d) { d.metric = 'cost'; drifts.push(d); }
+          if (d) {
+            d.metric = 'cost';
+            drifts.push(d);
+          }
         }
         break;
       }

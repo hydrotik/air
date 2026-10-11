@@ -36,7 +36,15 @@ export class TelemetryStore {
   private ensureSession(sessionId: string, provider?: string): void {
     const existing = this.stmts.getSession.get(sessionId);
     if (!existing) {
-      this.stmts.upsertSession.run(sessionId, Date.now(), Date.now(), null, null, provider ?? null, provider ?? 'sdk');
+      this.stmts.upsertSession.run(
+        sessionId,
+        Date.now(),
+        Date.now(),
+        null,
+        null,
+        provider ?? null,
+        provider ?? 'sdk'
+      );
     }
   }
 
@@ -162,14 +170,36 @@ export class TelemetryStore {
     // Ensure session row exists before inserting event (FK constraint)
     if (event.type === 'session_start') {
       const e = event as SessionStartEvent;
-      this.stmts.upsertSession.run(e.sessionId, e.timestamp, e.timestamp, e.cwd, e.model, e.provider, e.agent ?? 'pi');
+      this.stmts.upsertSession.run(
+        e.sessionId,
+        e.timestamp,
+        e.timestamp,
+        e.cwd,
+        e.model,
+        e.provider,
+        e.agent ?? 'pi'
+      );
     } else {
       // Auto-create session if we see events without a session_start
-      this.stmts.upsertSession.run(event.sessionId, event.timestamp, event.timestamp, '', '', '', 'unknown');
+      this.stmts.upsertSession.run(
+        event.sessionId,
+        event.timestamp,
+        event.timestamp,
+        '',
+        '',
+        '',
+        'unknown'
+      );
     }
 
     // Store raw event
-    this.stmts.insertEvent.run(event.id, event.sessionId, event.timestamp, event.type, JSON.stringify(event));
+    this.stmts.insertEvent.run(
+      event.id,
+      event.sessionId,
+      event.timestamp,
+      event.type,
+      JSON.stringify(event)
+    );
 
     switch (event.type) {
       case 'session_start':
@@ -182,12 +212,24 @@ export class TelemetryStore {
       }
       case 'tool_call_start': {
         const e = event as ToolCallStartEvent;
-        this.stmts.insertToolStart.run(e.toolCallId, e.sessionId, e.toolName, e.timestamp, e.inputSizeBytes);
+        this.stmts.insertToolStart.run(
+          e.toolCallId,
+          e.sessionId,
+          e.toolName,
+          e.timestamp,
+          e.inputSizeBytes
+        );
         break;
       }
       case 'tool_call_end': {
         const e = event as ToolCallEndEvent;
-        this.stmts.updateToolEnd.run(e.timestamp, e.durationMs, e.outputSizeBytes, e.isError ? 1 : 0, e.toolCallId);
+        this.stmts.updateToolEnd.run(
+          e.timestamp,
+          e.durationMs,
+          e.outputSizeBytes,
+          e.isError ? 1 : 0,
+          e.toolCallId
+        );
         this.stmts.incrToolCalls.run(e.sessionId);
         break;
       }
@@ -195,8 +237,20 @@ export class TelemetryStore {
         // Complete tool call in a single event (from HTTP ingest, e.g. MCP servers)
         const e = event as any;
         const startTime = e.timestamp - (e.durationMs ?? 0);
-        this.stmts.insertToolStart.run(e.toolCallId, e.sessionId, e.toolName, startTime, e.inputTokens ?? 0);
-        this.stmts.updateToolEnd.run(e.timestamp, e.durationMs ?? 0, e.outputTokens ?? 0, e.isError ? 1 : 0, e.toolCallId);
+        this.stmts.insertToolStart.run(
+          e.toolCallId,
+          e.sessionId,
+          e.toolName,
+          startTime,
+          e.inputTokens ?? 0
+        );
+        this.stmts.updateToolEnd.run(
+          e.timestamp,
+          e.durationMs ?? 0,
+          e.outputTokens ?? 0,
+          e.isError ? 1 : 0,
+          e.toolCallId
+        );
         this.stmts.incrToolCalls.run(e.sessionId);
         // Auto-create session if it doesn't exist (MCP servers don't send session_start)
         this.ensureSession(e.sessionId, e.provider ?? 'mcp');
@@ -214,15 +268,26 @@ export class TelemetryStore {
       case 'context_usage': {
         const e = event as ContextUsageEvent;
         this.stmts.updateContextPct.run(e.utilizationPct, e.sessionId);
-        this.stmts.insertContextSnapshot.run(e.sessionId, e.timestamp, e.tokensUsed, e.contextWindow, e.utilizationPct, null);
+        this.stmts.insertContextSnapshot.run(
+          e.sessionId,
+          e.timestamp,
+          e.tokensUsed,
+          e.contextWindow,
+          e.utilizationPct,
+          null
+        );
         break;
       }
       case 'context_breakdown': {
         const e = event as ContextBreakdownEvent;
         this.stmts.updateContextPct.run((e.totalTokens / e.contextWindow) * 100, e.sessionId);
         this.stmts.insertContextSnapshot.run(
-          e.sessionId, e.timestamp, e.totalTokens, e.contextWindow,
-          (e.totalTokens / e.contextWindow) * 100, JSON.stringify(e.segments),
+          e.sessionId,
+          e.timestamp,
+          e.totalTokens,
+          e.contextWindow,
+          (e.totalTokens / e.contextWindow) * 100,
+          JSON.stringify(e.segments)
         );
         break;
       }
@@ -237,8 +302,14 @@ export class TelemetryStore {
         const e = event as LatencyEvent;
         this.ensureSession(e.sessionId, e.provider ?? e.model);
         this.stmts.insertLatency.run(
-          e.sessionId, e.timestamp, e.operation, e.totalMs, e.ttftMs ?? null,
-          e.phases ? JSON.stringify(e.phases) : null, e.model ?? null, e.provider ?? null,
+          e.sessionId,
+          e.timestamp,
+          e.operation,
+          e.totalMs,
+          e.ttftMs ?? null,
+          e.phases ? JSON.stringify(e.phases) : null,
+          e.model ?? null,
+          e.provider ?? null
         );
         break;
       }
@@ -246,9 +317,18 @@ export class TelemetryStore {
       case 'cost': {
         const e = event as CostEvent;
         this.stmts.insertCost.run(
-          e.sessionId, e.timestamp, e.model, e.provider,
-          e.inputCost, e.outputCost, e.cacheReadCost, e.cacheWriteCost,
-          e.totalCost, e.cumulativeCost, e.budgetLimit ?? null, e.budgetExceeded ? 1 : 0,
+          e.sessionId,
+          e.timestamp,
+          e.model,
+          e.provider,
+          e.inputCost,
+          e.outputCost,
+          e.cacheReadCost,
+          e.cacheWriteCost,
+          e.totalCost,
+          e.cumulativeCost,
+          e.budgetLimit ?? null,
+          e.budgetExceeded ? 1 : 0
         );
         // Also update session total cost
         this.stmts.addTokens.run(0, 0, e.totalCost, e.sessionId);
@@ -259,11 +339,21 @@ export class TelemetryStore {
         const e = event as OutputEvalEvent;
         const m = e.metrics;
         this.stmts.insertOutputEval.run(
-          e.sessionId, e.timestamp, e.turnIndex, e.model, e.provider,
-          m.responseTokens, m.toolCallCount, m.toolErrorCount, m.toolSuccessRate,
-          m.hadRetry ? 1 : 0, m.hadImmediateFollowUp ? 1 : 0,
-          m.responseLatencyMs, m.cacheHitRate,
-          e.userRating ?? null, e.tags ? JSON.stringify(e.tags) : null,
+          e.sessionId,
+          e.timestamp,
+          e.turnIndex,
+          e.model,
+          e.provider,
+          m.responseTokens,
+          m.toolCallCount,
+          m.toolErrorCount,
+          m.toolSuccessRate,
+          m.hadRetry ? 1 : 0,
+          m.hadImmediateFollowUp ? 1 : 0,
+          m.responseLatencyMs,
+          m.cacheHitRate,
+          e.userRating ?? null,
+          e.tags ? JSON.stringify(e.tags) : null
         );
         break;
       }
@@ -272,11 +362,22 @@ export class TelemetryStore {
         const e = event as PromptRatingEvent;
         const m = e.metrics;
         this.stmts.insertPromptRating.run(
-          e.sessionId, e.timestamp, e.promptHash, e.variant, e.category,
-          e.model, e.provider,
-          m.goalAchieved ? 1 : 0, m.turnsToComplete, m.totalTokens, m.totalCost,
-          m.totalLatencyMs, m.toolErrorRate, m.requiredCompaction ? 1 : 0,
-          e.rating ?? null, e.notes ?? null,
+          e.sessionId,
+          e.timestamp,
+          e.promptHash,
+          e.variant,
+          e.category,
+          e.model,
+          e.provider,
+          m.goalAchieved ? 1 : 0,
+          m.turnsToComplete,
+          m.totalTokens,
+          m.totalCost,
+          m.totalLatencyMs,
+          m.toolErrorRate,
+          m.requiredCompaction ? 1 : 0,
+          e.rating ?? null,
+          e.notes ?? null
         );
         break;
       }
@@ -284,9 +385,18 @@ export class TelemetryStore {
       case 'drift': {
         const e = event as DriftEvent;
         this.stmts.insertDrift.run(
-          e.sessionId, e.timestamp, e.metric, e.model, e.provider,
-          e.baseline, e.current, e.deviationPct, e.direction, e.severity,
-          e.windowSize, e.threshold,
+          e.sessionId,
+          e.timestamp,
+          e.metric,
+          e.model,
+          e.provider,
+          e.baseline,
+          e.current,
+          e.deviationPct,
+          e.direction,
+          e.severity,
+          e.windowSize,
+          e.threshold
         );
         break;
       }

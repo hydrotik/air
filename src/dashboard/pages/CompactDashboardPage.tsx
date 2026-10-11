@@ -182,7 +182,7 @@ export const CompactDashboardPage: React.FC = () => {
 
   // Compute KPIs
   const activeSession: SessionSummary | undefined = sessions.find(
-    (s) => s.sessionId === activeSessionId,
+    (s) => s.sessionId === activeSessionId
   );
 
   const kpis = useMemo(() => {
@@ -220,7 +220,7 @@ export const CompactDashboardPage: React.FC = () => {
   // Filter error events for Errors tab
   const errorEvents = useMemo(
     () => events.filter((e) => e.type === 'tool_call_end' && (e as any).isError),
-    [events],
+    [events]
   );
 
   const redBadge = REDACTION_BADGE[redactionLevel] ?? REDACTION_BADGE.preview;

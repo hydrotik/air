@@ -85,9 +85,7 @@ const columns: ColumnDef<DriftEventRow>[] = [
     maxSize: 28,
     enableSorting: false,
     enableResizing: false,
-    cell: ({ value }) => (
-      <span style={{ fontSize: 12 }}>{value === 'increase' ? '↑' : '↓'}</span>
-    ),
+    cell: ({ value }) => <span style={{ fontSize: 12 }}>{value === 'increase' ? '↑' : '↓'}</span>,
   },
   {
     id: 'metric',
@@ -108,16 +106,18 @@ const columns: ColumnDef<DriftEventRow>[] = [
     cell: ({ value }) => {
       const sev = value as string;
       return (
-        <span style={{
-          color: SEVERITY_COLORS[sev],
-          fontWeight: 600,
-          fontSize: 8,
-          textTransform: 'uppercase',
-          letterSpacing: '0.3px',
-          padding: '1px 4px',
-          borderRadius: 3,
-          background: `${SEVERITY_COLORS[sev]}15`,
-        }}>
+        <span
+          style={{
+            color: SEVERITY_COLORS[sev],
+            fontWeight: 600,
+            fontSize: 8,
+            textTransform: 'uppercase',
+            letterSpacing: '0.3px',
+            padding: '1px 4px',
+            borderRadius: 3,
+            background: `${SEVERITY_COLORS[sev]}15`,
+          }}
+        >
           {sev}
         </span>
       );
@@ -154,11 +154,14 @@ const columns: ColumnDef<DriftEventRow>[] = [
     size: 80,
     align: 'right',
     cell: ({ row }) => (
-      <span style={{
-        fontWeight: 600,
-        color: SEVERITY_COLORS[row.original.severity],
-      }}>
-        {row.original.direction === 'increase' ? '+' : ''}{Math.round(row.original.deviation_pct)}%
+      <span
+        style={{
+          fontWeight: 600,
+          color: SEVERITY_COLORS[row.original.severity],
+        }}
+      >
+        {row.original.direction === 'increase' ? '+' : ''}
+        {Math.round(row.original.deviation_pct)}%
       </span>
     ),
   },
@@ -167,9 +170,7 @@ const columns: ColumnDef<DriftEventRow>[] = [
     header: 'Model',
     accessorKey: 'model',
     size: 100,
-    cell: ({ value }) => (
-      <span style={{ color: 'rgba(255,255,255,0.5)' }}>{value as string}</span>
-    ),
+    cell: ({ value }) => <span style={{ color: 'rgba(255,255,255,0.5)' }}>{value as string}</span>,
   },
   {
     id: 'when',
@@ -190,12 +191,14 @@ export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 
   // otherwise add a hook mid-life and crash React.
   const sortedEvents = React.useMemo(
     () => [...events].sort((a, b) => b.timestamp - a.timestamp).slice(0, 20),
-    [events],
+    [events]
   );
 
   if (events.length === 0 && summary.length === 0) {
     return (
-      <div style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}>
+      <div
+        style={{ padding: 16, textAlign: 'center', opacity: 0.4, fontFamily: font, fontSize: 10 }}
+      >
         No drift detected — baselines are stable
       </div>
     );
@@ -210,13 +213,22 @@ export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 
       {summary.length > 0 && (
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
           {summary.map((s, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px',
-              borderRadius: 4, background: `${SEVERITY_COLORS[s.severity]}15`,
-              border: `1px solid ${SEVERITY_COLORS[s.severity]}30`,
-            }}>
+            <div
+              key={i}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '3px 8px',
+                borderRadius: 4,
+                background: `${SEVERITY_COLORS[s.severity]}15`,
+                border: `1px solid ${SEVERITY_COLORS[s.severity]}30`,
+              }}
+            >
               <span>{METRIC_ICONS[s.metric] ?? '📈'}</span>
-              <span style={{ fontWeight: 600, color: SEVERITY_COLORS[s.severity] }}>{s.metric}</span>
+              <span style={{ fontWeight: 600, color: SEVERITY_COLORS[s.severity] }}>
+                {s.metric}
+              </span>
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>×{s.event_count}</span>
               <span style={{ color: SEVERITY_COLORS[s.severity], fontWeight: 500 }}>
                 {s.severity}

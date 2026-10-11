@@ -19,7 +19,15 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
 
   if (tokenEvents.length === 0) {
     return (
-      <div style={{ padding: 24, textAlign: 'center', opacity: 0.5, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+      <div
+        style={{
+          padding: 24,
+          textAlign: 'center',
+          opacity: 0.5,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 12,
+        }}
+      >
         No token usage data yet
       </div>
     );
@@ -58,7 +66,11 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
         <XAxis dataKey="index" hide />
         <YAxis
           domain={[0, 'auto']}
-          tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9, fontFamily: "'JetBrains Mono', monospace" }}
+          tick={{
+            fill: 'rgba(255,255,255,0.35)',
+            fontSize: 9,
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v))}
@@ -76,9 +88,30 @@ export const TokenFlowChart: React.FC<Props> = ({ events }) => {
           labelStyle={{ color: 'rgba(255,255,255,0.5)', fontSize: 9 }}
           formatter={(value: number, name: string) => [value.toLocaleString(), name]}
         />
-        <Area type="monotone" dataKey="cacheRead" name="Cache Read" stroke="#10b981" fill="url(#cacheGrad)" strokeWidth={2} />
-        <Area type="monotone" dataKey="output" name="Output" stroke="#8b5cf6" fill="url(#outputGrad)" strokeWidth={1.5} />
-        <Area type="monotone" dataKey="input" name="Input" stroke="#3b82f6" fill="url(#inputGrad)" strokeWidth={1.5} />
+        <Area
+          type="monotone"
+          dataKey="cacheRead"
+          name="Cache Read"
+          stroke="#10b981"
+          fill="url(#cacheGrad)"
+          strokeWidth={2}
+        />
+        <Area
+          type="monotone"
+          dataKey="output"
+          name="Output"
+          stroke="#8b5cf6"
+          fill="url(#outputGrad)"
+          strokeWidth={1.5}
+        />
+        <Area
+          type="monotone"
+          dataKey="input"
+          name="Input"
+          stroke="#3b82f6"
+          fill="url(#inputGrad)"
+          strokeWidth={1.5}
+        />
       </AreaChart>
     </ResponsiveContainer>
   );

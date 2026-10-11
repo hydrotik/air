@@ -75,7 +75,7 @@ describe('DriftDetector', () => {
     // 60% increase — should be warning (50-100%)
     const drifts = detector.checkEvent(makeToolCallEnd({ durationMs: 160 }));
     expect(drifts.length).toBeGreaterThan(0);
-    const latencyDrift = drifts.find(d => d.metric === 'latency');
+    const latencyDrift = drifts.find((d) => d.metric === 'latency');
     expect(latencyDrift?.severity).toBe('warning');
   });
 
@@ -87,7 +87,7 @@ describe('DriftDetector', () => {
     // 30% increase — should be info (25-50%)
     const drifts = detector.checkEvent(makeToolCallEnd({ durationMs: 130 }));
     expect(drifts.length).toBeGreaterThan(0);
-    const latencyDrift = drifts.find(d => d.metric === 'latency');
+    const latencyDrift = drifts.find((d) => d.metric === 'latency');
     expect(latencyDrift?.severity).toBe('info');
   });
 
@@ -98,20 +98,24 @@ describe('DriftDetector', () => {
     }
     const drifts = detector.checkEvent(makeTokenUsage({ totalTokens: 5000 }));
     expect(drifts.length).toBeGreaterThan(0);
-    expect(drifts.some(d => d.metric === 'token_usage')).toBe(true);
+    expect(drifts.some((d) => d.metric === 'token_usage')).toBe(true);
   });
 
   it('detects cost drift', () => {
     const detector = new DriftDetector({ minSamples: 5, windowSize: 10 });
     for (let i = 0; i < 10; i++) {
-      detector.checkEvent(makeTokenUsage({
-        cost: { input: 0.01, output: 0.01, cacheRead: 0, cacheWrite: 0, total: 0.02 },
-      }));
+      detector.checkEvent(
+        makeTokenUsage({
+          cost: { input: 0.01, output: 0.01, cacheRead: 0, cacheWrite: 0, total: 0.02 },
+        })
+      );
     }
-    const drifts = detector.checkEvent(makeTokenUsage({
-      cost: { input: 0.05, output: 0.05, cacheRead: 0, cacheWrite: 0, total: 0.10 },
-    }));
-    expect(drifts.some(d => d.metric === 'cost')).toBe(true);
+    const drifts = detector.checkEvent(
+      makeTokenUsage({
+        cost: { input: 0.05, output: 0.05, cacheRead: 0, cacheWrite: 0, total: 0.1 },
+      })
+    );
+    expect(drifts.some((d) => d.metric === 'cost')).toBe(true);
   });
 
   it('respects custom thresholds', () => {

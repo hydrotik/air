@@ -70,7 +70,9 @@ export function useTelemetry() {
         const res = await fetch('/api/health');
         const data = await res.json();
         if (data.redactionLevel) setRedactionLevel(data.redactionLevel);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
   }, []);
 

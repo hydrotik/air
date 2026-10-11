@@ -106,7 +106,7 @@ export const ContextTreemap: React.FC<Props> = ({
       })
       .attr('fill-opacity', (d: any) => (d.data.category === 'unused' ? 0.3 : 0.8))
       .attr('stroke', (d: any) =>
-        d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none',
+        d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'
       )
       .style('cursor', 'pointer')
       .on('mouseover', function (_event, d: any) {
@@ -178,7 +178,7 @@ export const ContextTreemap: React.FC<Props> = ({
       .style('pointer-events', 'none')
       .text(
         (d: any) =>
-          `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`,
+          `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`
       );
   }, [segments, totalTokens, contextWindow, heightProp]);
 

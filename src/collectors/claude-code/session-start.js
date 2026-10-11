@@ -32,15 +32,25 @@ function postEvent(event) {
   return new Promise((resolve) => {
     const url = new URL('/api/ingest', AIR_URL);
     const payload = JSON.stringify(event);
-    const req = http.request(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
-    }, (res) => {
-      res.resume();
+    const req = http.request(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        res.resume();
+        resolve();
+      }
+    );
+    req.on('error', () => resolve());
+    req.setTimeout(2000, () => {
+      req.destroy();
       resolve();
     });
-    req.on('error', () => resolve());
-    req.setTimeout(2000, () => { req.destroy(); resolve(); });
     req.write(payload);
     req.end();
   });
@@ -53,7 +63,10 @@ async function isServerRunning() {
       resolve(res.statusCode === 200);
     });
     req.on('error', () => resolve(false));
-    req.setTimeout(1000, () => { req.destroy(); resolve(false); });
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
   });
 }
 
@@ -65,9 +78,14 @@ async function startServer() {
 
   // Try global air binary
   try {
-    const whichAir = require('child_process').execSync('which air 2>/dev/null || true').toString().trim();
+    const whichAir = require('child_process')
+      .execSync('which air 2>/dev/null || true')
+      .toString()
+      .trim();
     if (whichAir) candidates.unshift(whichAir);
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 
   for (const candidate of candidates) {
     if (fs.existsSync(candidate)) {
@@ -79,7 +97,7 @@ async function startServer() {
 
       // Wait up to 3s
       for (let i = 0; i < 15; i++) {
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 200));
         if (await isServerRunning()) return true;
       }
     }
@@ -92,12 +110,15 @@ async function startServer() {
  */
 function persistSession(sessionId, data) {
   fs.mkdirSync(SESSION_DIR, { recursive: true });
-  fs.writeFileSync(SESSION_FILE, JSON.stringify({
-    sessionId,
-    model: data.model?.name || 'claude',
-    cwd: data.workspace?.current_dir || process.cwd(),
-    startedAt: Date.now(),
-  }));
+  fs.writeFileSync(
+    SESSION_FILE,
+    JSON.stringify({
+      sessionId,
+      model: data.model?.name || 'claude',
+      cwd: data.workspace?.current_dir || process.cwd(),
+      startedAt: Date.now(),
+    })
+  );
 }
 
 /**
@@ -117,7 +138,7 @@ function readSession() {
 
 let input = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => input += chunk);
+process.stdin.on('data', (chunk) => (input += chunk));
 process.stdin.on('end', async () => {
   if (!ENABLED) process.exit(0);
 
@@ -144,7 +165,9 @@ process.stdin.on('end', async () => {
       provider: 'anthropic',
       agent: 'claude-code',
     });
-  } catch { /* silent */ }
+  } catch {
+    /* silent */
+  }
 
   process.exit(0);
 });

@@ -16,9 +16,9 @@ describe('computeCost', () => {
   it('computes cost with cache tokens', () => {
     const result = computeCost('claude-4-sonnet', 500_000, 200_000, 300_000, 100_000);
     expect(result).not.toBeNull();
-    expect(result!.input).toBeCloseTo(1.5);      // 500k * $3/1M
-    expect(result!.output).toBeCloseTo(3.0);      // 200k * $15/1M
-    expect(result!.cacheRead).toBeCloseTo(0.09);  // 300k * $0.3/1M
+    expect(result!.input).toBeCloseTo(1.5); // 500k * $3/1M
+    expect(result!.output).toBeCloseTo(3.0); // 200k * $15/1M
+    expect(result!.cacheRead).toBeCloseTo(0.09); // 300k * $0.3/1M
     expect(result!.cacheWrite).toBeCloseTo(0.375); // 100k * $3.75/1M
   });
 
