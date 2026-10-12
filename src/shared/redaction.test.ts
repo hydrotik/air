@@ -1,4 +1,4 @@
-import { redactEvent, parseRedactionLevel, createRedactionConfig } from './redaction';
+import { redactEvent, parseRedactionLevel } from './redaction';
 import type { TelemetryEvent, RedactionConfig } from './events';
 
 function makeToolEvent(overrides: Partial<any> = {}): TelemetryEvent {

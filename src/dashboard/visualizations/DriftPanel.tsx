@@ -258,7 +258,7 @@ export const DriftPanel: React.FC<Props> = ({ events, summary, maxVisibleRows = 
           enableGlobalFilter={false}
           enableColumnVisibility={false}
           enableRowSelection={false}
-          enableResizing={false}
+          enableColumnResizing={false}
         />
       )}
     </div>

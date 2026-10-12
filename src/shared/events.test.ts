@@ -56,7 +56,7 @@ describe('MODEL_PRICING', () => {
   });
 
   it('all prices are positive numbers', () => {
-    for (const [model, pricing] of Object.entries(MODEL_PRICING)) {
+    for (const pricing of Object.values(MODEL_PRICING)) {
       expect(pricing.inputPer1M).toBeGreaterThan(0);
       expect(pricing.outputPer1M).toBeGreaterThan(0);
       // cacheRead is optional
@@ -67,7 +67,7 @@ describe('MODEL_PRICING', () => {
   });
 
   it('output price >= input price for all models', () => {
-    for (const [model, pricing] of Object.entries(MODEL_PRICING)) {
+    for (const pricing of Object.values(MODEL_PRICING)) {
       expect(pricing.outputPer1M).toBeGreaterThanOrEqual(pricing.inputPer1M);
     }
   });

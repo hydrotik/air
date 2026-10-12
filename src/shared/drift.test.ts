@@ -1,5 +1,5 @@
 import { DriftDetector, DEFAULT_DRIFT_CONFIG } from './drift';
-import type { ToolCallEndEvent, TokenUsageEvent, LatencyEvent } from './events';
+import type { ToolCallEndEvent, TokenUsageEvent } from './events';
 
 function makeToolCallEnd(overrides: Partial<ToolCallEndEvent> = {}): ToolCallEndEvent {
   return {

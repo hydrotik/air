@@ -96,6 +96,7 @@
     "@hydrotik/theme-provider": "workspace:*",
     "@hydrotik/tokens": "workspace:*",
     "@hydrotik/typescript-config": "workspace:*",
+    "@mariozechner/pi-coding-agent": "^0.73.1",
     "@sinclair/typebox": "^0.34.33",
     "@types/better-sqlite3": "^7.6.13",
     "@types/d3": "^7.4.3",
