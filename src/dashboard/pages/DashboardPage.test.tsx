@@ -209,11 +209,10 @@ describe('DashboardPage', () => {
     expect(screen.getByText('Turn #1')).toBeInTheDocument();
   });
 
-  // BUG: the "refresh on new events" effect appends *every* buffered event for the session
-  // each time the `events` array changes, not just the new ones. With a rolling buffer
-  // [A] → [A, B], sessionEvents becomes [...fetched, A, A, B], so TokenFlowChart double
-  // counts token usage (and the duplication grows with every live event).
-  it.failing('passes each live event to the token flow chart once', async () => {
+  // Regression: the "refresh on new events" effect appended *every* buffered event for the
+  // session each time the `events` array changed, so a rolling buffer [A] → [A, B] made
+  // sessionEvents [...fetched, A, A, B] and TokenFlowChart double counted token usage.
+  it('passes each live event to the token flow chart once', async () => {
     const telemetry = mockTelemetry(
       { sessions: [makeSession()] },
       { sessionEvents: [tokenUsage(1, 1)] }

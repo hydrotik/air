@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface RagProvider {
+export interface RagProvider {
   name: string;
   type: string;
   description?: string;
@@ -11,7 +11,7 @@ interface RagProvider {
   active: boolean;
 }
 
-interface McpProvider {
+export interface McpProvider {
   name: string;
   description?: string;
   eventCount: number;

@@ -74,7 +74,6 @@ export default function airCollector(pi: ExtensionAPI) {
   const turnStartTimes = new Map<number, number>(); // turnIndex → startTime
   let cumulativeCost = 0;
   let turnToolErrors = 0;
-  let turnToolCount = 0;
 
   // ─── WebSocket Connection ──────────────────────────────────────────────
 
@@ -199,7 +198,6 @@ export default function airCollector(pi: ExtensionAPI) {
   pi.on('turn_start', async (event) => {
     turnStartTimes.set(event.turnIndex, Date.now());
     turnToolErrors = 0;
-    turnToolCount = 0;
 
     const evt: TurnStartEvent = {
       id: uid(),
@@ -472,7 +470,6 @@ export default function airCollector(pi: ExtensionAPI) {
     const endTime = Date.now();
 
     // Track tool errors for output evaluation
-    turnToolCount++;
     if (event.isError) turnToolErrors++;
 
     const outputStr = event.result ? JSON.stringify(event.result) : '';

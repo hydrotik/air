@@ -55,10 +55,9 @@ describe('EventTicker', () => {
     expect(container.querySelector('.tickerItemExit')).toBeNull();
   });
 
-  // BUG: when any non-key event (e.g. a heartbeat) arrives during the 300ms exit animation,
-  // the effect cleanup cancels the exit timer and the early `latest.id === lastEventIdRef`
-  // return never re-arms it, so the exiting item stays on screen forever.
-  it.failing('removes the exiting item even if a non-key event arrives mid-animation', () => {
+  // Regression: a non-key event (e.g. a heartbeat) arriving during the 300ms exit animation
+  // used to cancel the exit timer without re-arming it, leaving the item on screen forever.
+  it('removes the exiting item even if a non-key event arrives mid-animation', () => {
     jest.useFakeTimers();
     const first = toolEnd('read');
     const second = toolEnd('write');

@@ -16,7 +16,26 @@ import { PromptPanel } from '../visualizations/PromptPanel';
 import { DriftPanel } from '../visualizations/DriftPanel';
 import { ProviderRegistryPanel } from '../visualizations/ProviderRegistryPanel';
 import { ActivitySparklines } from '../visualizations/ActivitySparklines';
-import type { TelemetryEvent, SessionSummary, ContextSegment } from '../../shared/events';
+import type { TelemetryEvent, SessionSummary } from '../../shared/events';
+import {
+  appendNewEvents,
+  mapBreakdown,
+  type ContextBreakdown,
+  type ContextSnapshotRow,
+  type CostBreakdownRow,
+  type CostPointRow,
+  type DriftEventRow,
+  type DriftSummaryRow,
+  type EvalPointRow,
+  type EvalStatRow,
+  type LatencyPointRow,
+  type LatencyStatRow,
+  type McpStatRow,
+  type PromptVariantRow,
+  type RagStatRow,
+  type TimeseriesRow,
+  type ToolCallRow,
+} from './panel-data';
 import {
   shell,
   header,
@@ -69,44 +88,28 @@ export const DashboardPage: React.FC = () => {
 
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [sessionEvents, setSessionEvents] = useState<TelemetryEvent[]>([]);
-  const [toolCalls, setToolCalls] = useState<any[]>([]);
-  const [contextSnapshots, setContextSnapshots] = useState<any[]>([]);
-  const [breakdown, setBreakdown] = useState<{
-    segments: ContextSegment[];
-    tokens_used: number;
-    context_window: number;
-  } | null>(null);
-  const [mcpStats, setMcpStats] = useState<any[]>([]);
-  const [ragStats, setRagStats] = useState<any[]>([]);
-  const [latencyStats, setLatencyStats] = useState<any[]>([]);
-  const [latencyTs, setLatencyTs] = useState<any[]>([]);
-  const [costBreakdown, setCostBreakdown] = useState<any[]>([]);
-  const [costTs, setCostTs] = useState<any[]>([]);
-  const [evalStats, setEvalStats] = useState<any[]>([]);
-  const [evalTs, setEvalTs] = useState<any[]>([]);
-  const [promptVariants, setPromptVariants] = useState<any[]>([]);
-  const [driftEvents, setDriftEvents] = useState<any[]>([]);
-  const [mcpTs, setMcpTs] = useState<any[]>([]);
-  const [ragTs2, setRagTs2] = useState<any[]>([]);
-  const [toolTs, setToolTs] = useState<any[]>([]);
-  const [driftSummary, setDriftSummary] = useState<any[]>([]);
+  const [toolCalls, setToolCalls] = useState<ToolCallRow[]>([]);
+  const [contextSnapshots, setContextSnapshots] = useState<ContextSnapshotRow[]>([]);
+  const [breakdown, setBreakdown] = useState<ContextBreakdown | null>(null);
+  const [mcpStats, setMcpStats] = useState<McpStatRow[]>([]);
+  const [ragStats, setRagStats] = useState<RagStatRow[]>([]);
+  const [latencyStats, setLatencyStats] = useState<LatencyStatRow[]>([]);
+  const [latencyTs, setLatencyTs] = useState<LatencyPointRow[]>([]);
+  const [costBreakdown, setCostBreakdown] = useState<CostBreakdownRow[]>([]);
+  const [costTs, setCostTs] = useState<CostPointRow[]>([]);
+  const [evalStats, setEvalStats] = useState<EvalStatRow[]>([]);
+  const [evalTs, setEvalTs] = useState<EvalPointRow[]>([]);
+  const [promptVariants, setPromptVariants] = useState<PromptVariantRow[]>([]);
+  const [driftEvents, setDriftEvents] = useState<DriftEventRow[]>([]);
+  const [mcpTs, setMcpTs] = useState<TimeseriesRow[]>([]);
+  const [ragTs2, setRagTs2] = useState<TimeseriesRow[]>([]);
+  const [toolTs, setToolTs] = useState<TimeseriesRow[]>([]);
+  const [driftSummary, setDriftSummary] = useState<DriftSummaryRow[]>([]);
 
-  // Map API response shape to our state shape
-  const mapBreakdown = (data: any) => {
-    if (!data) return null;
-    return {
-      segments: data.breakdown ?? data.segments ?? [],
-      tokens_used: data.tokens_used ?? 0,
-      context_window: data.context_window ?? 200_000,
-    };
-  };
-
-  // Auto-select most recent session
-  useEffect(() => {
-    if (sessions.length > 0 && !activeSessionId) {
-      setActiveSessionId(sessions[0].sessionId);
-    }
-  }, [sessions, activeSessionId]);
+  // Auto-select the most recent session, during render rather than an effect later
+  if (sessions.length > 0 && !activeSessionId) {
+    setActiveSessionId(sessions[0].sessionId);
+  }
 
   // Load all session data when active session changes
   useEffect(() => {
@@ -157,7 +160,8 @@ export const DashboardPage: React.FC = () => {
     if (!activeSessionId) return;
     const relevant = events.filter((e) => e.sessionId === activeSessionId);
     if (relevant.length > 0) {
-      setSessionEvents((prev) => [...prev, ...relevant]);
+      // `events` is the whole rolling buffer, so append only the events not yet held.
+      setSessionEvents((prev) => appendNewEvents(prev, relevant));
 
       const types = new Set(relevant.map((e) => e.type));
 
@@ -244,7 +248,7 @@ export const DashboardPage: React.FC = () => {
     const ctxColor = ctxPct >= 90 ? '#ef4444' : ctxPct >= 80 ? '#f59e0b' : '#ec4899';
 
     // Average turn latency from latency stats
-    const turnLatency = latencyStats.find((s: any) => s.operation === 'turn');
+    const turnLatency = latencyStats.find((s) => s.operation === 'turn');
     const avgLatency = turnLatency ? `${Math.round(turnLatency.avg_ms)}ms` : '—';
 
     return {
@@ -402,7 +406,7 @@ export const DashboardPage: React.FC = () => {
                 <span>Latency</span>
                 <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
                   {latencyStats.length > 0
-                    ? `avg ${Math.round(latencyStats.reduce((s: number, r: any) => s + r.avg_ms, 0) / latencyStats.length)}ms`
+                    ? `avg ${Math.round(latencyStats.reduce((s: number, r) => s + r.avg_ms, 0) / latencyStats.length)}ms`
                     : 'timing'}
                 </span>
               </div>
@@ -416,7 +420,7 @@ export const DashboardPage: React.FC = () => {
                 <span>Cost</span>
                 <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
                   {costBreakdown.length > 0
-                    ? `$${costBreakdown.reduce((s: number, r: any) => s + r.total_cost, 0).toFixed(4)}`
+                    ? `$${costBreakdown.reduce((s: number, r) => s + r.total_cost, 0).toFixed(4)}`
                     : 'spend'}
                 </span>
               </div>
@@ -458,7 +462,7 @@ export const DashboardPage: React.FC = () => {
                 <span>Output Quality</span>
                 <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
                   {evalStats.length > 0
-                    ? `${evalStats.reduce((s: number, r: any) => s + r.eval_count, 0)} evals`
+                    ? `${evalStats.reduce((s: number, r) => s + r.eval_count, 0)} evals`
                     : 'metrics'}
                 </span>
               </div>
@@ -509,7 +513,7 @@ export const DashboardPage: React.FC = () => {
                     <span>MCP Servers</span>
                     <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
                       {hasMcpData
-                        ? `${mcpStats.reduce((s: number, r: any) => s + r.call_count, 0)} calls`
+                        ? `${mcpStats.reduce((s: number, r) => s + r.call_count, 0)} calls`
                         : 'no data'}
                     </span>
                   </div>
@@ -523,7 +527,7 @@ export const DashboardPage: React.FC = () => {
                     <span>RAG Pipeline</span>
                     <span style={{ fontWeight: 400, opacity: 0.4, fontSize: 9 }}>
                       {hasRagData
-                        ? `${ragStats.reduce((s: number, r: any) => s + r.call_count, 0)} ops`
+                        ? `${ragStats.reduce((s: number, r) => s + r.call_count, 0)} ops`
                         : 'no data'}
                     </span>
                   </div>

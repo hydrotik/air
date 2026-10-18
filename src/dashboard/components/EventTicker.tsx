@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { TelemetryEvent } from '../../shared/events';
 import { tickerContainer, tickerItem, tickerItemEnter, tickerItemExit } from '../compact.css';
 
@@ -29,16 +29,19 @@ function formatTime(ts: number): string {
   });
 }
 
+function hasError(event: TelemetryEvent): boolean {
+  return 'isError' in event && event.isError === true;
+}
+
 function getTickerSummary(event: TelemetryEvent): string {
-  const e = event as any;
   switch (event.type) {
     case 'tool_call_end':
-      if (e.isError) {
-        return `${e.toolName ?? 'unknown'} ✗ failed`;
+      if (event.isError) {
+        return `${event.toolName ?? 'unknown'} ✗ failed`;
       }
-      return `${e.toolName ?? 'unknown'} ✓ ${e.durationMs ?? 0}ms`;
+      return `${event.toolName ?? 'unknown'} ✓ ${event.durationMs ?? 0}ms`;
     case 'compaction':
-      return `${formatTokens(e.tokensBefore ?? 0)} tokens → summary`;
+      return `${formatTokens(event.tokensBefore ?? 0)} tokens → summary`;
     default:
       return event.type;
   }
@@ -52,13 +55,12 @@ function formatTokens(n: number): string {
 
 function isKeyEvent(e: TelemetryEvent): boolean {
   if (KEY_TYPES.has(e.type)) return true;
-  if ((e as any).isError) return true;
+  if (hasError(e)) return true;
   return false;
 }
 
 function getTypeInfo(event: TelemetryEvent): { label: string; color: string } {
-  const e = event as any;
-  if (e.isError) return { label: 'ERROR', color: TYPE_COLORS.error! };
+  if (hasError(event)) return { label: 'ERROR', color: TYPE_COLORS.error! };
   return {
     label: TYPE_LABELS[event.type] ?? event.type.toUpperCase(),
     color: TYPE_COLORS[event.type] ?? '#64748b',
@@ -122,35 +124,35 @@ interface Props {
 }
 
 export const EventTicker: React.FC<Props> = ({ events }) => {
-  const [currentEvent, setCurrentEvent] = useState<TelemetryEvent | null>(null);
-  const [prevEvent, setPrevEvent] = useState<TelemetryEvent | null>(null);
-  const [animKey, setAnimKey] = useState(0);
-  const lastEventIdRef = useRef<string | null>(null);
-  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latest = useMemo(() => {
+    for (let i = events.length - 1; i >= 0; i--) {
+      const event = events[i];
+      if (event && isKeyEvent(event)) return event;
+    }
+    return null;
+  }, [events]);
+  const [shown, setShown] = useState<{
+    current: TelemetryEvent | null;
+    prev: TelemetryEvent | null;
+    animKey: number;
+  }>({ current: null, prev: null, animKey: 0 });
 
+  // A new key event slides in during render (no effect round-trip); the one it
+  // replaces slides out.
+  if (latest && latest.id !== shown.current?.id) {
+    setShown({ current: latest, prev: shown.current, animKey: shown.animKey + 1 });
+  }
+
+  // Clear the exiting event once its animation is done. Keyed on the exiting
+  // event itself, so unrelated event updates cannot cancel the timer and leave
+  // it on screen.
   useEffect(() => {
-    // Find latest key event
-    const keyEvents = events.filter(isKeyEvent);
-    if (keyEvents.length === 0) return;
+    if (!shown.prev) return;
+    const timer = setTimeout(() => setShown((s) => ({ ...s, prev: null })), 300);
+    return () => clearTimeout(timer);
+  }, [shown.prev]);
 
-    const latest = keyEvents[keyEvents.length - 1];
-    if (!latest || latest.id === lastEventIdRef.current) return;
-
-    lastEventIdRef.current = latest.id;
-
-    // Trigger animation
-    setPrevEvent(currentEvent);
-    setCurrentEvent(latest);
-    setAnimKey((k) => k + 1);
-
-    // Clear prev after animation completes
-    if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
-    exitTimerRef.current = setTimeout(() => setPrevEvent(null), 300);
-
-    return () => {
-      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
-    };
-  }, [events]); // currentEvent intentionally excluded to prevent infinite loop
+  const { current: currentEvent, prev: prevEvent, animKey } = shown;
 
   return (
     <div className={tickerContainer}>

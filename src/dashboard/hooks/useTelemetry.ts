@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type { TelemetryEvent, SessionSummary, DashboardMessage } from '../../shared/events';
+import type { McpProvider, RagProvider } from '../visualizations/ProviderRegistryPanel';
 
 const MAX_EVENTS = 500;
 
@@ -8,43 +9,10 @@ export function useTelemetry() {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [connected, setConnected] = useState<boolean>(false);
   const [redactionLevel, setRedactionLevel] = useState<string>('preview');
-  const [providers, setProviders] = useState<{ rag: any[]; mcp: any[] }>({ rag: [], mcp: [] });
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const connect = useCallback(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/dashboard`);
-
-    ws.onopen = () => {
-      setConnected(true);
-      console.log('[AIr] Dashboard connected');
-    };
-
-    ws.onmessage = (e) => {
-      try {
-        const msg: DashboardMessage = JSON.parse(e.data);
-        if (msg.type === 'event') {
-          const event = msg.data as TelemetryEvent;
-          setEvents((prev) => {
-            const next = [...prev, event];
-            return next.length > MAX_EVENTS ? next.slice(-MAX_EVENTS) : next;
-          });
-        }
-      } catch {
-        // ignore
-      }
-    };
-
-    ws.onclose = () => {
-      setConnected(false);
-      wsRef.current = null;
-      reconnectRef.current = setTimeout(connect, 3000);
-    };
-
-    ws.onerror = () => ws.close();
-    wsRef.current = ws;
-  }, []);
+  const [providers, setProviders] = useState<{ rag: RagProvider[]; mcp: McpProvider[] }>({
+    rag: [],
+    mcp: [],
+  });
 
   // ─── Fetch helpers ──────────────────────────────────────────────────────
 
@@ -265,16 +233,58 @@ export function useTelemetry() {
   // ─── Lifecycle ────────────────────────────────────────────────────────
 
   useEffect(() => {
+    // The socket, its reconnect timer and the disposed flag belong to this
+    // effect run, so closing the socket on unmount cannot schedule a reconnect.
+    let disposed = false;
+    let ws: WebSocket | null = null;
+    let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const connect = () => {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const socket = new WebSocket(`${protocol}//${window.location.host}/ws/dashboard`);
+
+      socket.onopen = () => {
+        setConnected(true);
+        console.log('[AIr] Dashboard connected');
+      };
+
+      socket.onmessage = (e) => {
+        try {
+          const msg: DashboardMessage = JSON.parse(e.data);
+          if (msg.type === 'event') {
+            const event = msg.data as TelemetryEvent;
+            setEvents((prev) => {
+              const next = [...prev, event];
+              return next.length > MAX_EVENTS ? next.slice(-MAX_EVENTS) : next;
+            });
+          }
+        } catch {
+          // ignore
+        }
+      };
+
+      socket.onclose = () => {
+        setConnected(false);
+        ws = null;
+        if (!disposed) reconnectTimer = setTimeout(connect, 3000);
+      };
+
+      socket.onerror = () => socket.close();
+      ws = socket;
+    };
+
     connect();
-    fetchSessions();
-    fetchConfig();
+    // oxlint-disable-next-line react/set-state-in-effect -- async: sessions are set after the fetch resolves, not synchronously
+    void fetchSessions();
+    void fetchConfig();
     const interval = setInterval(fetchSessions, 5000);
     return () => {
+      disposed = true;
       clearInterval(interval);
-      if (reconnectRef.current) clearTimeout(reconnectRef.current);
-      wsRef.current?.close();
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      ws?.close();
     };
-  }, [connect, fetchSessions, fetchConfig]);
+  }, [fetchSessions, fetchConfig]);
 
   return {
     events,

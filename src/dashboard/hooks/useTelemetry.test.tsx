@@ -113,10 +113,9 @@ describe('useTelemetry — WebSocket', () => {
     expect(ws.close).toHaveBeenCalled();
   });
 
-  // BUG: cleanup clears the pending reconnect timer *before* closing the socket, but closing
-  // fires onclose, which schedules a fresh reconnect. The hook therefore opens a new socket
-  // 3s after unmount (and keeps reconnecting forever, since nothing owns it any more).
-  it.failing('does not reconnect after unmount', async () => {
+  // Regression: closing the socket on unmount fired onclose, which scheduled a fresh
+  // reconnect after the cleanup had already cleared the timer.
+  it('does not reconnect after unmount', async () => {
     jest.useFakeTimers();
     const { unmount } = renderHook(() => useTelemetry());
     await flush();

@@ -59,10 +59,8 @@ describe('MODEL_PRICING', () => {
     for (const pricing of Object.values(MODEL_PRICING)) {
       expect(pricing.inputPer1M).toBeGreaterThan(0);
       expect(pricing.outputPer1M).toBeGreaterThan(0);
-      // cacheRead is optional
-      if (pricing.cacheReadPer1M !== undefined) {
-        expect(pricing.cacheReadPer1M).toBeGreaterThanOrEqual(0);
-      }
+      // cacheRead is optional; when present it is never negative
+      expect(pricing.cacheReadPer1M ?? 0).toBeGreaterThanOrEqual(0);
     }
   });
 

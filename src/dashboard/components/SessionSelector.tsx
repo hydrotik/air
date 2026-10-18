@@ -46,7 +46,16 @@ export const SessionSelector: React.FC<Props> = ({ sessions, activeSessionId, on
           <div
             key={s.sessionId}
             className={`${sessionItem} ${s.sessionId === activeSessionId ? sessionItemActive : ''}`}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- the row holds block-level content, which a <button> may not contain
+            role="button"
+            tabIndex={0}
+            aria-pressed={s.sessionId === activeSessionId}
             onClick={() => onSelect(s.sessionId)}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter' && e.key !== ' ') return;
+              e.preventDefault();
+              onSelect(s.sessionId);
+            }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               {/* Agent badge */}
