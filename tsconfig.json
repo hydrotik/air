@@ -1,10 +1,6 @@
 {
   "extends": "@hydrotik/typescript-config/react-library.json",
   "compilerOptions": {
-    // Opted out of the base's stricter flags until its errors are paid down
-    // (78 unchecked-index, 7 exact-optional on 2026-10-18). Remove when clean.
-    "noUncheckedIndexedAccess": false,
-    "exactOptionalPropertyTypes": false,
     "outDir": "dist",
     "rootDir": "src",
     "types": [

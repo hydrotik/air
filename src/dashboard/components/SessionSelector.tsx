@@ -21,12 +21,14 @@ function formatCwd(cwd: string): string {
   return parts.slice(-2).join('/');
 }
 
+const UNKNOWN_AGENT_BADGE = { label: '?', color: '#64748b' };
+
 const AGENT_BADGE: Record<string, { label: string; color: string }> = {
   pi: { label: 'π', color: '#a855f7' },
   'claude-code': { label: 'CC', color: '#f97316' },
   codex: { label: 'CX', color: '#3b82f6' },
   sdk: { label: 'SDK', color: '#10b981' },
-  unknown: { label: '?', color: '#64748b' },
+  unknown: UNKNOWN_AGENT_BADGE,
 };
 
 const font = "'JetBrains Mono', monospace";
@@ -41,7 +43,7 @@ export const SessionSelector: React.FC<Props> = ({ sessions, activeSessionId, on
       </div>
     ) : (
       sessions.map((s) => {
-        const badge = AGENT_BADGE[s.agent] ?? AGENT_BADGE.unknown;
+        const badge = AGENT_BADGE[s.agent ?? 'unknown'] ?? UNKNOWN_AGENT_BADGE;
         return (
           <div
             key={s.sessionId}

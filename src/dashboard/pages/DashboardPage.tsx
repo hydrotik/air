@@ -54,8 +54,10 @@ import {
 
 // ─── Redaction badge ──────────────────────────────────────────────────────
 
+const PREVIEW_BADGE = { label: 'PREVIEW', color: '#f59e0b', icon: '🛡️' };
+
 const REDACTION_BADGE: Record<string, { label: string; color: string; icon: string }> = {
-  preview: { label: 'PREVIEW', color: '#f59e0b', icon: '🛡️' },
+  preview: PREVIEW_BADGE,
   full: { label: 'FULL', color: '#22c55e', icon: '🔒' },
   none: { label: 'NONE', color: '#ef4444', icon: '⚠️' },
 };
@@ -108,8 +110,9 @@ export const DashboardPage: React.FC = () => {
   const [driftSummary, setDriftSummary] = useState<DriftSummaryRow[]>([]);
 
   // Auto-select the most recent session, during render rather than an effect later
-  if (sessions.length > 0 && !activeSessionId) {
-    setActiveSessionId(sessions[0].sessionId);
+  const newestSession = sessions[0];
+  if (newestSession && !activeSessionId) {
+    setActiveSessionId(newestSession.sessionId);
   }
 
   // The session the panels currently show. A response for any other session is dropped,
@@ -283,7 +286,7 @@ export const DashboardPage: React.FC = () => {
     };
   }, [activeSession, contextSnapshots, latencyStats]);
 
-  const redBadge = REDACTION_BADGE[redactionLevel] ?? REDACTION_BADGE.preview;
+  const redBadge = REDACTION_BADGE[redactionLevel] ?? PREVIEW_BADGE;
 
   // Determine which optional panels to show
   const hasLatencyData = latencyStats.length > 0 || latencyTs.length > 0;

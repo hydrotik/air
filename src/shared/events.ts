@@ -134,8 +134,8 @@ export interface CompactionEvent extends BaseEvent {
 
 export interface ModelChangeEvent extends BaseEvent {
   type: 'model_change';
-  previousModel?: string;
-  previousProvider?: string;
+  previousModel?: string | undefined;
+  previousProvider?: string | undefined;
   newModel: string;
   newProvider: string;
   source: string; // 'set' | 'cycle' | 'restore'
@@ -190,11 +190,11 @@ export interface RagRetrievalEvent extends BaseEvent {
   source: string; // name of the retrieval source / vector DB
   query: string; // search query — redacted by server
   resultCount: number;
-  topScore?: number; // relevance score of best result (0-1)
+  topScore?: number | undefined; // relevance score of best result (0-1)
   durationMs: number;
-  chunkSizes?: number[]; // token/char sizes of returned chunks
-  totalChunkTokens?: number;
-  metadata?: Record<string, unknown>;
+  chunkSizes?: number[] | undefined; // token/char sizes of returned chunks
+  totalChunkTokens?: number | undefined;
+  metadata?: Record<string, unknown> | undefined;
 }
 
 export interface RagEmbeddingEvent extends BaseEvent {
@@ -203,8 +203,8 @@ export interface RagEmbeddingEvent extends BaseEvent {
   model: string; // embedding model name
   inputTokens: number;
   durationMs: number;
-  dimensions?: number; // embedding vector dimensions
-  batchSize?: number;
+  dimensions?: number | undefined; // embedding vector dimensions
+  batchSize?: number | undefined;
 }
 
 export interface RagIndexEvent extends BaseEvent {
@@ -213,7 +213,7 @@ export interface RagIndexEvent extends BaseEvent {
   documentCount: number;
   totalTokens: number;
   durationMs: number;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, unknown> | undefined;
 }
 
 // ─── Custom / Provider Events ──────────────────────────────────────────────
@@ -250,8 +250,8 @@ export interface LatencyEvent extends BaseEvent {
   ttftMs?: number;
   /** Breakdown of time spent in each phase */
   phases?: LatencyPhase[];
-  model?: string;
-  provider?: string;
+  model?: string | undefined;
+  provider?: string | undefined;
   /** Percentile bucket for this measurement: p50 | p90 | p95 | p99 */
   percentile?: string;
 }

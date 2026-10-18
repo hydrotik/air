@@ -50,7 +50,7 @@ describe('CompactDashboardPage + useTelemetry', () => {
   // Waits without act(), so a regression into a refetch loop fails the assertion
   // instead of hanging act() forever.
   async function renderAndWatch(ms: number) {
-    const g = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const g = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean | undefined };
     const previous = g.IS_REACT_ACT_ENVIRONMENT;
     g.IS_REACT_ACT_ENVIRONMENT = false;
     const view = render(<CompactDashboardPage />);
@@ -65,7 +65,7 @@ describe('CompactDashboardPage + useTelemetry', () => {
 
   it('renders live session data', async () => {
     serve();
-    const g = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const g = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean | undefined };
     g.IS_REACT_ACT_ENVIRONMENT = false;
     try {
       render(<CompactDashboardPage />);

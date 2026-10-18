@@ -35,9 +35,9 @@ import { loadConfig, type RagProviderConfig } from '../shared/config';
 
 export interface CreateRagTracerOptions extends AirClientOptions {
   /** Default embedding model name */
-  defaultEmbeddingModel?: string;
+  defaultEmbeddingModel?: string | undefined;
   /** Default embedding dimensions */
-  defaultDimensions?: number;
+  defaultDimensions?: number | undefined;
 }
 
 /**
@@ -63,8 +63,8 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
       opts?: {
         extractResults?: (result: T) => {
           count: number;
-          topScore?: number;
-          chunkSizes?: number[];
+          topScore?: number | undefined;
+          chunkSizes?: number[] | undefined;
         };
       }
     ) => air.traceRetrieval(source, query, fn, opts),
@@ -81,7 +81,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
       model: string,
       inputTokens: number,
       fn: () => Promise<T>,
-      opts?: { dimensions?: number; batchSize?: number }
+      opts?: { dimensions?: number | undefined; batchSize?: number | undefined }
     ) =>
       air.traceEmbedding(
         source,

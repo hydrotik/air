@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { AirClient, hashPrompt } from './client';
 import { FakeWebSocket } from './__testing__/fake-ws';
+import { defined } from './__testing__/defined';
 
 jest.mock('ws', () => jest.requireActual('./__testing__/fake-ws').fakeWsModule);
 
@@ -132,7 +133,8 @@ describe('AirClient.emit', () => {
     const { client, ws } = openClient();
     client.emit({ type: 'a' });
     client.emit({ type: 'b' });
-    const [a, b] = ws.messages();
+    const a = defined(ws.messages()[0], 'first message');
+    const b = defined(ws.messages()[1], 'second message');
     expect(a.id).not.toBe(b.id);
   });
 
@@ -159,8 +161,8 @@ describe('AirClient.emit', () => {
 
     const sent = ws.messages();
     expect(sent).toHaveLength(200);
-    expect(sent[0].n).toBe(0);
-    expect(sent[199].n).toBe(199);
+    expect(sent[0]?.n).toBe(0);
+    expect(sent[199]?.n).toBe(199);
   });
 
   it('delivers events emitted while disconnected to the reconnected socket', () => {
@@ -179,7 +181,7 @@ describe('AirClient.emit', () => {
     const { client, ws } = openClient();
     client.setSessionId('s2');
     client.emit({ type: 'x' });
-    expect(ws.messages()[0].sessionId).toBe('s2');
+    expect(ws.messages()[0]?.sessionId).toBe('s2');
   });
 });
 
@@ -238,7 +240,8 @@ describe('AirClient.recordCost', () => {
       cacheReadCost: 0.05,
       cacheWriteCost: 0.05,
     });
-    const [a, b] = ws.messages();
+    const a = defined(ws.messages()[0], 'first message');
+    const b = defined(ws.messages()[1], 'second message');
     expect(a).toMatchObject({
       type: 'cost',
       model: 'm',
@@ -305,7 +308,7 @@ describe('AirClient.recordOutputEval', () => {
       toolErrorCount: 0,
       responseLatencyMs: 1,
     });
-    expect(ws.messages()[0].metrics.toolSuccessRate).toBe(1);
+    expect(ws.messages()[0]?.metrics.toolSuccessRate).toBe(1);
   });
 });
 
@@ -400,7 +403,8 @@ describe('AirClient.traceMcp', () => {
     const { client, ws } = openClient();
     const big = 'x'.repeat(1000);
     await client.traceMcp('srv', 'tools/call', { input: big }, async () => big);
-    const [req, res] = ws.messages();
+    const req = defined(ws.messages()[0], 'mcp_request');
+    const res = defined(ws.messages()[1], 'mcp_response');
     expect(req.inputPreview).toHaveLength(200);
     expect(req.inputSizeBytes).toBe(1002);
     expect(res.outputPreview).toHaveLength(200);
@@ -437,7 +441,7 @@ describe('AirClient.traceMcp', () => {
     await expect(
       client.traceMcp('srv', 'tools/call', {}, () => Promise.reject('plain string'))
     ).rejects.toBe('plain string');
-    expect(ws.messages()[1].errorMessage).toBe('plain string');
+    expect(ws.messages()[1]?.errorMessage).toBe('plain string');
   });
 
   // BUG (client.ts:381/391): JSON.stringify(undefined) returns undefined, and
@@ -477,7 +481,7 @@ describe('AirClient RAG helpers', () => {
       chunkSizes: [100, 50],
       totalChunkTokens: 150,
     });
-    expect(ret.query).toHaveLength(500);
+    expect(defined(ret, 'rag_retrieval').query).toHaveLength(500);
     expect(lat).toMatchObject({
       type: 'latency',
       operation: 'api_call',
@@ -489,7 +493,7 @@ describe('AirClient RAG helpers', () => {
   it('traceRetrieval defaults to a zero count without an extractor', async () => {
     const { client, ws } = openClient();
     await client.traceRetrieval('src', 'q', async () => 'r');
-    const [ret] = ws.messages();
+    const ret = defined(ws.messages()[0], 'rag_retrieval');
     expect(ret.resultCount).toBe(0);
     expect(ret).not.toHaveProperty('totalChunkTokens');
   });
@@ -586,7 +590,7 @@ describe('AirClient.trace', () => {
   it('defaults the provider to "custom"', async () => {
     const { client, ws } = openClient();
     await client.trace('step', {}, async () => null);
-    expect(ws.messages()[0].provider).toBe('custom');
+    expect(ws.messages()[0]?.provider).toBe('custom');
   });
 
   it('adds the error to the data and rethrows on failure', async () => {

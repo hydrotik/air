@@ -1,5 +1,6 @@
 import { DriftDetector, DEFAULT_DRIFT_CONFIG } from './drift';
 import type { ToolCallEndEvent, TokenUsageEvent } from './events';
+import { defined } from '../sdk/__testing__/defined';
 
 function makeToolCallEnd(overrides: Partial<ToolCallEndEvent> = {}): ToolCallEndEvent {
   return {
@@ -62,9 +63,9 @@ describe('DriftDetector', () => {
     // Spike — 4x the baseline should be critical (200% deviation)
     const drifts = detector.checkEvent(makeToolCallEnd({ durationMs: 200 }));
     expect(drifts.length).toBeGreaterThan(0);
-    expect(drifts[0].direction).toBe('increase');
-    expect(drifts[0].severity).toBe('critical');
-    expect(drifts[0].metric).toBe('latency');
+    expect(drifts[0]?.direction).toBe('increase');
+    expect(drifts[0]?.severity).toBe('critical');
+    expect(drifts[0]?.metric).toBe('latency');
   });
 
   it('detects warning-level drift', () => {
@@ -130,7 +131,7 @@ describe('DriftDetector', () => {
     // 15% increase — info under custom thresholds
     const drifts = detector.checkEvent(makeToolCallEnd({ durationMs: 115 }));
     expect(drifts.length).toBeGreaterThan(0);
-    expect(drifts[0].severity).toBe('info');
+    expect(drifts[0]?.severity).toBe('info');
   });
 
   it('reset clears all baselines', () => {
@@ -151,7 +152,7 @@ describe('DriftDetector', () => {
     }
     const drifts = detector.checkEvent(makeToolCallEnd({ durationMs: 200 }));
     expect(drifts.length).toBeGreaterThan(0);
-    const drift = drifts[0];
+    const drift = defined(drifts[0], 'drift');
     expect(drift.type).toBe('drift');
     expect(drift.sessionId).toBe('s-1');
     expect(drift.baseline).toBeGreaterThan(0);

@@ -22,7 +22,8 @@ const args = process.argv.slice(2);
 
 function getArg(name: string, fallback: string): string {
   const idx = args.indexOf(`--${name}`);
-  return idx !== -1 && args[idx + 1] ? args[idx + 1] : fallback;
+  const value = idx === -1 ? undefined : args[idx + 1];
+  return value || fallback;
 }
 
 const config = loadConfig();

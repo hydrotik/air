@@ -1,5 +1,6 @@
 import { createMcpTracer, instrumentMcp } from './mcp';
 import { FakeWebSocket } from './__testing__/fake-ws';
+import { defined } from './__testing__/defined';
 
 jest.mock('ws', () => jest.requireActual('./__testing__/fake-ws').fakeWsModule);
 
@@ -57,7 +58,7 @@ describe('instrumentMcp', () => {
       serverName: 'srv',
       inputPreview: '["search",{"q":"hi"}]',
     });
-    expect(req.resourceUri).toBeUndefined();
+    expect(defined(req, 'mcp_request').resourceUri).toBeUndefined();
     expect(res).toMatchObject({ type: 'mcp_response', method: 'tools/call', isError: false });
     expect(lat).toMatchObject({ type: 'latency', model: 'srv' });
   });
@@ -68,7 +69,7 @@ describe('instrumentMcp', () => {
     await mcp.readResource('file:///a.txt');
     const [req] = ws.messages();
     expect(req).toMatchObject({ method: 'resources/read', resourceUri: 'file:///a.txt' });
-    expect(req.toolName).toBeUndefined();
+    expect(defined(req, 'mcp_request').toolName).toBeUndefined();
   });
 
   it.each([
@@ -78,7 +79,7 @@ describe('instrumentMcp', () => {
     const mcp = instrumentMcp(makeClient(), 'srv', { url: 'ws://t' });
     const ws = openSocket();
     await (mcp[methodName] as (...a: unknown[]) => Promise<unknown>)('x');
-    expect(ws.messages()[0].method).toBe(mcpMethod);
+    expect(ws.messages()[0]?.method).toBe(mcpMethod);
   });
 
   it('passes through methods and properties it does not instrument', async () => {
@@ -102,7 +103,7 @@ describe('instrumentMcp', () => {
     expect(ws.sent).toHaveLength(0);
 
     await mcp.readResource('u');
-    expect(ws.messages()[0].method).toBe('resources/read');
+    expect(ws.messages()[0]?.method).toBe('resources/read');
   });
 
   it('leaves the original client unmodified', async () => {

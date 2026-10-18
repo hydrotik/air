@@ -36,17 +36,17 @@ import { createHash } from 'node:crypto';
 
 export interface AirClientOptions {
   /** AIr server WebSocket URL */
-  url?: string;
+  url?: string | undefined;
   /** Session ID — groups events together in the dashboard */
-  sessionId?: string;
+  sessionId?: string | undefined;
   /** Provider name — appears in custom events and dashboard filters */
-  provider?: string;
+  provider?: string | undefined;
   /** Auto-reconnect on disconnect (default: true) */
-  reconnect?: boolean;
+  reconnect?: boolean | undefined;
   /** Silent mode — suppress console output (default: true) */
-  silent?: boolean;
+  silent?: boolean | undefined;
   /** Budget limit in USD — emits budget_exceeded alerts when cumulative cost exceeds */
-  budgetLimit?: number;
+  budgetLimit?: number | undefined;
 }
 
 function uid(): string {
@@ -76,7 +76,7 @@ export class AirClient {
   private queue: string[] = [];
   private closed = false;
   private cumulativeCost = 0;
-  private budgetLimit?: number;
+  private budgetLimit: number | undefined;
 
   constructor(options: AirClientOptions = {}) {
     this.url = options.url ?? process.env.AIR_URL ?? 'ws://localhost:5200/ws/collector';
@@ -169,10 +169,10 @@ export class AirClient {
     operation: 'turn' | 'tool_call' | 'api_call' | 'ttft' | 'custom',
     totalMs: number,
     opts?: {
-      ttftMs?: number;
-      phases?: Array<{ name: string; durationMs: number }>;
-      model?: string;
-      provider?: string;
+      ttftMs?: number | undefined;
+      phases?: Array<{ name: string; durationMs: number }> | undefined;
+      model?: string | undefined;
+      provider?: string | undefined;
     }
   ) {
     this.emit({
@@ -192,7 +192,7 @@ export class AirClient {
   async measureLatency<T>(
     operation: 'turn' | 'tool_call' | 'api_call' | 'ttft' | 'custom',
     fn: () => Promise<T>,
-    opts?: { model?: string; provider?: string }
+    opts?: { model?: string | undefined; provider?: string | undefined }
   ): Promise<T> {
     const start = Date.now();
     const result = await fn();
@@ -211,8 +211,8 @@ export class AirClient {
     costs: {
       inputCost: number;
       outputCost: number;
-      cacheReadCost?: number;
-      cacheWriteCost?: number;
+      cacheReadCost?: number | undefined;
+      cacheWriteCost?: number | undefined;
     }
   ) {
     const totalCost =
@@ -250,12 +250,12 @@ export class AirClient {
       responseTokens: number;
       toolCallCount: number;
       toolErrorCount: number;
-      hadRetry?: boolean;
-      hadImmediateFollowUp?: boolean;
+      hadRetry?: boolean | undefined;
+      hadImmediateFollowUp?: boolean | undefined;
       responseLatencyMs: number;
-      cacheHitRate?: number;
+      cacheHitRate?: number | undefined;
     },
-    opts?: { userRating?: number; tags?: string[] }
+    opts?: { userRating?: number | undefined; tags?: string[] | undefined }
   ) {
     const successRate =
       metrics.toolCallCount > 0
@@ -366,7 +366,7 @@ export class AirClient {
   async traceMcp<T>(
     serverName: string,
     method: string,
-    opts: { toolName?: string; resourceUri?: string; input?: unknown },
+    opts: { toolName?: string | undefined; resourceUri?: string | undefined; input?: unknown },
     fn: () => Promise<T>
   ): Promise<T> {
     const inputStr = opts.input ? JSON.stringify(opts.input) : '';
@@ -425,7 +425,11 @@ export class AirClient {
     query: string,
     fn: () => Promise<T>,
     opts?: {
-      extractResults?: (result: T) => { count: number; topScore?: number; chunkSizes?: number[] };
+      extractResults?: (result: T) => {
+        count: number;
+        topScore?: number | undefined;
+        chunkSizes?: number[] | undefined;
+      };
     }
   ): Promise<T> {
     const start = Date.now();
@@ -469,7 +473,7 @@ export class AirClient {
     model: string,
     inputTokens: number,
     fn: () => Promise<T>,
-    opts?: { dimensions?: number; batchSize?: number }
+    opts?: { dimensions?: number | undefined; batchSize?: number | undefined }
   ): Promise<T> {
     const start = Date.now();
     const result = await fn();

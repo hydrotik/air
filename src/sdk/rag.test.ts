@@ -1,6 +1,7 @@
 import { createRagTracer, createRagTracerFromProvider, createRagTracersFromConfig } from './rag';
 import { loadConfig } from '../shared/config';
 import { FakeWebSocket } from './__testing__/fake-ws';
+import { defined } from './__testing__/defined';
 
 jest.mock('ws', () => jest.requireActual('./__testing__/fake-ws').fakeWsModule);
 jest.mock('../shared/config', () => ({ loadConfig: jest.fn(() => ({})) }));
@@ -29,7 +30,7 @@ describe('createRagTracer', () => {
     const ws = openSocket();
 
     await rag.traceRetrieval('shoes', async () => ({ matches: [{ score: 0.8 }] }), {
-      extractResults: (r) => ({ count: r.matches.length, topScore: r.matches[0].score }),
+      extractResults: (r) => ({ count: r.matches.length, topScore: r.matches[0]?.score }),
     });
 
     expect(ws.messages()[0]).toMatchObject({
@@ -66,12 +67,12 @@ describe('createRagTracer', () => {
     });
     const ws1 = openSocket();
     await withDefault.traceEmbedding(undefined as unknown as string, 1, async () => null);
-    expect(ws1.messages()[0].model).toBe('emb-default');
+    expect(ws1.messages()[0]?.model).toBe('emb-default');
 
     const withoutDefault = createRagTracer('b', { url: 'ws://t' });
     const ws2 = openSocket();
     await withoutDefault.traceEmbedding(undefined as unknown as string, 1, async () => null);
-    expect(ws2.messages()[0].model).toBe('unknown');
+    expect(ws2.messages()[0]?.model).toBe('unknown');
   });
 
   it('records indexing operations', async () => {
@@ -103,7 +104,7 @@ describe('createRagTracer', () => {
     const rag = createRagTracer('src', { url: 'ws://t' });
     const ws = openSocket();
     rag.emit({ type: 'custom', eventName: 'x' });
-    expect(ws.messages()[0].eventName).toBe('x');
+    expect(ws.messages()[0]?.eventName).toBe('x');
     rag.close();
     expect(ws.close).toHaveBeenCalled();
   });
@@ -129,16 +130,17 @@ describe('createRagTracersFromConfig', () => {
     expect(Object.keys(tracers)).toEqual(['product-search', 'docs']);
     expect(FakeWebSocket.instances.map((w) => w.url)).toEqual(['ws://custom', 'ws://custom']);
 
-    const [productWs, docsWs] = FakeWebSocket.instances;
+    const productWs = defined(FakeWebSocket.instances[0], 'product-search socket');
+    const docsWs = defined(FakeWebSocket.instances[1], 'docs socket');
     productWs.simulateOpen();
     docsWs.simulateOpen();
 
-    await tracers['product-search'].traceEmbedding(
+    await defined(tracers['product-search'], 'product-search tracer').traceEmbedding(
       undefined as unknown as string,
       5,
       async () => 1
     );
-    await tracers.docs.traceRetrieval('q', async () => 1);
+    await defined(tracers.docs, 'docs tracer').traceRetrieval('q', async () => 1);
 
     expect(productWs.messages()[0]).toMatchObject({
       source: 'product-search',

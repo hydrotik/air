@@ -2,6 +2,7 @@ import type { ExtensionAPI } from '@mariozechner/pi-coding-agent';
 import airCollector from './index';
 import { FakeWebSocket } from '../sdk/__testing__/fake-ws';
 import type { ContextSegment } from '../shared/events';
+import { defined } from '../sdk/__testing__/defined';
 
 jest.mock('ws', () => jest.requireActual('../sdk/__testing__/fake-ws').fakeWsModule);
 
@@ -174,7 +175,7 @@ describe('session and agent events', () => {
       provider: 'prov-a',
       thinkingLevel: 'off',
     });
-    expect(ws.messages()[1].messageCount).toBe(0);
+    expect(ws.messages()[1]?.messageCount).toBe(0);
   });
 
   it('session_shutdown sends session_end, stops the heartbeat, and closes after 200ms', async () => {
@@ -249,7 +250,7 @@ describe('turn events', () => {
     const { fire, ws } = start();
     await fire('turn_end', { turnIndex: 7 });
     expect(ofType(ws, 'latency')).toHaveLength(0);
-    expect(ofType(ws, 'turn_end')[0].toolCallCount).toBe(0);
+    expect(ofType(ws, 'turn_end')[0]?.toolCallCount).toBe(0);
   });
 
   it('records token usage and uses the provider-reported cost when present', async () => {
@@ -281,10 +282,10 @@ describe('turn events', () => {
 
     const costs = ofType(ws, 'cost');
     // gpt-4o: $2.50 / 1M input, $10 / 1M output
-    expect(costs[0].inputCost).toBeCloseTo(2.5);
-    expect(costs[0].outputCost).toBeCloseTo(1);
-    expect(costs[0].totalCost).toBeCloseTo(3.5);
-    expect(costs[1].cumulativeCost).toBeCloseTo(7);
+    expect(costs[0]?.inputCost).toBeCloseTo(2.5);
+    expect(costs[0]?.outputCost).toBeCloseTo(1);
+    expect(costs[0]?.totalCost).toBeCloseTo(3.5);
+    expect(costs[1]?.cumulativeCost).toBeCloseTo(7);
   });
 
   it('emits no cost event for an unpriced model with no reported cost', async () => {
@@ -336,7 +337,7 @@ describe('turn events', () => {
     await fire('tool_execution_end', { toolCallId: 'a', toolName: 't', isError: true });
     await fire('turn_start', { turnIndex: 1 });
     await fire('turn_end', { turnIndex: 1, toolResults: [{}], message: assistantMessage({}) });
-    expect(ofType(ws, 'output_eval')[0].metrics.toolErrorCount).toBe(0);
+    expect(ofType(ws, 'output_eval')[0]?.metrics.toolErrorCount).toBe(0);
   });
 
   it('reports context usage against the model context window', async () => {
@@ -401,7 +402,7 @@ describe('turn events', () => {
       })
     );
 
-    const [bd] = ofType(ws, 'context_breakdown');
+    const bd = defined(ofType(ws, 'context_breakdown')[0], 'context_breakdown');
     const byCategory = Object.fromEntries(
       bd.segments.map((s: ContextSegment) => [s.category, [s.charCount, s.estimatedTokens]])
     );
@@ -455,7 +456,7 @@ describe('tool events', () => {
       isError: false,
     });
 
-    const [startEvt] = ofType(ws, 'tool_call_start');
+    const startEvt = defined(ofType(ws, 'tool_call_start')[0], 'tool_call_start');
     expect(startEvt).toMatchObject({ toolName: 'bash', toolCallId: 'tc1', timestamp: NOW });
     expect(startEvt.inputSizeBytes).toBe(JSON.stringify({ command: 'x'.repeat(500) }).length);
     expect(startEvt.inputPreview).toHaveLength(200);
@@ -524,6 +525,6 @@ describe('compaction and model events', () => {
       newProvider: 'p2',
       source: 'set',
     });
-    expect(initial.previousModel).toBeUndefined();
+    expect(defined(initial, 'initial model_change').previousModel).toBeUndefined();
   });
 });

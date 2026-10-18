@@ -674,8 +674,8 @@ describe('latency', () => {
     latency({ model: undefined, provider: undefined });
 
     const rows = db.prepare(`SELECT * FROM latency_snapshots ORDER BY id`).all() as Row[];
-    expect(JSON.parse(rows[0].phases as string)).toEqual([{ name: 'network', durationMs: 60 }]);
-    expect(rows[0].ttft_ms).toBe(40);
+    expect(JSON.parse(rows[0]?.phases as string)).toEqual([{ name: 'network', durationMs: 60 }]);
+    expect(rows[0]?.ttft_ms).toBe(40);
     expect(rows[1]).toMatchObject({ ttft_ms: null, phases: null, model: null, provider: null });
   });
 
@@ -947,7 +947,7 @@ describe('prompt ratings', () => {
       avg_rating: 4,
       rated_count: 1,
     });
-    expect(rows[1].avg_cost).toBeCloseTo(0.3, 10);
+    expect(rows[1]?.avg_cost).toBeCloseTo(0.3, 10);
   });
 
   it('without a hash, compares variants across all prompts', () => {
@@ -979,7 +979,7 @@ describe('prompt ratings', () => {
       rating: null,
       notes: null,
     });
-    expect(rows[1].notes).toBe('first');
+    expect(rows[1]?.notes).toBe('first');
   });
 });
 
