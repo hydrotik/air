@@ -1,7 +1,10 @@
 import { redactEvent, parseRedactionLevel } from './redaction';
-import type { TelemetryEvent, RedactionConfig } from './events';
+import type { TelemetryEvent, RedactionConfig, ToolCallStartEvent } from './events';
 
-function makeToolEvent(overrides: Partial<any> = {}): TelemetryEvent {
+/** A redacted event read loosely: fields may have been stripped or replaced. */
+type Redacted = ToolCallStartEvent & Record<string, unknown>;
+
+function makeToolEvent(overrides: Partial<ToolCallStartEvent> = {}): TelemetryEvent {
   return {
     id: 'test-1',
     sessionId: 'session-1',
@@ -32,7 +35,7 @@ describe('redactEvent', () => {
     it('truncates content fields to 50 chars', () => {
       const longInput = 'a'.repeat(100);
       const event = makeToolEvent({ inputPreview: longInput });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview.length).toBeLessThanOrEqual(52); // 50 + ellipsis
     });
 
@@ -40,7 +43,7 @@ describe('redactEvent', () => {
       const event = makeToolEvent({
         inputPreview: 'using key sk-abc123456789012345678',
       });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toContain('[REDACTED]');
       expect(result.inputPreview).not.toContain('sk-abc');
     });
@@ -49,7 +52,7 @@ describe('redactEvent', () => {
       const event = makeToolEvent({
         inputPreview: 'contact user@example.com please',
       });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toContain('[REDACTED]');
       expect(result.inputPreview).not.toContain('user@example.com');
     });
@@ -58,7 +61,7 @@ describe('redactEvent', () => {
       // JWT short enough to survive 50-char truncation
       const jwt = 'token eyJhbGciOiJIUz.eyJzdWIiOiIxMjM.SflKxwRJSMe';
       const event = makeToolEvent({ inputPreview: jwt });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toContain('[REDACTED]');
     });
 
@@ -66,13 +69,13 @@ describe('redactEvent', () => {
       const event = makeToolEvent({
         inputPreview: 'key is AKIAIOSFODNN7EXAMPLE',
       });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toContain('[REDACTED]');
     });
 
     it('does not redact non-content fields', () => {
       const event = makeToolEvent();
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.toolName).toBe('read');
       expect(result.toolCallId).toBe('call-1');
       expect(result.inputSizeBytes).toBe(100);
@@ -93,7 +96,7 @@ describe('redactEvent', () => {
       const event = makeToolEvent({
         inputPreview: 'some sensitive data',
       });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toBe('[REDACTED]');
     });
 
@@ -105,13 +108,13 @@ describe('redactEvent', () => {
         eventName: 'test',
         data: { secret: 'value' },
       } as TelemetryEvent;
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.data).toBeUndefined();
     });
 
     it('preserves numeric metadata', () => {
       const event = makeToolEvent();
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputSizeBytes).toBe(100);
       expect(result.timestamp).toBeDefined();
     });
@@ -126,7 +129,7 @@ describe('redactEvent', () => {
       const event = makeToolEvent({
         inputPreview: 'working on project-secret',
       });
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.inputPreview).toContain('[REDACTED]');
     });
   });
@@ -138,7 +141,7 @@ describe('redactEvent', () => {
         stripFields: ['toolCallId'],
       };
       const event = makeToolEvent();
-      const result = redactEvent(event, config) as any;
+      const result = redactEvent(event, config) as Redacted;
       expect(result.toolCallId).toBeUndefined();
     });
   });

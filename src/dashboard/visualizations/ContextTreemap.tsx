@@ -3,6 +3,14 @@ import * as d3 from 'd3';
 import type { ContextSegment } from '../../shared/events';
 import { treemapContainer } from '../dashboard.css';
 
+/** A treemap node: the root carries a zero value, which adds nothing to the sum. */
+interface TreeDatum {
+  name: string;
+  value: number;
+  category: string;
+  children?: TreeDatum[];
+}
+
 interface Props {
   segments: ContextSegment[];
   totalTokens: number;
@@ -66,8 +74,10 @@ export const ContextTreemap: React.FC<Props> = ({
     const usedTokens = segments.reduce((sum, s) => sum + s.estimatedTokens, 0);
     const unusedTokens = Math.max(0, contextWindow - usedTokens);
 
-    const data = {
+    const data: TreeDatum = {
       name: 'context',
+      value: 0,
+      category: 'root',
       children: [
         ...segments.map((s) => ({
           name: s.label,
@@ -80,36 +90,34 @@ export const ContextTreemap: React.FC<Props> = ({
       ],
     };
 
-    const root = d3
-      .hierarchy(data)
-      .sum((d: any) => d.value)
-      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
-
-    d3.treemap<typeof data>().size([width, height]).padding(2).round(true)(root as any);
+    const root = d3.treemap<TreeDatum>().size([width, height]).padding(2).round(true)(
+      d3
+        .hierarchy(data)
+        .sum((d) => d.value)
+        .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+    );
 
     const leaf = svg
       .selectAll('g')
       .data(root.leaves())
       .join('g')
-      .attr('transform', (d: any) => `translate(${d.x0},${d.y0})`);
+      .attr('transform', (d) => `translate(${d.x0},${d.y0})`);
 
     // Rectangles
     leaf
       .append('rect')
-      .attr('width', (d: any) => Math.max(0, d.x1 - d.x0))
-      .attr('height', (d: any) => Math.max(0, d.y1 - d.y0))
+      .attr('width', (d) => Math.max(0, d.x1 - d.x0))
+      .attr('height', (d) => Math.max(0, d.y1 - d.y0))
       .attr('rx', 3)
-      .attr('fill', (d: any) => {
+      .attr('fill', (d) => {
         const cat = d.data.category;
         if (cat === 'unused') return 'rgba(255,255,255,0.04)';
         return CATEGORY_COLORS[cat] ?? '#64748b';
       })
-      .attr('fill-opacity', (d: any) => (d.data.category === 'unused' ? 0.3 : 0.8))
-      .attr('stroke', (d: any) =>
-        d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'
-      )
+      .attr('fill-opacity', (d) => (d.data.category === 'unused' ? 0.3 : 0.8))
+      .attr('stroke', (d) => (d.data.category === 'unused' ? 'rgba(255,255,255,0.08)' : 'none'))
       .style('cursor', 'pointer')
-      .on('mouseover', function (_event, d: any) {
+      .on('mouseover', function (_event, d) {
         d3.select(this).attr('fill-opacity', 1);
         const cat = d.data.category;
         const color =
@@ -148,14 +156,14 @@ export const ContextTreemap: React.FC<Props> = ({
         tooltip.style.left = `${left}px`;
         tooltip.style.top = `${top}px`;
       })
-      .on('mouseout', function (_, d: any) {
+      .on('mouseout', function (_, d) {
         d3.select(this).attr('fill-opacity', d.data.category === 'unused' ? 0.3 : 0.8);
         tooltip.style.opacity = '0';
       });
 
     // Labels (only for boxes large enough)
     leaf
-      .filter((d: any) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 22)
+      .filter((d) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 22)
       .append('text')
       .attr('x', 4)
       .attr('y', 12)
@@ -164,11 +172,11 @@ export const ContextTreemap: React.FC<Props> = ({
       .attr('font-family', "'JetBrains Mono', monospace")
       .attr('font-weight', 600)
       .style('pointer-events', 'none')
-      .text((d: any) => d.data.name);
+      .text((d) => d.data.name);
 
     // Token count labels
     leaf
-      .filter((d: any) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 34)
+      .filter((d) => d.x1 - d.x0 > 50 && d.y1 - d.y0 > 34)
       .append('text')
       .attr('x', 4)
       .attr('y', 23)
@@ -177,7 +185,7 @@ export const ContextTreemap: React.FC<Props> = ({
       .attr('font-family', "'JetBrains Mono', monospace")
       .style('pointer-events', 'none')
       .text(
-        (d: any) =>
+        (d) =>
           `${formatTokens(d.data.value)} · ${((d.data.value / contextWindow) * 100).toFixed(1)}%`
       );
   }, [segments, totalTokens, contextWindow, heightProp]);

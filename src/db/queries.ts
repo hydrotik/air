@@ -25,6 +25,45 @@ function safeJsonParse<T>(json: string, fallback: T): T {
   }
 }
 
+/** A row of the sessions table, as SQLite returns it. */
+interface SessionRow {
+  session_id: string;
+  start_time: number;
+  last_event: number;
+  model: string;
+  provider: string;
+  cwd: string;
+  total_in: number;
+  total_out: number;
+  total_cost: number;
+  tool_calls: number;
+  turns: number;
+  compactions: number;
+  context_pct: number;
+  agent: string | null;
+}
+
+/** A row of the events table: the event as stored JSON. */
+interface EventRow {
+  data: string;
+}
+
+/** A row of the context_snapshots table. */
+interface ContextSnapshotRow {
+  id: number;
+  session_id: string;
+  timestamp: number;
+  tokens_used: number;
+  context_window: number;
+  utilization: number;
+  breakdown: string | null;
+}
+
+/** The stored event; a row whose JSON no longer parses comes back as its raw text. */
+function parseEventRow(row: EventRow): TelemetryEvent {
+  return safeJsonParse<TelemetryEvent>(row.data, row.data as unknown as TelemetryEvent);
+}
+
 export class TelemetryStore {
   private stmts: ReturnType<typeof this.prepareStatements>;
 
@@ -235,7 +274,7 @@ export class TelemetryStore {
       }
       case 'tool_call': {
         // Complete tool call in a single event (from HTTP ingest, e.g. MCP servers)
-        const e = event as any;
+        const e = event;
         const startTime = e.timestamp - (e.durationMs ?? 0);
         this.stmts.insertToolStart.run(
           e.toolCallId,
@@ -409,23 +448,23 @@ export class TelemetryStore {
   // ─── Session Queries ─────────────────────────────────────────────────
 
   getSessions(limit = 50): SessionSummary[] {
-    const rows = this.stmts.getSessions.all(limit) as any[];
+    const rows = this.stmts.getSessions.all(limit) as SessionRow[];
     return rows.map(this.rowToSummary);
   }
 
   getSession(sessionId: string): SessionSummary | null {
-    const row = this.stmts.getSession.get(sessionId) as any;
+    const row = this.stmts.getSession.get(sessionId) as SessionRow | undefined;
     return row ? this.rowToSummary(row) : null;
   }
 
   getEvents(sessionId: string): TelemetryEvent[] {
-    const rows = this.stmts.getEvents.all(sessionId) as any[];
-    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data));
+    const rows = this.stmts.getEvents.all(sessionId) as EventRow[];
+    return rows.map(parseEventRow);
   }
 
   getRecentEvents(sessionId: string, limit = 100): TelemetryEvent[] {
-    const rows = this.stmts.getRecentEvents.all(sessionId, limit) as any[];
-    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data)).reverse();
+    const rows = this.stmts.getRecentEvents.all(sessionId, limit) as EventRow[];
+    return rows.map(parseEventRow).reverse();
   }
 
   getToolCalls(sessionId: string) {
@@ -437,11 +476,13 @@ export class TelemetryStore {
   }
 
   getContextSnapshots(sessionId: string) {
-    return this.stmts.getContextSnapshots.all(sessionId) as any[];
+    return this.stmts.getContextSnapshots.all(sessionId) as ContextSnapshotRow[];
   }
 
   getLatestContextBreakdown(sessionId: string) {
-    const row = this.stmts.getLatestContextSnapshot.get(sessionId) as any;
+    const row = this.stmts.getLatestContextSnapshot.get(sessionId) as
+      | ContextSnapshotRow
+      | undefined;
     if (!row?.breakdown) return null;
     return {
       ...row,
@@ -450,8 +491,8 @@ export class TelemetryStore {
   }
 
   getAllRecentEvents(limit = 200): TelemetryEvent[] {
-    const rows = this.stmts.getAllEvents.all(limit) as any[];
-    return rows.map((r) => safeJsonParse<TelemetryEvent>(r.data, r.data)).reverse();
+    const rows = this.stmts.getAllEvents.all(limit) as EventRow[];
+    return rows.map(parseEventRow).reverse();
   }
 
   // ─── MCP Stats ──────────────────────────────────────────────────────
@@ -645,7 +686,9 @@ export class TelemetryStore {
 
   /** Get current cumulative cost for a session */
   getCumulativeCost(sessionId: string): number {
-    const row = this.stmts.getSessionCumulativeCost.get(sessionId) as any;
+    const row = this.stmts.getSessionCumulativeCost.get(sessionId) as
+      | { cumulative: number }
+      | undefined;
     return row?.cumulative ?? 0;
   }
 
@@ -769,7 +812,7 @@ export class TelemetryStore {
 
   // ─── Helpers ──────────────────────────────────────────────────────
 
-  private rowToSummary(row: any): SessionSummary {
+  private rowToSummary(row: SessionRow): SessionSummary {
     return {
       sessionId: row.session_id,
       startTime: row.start_time,

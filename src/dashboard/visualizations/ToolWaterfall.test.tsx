@@ -18,7 +18,7 @@ describe('ToolWaterfall', () => {
     });
   });
   afterAll(() => {
-    delete (HTMLElement.prototype as any).clientWidth;
+    Reflect.deleteProperty(HTMLElement.prototype, 'clientWidth');
   });
 
   it('shows an empty state with no tool calls', () => {

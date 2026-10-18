@@ -12,14 +12,14 @@ const COST_URL = '/api/sessions/s1/cost';
 
 beforeEach(() => {
   MockWebSocket.instances = [];
-  (globalThis as any).WebSocket = MockWebSocket;
+  globalThis.WebSocket = MockWebSocket as unknown as typeof WebSocket;
   jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
 afterEach(() => {
   jest.restoreAllMocks();
-  (globalThis as any).fetch = realFetch;
-  (globalThis as any).WebSocket = realWebSocket;
+  globalThis.fetch = realFetch;
+  globalThis.WebSocket = realWebSocket;
 });
 
 const settle = () => act(() => new Promise<void>((resolve) => setTimeout(resolve, 50)));

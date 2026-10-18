@@ -38,7 +38,7 @@ export interface InstrumentMcpOptions extends AirClientOptions {
  * Returns a proxy that intercepts method calls and emits telemetry events.
  * The original client is not modified.
  */
-export function instrumentMcp<T extends Record<string, any>>(
+export function instrumentMcp<T extends object>(
   client: T,
   serverName: string,
   options?: InstrumentMcpOptions
@@ -68,16 +68,20 @@ export function instrumentMcp<T extends Record<string, any>>(
 
   return new Proxy(client, {
     get(target, prop: string) {
-      const original = target[prop];
+      const original: unknown = Reflect.get(target, prop);
 
-      if (typeof original !== 'function' || !methodsToInstrument.includes(prop as any)) {
+      if (
+        typeof original !== 'function' ||
+        !(methodsToInstrument as readonly string[]).includes(prop)
+      ) {
         return original;
       }
 
-      return async function (...args: any[]) {
+      return async function (...args: unknown[]) {
         const method = methodToMcpMethod[prop] ?? prop;
-        const toolName = prop === 'callTool' ? args[0] : undefined;
-        const resourceUri = prop === 'readResource' ? args[0] : undefined;
+        // Passed through as given: the first argument names the tool / resource.
+        const toolName = prop === 'callTool' ? (args[0] as string | undefined) : undefined;
+        const resourceUri = prop === 'readResource' ? (args[0] as string | undefined) : undefined;
 
         return air.traceMcp(serverName, method, { toolName, resourceUri, input: args }, () =>
           original.apply(target, args)
@@ -99,7 +103,7 @@ export function createMcpTracer(serverName: string, options?: AirClientOptions) 
 
   return {
     /** Trace a tool call */
-    traceToolCall: <T>(toolName: string, args: any, fn: () => Promise<T>) =>
+    traceToolCall: <T>(toolName: string, args: unknown, fn: () => Promise<T>) =>
       air.traceMcp(serverName, 'tools/call', { toolName, input: args }, fn),
 
     /** Trace a resource read */
@@ -111,7 +115,7 @@ export function createMcpTracer(serverName: string, options?: AirClientOptions) 
       air.traceMcp(serverName, 'prompts/get', { toolName: promptName }, fn),
 
     /** Emit a raw event */
-    emit: (event: Record<string, any> & { type: string }) => air.emit(event),
+    emit: <E extends { type: string }>(event: E) => air.emit(event),
 
     /** Close the connection */
     close: () => air.close(),

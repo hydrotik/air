@@ -44,11 +44,19 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-function contentToString(content: any): string {
+/** One block of a message's content, loosely: only the fields read here. */
+interface ContentPart {
+  type?: string;
+  text?: string;
+  thinking?: string;
+  name?: string;
+}
+
+function contentToString(content: unknown): string {
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) {
-    return content
-      .map((c: any) => {
+    return (content as ContentPart[])
+      .map((c) => {
         if (c.type === 'text') return c.text;
         if (c.type === 'image') return '[image]';
         if (c.type === 'thinking') return c.thinking;
@@ -312,7 +320,8 @@ export default function airCollector(pi: ExtensionAPI) {
     const usage = ctx.getContextUsage?.();
     if (usage && usage.tokens != null) {
       const model = ctx.model;
-      const contextWindow = (model as any)?.contextWindow ?? 200_000;
+      const contextWindow =
+        (model as { contextWindow?: number } | undefined)?.contextWindow ?? 200_000;
       const tokens = usage.tokens;
       const ctxEvt: ContextUsageEvent = {
         id: uid(),
@@ -341,7 +350,7 @@ export default function airCollector(pi: ExtensionAPI) {
       for (const entry of entries) {
         if (entry.type !== 'message') continue;
         const m = entry.message;
-        const text = contentToString((m as any).content);
+        const text = contentToString((m as { content?: unknown }).content);
 
         switch (m.role) {
           case 'user':
@@ -427,7 +436,8 @@ export default function airCollector(pi: ExtensionAPI) {
 
       const totalTokens = segments.reduce((sum, s) => sum + s.estimatedTokens, 0);
       const model = ctx.model;
-      const contextWindow = (model as any)?.contextWindow ?? 200_000;
+      const contextWindow =
+        (model as { contextWindow?: number } | undefined)?.contextWindow ?? 200_000;
 
       const bdEvt: ContextBreakdownEvent = {
         id: uid(),

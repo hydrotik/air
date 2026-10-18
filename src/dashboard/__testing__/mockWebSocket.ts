@@ -50,7 +50,7 @@ export function installFetch(routes: FetchRoutes): jest.Mock {
     if (!(url in routes)) return Promise.reject(new Error(`unrouted ${url}`));
     return Promise.resolve({ json: () => Promise.resolve(routes[url]) });
   });
-  (globalThis as any).fetch = mock;
+  globalThis.fetch = mock as unknown as typeof fetch;
   return mock;
 }
 

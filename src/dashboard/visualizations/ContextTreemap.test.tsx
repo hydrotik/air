@@ -22,7 +22,7 @@ describe('ContextTreemap', () => {
     });
   });
   afterAll(() => {
-    delete (HTMLElement.prototype as any).clientWidth;
+    Reflect.deleteProperty(HTMLElement.prototype, 'clientWidth');
   });
 
   it('shows a waiting state with no segments', () => {

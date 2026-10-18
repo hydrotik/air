@@ -28,7 +28,7 @@ class ResizeObserverStub {
 }
 
 if (!('ResizeObserver' in globalThis)) {
-  (globalThis as any).ResizeObserver = ResizeObserverStub;
+  (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
 }
 
 if (!window.matchMedia) {
@@ -45,7 +45,10 @@ if (!window.matchMedia) {
     }) as MediaQueryList;
 }
 
-const svgProto = (globalThis as any).SVGElement?.prototype;
+// jsdom's SVGElement lacks the layout methods d3 calls; stub them on the prototype.
+const svgProto = (globalThis.SVGElement as typeof SVGElement | undefined)?.prototype as unknown as
+  | { getBBox?: () => DOMRect | object; getComputedTextLength?: () => number }
+  | undefined;
 if (svgProto) {
   svgProto.getBBox ??= () => ({ x: 0, y: 0, width: 0, height: 0 });
   svgProto.getComputedTextLength ??= () => 0;

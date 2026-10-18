@@ -115,7 +115,7 @@ export function createRagTracer(source: string, options?: CreateRagTracerOptions
       air.trace(eventName, { source, ...data }, fn),
 
     /** Emit a raw event */
-    emit: (event: Record<string, any> & { type: string }) => air.emit(event),
+    emit: <E extends { type: string }>(event: E) => air.emit(event),
 
     /** Close the connection */
     close: () => air.close(),

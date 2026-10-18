@@ -46,6 +46,7 @@ export class FakeWebSocket extends EventEmitter {
   }
 
   /** Parsed JSON of everything sent on this socket */
+  // oxlint-disable-next-line typescript/no-explicit-any -- JSON off the wire; tests read nested fields loosely
   messages(): Array<Record<string, any>> {
     return this.sent.map((s) => JSON.parse(s));
   }

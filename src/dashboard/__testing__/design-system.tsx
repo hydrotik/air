@@ -5,11 +5,11 @@ import type React from 'react';
  * contract the dashboard relies on: `columns[].header`, `accessorKey`, and
  * `cell({ value, row: { original } })`. Everything else is ignored.
  */
-export interface ColumnDef<TData = any> {
+export interface ColumnDef<TData = unknown> {
   id: string;
   header?: string;
   accessorKey?: string;
-  cell?: (ctx: { value: any; row: { original: TData; index: number } }) => React.ReactNode;
+  cell?: (ctx: { value: unknown; row: { original: TData; index: number } }) => React.ReactNode;
   [key: string]: unknown;
 }
 
@@ -33,7 +33,9 @@ export function DataGrid<TData>({ data, columns }: DataGridProps<TData>): React.
         {data.map((row, index) => (
           <tr key={index}>
             {columns.map((c) => {
-              const value = c.accessorKey ? (row as any)[c.accessorKey] : undefined;
+              const value = c.accessorKey
+                ? (row as Record<string, unknown>)[c.accessorKey]
+                : undefined;
               return (
                 <td key={c.id}>
                   {c.cell ? c.cell({ value, row: { original: row, index } }) : String(value ?? '')}

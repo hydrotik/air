@@ -30,7 +30,7 @@ export interface TelemetryState {
   sessions?: SessionSummary[];
   connected?: boolean;
   redactionLevel?: string;
-  providers?: { rag: any[]; mcp: any[] };
+  providers?: Telemetry['providers'];
 }
 
 const resolver = (value: unknown) => jest.fn(() => Promise.resolve(value));

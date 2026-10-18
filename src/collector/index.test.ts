@@ -1,11 +1,13 @@
+import type { ExtensionAPI } from '@mariozechner/pi-coding-agent';
 import airCollector from './index';
 import { FakeWebSocket } from '../sdk/__testing__/fake-ws';
+import type { ContextSegment } from '../shared/events';
 
 jest.mock('ws', () => jest.requireActual('../sdk/__testing__/fake-ws').fakeWsModule);
 
 const NOW = 1_700_000_000_000;
 
-type Handler = (event: any, ctx?: any) => Promise<void>;
+type Handler = (event: unknown, ctx?: unknown) => Promise<void>;
 
 /** Minimal stand-in for pi's ExtensionAPI: records handlers so tests can fire events */
 function makePi() {
@@ -15,7 +17,7 @@ function makePi() {
       handlers.set(name, handler);
     }),
   };
-  const fire = async (name: string, event: any = {}, ctx: any = makeCtx()) => {
+  const fire = async (name: string, event: unknown = {}, ctx: unknown = makeCtx()) => {
     const handler = handlers.get(name);
     if (!handler) throw new Error(`no handler registered for ${name}`);
     await handler(event, ctx);
@@ -23,7 +25,7 @@ function makePi() {
   return { pi, handlers, fire };
 }
 
-function makeCtx(overrides: Record<string, any> = {}) {
+function makeCtx(overrides: Record<string, unknown> = {}) {
   return {
     cwd: '/work',
     model: { id: 'model-a', provider: 'prov-a', contextWindow: 100_000 },
@@ -37,7 +39,7 @@ function makeCtx(overrides: Record<string, any> = {}) {
 /** Load the collector with an open socket */
 function start() {
   const harness = makePi();
-  airCollector(harness.pi as any);
+  airCollector(harness.pi as unknown as ExtensionAPI);
   const ws = FakeWebSocket.latest();
   ws.simulateOpen();
   return { ...harness, ws };
@@ -62,17 +64,17 @@ describe('setup', () => {
   it('does nothing when AIR_ENABLED=false', () => {
     process.env.AIR_ENABLED = 'false';
     const { pi } = makePi();
-    airCollector(pi as any);
+    airCollector(pi as unknown as ExtensionAPI);
     expect(FakeWebSocket.instances).toHaveLength(0);
     expect(pi.on).not.toHaveBeenCalled();
   });
 
   it('connects to AIR_URL, defaulting to localhost', () => {
-    airCollector(makePi().pi as any);
+    airCollector(makePi().pi as unknown as ExtensionAPI);
     expect(FakeWebSocket.latest().url).toBe('ws://localhost:5200/ws/collector');
 
     process.env.AIR_URL = 'ws://elsewhere/ws/collector';
-    airCollector(makePi().pi as any);
+    airCollector(makePi().pi as unknown as ExtensionAPI);
     expect(FakeWebSocket.latest().url).toBe('ws://elsewhere/ws/collector');
   });
 
@@ -96,7 +98,7 @@ describe('setup', () => {
 
   it('drops events while the socket is not open (no offline queue)', async () => {
     const { pi, fire } = makePi();
-    airCollector(pi as any);
+    airCollector(pi as unknown as ExtensionAPI);
     await fire('agent_start');
     const ws = FakeWebSocket.latest();
     ws.simulateOpen();
@@ -126,7 +128,7 @@ describe('setup', () => {
 
   it('retries when the WebSocket constructor throws', () => {
     FakeWebSocket.throwOnConstruct = true;
-    airCollector(makePi().pi as any);
+    airCollector(makePi().pi as unknown as ExtensionAPI);
     FakeWebSocket.throwOnConstruct = false;
     jest.advanceTimersByTime(5000);
     expect(FakeWebSocket.instances).toHaveLength(1);
@@ -207,7 +209,7 @@ describe('session and agent events', () => {
 });
 
 describe('turn events', () => {
-  const assistantMessage = (usage: Record<string, any>, model = 'gpt-4o') => ({
+  const assistantMessage = (usage: Record<string, unknown>, model = 'gpt-4o') => ({
     role: 'assistant',
     model,
     provider: 'openai',
@@ -401,7 +403,7 @@ describe('turn events', () => {
 
     const [bd] = ofType(ws, 'context_breakdown');
     const byCategory = Object.fromEntries(
-      bd.segments.map((s: any) => [s.category, [s.charCount, s.estimatedTokens]])
+      bd.segments.map((s: ContextSegment) => [s.category, [s.charCount, s.estimatedTokens]])
     );
     expect(byCategory).toEqual({
       system_prompt: [100, 25],

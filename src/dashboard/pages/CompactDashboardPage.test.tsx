@@ -176,7 +176,7 @@ describe('CompactDashboardPage', () => {
     await waitFor(() => expect(telemetry.fetchCostBreakdown).toHaveBeenCalledTimes(1));
 
     // same object identity, new events array: the stable-object stand-in for a live update
-    (telemetry as any).events = [
+    telemetry.events = [
       makeEvent('token_usage', { input: 1, output: 1, cacheRead: 0, cost: { total: 0 } }),
     ];
     useTelemetryMock.mockReturnValue({ ...telemetry });

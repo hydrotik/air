@@ -8,18 +8,20 @@ const realWebSocket = globalThis.WebSocket;
 
 beforeEach(() => {
   MockWebSocket.instances = [];
-  (globalThis as any).WebSocket = MockWebSocket;
+  globalThis.WebSocket = MockWebSocket as unknown as typeof WebSocket;
   jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
 afterEach(() => {
   jest.useRealTimers();
   jest.restoreAllMocks();
-  (globalThis as any).fetch = realFetch;
-  (globalThis as any).WebSocket = realWebSocket;
+  globalThis.fetch = realFetch;
+  globalThis.WebSocket = realWebSocket;
 });
 
 const flush = () => act(async () => {});
+
+type Fetcher = (id: string) => Promise<unknown>;
 
 describe('useTelemetry — WebSocket', () => {
   beforeEach(() => {
@@ -216,7 +218,7 @@ describe('useTelemetry — fetch helpers', () => {
     installFetch({ '/api/sessions': [], '/api/config': {}, [url]: payload });
     const { result } = renderHook(() => useTelemetry());
     await flush();
-    const fn = (result.current as any)[name] as (id: string) => Promise<unknown>;
+    const fn = (result.current as unknown as Record<string, Fetcher>)[name]!;
     await expect(fn('abc')).resolves.toEqual(payload);
   });
 
@@ -226,7 +228,9 @@ describe('useTelemetry — fetch helpers', () => {
       installFetch({ '/api/sessions': [], '/api/config': {} });
       const { result } = renderHook(() => useTelemetry());
       await flush();
-      await expect((result.current as any)[name]('abc')).resolves.toEqual([]);
+      await expect(
+        (result.current as unknown as Record<string, Fetcher>)[name]!('abc')
+      ).resolves.toEqual([]);
     }
   );
 

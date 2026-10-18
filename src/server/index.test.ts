@@ -1,5 +1,7 @@
 import type { FastifyInstance } from 'fastify';
+import type {} from '@fastify/websocket'; // adds app.injectWS to FastifyInstance
 import type { WebSocket } from 'ws';
+import type { TelemetryEvent } from '../shared/events';
 import { loadConfig } from '../shared/config';
 import { loadServerModule } from './__testing__/load-server';
 import MemoryDatabase from './__testing__/sqlite-memory';
@@ -22,6 +24,12 @@ const mockedLoadConfig = loadConfig as jest.MockedFunction<typeof loadConfig>;
 type CreateOptions = Parameters<typeof createServer>[1];
 
 let app: FastifyInstance;
+
+/** A dashboard broadcast, read loosely. */
+interface Broadcast {
+  type: string;
+  data: { type: string } & Record<string, unknown>;
+}
 const sockets: WebSocket[] = [];
 
 async function boot(options: CreateOptions = { redaction: { level: 'none' }, config: {} }) {
@@ -57,9 +65,9 @@ async function until(predicate: () => boolean | Promise<boolean>, label: string)
 }
 
 async function connectDashboard() {
-  const ws = await (app as any).injectWS('/ws/dashboard');
+  const ws = await app.injectWS('/ws/dashboard');
   sockets.push(ws);
-  const received: any[] = [];
+  const received: Broadcast[] = [];
   ws.on('message', (raw: Buffer) => received.push(JSON.parse(raw.toString())));
   return { ws, received };
 }
@@ -183,14 +191,14 @@ describe('ingest and session queries', () => {
 
     expect((await get('/api/sessions/sess-1')).body).toMatchObject({ sessionId: 'sess-1' });
     const events = (await get('/api/sessions/sess-1/events')).body;
-    expect(events.map((e: any) => e.type)).toEqual(['session_start', 'turn_end']);
+    expect(events.map((e: TelemetryEvent) => e.type)).toEqual(['session_start', 'turn_end']);
   });
 
   it('returns only the most recent events when a limit is given', async () => {
     await boot();
     await post('/api/ingest/batch', [evt('heartbeat'), evt('heartbeat'), evt('agent_end')]);
     const { body } = await get('/api/sessions/sess-1/events?limit=1');
-    expect(body.map((e: any) => e.type)).toEqual(['agent_end']);
+    expect(body.map((e: TelemetryEvent) => e.type)).toEqual(['agent_end']);
     const recent = (await get('/api/events/recent?limit=2')).body;
     expect(recent).toHaveLength(2);
   });
@@ -380,7 +388,7 @@ describe('provider registry', () => {
     expect((await get('/api/providers/mcp')).body).toEqual(body.mcp);
 
     const config = (await get('/api/config')).body;
-    expect(config.providers.rag.find((p: any) => p.name === 'kb').active).toBe(true);
+    expect(config.providers.rag.find((p: { name: string }) => p.name === 'kb').active).toBe(true);
   });
 
   it('registers a RAG provider at runtime and requires a name', async () => {
@@ -489,7 +497,7 @@ describe('WebSockets', () => {
     const { received } = await connectDashboard();
     expect((await get('/api/health')).body.dashboardClients).toBe(1);
 
-    const collector = await (app as any).injectWS('/ws/collector');
+    const collector = await app.injectWS('/ws/collector');
     sockets.push(collector);
     collector.send(
       JSON.stringify(
@@ -529,7 +537,7 @@ describe('WebSockets', () => {
 
   it('ignores malformed collector frames and keeps the connection usable', async () => {
     await boot();
-    const collector = await (app as any).injectWS('/ws/collector');
+    const collector = await app.injectWS('/ws/collector');
     sockets.push(collector);
     collector.send('{not json');
     collector.send(JSON.stringify(evt('heartbeat')));

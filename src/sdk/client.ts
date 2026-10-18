@@ -53,6 +53,11 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
 }
 
+/** `messageOf(err)` for whatever was thrown (an Error, a plain object, a string, null). */
+function messageOf(err: unknown): unknown {
+  return (err as { message?: unknown } | null | undefined)?.message;
+}
+
 /**
  * Hash prompt text to a safe, non-reversible identifier.
  * Uses SHA-256, returns first 16 hex chars. No raw content stored.
@@ -137,7 +142,7 @@ export class AirClient {
   // ─── Event Emission ─────────────────────────────────────────────────────
 
   /** Emit a raw telemetry event */
-  emit(event: Omit<Record<string, any>, 'id' | 'sessionId' | 'timestamp'> & { type: string }) {
+  emit<E extends { type: string }>(event: E) {
     const full = {
       id: uid(),
       sessionId: this.sessionId,
@@ -361,7 +366,7 @@ export class AirClient {
   async traceMcp<T>(
     serverName: string,
     method: string,
-    opts: { toolName?: string; resourceUri?: string; input?: any },
+    opts: { toolName?: string; resourceUri?: string; input?: unknown },
     fn: () => Promise<T>
   ): Promise<T> {
     const inputStr = opts.input ? JSON.stringify(opts.input) : '';
@@ -397,7 +402,7 @@ export class AirClient {
       this.recordLatency('api_call', durationMs, { model: serverName });
 
       return result;
-    } catch (err: any) {
+    } catch (err) {
       this.emit({
         type: 'mcp_response',
         method,
@@ -406,7 +411,7 @@ export class AirClient {
         serverName,
         durationMs: Date.now() - start,
         isError: true,
-        errorMessage: err?.message ?? String(err),
+        errorMessage: messageOf(err) ?? String(err),
       });
       throw err;
     }
@@ -444,15 +449,15 @@ export class AirClient {
       this.recordLatency('api_call', durationMs, { model: source });
 
       return result;
-    } catch (err: any) {
+    } catch (err) {
       this.emit({
         type: 'custom',
         provider: this.provider,
         eventName: 'rag_retrieval_error',
-        data: { source, query: query.slice(0, 500), error: err?.message },
+        data: { source, query: query.slice(0, 500), error: messageOf(err) },
         durationMs: Date.now() - start,
         isError: true,
-        errorMessage: err?.message,
+        errorMessage: messageOf(err),
       });
       throw err;
     }
@@ -521,15 +526,15 @@ export class AirClient {
         isError: false,
       });
       return result;
-    } catch (err: any) {
+    } catch (err) {
       this.emit({
         type: 'custom',
         provider: this.provider,
         eventName,
-        data: { ...data, error: err?.message },
+        data: { ...data, error: messageOf(err) },
         durationMs: Date.now() - start,
         isError: true,
-        errorMessage: err?.message,
+        errorMessage: messageOf(err),
       });
       throw err;
     }

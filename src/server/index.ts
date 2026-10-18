@@ -18,6 +18,9 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/** A parsed query string: every parameter is optional and arrives as a string. */
+type QueryString = Record<string, string | undefined>;
+
 function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
 }
@@ -105,7 +108,7 @@ export async function createServer(
       event.type === 'rag_embedding' ||
       event.type === 'rag_index'
     ) {
-      const source = (event as any).source;
+      const source = event.source;
       if (source) {
         const existing = ragProviders.get(source);
         if (existing) {
@@ -124,7 +127,7 @@ export async function createServer(
       }
     }
     if (event.type === 'mcp_request' || event.type === 'mcp_response') {
-      const serverName = (event as any).serverName;
+      const serverName = event.serverName;
       if (serverName) {
         const existing = mcpProviders.get(serverName);
         if (existing) {
@@ -189,7 +192,7 @@ export async function createServer(
 
   // ─── REST API — Sessions ─────────────────────────────────────────────────
   app.get('/api/sessions', async (req) => {
-    const limit = (req.query as any).limit ?? 50;
+    const limit = (req.query as QueryString).limit ?? 50;
     return store.getSessions(Number(limit));
   });
 
@@ -202,7 +205,7 @@ export async function createServer(
 
   app.get('/api/sessions/:id/events', async (req) => {
     const { id } = req.params as { id: string };
-    const limit = (req.query as any).limit;
+    const limit = (req.query as QueryString).limit;
     return limit ? store.getRecentEvents(id, Number(limit)) : store.getEvents(id);
   });
 
@@ -227,7 +230,7 @@ export async function createServer(
   });
 
   app.get('/api/events/recent', async (req) => {
-    const limit = (req.query as any).limit ?? 200;
+    const limit = (req.query as QueryString).limit ?? 200;
     return store.getAllRecentEvents(Number(limit));
   });
 
@@ -273,7 +276,7 @@ export async function createServer(
 
   app.get('/api/sessions/:id/latency/timeseries', async (req) => {
     const { id } = req.params as { id: string };
-    const operation = (req.query as any).operation;
+    const operation = (req.query as QueryString).operation;
     return store.getLatencyTimeSeries(id, operation);
   });
 
@@ -301,7 +304,7 @@ export async function createServer(
 
   // ─── Prompt Ratings ───────────────────────────────────────────────────
   app.get('/api/prompts', async (req) => {
-    const hash = (req.query as any).hash;
+    const hash = (req.query as QueryString).hash;
     return store.getPromptVariantComparison(hash);
   });
 
@@ -312,13 +315,13 @@ export async function createServer(
 
   // ─── Drift Detection ─────────────────────────────────────────────────
   app.get('/api/drift', async (req) => {
-    const sessionId = (req.query as any).session;
-    const limit = (req.query as any).limit ?? 50;
+    const sessionId = (req.query as QueryString).session;
+    const limit = (req.query as QueryString).limit ?? 50;
     return store.getDriftEvents(sessionId, Number(limit));
   });
 
   app.get('/api/drift/summary', async (req) => {
-    const sessionId = (req.query as any).session;
+    const sessionId = (req.query as QueryString).session;
     return store.getDriftSummary(sessionId);
   });
 
@@ -379,7 +382,7 @@ export async function createServer(
         chunkSizes: body.chunkSizes,
         totalChunkTokens: body.chunkSizes?.reduce((a, b) => a + b, 0),
         metadata: body.metadata,
-      } as any;
+      };
 
       ingestAndBroadcast(event);
       return { ok: true };
@@ -415,7 +418,7 @@ export async function createServer(
         durationMs: body.durationMs ?? 0,
         dimensions: body.dimensions ?? providerConfig?.dimensions,
         batchSize: body.batchSize,
-      } as any;
+      };
 
       ingestAndBroadcast(event);
       return { ok: true };
@@ -446,7 +449,7 @@ export async function createServer(
         totalTokens: body.totalTokens ?? 0,
         durationMs: body.durationMs ?? 0,
         metadata: body.metadata,
-      } as any;
+      };
 
       ingestAndBroadcast(event);
       return { ok: true };

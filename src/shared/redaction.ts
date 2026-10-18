@@ -82,7 +82,7 @@ export function redactEvent(event: TelemetryEvent, config: RedactionConfig): Tel
   if (config.level === 'none') return event;
 
   // Deep clone to avoid mutation
-  const redacted = JSON.parse(JSON.stringify(event)) as Record<string, any>;
+  const redacted = JSON.parse(JSON.stringify(event)) as Record<string, unknown>;
 
   // Always strip custom stripFields
   if (config.stripFields) {
@@ -104,36 +104,44 @@ export function redactEvent(event: TelemetryEvent, config: RedactionConfig): Tel
         }
       }
     }
-    return redacted as TelemetryEvent;
+    return redacted as unknown as TelemetryEvent;
   }
 
   // 'preview' level — truncate and scrub
   for (const field of CONTENT_FIELDS) {
-    if (field in redacted && typeof redacted[field] === 'string') {
-      redacted[field] = scrubSensitive(truncate(redacted[field], 50), config.customPatterns);
+    const value = redacted[field];
+    if (typeof value === 'string') {
+      redacted[field] = scrubSensitive(truncate(value, 50), config.customPatterns);
     }
   }
 
   // Scrub nested metadata/data objects
-  if (redacted.metadata && typeof redacted.metadata === 'object') {
+  if (isRecord(redacted.metadata)) {
     redacted.metadata = scrubObject(redacted.metadata, config.customPatterns);
   }
-  if (redacted.data && typeof redacted.data === 'object') {
+  if (isRecord(redacted.data)) {
     redacted.data = scrubObject(redacted.data, config.customPatterns);
   }
 
-  return redacted as TelemetryEvent;
+  return redacted as unknown as TelemetryEvent;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object';
 }
 
 /**
  * Scrub all string values in an object recursively.
  */
-function scrubObject(obj: Record<string, any>, customPatterns?: RegExp[]): Record<string, any> {
-  const result: Record<string, any> = {};
+function scrubObject(
+  obj: Record<string, unknown>,
+  customPatterns?: RegExp[]
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
       result[key] = scrubSensitive(truncate(value, 100), customPatterns);
-    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+    } else if (isRecord(value) && !Array.isArray(value)) {
       result[key] = scrubObject(value, customPatterns);
     } else {
       result[key] = value;

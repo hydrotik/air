@@ -63,7 +63,7 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
     svg
       .append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(xAxis as any)
+      .call(xAxis)
       .attr('font-family', "'JetBrains Mono', monospace")
       .attr('font-size', '8px')
       .attr('color', 'rgba(255,255,255,0.3)');

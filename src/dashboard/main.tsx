@@ -7,7 +7,8 @@ import { CompactDashboardPage } from './pages/CompactDashboardPage';
 
 // Detect compact mode from query param or Electron environment
 const params = new URLSearchParams(window.location.search);
-const isCompact = params.get('compact') === 'true' || (window as any).__ELECTRON__ === true;
+const isCompact =
+  params.get('compact') === 'true' || (window as { __ELECTRON__?: unknown }).__ELECTRON__ === true;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
