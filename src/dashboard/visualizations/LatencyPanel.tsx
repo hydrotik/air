@@ -8,6 +8,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { DataGrid } from '@hydrotik/design-system';
+import type { ColumnDef } from '@hydrotik/design-system';
 
 interface LatencyStat {
   operation: string;
@@ -44,6 +46,89 @@ const OP_COLORS: Record<string, string> = {
 
 const font = "'JetBrains Mono', monospace";
 
+/** Same quiet, read-only grid as DriftPanel, at compact density. */
+const GRID_PROPS = {
+  density: 'compact',
+  borderless: true,
+  transparent: true,
+  noRowHover: true,
+  rowSeparator: 'subtle',
+  showToolbar: false,
+  showFooter: false,
+  showStatusBar: false,
+  enablePagination: false,
+  enableSorting: false,
+  enableGlobalFilter: false,
+  enableColumnVisibility: false,
+  enableRowSelection: false,
+  enableColumnResizing: false,
+} as const;
+
+const ms = (n: number) => `${Math.round(n)}ms`;
+
+const columns: ColumnDef<LatencyStat>[] = [
+  {
+    id: 'operation',
+    header: 'Operation',
+    accessorKey: 'operation',
+    cell: ({ value }) => (
+      <span style={{ color: OP_COLORS[value as string] ?? '#94a3b8', fontWeight: 600 }}>
+        {value as string}
+      </span>
+    ),
+  },
+  {
+    id: 'samples',
+    header: 'Samples',
+    accessorKey: 'sample_count',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#fff' }}>{value as number}</span>,
+  },
+  {
+    id: 'avg',
+    header: 'Avg',
+    accessorKey: 'avg_ms',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: '#fff', fontWeight: 500 }}>{ms(value as number)}</span>
+    ),
+  },
+  {
+    id: 'min',
+    header: 'Min',
+    accessorKey: 'min_ms',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.5)' }}>{ms(value as number)}</span>
+    ),
+  },
+  {
+    id: 'max',
+    header: 'Max',
+    accessorKey: 'max_ms',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.5)' }}>{ms(value as number)}</span>
+    ),
+  },
+  {
+    id: 'ttft',
+    header: 'TTFT',
+    accessorKey: 'avg_ttft_ms',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: value ? '#10b981' : 'rgba(255,255,255,0.3)' }}>
+        {value ? ms(value as number) : '—'}
+      </span>
+    ),
+  },
+];
+
 export const LatencyPanel: React.FC<Props> = ({ stats, timeseries, compact }) => {
   if (stats.length === 0 && timeseries.length === 0) {
     return (
@@ -65,59 +150,17 @@ export const LatencyPanel: React.FC<Props> = ({ stats, timeseries, compact }) =>
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
-      {/* Stats table — hidden in compact mode */}
+      {/* Stats grid — hidden in compact mode */}
       {!compact && stats.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 8 }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              {['Operation', 'Samples', 'Avg', 'Min', 'Max', 'TTFT'].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    textAlign: 'left',
-                    padding: '3px 6px',
-                    fontSize: 8,
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    color: 'rgba(255,255,255,0.4)',
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {stats.map((s, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '3px 6px' }}>
-                  <span style={{ color: OP_COLORS[s.operation] ?? '#94a3b8', fontWeight: 600 }}>
-                    {s.operation}
-                  </span>
-                </td>
-                <td style={{ padding: '3px 6px', color: '#fff' }}>{s.sample_count}</td>
-                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>
-                  {Math.round(s.avg_ms)}ms
-                </td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>
-                  {Math.round(s.min_ms)}ms
-                </td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>
-                  {Math.round(s.max_ms)}ms
-                </td>
-                <td
-                  style={{
-                    padding: '3px 6px',
-                    color: s.avg_ttft_ms ? '#10b981' : 'rgba(255,255,255,0.3)',
-                  }}
-                >
-                  {s.avg_ttft_ms ? `${Math.round(s.avg_ttft_ms)}ms` : '—'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ marginBottom: 8 }}>
+          <DataGrid<LatencyStat>
+            aria-label="Latency by operation"
+            data={stats}
+            columns={columns}
+            getRowId={(row) => `${row.provider}:${row.model}:${row.operation}`}
+            {...GRID_PROPS}
+          />
+        </div>
       )}
 
       {/* Time series chart */}

@@ -1,4 +1,6 @@
 import React from 'react';
+import { DataGrid } from '@hydrotik/design-system';
+import type { ColumnDef } from '@hydrotik/design-system';
 
 interface RagStat {
   source: string;
@@ -36,6 +38,97 @@ function formatTokens(n: number): string {
   return String(n);
 }
 
+/** Same quiet, read-only grid as DriftPanel, at compact density. */
+const GRID_PROPS = {
+  density: 'compact',
+  borderless: true,
+  transparent: true,
+  noRowHover: true,
+  rowSeparator: 'subtle',
+  showToolbar: false,
+  showFooter: false,
+  showStatusBar: false,
+  enablePagination: false,
+  enableSorting: false,
+  enableGlobalFilter: false,
+  enableColumnVisibility: false,
+  enableRowSelection: false,
+  enableColumnResizing: false,
+} as const;
+
+const muted = (alpha: number) => `rgba(255,255,255,${alpha})`;
+
+const columns: ColumnDef<RagStat>[] = [
+  {
+    id: 'source',
+    header: 'Source',
+    accessorKey: 'source',
+    cell: ({ value }) => <span style={{ color: '#fff', fontWeight: 500 }}>{value as string}</span>,
+  },
+  {
+    id: 'type',
+    header: 'Type',
+    accessorKey: 'type',
+    cell: ({ value }) => (
+      <span style={{ color: TYPE_COLORS[value as string] ?? '#94a3b8', fontWeight: 600 }}>
+        {TYPE_LABELS[value as string] ?? (value as string)}
+      </span>
+    ),
+  },
+  {
+    id: 'calls',
+    header: 'Calls',
+    accessorKey: 'call_count',
+    size: 56,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#fff' }}>{value as number}</span>,
+  },
+  {
+    id: 'avg',
+    header: 'Avg',
+    accessorKey: 'avg_ms',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: muted(0.7) }}>{Math.round(value as number)}ms</span>,
+  },
+  {
+    id: 'results',
+    header: 'Avg Results',
+    accessorKey: 'avg_results',
+    size: 88,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: muted(0.6) }}>
+        {value != null ? (value as number).toFixed(1) : '—'}
+      </span>
+    ),
+  },
+  {
+    id: 'score',
+    header: 'Avg Score',
+    accessorKey: 'avg_top_score',
+    size: 80,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: muted(0.6) }}>
+        {value != null ? (value as number).toFixed(3) : '—'}
+      </span>
+    ),
+  },
+  {
+    id: 'tokens',
+    header: 'Tokens',
+    accessorKey: 'total_chunk_tokens',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: muted(0.5) }}>
+        {value != null ? formatTokens(value as number) : '—'}
+      </span>
+    ),
+  },
+];
+
 export const RagStatsPanel: React.FC<Props> = ({ stats }) => {
   if (stats.length === 0) {
     return (
@@ -49,58 +142,13 @@ export const RagStatsPanel: React.FC<Props> = ({ stats }) => {
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-            {['Source', 'Type', 'Calls', 'Avg', 'Avg Results', 'Avg Score', 'Tokens'].map((h) => (
-              <th
-                key={h}
-                style={{
-                  textAlign: 'left',
-                  padding: '3px 6px',
-                  fontSize: 8,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                }}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {stats.map((s, i) => (
-            <tr
-              key={i}
-              style={{
-                borderBottom: '1px solid rgba(255,255,255,0.04)',
-              }}
-            >
-              <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>{s.source}</td>
-              <td style={{ padding: '3px 6px' }}>
-                <span style={{ color: TYPE_COLORS[s.type] ?? '#94a3b8', fontWeight: 600 }}>
-                  {TYPE_LABELS[s.type] ?? s.type}
-                </span>
-              </td>
-              <td style={{ padding: '3px 6px', color: '#fff' }}>{s.call_count}</td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>
-                {Math.round(s.avg_ms)}ms
-              </td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
-                {s.avg_results != null ? s.avg_results.toFixed(1) : '—'}
-              </td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
-                {s.avg_top_score != null ? s.avg_top_score.toFixed(3) : '—'}
-              </td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>
-                {s.total_chunk_tokens != null ? formatTokens(s.total_chunk_tokens) : '—'}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataGrid<RagStat>
+        aria-label="RAG calls by source"
+        data={stats}
+        columns={columns}
+        getRowId={(row) => `${row.source}:${row.type}`}
+        {...GRID_PROPS}
+      />
     </div>
   );
 };

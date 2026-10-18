@@ -1,4 +1,6 @@
 import React from 'react';
+import { DataGrid } from '@hydrotik/design-system';
+import type { ColumnDef } from '@hydrotik/design-system';
 
 interface PromptVariant {
   prompt_hash: string;
@@ -61,6 +63,104 @@ function stars(n: number | null): string {
   return `${n.toFixed(1)} ★`;
 }
 
+/** Same quiet, read-only grid as DriftPanel, at compact density. */
+const GRID_PROPS = {
+  density: 'compact',
+  borderless: true,
+  transparent: true,
+  noRowHover: true,
+  rowSeparator: 'subtle',
+  showToolbar: false,
+  showFooter: false,
+  showStatusBar: false,
+  enablePagination: false,
+  enableSorting: false,
+  enableGlobalFilter: false,
+  enableColumnVisibility: false,
+  enableRowSelection: false,
+  enableColumnResizing: false,
+} as const;
+
+const columns: ColumnDef<PromptVariant>[] = [
+  {
+    id: 'variant',
+    header: 'Variant',
+    accessorKey: 'variant',
+    cell: ({ value }) => (
+      <span style={{ color: '#a855f7', fontWeight: 600 }}>{value as string}</span>
+    ),
+  },
+  {
+    id: 'category',
+    header: 'Category',
+    accessorKey: 'category',
+    cell: ({ value }) => <span style={{ color: 'rgba(255,255,255,0.5)' }}>{value as string}</span>,
+  },
+  {
+    id: 'samples',
+    header: 'Samples',
+    accessorKey: 'sample_count',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#fff' }}>{value as number}</span>,
+  },
+  {
+    id: 'goal',
+    header: 'Goal Rate',
+    accessorKey: 'goal_rate',
+    size: 96,
+    cell: ({ value }) => goalBar(value as number),
+  },
+  {
+    id: 'turns',
+    header: 'Avg Turns',
+    accessorKey: 'avg_turns',
+    size: 72,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.7)' }}>{(value as number).toFixed(1)}</span>
+    ),
+  },
+  {
+    id: 'tokens',
+    header: 'Avg Tokens',
+    accessorKey: 'avg_tokens',
+    size: 80,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: 'rgba(255,255,255,0.6)' }}>{formatTokens(value as number)}</span>
+    ),
+  },
+  {
+    id: 'cost',
+    header: 'Avg Cost',
+    accessorKey: 'avg_cost',
+    size: 72,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#10b981' }}>{formatCost(value as number)}</span>,
+  },
+  {
+    id: 'errors',
+    header: 'Errors',
+    accessorKey: 'avg_tool_error_rate',
+    size: 56,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: (value as number) > 0.1 ? '#ef4444' : 'rgba(255,255,255,0.4)' }}>
+        {Math.round((value as number) * 100)}%
+      </span>
+    ),
+  },
+  {
+    id: 'rating',
+    header: 'Rating',
+    accessorKey: 'avg_rating',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#eab308' }}>{stars(value as number | null)}</span>,
+  },
+];
+
 export const PromptPanel: React.FC<Props> = ({ variants }) => {
   if (variants.length === 0) {
     return (
@@ -74,66 +174,13 @@ export const PromptPanel: React.FC<Props> = ({ variants }) => {
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-            {[
-              'Variant',
-              'Category',
-              'Samples',
-              'Goal Rate',
-              'Avg Turns',
-              'Avg Tokens',
-              'Avg Cost',
-              'Errors',
-              'Rating',
-            ].map((h) => (
-              <th
-                key={h}
-                style={{
-                  textAlign: 'left',
-                  padding: '3px 6px',
-                  fontSize: 8,
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  color: 'rgba(255,255,255,0.4)',
-                }}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {variants.map((v, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-              <td style={{ padding: '3px 6px' }}>
-                <span style={{ color: '#a855f7', fontWeight: 600 }}>{v.variant}</span>
-              </td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.5)' }}>{v.category}</td>
-              <td style={{ padding: '3px 6px', color: '#fff' }}>{v.sample_count}</td>
-              <td style={{ padding: '3px 6px' }}>{goalBar(v.goal_rate)}</td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.7)' }}>
-                {v.avg_turns.toFixed(1)}
-              </td>
-              <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
-                {formatTokens(v.avg_tokens)}
-              </td>
-              <td style={{ padding: '3px 6px', color: '#10b981' }}>{formatCost(v.avg_cost)}</td>
-              <td
-                style={{
-                  padding: '3px 6px',
-                  color: v.avg_tool_error_rate > 0.1 ? '#ef4444' : 'rgba(255,255,255,0.4)',
-                }}
-              >
-                {Math.round(v.avg_tool_error_rate * 100)}%
-              </td>
-              <td style={{ padding: '3px 6px', color: '#eab308' }}>{stars(v.avg_rating)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataGrid<PromptVariant>
+        aria-label="Prompt variants"
+        data={variants}
+        columns={columns}
+        getRowId={(row) => `${row.prompt_hash}:${row.variant}:${row.model}`}
+        {...GRID_PROPS}
+      />
 
       {/* Hash legend */}
       <div style={{ marginTop: 6, padding: '4px 6px', opacity: 0.3, fontSize: 8 }}>

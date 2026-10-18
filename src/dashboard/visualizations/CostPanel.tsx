@@ -9,6 +9,8 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from 'recharts';
+import { DataGrid } from '@hydrotik/design-system';
+import type { ColumnDef } from '@hydrotik/design-system';
 
 interface CostBreakdown {
   model: string;
@@ -46,6 +48,79 @@ function formatCost(n: number): string {
   return `$${n.toFixed(4)}`;
 }
 
+/** Same quiet, read-only grid as DriftPanel, at compact density. */
+const GRID_PROPS = {
+  density: 'compact',
+  borderless: true,
+  transparent: true,
+  noRowHover: true,
+  rowSeparator: 'subtle',
+  showToolbar: false,
+  showFooter: false,
+  showStatusBar: false,
+  enablePagination: false,
+  enableSorting: false,
+  enableGlobalFilter: false,
+  enableColumnVisibility: false,
+  enableRowSelection: false,
+  enableColumnResizing: false,
+} as const;
+
+const columns: ColumnDef<CostBreakdown>[] = [
+  {
+    id: 'model',
+    header: 'Model',
+    accessorKey: 'model',
+    cell: ({ value }) => <span style={{ color: '#fff', fontWeight: 500 }}>{value as string}</span>,
+  },
+  {
+    id: 'events',
+    header: 'Events',
+    accessorKey: 'event_count',
+    size: 64,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: 'rgba(255,255,255,0.6)' }}>{value as number}</span>,
+  },
+  {
+    id: 'input',
+    header: 'Input',
+    accessorKey: 'total_input_cost',
+    size: 72,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#3b82f6' }}>{formatCost(value as number)}</span>,
+  },
+  {
+    id: 'output',
+    header: 'Output',
+    accessorKey: 'total_output_cost',
+    size: 72,
+    align: 'right',
+    cell: ({ value }) => <span style={{ color: '#f97316' }}>{formatCost(value as number)}</span>,
+  },
+  {
+    id: 'cache',
+    header: 'Cache',
+    accessorFn: (row) => row.total_cache_read_cost + row.total_cache_write_cost,
+    size: 72,
+    align: 'right',
+    cell: ({ row }) => (
+      <span style={{ color: '#10b981' }}>
+        {formatCost(row.original.total_cache_read_cost + row.original.total_cache_write_cost)}
+      </span>
+    ),
+  },
+  {
+    id: 'total',
+    header: 'Total',
+    accessorKey: 'total_cost',
+    size: 72,
+    align: 'right',
+    cell: ({ value }) => (
+      <span style={{ color: '#fff', fontWeight: 600 }}>{formatCost(value as number)}</span>
+    ),
+  },
+];
+
 export const CostPanel: React.FC<Props> = ({ breakdown, timeseries, compact }) => {
   if (breakdown.length === 0 && timeseries.length === 0) {
     return (
@@ -68,52 +143,17 @@ export const CostPanel: React.FC<Props> = ({ breakdown, timeseries, compact }) =
 
   return (
     <div style={{ fontFamily: font, fontSize: 10 }}>
-      {/* Breakdown table — hidden in compact mode */}
+      {/* Breakdown grid — hidden in compact mode */}
       {!compact && breakdown.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 8 }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              {['Model', 'Events', 'Input', 'Output', 'Cache', 'Total'].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    textAlign: 'left',
-                    padding: '3px 6px',
-                    fontSize: 8,
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    color: 'rgba(255,255,255,0.4)',
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {breakdown.map((s, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 500 }}>{s.model}</td>
-                <td style={{ padding: '3px 6px', color: 'rgba(255,255,255,0.6)' }}>
-                  {s.event_count}
-                </td>
-                <td style={{ padding: '3px 6px', color: '#3b82f6' }}>
-                  {formatCost(s.total_input_cost)}
-                </td>
-                <td style={{ padding: '3px 6px', color: '#f97316' }}>
-                  {formatCost(s.total_output_cost)}
-                </td>
-                <td style={{ padding: '3px 6px', color: '#10b981' }}>
-                  {formatCost(s.total_cache_read_cost + s.total_cache_write_cost)}
-                </td>
-                <td style={{ padding: '3px 6px', color: '#fff', fontWeight: 600 }}>
-                  {formatCost(s.total_cost)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ marginBottom: 8 }}>
+          <DataGrid<CostBreakdown>
+            aria-label="Cost by model"
+            data={breakdown}
+            columns={columns}
+            getRowId={(row) => `${row.provider}:${row.model}`}
+            {...GRID_PROPS}
+          />
+        </div>
       )}
 
       {/* Cumulative cost chart */}
