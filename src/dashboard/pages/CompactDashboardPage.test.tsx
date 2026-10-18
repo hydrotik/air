@@ -187,6 +187,67 @@ describe('CompactDashboardPage', () => {
     expect(telemetry.fetchCostTimeseries).toHaveBeenCalledWith('s1');
   });
 
+  it('refetches each panel for its live event type', async () => {
+    const telemetry = mockTelemetry({ sessions: [makeSession()] });
+    useTelemetryMock.mockReturnValue(telemetry);
+    const { rerender } = render(<CompactDashboardPage />);
+    await waitFor(() => expect(telemetry.fetchDriftSummary).toHaveBeenCalledTimes(1));
+
+    telemetry.events = [
+      makeEvent('context_usage', {}),
+      makeEvent('latency', {}),
+      makeEvent('tool_call_end', { toolName: 'bash', isError: false, durationMs: 1 }),
+      makeEvent('mcp_response', {}),
+      makeEvent('rag_retrieval', {}),
+      makeEvent('drift', {}),
+    ];
+    useTelemetryMock.mockReturnValue({ ...telemetry });
+    rerender(<CompactDashboardPage />);
+
+    for (const fetcher of [
+      telemetry.fetchContextSnapshots,
+      telemetry.fetchLatestBreakdown,
+      telemetry.fetchLatencyStats,
+      telemetry.fetchLatencyTimeseries,
+      telemetry.fetchToolTimeseries,
+      telemetry.fetchMcpStats,
+      telemetry.fetchMcpTimeseries,
+      telemetry.fetchRagStats,
+      telemetry.fetchRagTimeseries,
+      telemetry.fetchDriftEvents,
+      telemetry.fetchDriftSummary,
+    ]) {
+      await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
+    }
+  });
+
+  it('drops a slow response for the session the user has left', async () => {
+    let resolveFirst!: (rows: unknown[]) => void;
+    const telemetry = mockTelemetry({
+      sessions: [makeSession(), makeSession({ sessionId: 's2', model: 'haiku' })],
+    });
+    // s1's drift events answer only after the user has moved to s2
+    (telemetry.fetchDriftEvents as jest.Mock).mockImplementation((id: string) =>
+      id === 's1'
+        ? new Promise((resolve) => {
+            resolveFirst = resolve;
+          })
+        : Promise.resolve([])
+    );
+    useTelemetryMock.mockReturnValue(telemetry);
+    render(<CompactDashboardPage />);
+    await waitFor(() => expect(telemetry.fetchDriftEvents).toHaveBeenCalledWith('s1'));
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Sessions' }));
+    fireEvent.click(screen.getByText('anthropic/haiku', { selector: '.sessionItem span' }));
+    await waitFor(() => expect(telemetry.fetchDriftEvents).toHaveBeenCalledWith('s2'));
+
+    resolveFirst(fullData.driftEvents ?? []);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    fireEvent.click(screen.getByRole('tab', { name: 'Drift' }));
+    expect(screen.queryByTestId('data-grid')).toBeNull();
+  });
+
   it('feeds the ticker with the latest key event', () => {
     useTelemetryMock.mockReturnValue(
       mockTelemetry({ events: [makeEvent('compaction', { tokensBefore: 2_000_000 })] })

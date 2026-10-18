@@ -200,6 +200,55 @@ describe('DashboardPage', () => {
     expect(telemetry.fetchToolCalls).toHaveBeenCalledTimes(1);
   });
 
+  it('refetches each panel for its live event type', async () => {
+    const telemetry = mockTelemetry({ sessions: [makeSession()] });
+    useTelemetryMock.mockReturnValue(telemetry);
+    const { rerender } = render(<DashboardPage />);
+    await waitFor(() => expect(telemetry.fetchToolTimeseries).toHaveBeenCalledTimes(1));
+
+    useTelemetryMock.mockReturnValue({
+      ...telemetry,
+      events: [
+        makeEvent('tool_call_end', { toolName: 'bash', isError: false, durationMs: 1 }),
+        makeEvent('context_usage', { utilizationPct: 1, tokensUsed: 1, contextWindow: 100 }),
+        makeEvent('mcp_response', {}),
+        makeEvent('rag_retrieval', { source: 'docs', query: 'q', resultCount: 0 }),
+        makeEvent('latency', {}),
+        makeEvent('cost', { totalCost: 0, cumulativeCost: 0, model: 'm' }),
+        makeEvent('output_eval', {
+          turnIndex: 1,
+          metrics: { toolSuccessRate: 1, cacheHitRate: 0 },
+        }),
+        makeEvent('prompt_rating', {
+          variant: 'a',
+          category: 'c',
+          metrics: { goalAchieved: true, turnsToComplete: 1 },
+        }),
+      ],
+    });
+    rerender(<DashboardPage />);
+
+    for (const fetcher of [
+      telemetry.fetchToolCalls,
+      telemetry.fetchToolTimeseries,
+      telemetry.fetchContextSnapshots,
+      telemetry.fetchLatestBreakdown,
+      telemetry.fetchMcpStats,
+      telemetry.fetchMcpTimeseries,
+      telemetry.fetchRagStats,
+      telemetry.fetchRagTimeseries,
+      telemetry.fetchLatencyStats,
+      telemetry.fetchLatencyTimeseries,
+      telemetry.fetchCostBreakdown,
+      telemetry.fetchCostTimeseries,
+      telemetry.fetchEvalStats,
+      telemetry.fetchEvalTimeseries,
+      telemetry.fetchPromptVariants,
+    ]) {
+      await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
+    }
+  });
+
   it('shows the live event count in the feed header', () => {
     useTelemetryMock.mockReturnValue(
       mockTelemetry({ events: [makeEvent('turn_start', { turnIndex: 1 }), makeEvent('heartbeat')] })

@@ -67,7 +67,7 @@ const config = {
   // Coverage floor, checked by `test:coverage`: today's numbers rounded down.
   // Raise it when coverage goes up; never lower it.
   coverageThreshold: {
-    global: { statements: 93, branches: 83, functions: 96, lines: 94 },
+    global: { statements: 95, branches: 85, functions: 96, lines: 96 },
   },
 };
 
