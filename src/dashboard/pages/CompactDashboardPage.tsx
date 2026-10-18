@@ -81,9 +81,39 @@ const CompactKpiCard: React.FC<{ label: string; value: string | number; color?: 
 
 // ─── Main Component ───────────────────────────────────────────────────────
 
+function mapBreakdown(data: any) {
+  if (!data) return null;
+  return {
+    segments: data.breakdown ?? data.segments ?? [],
+    tokens_used: data.tokens_used ?? 0,
+    context_window: data.context_window ?? 200_000,
+  };
+}
+
 export const CompactDashboardPage: React.FC = () => {
-  const telemetry = useTelemetry();
-  const { events, sessions, connected, redactionLevel, providers } = telemetry;
+  // Destructure the stable fetch callbacks: the object useTelemetry returns is new on
+  // every render, so depending on it would refetch after every render, forever.
+  const {
+    events,
+    sessions,
+    connected,
+    redactionLevel,
+    providers,
+    fetchSessionEvents,
+    fetchContextSnapshots,
+    fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchDriftEvents,
+    fetchDriftSummary,
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
+  } = useTelemetry();
 
   const [activeTab, setActiveTab] = useState('overview');
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -106,15 +136,6 @@ export const CompactDashboardPage: React.FC = () => {
   const [ragTs, setRagTs] = useState<any[]>([]);
   const [toolTs, setToolTs] = useState<any[]>([]);
 
-  const mapBreakdown = (data: any) => {
-    if (!data) return null;
-    return {
-      segments: data.breakdown ?? data.segments ?? [],
-      tokens_used: data.tokens_used ?? 0,
-      context_window: data.context_window ?? 200_000,
-    };
-  };
-
   // Auto-select most recent session
   useEffect(() => {
     if (sessions.length > 0 && !activeSessionId) {
@@ -126,21 +147,37 @@ export const CompactDashboardPage: React.FC = () => {
   useEffect(() => {
     if (!activeSessionId) return;
 
-    telemetry.fetchSessionEvents(activeSessionId).then(setSessionEvents);
-    telemetry.fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-    telemetry.fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
-    telemetry.fetchMcpStats(activeSessionId).then(setMcpStats);
-    telemetry.fetchRagStats(activeSessionId).then(setRagStats);
-    telemetry.fetchLatencyStats(activeSessionId).then(setLatencyStats);
-    telemetry.fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
-    telemetry.fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
-    telemetry.fetchCostTimeseries(activeSessionId).then(setCostTs);
-    telemetry.fetchDriftEvents(activeSessionId).then(setDriftEvents);
-    telemetry.fetchDriftSummary(activeSessionId).then(setDriftSummary);
-    telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
-    telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
-    telemetry.fetchToolTimeseries(activeSessionId).then(setToolTs);
-  }, [activeSessionId, telemetry]);
+    fetchSessionEvents(activeSessionId).then(setSessionEvents);
+    fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
+    fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
+    fetchMcpStats(activeSessionId).then(setMcpStats);
+    fetchRagStats(activeSessionId).then(setRagStats);
+    fetchLatencyStats(activeSessionId).then(setLatencyStats);
+    fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
+    fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
+    fetchCostTimeseries(activeSessionId).then(setCostTs);
+    fetchDriftEvents(activeSessionId).then(setDriftEvents);
+    fetchDriftSummary(activeSessionId).then(setDriftSummary);
+    fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+    fetchRagTimeseries(activeSessionId).then(setRagTs);
+    fetchToolTimeseries(activeSessionId).then(setToolTs);
+  }, [
+    activeSessionId,
+    fetchSessionEvents,
+    fetchContextSnapshots,
+    fetchLatestBreakdown,
+    fetchMcpStats,
+    fetchRagStats,
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchDriftEvents,
+    fetchDriftSummary,
+    fetchMcpTimeseries,
+    fetchRagTimeseries,
+    fetchToolTimeseries,
+  ]);
 
   // Refresh on relevant events
   useEffect(() => {
@@ -151,34 +188,50 @@ export const CompactDashboardPage: React.FC = () => {
     const types = new Set(relevant.map((e) => e.type));
 
     if (types.has('context_breakdown') || types.has('context_usage')) {
-      telemetry.fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-      telemetry.fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
+      fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
+      fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
     }
     if (types.has('latency')) {
-      telemetry.fetchLatencyStats(activeSessionId).then(setLatencyStats);
-      telemetry.fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
+      fetchLatencyStats(activeSessionId).then(setLatencyStats);
+      fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
     }
     if (types.has('cost') || types.has('token_usage')) {
-      telemetry.fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
-      telemetry.fetchCostTimeseries(activeSessionId).then(setCostTs);
+      fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
+      fetchCostTimeseries(activeSessionId).then(setCostTs);
     }
     if (types.has('tool_call_end') || types.has('tool_call')) {
-      telemetry.fetchToolTimeseries(activeSessionId).then(setToolTs);
+      fetchToolTimeseries(activeSessionId).then(setToolTs);
       setSessionEvents((prev) => [...prev, ...relevant]);
     }
     if (types.has('mcp_response')) {
-      telemetry.fetchMcpStats(activeSessionId).then(setMcpStats);
-      telemetry.fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+      fetchMcpStats(activeSessionId).then(setMcpStats);
+      fetchMcpTimeseries(activeSessionId).then(setMcpTs);
     }
     if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
-      telemetry.fetchRagStats(activeSessionId).then(setRagStats);
-      telemetry.fetchRagTimeseries(activeSessionId).then(setRagTs);
+      fetchRagStats(activeSessionId).then(setRagStats);
+      fetchRagTimeseries(activeSessionId).then(setRagTs);
     }
     if (types.has('drift')) {
-      telemetry.fetchDriftEvents(activeSessionId).then(setDriftEvents);
-      telemetry.fetchDriftSummary(activeSessionId).then(setDriftSummary);
+      fetchDriftEvents(activeSessionId).then(setDriftEvents);
+      fetchDriftSummary(activeSessionId).then(setDriftSummary);
     }
-  }, [events, activeSessionId, telemetry]);
+  }, [
+    events,
+    activeSessionId,
+    fetchContextSnapshots,
+    fetchLatestBreakdown,
+    fetchLatencyStats,
+    fetchLatencyTimeseries,
+    fetchCostBreakdown,
+    fetchCostTimeseries,
+    fetchToolTimeseries,
+    fetchMcpStats,
+    fetchMcpTimeseries,
+    fetchRagStats,
+    fetchRagTimeseries,
+    fetchDriftEvents,
+    fetchDriftSummary,
+  ]);
 
   // Compute KPIs
   const activeSession: SessionSummary | undefined = sessions.find(

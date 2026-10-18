@@ -47,8 +47,8 @@ describe('DashboardPage + useTelemetry', () => {
 });
 
 describe('CompactDashboardPage + useTelemetry', () => {
-  // Waits without act(): act() waits for React to go idle, which never happens while
-  // the page is stuck in the loop described below.
+  // Waits without act(), so a regression into a refetch loop fails the assertion
+  // instead of hanging act() forever.
   async function renderAndWatch(ms: number) {
     const g = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
     const previous = g.IS_REACT_ACT_ENVIRONMENT;
@@ -76,21 +76,11 @@ describe('CompactDashboardPage + useTelemetry', () => {
     }
   });
 
-  // BUG: CompactDashboardPage lists the whole `telemetry` object as an effect dependency.
-  // useTelemetry returns a fresh object every render, so the "load all session data" effect
-  // re-runs after every render; each fetch resolves into setState, which re-renders and
-  // fetches again: an unbounded request loop (~14 requests per cycle) for as long as the
-  // page is open. DashboardPage destructures the stable callbacks and does not loop (above).
-  it.failing('fetches each session endpoint a bounded number of times', async () => {
+  // useTelemetry returns a fresh object every render. The page depends on its stable
+  // callbacks, not the object, so the session data loads once instead of looping.
+  it('fetches each session endpoint a bounded number of times', async () => {
     const fetchMock = serve();
     await renderAndWatch(100);
     expect(callsTo(fetchMock, COST_URL)).toBeLessThanOrEqual(1);
-  });
-
-  it('documents the size of the refetch loop', async () => {
-    const fetchMock = serve();
-    await renderAndWatch(100);
-    // Remove this test (and flip the it.failing above) once the loop is fixed.
-    expect(callsTo(fetchMock, COST_URL)).toBeGreaterThan(5);
   });
 });
