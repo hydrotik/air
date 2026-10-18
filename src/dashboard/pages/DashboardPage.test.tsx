@@ -145,7 +145,7 @@ describe('DashboardPage', () => {
     expect(screen.getByText('11 ops')).toBeInTheDocument();
     // child panels receive the loaded data
     expect(screen.getByText('alpha')).toBeInTheDocument();
-    expect(screen.getByText('docs', { selector: 'td' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: 'docs' })).toBeInTheDocument();
   });
 
   it('maps the redaction level to a badge', () => {

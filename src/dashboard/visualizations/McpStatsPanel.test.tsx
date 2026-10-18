@@ -51,7 +51,9 @@ describe('McpStatsPanel', () => {
         .getAllByRole('cell')
         .map((c) => c.textContent)
     ).toEqual(['fs', 'tools/call', 'readFile', '14', '34ms', '4ms', '90ms', '2']);
-    expect(within(fs!).getAllByRole('cell')[7]).toHaveStyle({ color: '#ef4444' });
+    expect(within(within(fs!).getAllByRole('cell')[7]!).getByText('2')).toHaveStyle({
+      color: '#ef4444',
+    });
     expect(within(web!).getAllByRole('cell')[2]).toHaveTextContent('—');
   });
 });

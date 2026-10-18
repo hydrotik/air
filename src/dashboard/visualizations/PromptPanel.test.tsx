@@ -39,7 +39,7 @@ describe('PromptPanel', () => {
       '15%',
       '4.3 ★',
     ]);
-    expect(cells[7]).toHaveStyle({ color: '#ef4444' });
+    expect(within(cells[7]!).getByText('15%')).toHaveStyle({ color: '#ef4444' });
     expect(screen.getByText(/SHA-256 hash/)).toBeInTheDocument();
   });
 
