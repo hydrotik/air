@@ -108,19 +108,19 @@ This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/
 
 ```
 .claude/hooks/
-├── air-session-start.js     ← SessionStart hook
-└── air-post-tool-use.js     ← PostToolUse hook
+├── air-session-start.cjs     ← SessionStart hook
+└── air-post-tool-use.cjs     ← PostToolUse hook
 ```
 
 **What happens automatically:**
 
-- When Claude Code starts a session, `air-session-start.js` checks if the AIr server is running and starts it if needed
-- Every tool call triggers `air-post-tool-use.js`, which POSTs the event to AIr via HTTP
+- When Claude Code starts a session, `air-session-start.cjs` checks if the AIr server is running and starts it if needed
+- Every tool call triggers `air-post-tool-use.cjs`, which POSTs the event to AIr via HTTP
 - Session IDs are persisted to a temp file so events from the same session are correlated
 
 **Manual install** (if you prefer not to use the installer):
 
-1. Copy `session-start.js` and `post-tool-use.js` from `src/collectors/claude-code/` into `.claude/hooks/`
+1. Copy `session-start.cjs` and `post-tool-use.cjs` from `src/collectors/claude-code/` into `.claude/hooks/`
 2. Add to `.claude/settings.json`:
 
 ```json
@@ -131,7 +131,7 @@ This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/air-session-start.js"
+            "command": "node .claude/hooks/air-session-start.cjs"
           }
         ]
       }
@@ -141,7 +141,7 @@ This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/air-post-tool-use.js"
+            "command": "node .claude/hooks/air-post-tool-use.cjs"
           }
         ]
       }
@@ -1048,7 +1048,7 @@ Delete `~/.hydrotik/air/telemetry.db` to clear stale data, restart the server, t
 Check that `npm install` was run inside `.pi/extensions/ai-rum-collector/` (the `ws` package must be in `node_modules`). Run `/reload` in pi after fixing.
 
 **Claude Code hooks not firing**
-Verify `.claude/settings.json` has the hook entries under `hooks.SessionStart` and `hooks.PostToolUse`. Run `npx air-install-claude-code` again to re-install. Check that the hook scripts exist at `.claude/hooks/air-session-start.js` and `.claude/hooks/air-post-tool-use.js`.
+Verify `.claude/settings.json` has the hook entries under `hooks.SessionStart` and `hooks.PostToolUse`. Run `npx air-install-claude-code` again to re-install. Check that the hook scripts exist at `.claude/hooks/air-session-start.cjs` and `.claude/hooks/air-post-tool-use.cjs`.
 
 **Claude Code sessions not correlating**
 The SessionStart hook persists a session ID to `$TMPDIR/air-claude-code/session.json`. If PostToolUse events show up as separate sessions, check that the temp directory is writable and both hooks run in the same OS user context.

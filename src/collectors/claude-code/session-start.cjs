@@ -121,21 +121,6 @@ function persistSession(sessionId, data) {
   );
 }
 
-/**
- * Read persisted session (returns null if missing/stale).
- */
-function readSession() {
-  try {
-    if (!fs.existsSync(SESSION_FILE)) return null;
-    const data = JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8'));
-    // Expire after 24h
-    if (Date.now() - data.startedAt > 86400000) return null;
-    return data;
-  } catch {
-    return null;
-  }
-}
-
 let input = '';
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', (chunk) => (input += chunk));

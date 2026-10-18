@@ -13,13 +13,13 @@ This copies two hook scripts and updates `.claude/settings.json`:
 
 ```
 .claude/hooks/
-├── air-session-start.js     ← SessionStart hook (auto-starts AIr server)
-└── air-post-tool-use.js     ← PostToolUse hook (tool calls + context usage)
+├── air-session-start.cjs     ← SessionStart hook (auto-starts AIr server)
+└── air-post-tool-use.cjs     ← PostToolUse hook (tool calls + context usage)
 ```
 
 ## Manual Install
 
-1. Copy `session-start.js` and `post-tool-use.js` to `.claude/hooks/`
+1. Copy `session-start.cjs` and `post-tool-use.cjs` to `.claude/hooks/`
 2. Add to `.claude/settings.json`:
 
 ```json
@@ -30,7 +30,7 @@ This copies two hook scripts and updates `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/air-session-start.js"
+            "command": "node .claude/hooks/air-session-start.cjs"
           }
         ]
       }
@@ -40,7 +40,7 @@ This copies two hook scripts and updates `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/air-post-tool-use.js"
+            "command": "node .claude/hooks/air-post-tool-use.cjs"
           }
         ]
       }

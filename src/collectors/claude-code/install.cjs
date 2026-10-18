@@ -6,7 +6,10 @@
  *
  * Usage:
  *   npx air-install-claude-code        # install in current project
- *   node install.js                    # run directly
+ *   node install.cjs                   # run directly
+ *
+ * Everything here is CommonJS with a .cjs extension, so it runs the same whether
+ * or not the project it is installed into declares "type": "module".
  */
 
 const fs = require('fs');
@@ -21,7 +24,7 @@ fs.mkdirSync(hooksDir, { recursive: true });
 
 // Copy hook scripts
 const srcDir = __dirname;
-const hooks = ['session-start.js', 'post-tool-use.js'];
+const hooks = ['session-start.cjs', 'post-tool-use.cjs'];
 
 for (const hook of hooks) {
   const src = path.join(srcDir, hook);
@@ -38,9 +41,24 @@ if (fs.existsSync(settingsPath)) {
 
 if (!settings.hooks) settings.hooks = {};
 
+// Earlier versions installed the hooks as .js, which Node reads as ESM in a
+// "type": "module" project; point any such entry at the .cjs copies above.
+for (const entries of Object.values(settings.hooks)) {
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    for (const hook of entry.hooks ?? []) {
+      if (typeof hook.command === 'string') {
+        hook.command = hook.command.replace(
+          /(\.claude\/hooks\/air-(?:session-start|post-tool-use))\.js\b/,
+          '$1.cjs'
+        );
+      }
+    }
+  }
+}
+
 // Add SessionStart hook
 const sessionStartHook = {
-  hooks: [{ type: 'command', command: 'node .claude/hooks/air-session-start.js' }],
+  hooks: [{ type: 'command', command: 'node .claude/hooks/air-session-start.cjs' }],
 };
 if (!settings.hooks.SessionStart) {
   settings.hooks.SessionStart = [sessionStartHook];
@@ -56,7 +74,7 @@ if (!settings.hooks.SessionStart) {
 
 // Add PostToolUse hook
 const postToolHook = {
-  hooks: [{ type: 'command', command: 'node .claude/hooks/air-post-tool-use.js' }],
+  hooks: [{ type: 'command', command: 'node .claude/hooks/air-post-tool-use.cjs' }],
 };
 if (!settings.hooks.PostToolUse) {
   settings.hooks.PostToolUse = [postToolHook];
