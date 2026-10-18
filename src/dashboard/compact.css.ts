@@ -201,12 +201,12 @@ export const compactTickerSlot = style({
 
 // ─── Ticker Animation ───────────────────────────────────────────────────
 
-export const tickerEnterKeyframes = keyframes({
+const tickerEnterKeyframes = keyframes({
   from: { transform: 'translateY(100%)', opacity: 0 },
   to: { transform: 'translateY(0)', opacity: 1 },
 });
 
-export const tickerExitKeyframes = keyframes({
+const tickerExitKeyframes = keyframes({
   from: { transform: 'translateY(0)', opacity: 1 },
   to: { transform: 'translateY(-100%)', opacity: 0 },
 });

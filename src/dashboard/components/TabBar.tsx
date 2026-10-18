@@ -1,7 +1,7 @@
 import React from 'react';
 import { compactTabBar, compactTab, compactTabActive } from '../compact.css';
 
-export interface Tab {
+interface Tab {
   id: string;
   label: string;
 }
