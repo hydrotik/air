@@ -64,6 +64,11 @@ const dashboardProject = {
 /** @type {import('jest').Config} */
 const config = {
   projects: [nodeProject, dashboardProject],
+  // Coverage floor, checked by `test:coverage`: today's numbers rounded down.
+  // Raise it when coverage goes up; never lower it.
+  coverageThreshold: {
+    global: { statements: 93, branches: 83, functions: 96, lines: 94 },
+  },
 };
 
 export default config;

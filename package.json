@@ -74,6 +74,7 @@
     "start:detached": "node scripts/start-detached.mjs",
     "stop": "node scripts/start-detached.mjs --stop",
     "test": "jest --config jest.config.mjs",
+    "test:coverage": "jest --config jest.config.mjs --coverage",
     "test:watch": "jest --config jest.config.mjs --watch",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build && pnpm run test",
