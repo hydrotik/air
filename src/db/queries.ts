@@ -449,7 +449,7 @@ export class TelemetryStore {
 
   getSessions(limit = 50): SessionSummary[] {
     const rows = this.stmts.getSessions.all(limit) as SessionRow[];
-    return rows.map(this.rowToSummary);
+    return rows.map((row) => this.rowToSummary(row));
   }
 
   getSession(sessionId: string): SessionSummary | null {

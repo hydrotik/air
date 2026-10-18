@@ -497,7 +497,14 @@ async function replaySession(filePath) {
 // ─── Main ────────────────────────────────────────────────────────────────
 
 if (replayFile) {
-  replaySession(replayFile).then(() => process.exit(0));
+  replaySession(replayFile).then(
+    () => process.exit(0),
+    (err) => {
+      // e.g. an unreadable --replay file: report it and exit non-zero, not an unhandled rejection
+      console.error(`[AIr Codex] Replay failed: ${err instanceof Error ? err.message : err}`);
+      process.exit(1);
+    }
+  );
 } else {
   startWatching();
 }

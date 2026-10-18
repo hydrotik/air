@@ -38,7 +38,7 @@ export function DataGrid<TData>({ data, columns }: DataGridProps<TData>): React.
                 : undefined;
               return (
                 <td key={c.id}>
-                  {c.cell ? c.cell({ value, row: { original: row, index } }) : String(value ?? '')}
+                  {c.cell ? c.cell({ value, row: { original: row, index } }) : cellText(value)}
                 </td>
               );
             })}
@@ -47,4 +47,11 @@ export function DataGrid<TData>({ data, columns }: DataGridProps<TData>): React.
       </tbody>
     </table>
   );
+}
+
+/** Plain-text cell content: objects as JSON rather than `[object Object]`. */
+function cellText(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value as string | number | boolean | bigint | symbol);
 }

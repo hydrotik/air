@@ -4,7 +4,7 @@ import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { WebSocket } from 'ws';
+import type { RawData, WebSocket } from 'ws';
 import { getDb, TelemetryStore } from '../db';
 import type { TelemetryEvent, DashboardMessage, RedactionConfig } from '../shared/events';
 import { redactEvent, createRedactionConfig } from '../shared/redaction';
@@ -20,6 +20,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** A parsed query string: every parameter is optional and arrives as a string. */
 type QueryString = Record<string, string | undefined>;
+
+/** Decodes a ws frame: a Buffer, an ArrayBuffer, or a fragment list, depending on `binaryType`. */
+function rawDataToString(raw: RawData): string {
+  if (Array.isArray(raw)) return Buffer.concat(raw).toString('utf8');
+  if (Buffer.isBuffer(raw)) return raw.toString('utf8');
+  return Buffer.from(raw).toString('utf8');
+}
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
@@ -164,7 +171,7 @@ export async function createServer(
 
       socket.on('message', (raw) => {
         try {
-          const event: TelemetryEvent = JSON.parse(raw.toString());
+          const event: TelemetryEvent = JSON.parse(rawDataToString(raw));
           ingestAndBroadcast(event);
         } catch (err) {
           console.error('[AIr] Failed to parse collector event:', err);

@@ -59,7 +59,7 @@ export const ToolWaterfall: React.FC<Props> = ({ toolCalls }) => {
     const xAxis = d3
       .axisBottom(xScale)
       .ticks(5)
-      .tickFormat((d) => `${d}ms`);
+      .tickFormat((d) => `${d.valueOf()}ms`);
     svg
       .append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
