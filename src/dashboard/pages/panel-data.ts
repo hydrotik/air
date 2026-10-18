@@ -59,3 +59,23 @@ export function appendNewEvents<T extends { id: string }>(prev: T[], incoming: T
   const fresh = incoming.filter((e) => !seen.has(e.id));
   return fresh.length > 0 ? [...prev, ...fresh] : prev;
 }
+
+/**
+ * Resolves a panel fetch into its state setter. The fetch helpers in useTelemetry already
+ * turn network failures into empty fallbacks, so a rejection here is a bug in `apply` or in a
+ * helper; it is logged rather than left unhandled. `isCurrent` drops a response that arrives
+ * after the user has switched sessions, so one session's data never lands in another's panels.
+ */
+export function loadInto<T>(
+  request: Promise<T>,
+  apply: (value: T) => void,
+  isCurrent: () => boolean = () => true
+): void {
+  request
+    .then((value) => {
+      if (isCurrent()) apply(value);
+    })
+    .catch((err: unknown) => {
+      console.error('[AIr] Dashboard fetch failed', err);
+    });
+}

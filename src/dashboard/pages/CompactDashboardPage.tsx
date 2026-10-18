@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useTelemetry } from '../hooks/useTelemetry';
 import { TabBar } from '../components/TabBar';
 import { EventFeed } from '../components/EventFeed';
@@ -17,6 +17,7 @@ import { ProviderRegistryPanel } from '../visualizations/ProviderRegistryPanel';
 import type { TelemetryEvent, SessionSummary } from '../../shared/events';
 import {
   appendNewEvents,
+  loadInto,
   mapBreakdown,
   type ContextBreakdown,
   type ContextSnapshotRow,
@@ -142,24 +143,37 @@ export const CompactDashboardPage: React.FC = () => {
     setActiveSessionId(sessions[0].sessionId);
   }
 
+  // The session the panels currently show. A response for any other session is dropped,
+  // so a slow fetch for the previous session cannot overwrite the new one's panels.
+  const shownSessionRef = useRef(activeSessionId);
+  useEffect(() => {
+    shownSessionRef.current = activeSessionId;
+  }, [activeSessionId]);
+
   // Load all session data when active session changes
   useEffect(() => {
     if (!activeSessionId) return;
+    const sessionId = activeSessionId;
+    const isCurrent = () => shownSessionRef.current === sessionId;
 
-    fetchSessionEvents(activeSessionId).then(setSessionEvents);
-    fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-    fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
-    fetchMcpStats(activeSessionId).then(setMcpStats);
-    fetchRagStats(activeSessionId).then(setRagStats);
-    fetchLatencyStats(activeSessionId).then(setLatencyStats);
-    fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
-    fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
-    fetchCostTimeseries(activeSessionId).then(setCostTs);
-    fetchDriftEvents(activeSessionId).then(setDriftEvents);
-    fetchDriftSummary(activeSessionId).then(setDriftSummary);
-    fetchMcpTimeseries(activeSessionId).then(setMcpTs);
-    fetchRagTimeseries(activeSessionId).then(setRagTs);
-    fetchToolTimeseries(activeSessionId).then(setToolTs);
+    loadInto(fetchSessionEvents(activeSessionId), setSessionEvents, isCurrent);
+    loadInto(fetchContextSnapshots(activeSessionId), setContextSnapshots, isCurrent);
+    loadInto(
+      fetchLatestBreakdown(activeSessionId),
+      (d) => setBreakdown(mapBreakdown(d)),
+      isCurrent
+    );
+    loadInto(fetchMcpStats(activeSessionId), setMcpStats, isCurrent);
+    loadInto(fetchRagStats(activeSessionId), setRagStats, isCurrent);
+    loadInto(fetchLatencyStats(activeSessionId), setLatencyStats, isCurrent);
+    loadInto(fetchLatencyTimeseries(activeSessionId), setLatencyTs, isCurrent);
+    loadInto(fetchCostBreakdown(activeSessionId), setCostBreakdown, isCurrent);
+    loadInto(fetchCostTimeseries(activeSessionId), setCostTs, isCurrent);
+    loadInto(fetchDriftEvents(activeSessionId), setDriftEvents, isCurrent);
+    loadInto(fetchDriftSummary(activeSessionId), setDriftSummary, isCurrent);
+    loadInto(fetchMcpTimeseries(activeSessionId), setMcpTs, isCurrent);
+    loadInto(fetchRagTimeseries(activeSessionId), setRagTs, isCurrent);
+    loadInto(fetchToolTimeseries(activeSessionId), setToolTs, isCurrent);
   }, [
     activeSessionId,
     fetchSessionEvents,
@@ -181,39 +195,45 @@ export const CompactDashboardPage: React.FC = () => {
   // Refresh on relevant events
   useEffect(() => {
     if (!activeSessionId) return;
+    const sessionId = activeSessionId;
+    const isCurrent = () => shownSessionRef.current === sessionId;
     const relevant = events.filter((e) => e.sessionId === activeSessionId);
     if (relevant.length === 0) return;
 
     const types = new Set(relevant.map((e) => e.type));
 
     if (types.has('context_breakdown') || types.has('context_usage')) {
-      fetchContextSnapshots(activeSessionId).then(setContextSnapshots);
-      fetchLatestBreakdown(activeSessionId).then((d) => setBreakdown(mapBreakdown(d)));
+      loadInto(fetchContextSnapshots(activeSessionId), setContextSnapshots, isCurrent);
+      loadInto(
+        fetchLatestBreakdown(activeSessionId),
+        (d) => setBreakdown(mapBreakdown(d)),
+        isCurrent
+      );
     }
     if (types.has('latency')) {
-      fetchLatencyStats(activeSessionId).then(setLatencyStats);
-      fetchLatencyTimeseries(activeSessionId).then(setLatencyTs);
+      loadInto(fetchLatencyStats(activeSessionId), setLatencyStats, isCurrent);
+      loadInto(fetchLatencyTimeseries(activeSessionId), setLatencyTs, isCurrent);
     }
     if (types.has('cost') || types.has('token_usage')) {
-      fetchCostBreakdown(activeSessionId).then(setCostBreakdown);
-      fetchCostTimeseries(activeSessionId).then(setCostTs);
+      loadInto(fetchCostBreakdown(activeSessionId), setCostBreakdown, isCurrent);
+      loadInto(fetchCostTimeseries(activeSessionId), setCostTs, isCurrent);
     }
     if (types.has('tool_call_end') || types.has('tool_call')) {
-      fetchToolTimeseries(activeSessionId).then(setToolTs);
+      loadInto(fetchToolTimeseries(activeSessionId), setToolTs, isCurrent);
       // `events` is the whole rolling buffer, so append only the events not yet held.
       setSessionEvents((prev) => appendNewEvents(prev, relevant));
     }
     if (types.has('mcp_response')) {
-      fetchMcpStats(activeSessionId).then(setMcpStats);
-      fetchMcpTimeseries(activeSessionId).then(setMcpTs);
+      loadInto(fetchMcpStats(activeSessionId), setMcpStats, isCurrent);
+      loadInto(fetchMcpTimeseries(activeSessionId), setMcpTs, isCurrent);
     }
     if (types.has('rag_retrieval') || types.has('rag_embedding') || types.has('rag_index')) {
-      fetchRagStats(activeSessionId).then(setRagStats);
-      fetchRagTimeseries(activeSessionId).then(setRagTs);
+      loadInto(fetchRagStats(activeSessionId), setRagStats, isCurrent);
+      loadInto(fetchRagTimeseries(activeSessionId), setRagTs, isCurrent);
     }
     if (types.has('drift')) {
-      fetchDriftEvents(activeSessionId).then(setDriftEvents);
-      fetchDriftSummary(activeSessionId).then(setDriftSummary);
+      loadInto(fetchDriftEvents(activeSessionId), setDriftEvents, isCurrent);
+      loadInto(fetchDriftSummary(activeSessionId), setDriftSummary, isCurrent);
     }
   }, [
     events,
