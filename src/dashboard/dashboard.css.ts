@@ -7,7 +7,7 @@ globalStyle('html, body', {
   background: vars.color.background,
   color: vars.color.text,
   fontFamily: vars.font.family.sans,
-  fontSize: '13px',
+  fontSize: vars.font.size.control,
   lineHeight: '1.4',
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
@@ -27,7 +27,7 @@ export const header = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '6px 16px',
+  padding: `${vars.space['1_5']} ${vars.space['4']}`,
   borderBottom: `1px solid ${vars.color.border}`,
   background: vars.color.surface,
 });
@@ -35,13 +35,13 @@ export const header = style({
 export const headerLeft = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: vars.space['2'],
 });
 
 export const logo = style({
   fontFamily: vars.font.family.mono,
   fontWeight: 700,
-  fontSize: '13px',
+  fontSize: vars.font.size.control,
   letterSpacing: '0.5px',
   color: vars.color.primary,
 });
@@ -55,11 +55,11 @@ export const statusDot = style({
 
 export const main = style({
   flex: 1,
-  padding: '10px 12px',
+  padding: `${vars.space['2_5']} ${vars.space['3']}`,
   display: 'flex',
   flexDirection: 'column',
-  gap: '8px',
-  maxWidth: '1800px',
+  gap: vars.space['2'],
+  maxInlineSize: '112.5rem',
   width: '100%',
   margin: '0 auto',
   boxSizing: 'border-box',
@@ -68,12 +68,12 @@ export const main = style({
 export const kpiRow = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(6, 1fr)',
-  gap: '6px',
+  gap: vars.space['1_5'],
   '@media': {
-    '(max-width: 1200px)': {
+    '(max-width: 75rem)': {
       gridTemplateColumns: 'repeat(3, 1fr)',
     },
-    '(max-width: 768px)': {
+    '(max-width: 48rem)': {
       gridTemplateColumns: 'repeat(2, 1fr)',
     },
   },
@@ -83,7 +83,7 @@ export const kpiCard = style({
   background: vars.color.surface,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.md,
-  padding: '8px 10px',
+  padding: `${vars.space['2']} ${vars.space['2_5']}`,
   display: 'flex',
   flexDirection: 'column',
   gap: '1px',
@@ -91,7 +91,7 @@ export const kpiCard = style({
 
 export const kpiLabel = style({
   fontFamily: vars.font.family.mono,
-  fontSize: '9px',
+  fontSize: vars.font.size['3xs'],
   fontWeight: 500,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -100,7 +100,7 @@ export const kpiLabel = style({
 });
 
 export const kpiValue = style({
-  fontSize: '18px',
+  fontSize: vars.font.size.lg,
   fontWeight: 700,
   fontFamily: vars.font.family.mono,
   color: vars.color.text,
@@ -108,7 +108,7 @@ export const kpiValue = style({
 });
 
 export const kpiSub = style({
-  fontSize: '9px',
+  fontSize: vars.font.size['3xs'],
   color: vars.color.textMuted,
   fontFamily: vars.font.family.mono,
   lineHeight: 1,
@@ -117,9 +117,9 @@ export const kpiSub = style({
 export const gridRow = style({
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
-  gap: '8px',
+  gap: vars.space['2'],
   '@media': {
-    '(max-width: 1200px)': {
+    '(max-width: 75rem)': {
       gridTemplateColumns: '1fr',
     },
   },
@@ -133,10 +133,10 @@ export const panel = style({
 });
 
 export const panelHeader = style({
-  padding: '5px 10px',
+  padding: `0.3125rem ${vars.space['2_5']}`,
   borderBottom: `1px solid ${vars.color.border}`,
   fontFamily: vars.font.family.mono,
-  fontSize: '10px',
+  fontSize: '0.625rem',
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -148,24 +148,24 @@ export const panelHeader = style({
 });
 
 export const panelBody = style({
-  padding: '6px',
+  padding: vars.space['1_5'],
 });
 
 export const eventFeed = style({
-  maxHeight: '300px',
+  maxBlockSize: '18.75rem',
   overflowY: 'auto',
   display: 'flex',
   flexDirection: 'column',
   gap: '0px',
   fontFamily: vars.font.family.mono,
-  fontSize: '11px',
+  fontSize: vars.font.size['2xs'],
 });
 
 export const eventRow = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '6px',
-  padding: '2px 6px',
+  gap: vars.space['1_5'],
+  padding: `2px ${vars.space['1_5']}`,
   borderRadius: vars.radii.sm,
   transition: 'background 0.15s ease',
   ':hover': {
@@ -175,18 +175,18 @@ export const eventRow = style({
 
 export const eventTime = style({
   color: vars.color.textMuted,
-  fontSize: '9px',
+  fontSize: vars.font.size['3xs'],
   flexShrink: 0,
-  width: '60px',
+  inlineSize: '3.75rem',
   fontVariantNumeric: 'tabular-nums',
 });
 
 export const eventType = style({
   fontWeight: 600,
-  fontSize: '8px',
+  fontSize: '0.5rem',
   textTransform: 'uppercase',
   letterSpacing: '0.3px',
-  padding: '1px 4px',
+  padding: `1px ${vars.space['1']}`,
   borderRadius: vars.radii.sm,
   flexShrink: 0,
   lineHeight: 1.3,
@@ -198,18 +198,18 @@ export const eventDetail = style({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   flex: 1,
-  fontSize: '10px',
+  fontSize: '0.625rem',
 });
 
 export const treemapContainer = style({
   width: '100%',
-  minHeight: '200px',
+  minBlockSize: '12.5rem',
   position: 'relative',
 });
 
 export const waterfallContainer = style({
   width: '100%',
-  minHeight: '150px',
+  minBlockSize: '9.375rem',
 });
 
 export const emptyState = style({
@@ -217,12 +217,12 @@ export const emptyState = style({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '24px 16px',
+  padding: `${vars.space['6']} ${vars.space['4']}`,
   color: vars.color.textMuted,
   fontFamily: vars.font.family.mono,
-  fontSize: '12px',
+  fontSize: vars.font.size.xs,
   textAlign: 'center',
-  gap: '4px',
+  gap: vars.space['1'],
 });
 
 export const sessionList = style({
@@ -235,11 +235,11 @@ export const sessionItem = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '4px 8px',
+  padding: `${vars.space['1']} ${vars.space['2']}`,
   borderRadius: vars.radii.sm,
   cursor: 'pointer',
   transition: 'background 0.15s ease',
-  fontSize: '11px',
+  fontSize: vars.font.size['2xs'],
   ':hover': {
     background: `color-mix(in srgb, ${vars.color.primary} 8%, transparent)`,
   },

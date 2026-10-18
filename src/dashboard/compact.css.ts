@@ -14,10 +14,10 @@ export const compactHeader = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '4px 12px',
+  padding: `${vars.space['1']} ${vars.space['3']}`,
   borderBottom: `1px solid ${vars.color.border}`,
   background: vars.color.surface,
-  height: '32px',
+  blockSize: '2rem',
   flexShrink: 0,
   boxSizing: 'border-box',
 });
@@ -25,13 +25,13 @@ export const compactHeader = style({
 export const compactHeaderLeft = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: vars.space['2'],
 });
 
 export const compactHeaderRight = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: vars.space['2'],
 });
 
 // ─── Tab Bar ────────────────────────────────────────────────────────────
@@ -42,16 +42,16 @@ export const compactTabBar = style({
   borderBottom: `1px solid ${vars.color.border}`,
   background: vars.color.surface,
   flexShrink: 0,
-  height: '28px',
+  blockSize: '1.75rem',
   boxSizing: 'border-box',
 });
 
 export const compactTab = style({
   all: 'unset',
   cursor: 'pointer',
-  padding: '4px 12px',
+  padding: `${vars.space['1']} ${vars.space['3']}`,
   fontFamily: vars.font.family.mono,
-  fontSize: '10px',
+  fontSize: '0.625rem',
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -84,10 +84,10 @@ export const compactMain = style({
 export const compactTabContent = style({
   flex: 1,
   overflowY: 'auto',
-  padding: '6px 8px',
+  padding: `${vars.space['1_5']} ${vars.space['2']}`,
   display: 'flex',
   flexDirection: 'column',
-  gap: '4px',
+  gap: vars.space['1'],
 });
 
 // ─── KPI Row ────────────────────────────────────────────────────────────
@@ -95,9 +95,9 @@ export const compactTabContent = style({
 export const compactKpiRow = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(6, 1fr)',
-  gap: '4px',
+  gap: vars.space['1'],
   '@media': {
-    '(max-width: 900px)': {
+    '(max-width: 56.25rem)': {
       gridTemplateColumns: 'repeat(3, 1fr)',
     },
   },
@@ -107,7 +107,7 @@ export const compactKpiCard = style({
   background: vars.color.surface,
   border: `1px solid ${vars.color.border}`,
   borderRadius: vars.radii.sm,
-  padding: '5px 8px',
+  padding: `0.3125rem ${vars.space['2']}`,
   display: 'flex',
   flexDirection: 'column',
   gap: '1px',
@@ -115,7 +115,7 @@ export const compactKpiCard = style({
 
 export const compactKpiLabel = style({
   fontFamily: vars.font.family.mono,
-  fontSize: '8px',
+  fontSize: '0.5rem',
   fontWeight: 500,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -124,7 +124,7 @@ export const compactKpiLabel = style({
 });
 
 export const compactKpiValue = style({
-  fontSize: '16px',
+  fontSize: vars.font.size.md,
   fontWeight: 700,
   fontFamily: vars.font.family.mono,
   color: vars.color.text,
@@ -136,11 +136,11 @@ export const compactKpiValue = style({
 export const compactVizGrid = style({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
-  gap: '4px',
+  gap: vars.space['1'],
 });
 
 export const compactVizCell = style({
-  height: '150px',
+  blockSize: '9.375rem',
   overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
@@ -158,10 +158,10 @@ export const compactPanel = style({
 });
 
 export const compactPanelHeader = style({
-  padding: '3px 8px',
+  padding: `0.1875rem ${vars.space['2']}`,
   borderBottom: `1px solid ${vars.color.border}`,
   fontFamily: vars.font.family.mono,
-  fontSize: '9px',
+  fontSize: vars.font.size['3xs'],
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -176,7 +176,7 @@ export const compactPanelHeader = style({
 export const compactPanelBody = style({
   flex: 1,
   overflow: 'auto',
-  padding: '4px',
+  padding: vars.space['1'],
 });
 
 // ─── Two-Column Layout ──────────────────────────────────────────────────
@@ -184,7 +184,7 @@ export const compactPanelBody = style({
 export const compactTwoCol = style({
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
-  gap: '4px',
+  gap: vars.space['1'],
   flex: 1,
   overflow: 'hidden',
 });
@@ -192,7 +192,7 @@ export const compactTwoCol = style({
 // ─── Ticker Slot ────────────────────────────────────────────────────────
 
 export const compactTickerSlot = style({
-  height: '28px',
+  blockSize: '1.75rem',
   borderTop: `1px solid ${vars.color.border}`,
   flexShrink: 0,
   overflow: 'hidden',
@@ -212,12 +212,12 @@ export const tickerExitKeyframes = keyframes({
 });
 
 export const tickerContainer = style({
-  height: '28px',
+  blockSize: '1.75rem',
   overflow: 'hidden',
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
-  padding: '0 8px',
+  padding: `0 ${vars.space['2']}`,
 });
 
 export const tickerItem = style({
@@ -225,10 +225,10 @@ export const tickerItem = style({
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-  gap: '6px',
+  gap: vars.space['1_5'],
   fontFamily: vars.font.family.mono,
-  fontSize: '10px',
-  padding: '0 8px',
+  fontSize: '0.625rem',
+  padding: `0 ${vars.space['2']}`,
   boxSizing: 'border-box',
 });
 
@@ -246,10 +246,10 @@ export const compactEmptyState = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '16px',
+  padding: vars.space['4'],
   color: vars.color.textMuted,
   fontFamily: vars.font.family.mono,
-  fontSize: '11px',
+  fontSize: vars.font.size['2xs'],
   textAlign: 'center',
   flex: 1,
 });
@@ -259,10 +259,10 @@ export const compactEmptyState = style({
 export const compactSessionSummary = style({
   display: 'flex',
   alignItems: 'center',
-  gap: '12px',
-  padding: '4px 8px',
+  gap: vars.space['3'],
+  padding: `${vars.space['1']} ${vars.space['2']}`,
   fontFamily: vars.font.family.mono,
-  fontSize: '10px',
+  fontSize: '0.625rem',
   color: vars.color.textMuted,
   borderTop: `1px solid ${vars.color.border}`,
   flexShrink: 0,
