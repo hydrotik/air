@@ -86,4 +86,26 @@ describe('SessionSelector', () => {
     fireEvent.click(screen.getByText('anthropic/model-b'));
     expect(onSelect).toHaveBeenCalledWith('s2');
   });
+
+  it('exposes rows as pressed/unpressed buttons that Enter and Space select', () => {
+    const onSelect = jest.fn();
+    render(
+      <SessionSelector
+        sessions={[
+          makeSession({ sessionId: 's1', model: 'model-a' }),
+          makeSession({ sessionId: 's2', model: 'model-b' }),
+        ]}
+        activeSessionId="s1"
+        onSelect={onSelect}
+      />
+    );
+    const [rowA, rowB] = screen.getAllByRole('button');
+    expect(rowA).toHaveAttribute('aria-pressed', 'true');
+    expect(rowB).toHaveAttribute('aria-pressed', 'false');
+
+    fireEvent.keyDown(rowB!, { key: 'Enter' });
+    fireEvent.keyDown(rowA!, { key: ' ' });
+    fireEvent.keyDown(rowA!, { key: 'a' });
+    expect(onSelect.mock.calls).toEqual([['s2'], ['s1']]);
+  });
 });
