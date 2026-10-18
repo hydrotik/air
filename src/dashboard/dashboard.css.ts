@@ -136,7 +136,7 @@ export const panelHeader = style({
   padding: `0.3125rem ${vars.space['2_5']}`,
   borderBottom: `1px solid ${vars.color.border}`,
   fontFamily: vars.font.family.mono,
-  fontSize: '0.625rem',
+  fontSize: vars.text.micro,
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
@@ -198,7 +198,7 @@ export const eventDetail = style({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   flex: 1,
-  fontSize: '0.625rem',
+  fontSize: vars.text.micro,
 });
 
 export const treemapContainer = style({
