@@ -1,0 +1,231 @@
+# Release: build the server, collect the dashboard, publish @hydrotik/air to npm.
+#
+# Trigger: push a tag vX.Y.Z (or vX.Y.Z-pre.N, published under the `next` dist-tag), or run it by
+# hand on a tag ref (workflow_dispatch). A dry run (dry_run: true) may also run on a branch. See
+# docs/releasing.md. Versions change only through a pull request: this workflow never commits.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      dashboard_artifact_url:
+        description: URL of a prebuilt dashboard tarball (air-dashboard.tar.gz, containing dashboard/). Optional.
+        required: false
+        default: ''
+      dry_run:
+        description: Run npm publish with --dry-run (build and pack everything, publish nothing).
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      dist_tag: ${{ steps.v.outputs.dist_tag }}
+      dry_run: ${{ steps.v.outputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: v
+        name: Tag and packages/air/package.json must agree
+        shell: bash
+        env:
+          DRY_RUN_INPUT: ${{ github.event.inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          dry_run=false
+          if [ "${DRY_RUN_INPUT}" = "true" ]; then dry_run=true; fi
+          echo "dry_run=${dry_run}" >> "$GITHUB_OUTPUT"
+          pkg=$(node -p "require('./packages/air/package.json').version")
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [[ "${GITHUB_REF_NAME}" == v* ]]; then
+            tag="${GITHUB_REF_NAME#v}"
+          elif [ "$dry_run" = true ]; then
+            echo "::notice::dry run on ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: no tag to check, using packages/air/package.json (${pkg})"
+            tag="$pkg"
+          else
+            echo "::error::run this workflow on a tag ref vX.Y.Z, or pass dry_run (got ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME})"
+            exit 1
+          fi
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::version mismatch: tag ${tag}, packages/air/package.json ${pkg}"
+            exit 1
+          fi
+          if [[ "$tag" == *-* ]]; then dist_tag=next; else dist_tag=latest; fi
+          echo "version=${tag}" >> "$GITHUB_OUTPUT"
+          echo "dist_tag=${dist_tag}" >> "$GITHUB_OUTPUT"
+
+  test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/check-clean.mjs
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm typecheck
+
+  dashboard:
+    name: Dashboard
+    runs-on: ubuntu-latest
+    needs: verify
+    env:
+      # A git URL (credentials included) of the design-system monorepo the dashboard compiles
+      # from. Empty when the secret is not set: then a prebuilt dashboard must be supplied.
+      DS_SOURCE: ${{ secrets.AIR_DS_SOURCE }}
+      DS_REF: ${{ vars.AIR_DS_REF }}
+      DASHBOARD_URL: ${{ github.event.inputs.dashboard_artifact_url }}
+      DRY_RUN: ${{ needs.verify.outputs.dry_run }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: how
+        name: Choose the dashboard source
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "${DS_SOURCE}" ]; then
+            echo "mode=build" >> "$GITHUB_OUTPUT"
+          elif [ -n "${DASHBOARD_URL}" ]; then
+            echo "mode=url" >> "$GITHUB_OUTPUT"
+          elif gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --json assets --jq '.assets[].name' 2>/dev/null | grep -qx 'air-dashboard.tar.gz'; then
+            echo "mode=release" >> "$GITHUB_OUTPUT"
+          elif [ "${DRY_RUN}" = true ]; then
+            # Nothing is published in a dry run, so a placeholder lets every other job be checked.
+            echo "::warning::dry run without a dashboard source: packing a placeholder dashboard/index.html"
+            echo "mode=placeholder" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::no dashboard: set the AIR_DS_SOURCE secret, pass dashboard_artifact_url, or attach air-dashboard.tar.gz to the GitHub release ${GITHUB_REF_NAME} (see docs/releasing.md)"
+            exit 1
+          fi
+
+      # Mode build: compile the dashboard against a checkout of the design system.
+      - if: steps.how.outputs.mode == 'build'
+        uses: pnpm/action-setup@v6
+      - if: steps.how.outputs.mode == 'build'
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - if: steps.how.outputs.mode == 'build'
+        name: Build the dashboard
+        shell: bash
+        run: |
+          set -euo pipefail
+          ds="${RUNNER_TEMP}/design-system"
+          git clone --depth 1 ${DS_REF:+--branch "$DS_REF"} "${DS_SOURCE}" "$ds"
+          (cd "$ds" && pnpm install --frozen-lockfile)
+          pnpm install --frozen-lockfile
+          AIR_DS_SOURCE="$ds" pnpm build:dashboard
+
+      # Mode placeholder (dry run only): an index.html that says so.
+      - if: steps.how.outputs.mode == 'placeholder'
+        name: Write a placeholder dashboard
+        shell: bash
+        run: |
+          mkdir -p packages/air/dist/dashboard
+          echo '<!doctype html><title>AIr</title><p>Placeholder dashboard from a release dry run.</p>' > packages/air/dist/dashboard/index.html
+
+      # Modes url / release: unpack a prebuilt air-dashboard.tar.gz (top-level folder dashboard/).
+      - if: steps.how.outputs.mode == 'url' || steps.how.outputs.mode == 'release'
+        name: Fetch the prebuilt dashboard
+        shell: bash
+        run: |
+          set -euo pipefail
+          dl="${RUNNER_TEMP}/dashboard-download"
+          mkdir -p "$dl"
+          if [ "${{ steps.how.outputs.mode }}" = url ]; then
+            curl -fsSL --retry 3 -o "$dl/air-dashboard.tar.gz" "${DASHBOARD_URL}"
+          else
+            gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --pattern air-dashboard.tar.gz --dir "$dl"
+          fi
+          # Only dashboard/... entries, no absolute paths, no parent references.
+          tar tzf "$dl/air-dashboard.tar.gz" > "$dl/entries.txt"
+          outside=$(grep -Ev '^(\./)?dashboard(/|$)' "$dl/entries.txt" || true)
+          if [ -n "$outside" ] || grep -Eq '(^/|(^|/)\.\.(/|$))' "$dl/entries.txt"; then
+            echo "::error::air-dashboard.tar.gz must contain only a top-level dashboard/ folder"
+            exit 1
+          fi
+          mkdir -p packages/air/dist
+          rm -rf packages/air/dist/dashboard
+          tar xzf "$dl/air-dashboard.tar.gz" -C packages/air/dist --no-same-owner
+
+      - name: Check the dashboard
+        shell: bash
+        run: |
+          test -f packages/air/dist/dashboard/index.html || { echo "::error::packages/air/dist/dashboard/index.html is missing"; exit 1; }
+          node scripts/check-clean.mjs --path packages/air/dist/dashboard
+          find packages/air/dist/dashboard -type f | sort
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dashboard
+          path: packages/air/dist/dashboard
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    needs: [verify, test, dashboard]
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      DIST_TAG: ${{ needs.verify.outputs.dist_tag }}
+      DRY_RUN: ${{ needs.verify.outputs.dry_run == 'true' && '--dry-run' || '' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      # Trusted publishing: npm exchanges this job's OIDC identity for a short-lived publish token,
+      # so no npm token is stored anywhere. It needs npm 11.5.1 or later.
+      - run: npm install -g npm@^11.5.1 && npm --version
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # After the build: `pnpm build` empties dist/.
+      - uses: actions/download-artifact@v8
+        with:
+          name: dashboard
+          path: packages/air/dist/dashboard
+      - name: Pack and scan the package
+        shell: bash
+        working-directory: packages/air
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/pack"
+          mkdir -p "$out"
+          npm pack --pack-destination "$out"
+          tar xzf "$out"/*.tgz -C "$out"
+          node ../../scripts/check-clean.mjs --path "$out/package"
+          echo "files: $(find "$out/package" -type f | wc -l)"
+      - name: Publish @hydrotik/air
+        shell: bash
+        working-directory: packages/air
+        run: |
+          set -euo pipefail
+          if npm view "@hydrotik/air@${VERSION}" version >/dev/null 2>&1; then
+            echo "@hydrotik/air@${VERSION} is already published; skipping"
+          else
+            npm publish --provenance --access public --tag "$DIST_TAG" $DRY_RUN
+          fi
