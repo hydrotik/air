@@ -17,11 +17,15 @@ AIr is at 0.x. Fixes go into the latest release only.
 
 AIr is a developer tool that runs on your own machine.
 
-- **The server has no authentication.** Anything that can reach its port can read the stored
+- **The server has no authentication.** Any process that can reach its port can read the stored
   sessions and send events.
-- **It listens on all interfaces by default** (`--host 0.0.0.0`). On a shared network, start it
-  with `--host 127.0.0.1`.
-- **CORS allows any origin.** A web page open in a browser on the same machine can call the API.
+- **It listens on `127.0.0.1` by default.** `--host 0.0.0.0` (or `host` in `.air.json`) opens it
+  to other machines; use that only on a network you trust.
+- **It refuses other sites.** A request or WebSocket upgrade that carries an `Origin` header is
+  accepted only from loopback origins, from the server's own origin reached by IP address, or from
+  origins listed in `allowedOrigins` / `--allow-origin`; anything else gets `403`. A host _name_
+  matching the server is not enough, which blocks DNS rebinding. Requests without an `Origin`
+  header (collectors, the SDK, command-line tools) are accepted.
 - **Redaction.** Events are redacted before they are stored (`--redaction`, default `preview`:
   previews truncated, keys, tokens, emails and connection strings scrubbed). Prompts are stored as
   hashes. Redaction is pattern-based and is not a guarantee.

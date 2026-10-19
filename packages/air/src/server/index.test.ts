@@ -564,3 +564,59 @@ describe('WebSockets', () => {
     expect((await get('/api/health')).body.dashboardClients).toBe(0);
   });
 });
+
+describe('browser origins', () => {
+  const at = (url: string, origin: string, method: 'GET' | 'POST' = 'GET', payload?: object) =>
+    app.inject({
+      method,
+      url,
+      headers: { origin, host: 'localhost:5200' },
+      ...(payload ? { payload } : {}),
+    });
+
+  it('refuses reads and writes from another site, and stores nothing', async () => {
+    await boot();
+    const read = await at('/api/sessions', 'https://evil.example');
+    expect(read.statusCode).toBe(403);
+    expect(read.headers['access-control-allow-origin']).toBeUndefined();
+
+    const write = await at('/api/ingest', 'https://evil.example', 'POST', evt('heartbeat'));
+    expect(write.statusCode).toBe(403);
+    expect((await get('/api/sessions/sess-1/events')).body).toEqual([]);
+  });
+
+  it('serves loopback origins, such as the dashboard dev server, with CORS headers', async () => {
+    await boot();
+    const res = await at('/api/sessions', 'http://localhost:5201');
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5201');
+  });
+
+  it('refuses a preflight from another site', async () => {
+    await boot();
+    const res = await app.inject({
+      method: 'OPTIONS',
+      url: '/api/ingest',
+      headers: { origin: 'https://evil.example', 'access-control-request-method': 'POST' },
+    });
+    expect(res.statusCode).toBe(403);
+  });
+
+  it('accepts origins listed in the config or passed as options', async () => {
+    await boot({ redaction: { level: 'none' }, config: { allowedOrigins: ['https://a.example'] } });
+    expect((await at('/api/sessions', 'https://a.example')).statusCode).toBe(200);
+    await app.close();
+
+    await boot({ redaction: { level: 'none' }, config: {}, allowedOrigins: ['https://b.example'] });
+    expect((await at('/api/sessions', 'https://b.example')).statusCode).toBe(200);
+    expect((await at('/api/sessions', 'https://a.example')).statusCode).toBe(403);
+  });
+
+  it('refuses a WebSocket upgrade from another site', async () => {
+    await boot();
+    await expect(
+      app.injectWS('/ws/dashboard', { headers: { origin: 'https://evil.example' } })
+    ).rejects.toThrow('Unexpected server response: 403');
+    expect((await get('/api/health')).body.dashboardClients).toBe(0);
+  });
+});

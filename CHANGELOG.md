@@ -5,6 +5,16 @@ semantic versioning.
 
 ## Unreleased
 
+### Security
+
+- **The server listens on `127.0.0.1` by default** (was `0.0.0.0`). `--host 0.0.0.0` or `host`
+  in `.air.json` restores network access; the banner then says other machines can connect.
+- **Requests from other sites are refused.** REST calls, ingest and WebSocket upgrades that carry
+  an `Origin` header other than loopback or the server itself (by IP address) get `403`; CORS
+  headers go only to accepted origins. Collectors, the SDK and command-line clients send no
+  `Origin` and are unaffected. Add trusted origins with `allowedOrigins` in `.air.json` or
+  `--allow-origin`.
+
 ### Added
 
 - **Compact dashboard** (`?compact=true`): KPI row, tabs for overview, errors, sessions,

@@ -706,7 +706,9 @@ Create `.air.json` or `air.config.json` in your project root. AIr searches up to
   },
   "redaction": "preview",
   "budgetLimit": 10.0,
-  "port": 5200
+  "port": 5200,
+  "host": "127.0.0.1",
+  "allowedOrigins": []
 }
 ```
 
@@ -730,6 +732,20 @@ Telemetry persists to SQLite at `~/.hydrotik/air/telemetry.db` (WAL mode). Delet
 | 5201 | AIr dashboard (Vite dev server, proxies to 5200) |
 
 Set the server port with `--port` or `port` in `.air.json`.
+
+### Network access
+
+The server has no authentication. By default it listens on `127.0.0.1` only, and refuses
+browser requests and WebSocket connections from other sites:
+
+- Requests without an `Origin` header (collectors, the SDK, `curl`) are accepted.
+- Loopback origins (`localhost`, `127.0.0.1`, `[::1]`, any port) are accepted.
+- The server's own origin is accepted when it is reached by IP address.
+- Any other origin gets `403`, unless it is listed in `allowedOrigins` (`.air.json`) or
+  `--allow-origin https://a.example,https://b.example`.
+
+`--host 0.0.0.0` (or `"host"` in `.air.json`) lets other machines connect. Use it only on a
+network you trust.
 
 ---
 
