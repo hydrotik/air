@@ -1,2 +1,19 @@
+# Build output and tooling caches
+node_modules/
 dist/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Local data: AIr's SQLite store and anything a run writes
+*.db
+*.db-*
+*.sqlite
+
+# Local
+.DS_Store
+.idea/
+.vscode/
+.env*
 .desloppify/
+.clean-terms

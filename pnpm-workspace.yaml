@@ -1,0 +1,9 @@
+packages:
+  - packages/air
+  - packages/dashboard
+
+# Packages whose install scripts may run: better-sqlite3 builds its native binding, esbuild
+# fetches its binary.
+onlyBuiltDependencies:
+  - better-sqlite3
+  - esbuild
