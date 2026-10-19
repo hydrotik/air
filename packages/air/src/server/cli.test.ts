@@ -10,6 +10,7 @@ const mockLoadConfig = jest.fn();
 
 jest.mock('./index.js', () => ({ createServer: mockCreateServer }), { virtual: true });
 jest.mock('../shared/config.js', () => ({ loadConfig: mockLoadConfig }), { virtual: true });
+jest.mock('./origin.js', () => jest.requireActual('./origin'), { virtual: true });
 
 const originalArgv = process.argv;
 let logSpy: jest.SpyInstance;
@@ -44,13 +45,15 @@ afterEach(() => {
 });
 
 describe('air CLI', () => {
-  it('starts on port 5200, all interfaces, preview redaction by default', async () => {
+  it('starts on port 5200, loopback only, preview redaction by default', async () => {
     await runCli();
     expect(mockCreateServer).toHaveBeenCalledWith(5200, {
       redaction: { level: 'preview' },
       config: {},
+      allowedOrigins: [],
     });
-    expect(mockListen).toHaveBeenCalledWith({ port: 5200, host: '0.0.0.0' });
+    expect(mockListen).toHaveBeenCalledWith({ port: 5200, host: '127.0.0.1' });
+    expect(banner()).not.toContain('Listening:');
     expect(banner()).toContain('Dashboard:  http://localhost:5200');
     expect(banner()).toContain('Collector:  ws://localhost:5200/ws/collector');
     expect(banner()).toContain('PREVIEW');
@@ -58,12 +61,16 @@ describe('air CLI', () => {
   });
 
   it('honours --port, --host and --redaction', async () => {
-    await runCli(['--port', '8080', '--host', '127.0.0.1', '--redaction', 'full']);
+    await runCli(['--port', '8080', '--host', '0.0.0.0', '--redaction', 'full']);
     expect(mockCreateServer).toHaveBeenCalledWith(8080, {
       redaction: { level: 'full' },
       config: {},
+      allowedOrigins: [],
     });
-    expect(mockListen).toHaveBeenCalledWith({ port: 8080, host: '127.0.0.1' });
+    expect(mockListen).toHaveBeenCalledWith({ port: 8080, host: '0.0.0.0' });
+    expect(banner()).toContain(
+      'Listening:  0.0.0.0:8080 (other machines can connect; no authentication)'
+    );
     expect(banner()).toContain('http://localhost:8080/api/health');
     expect(banner()).toContain('FULL (all content stripped)');
   });
@@ -82,7 +89,25 @@ describe('air CLI', () => {
     const config = { port: 7000, redaction: 'full' as const };
     mockLoadConfig.mockReturnValue(config);
     await runCli();
-    expect(mockCreateServer).toHaveBeenCalledWith(7000, { redaction: { level: 'full' }, config });
+    expect(mockCreateServer).toHaveBeenCalledWith(7000, {
+      redaction: { level: 'full' },
+      config,
+      allowedOrigins: [],
+    });
+  });
+
+  it('takes the host from the config file when no flag is given', async () => {
+    mockLoadConfig.mockReturnValue({ host: '0.0.0.0' });
+    await runCli();
+    expect(mockListen).toHaveBeenCalledWith({ port: 5200, host: '0.0.0.0' });
+  });
+
+  it('passes --allow-origin values on as origins', async () => {
+    await runCli(['--allow-origin', 'https://a.example/x, http://b.example:8080']);
+    expect(mockCreateServer.mock.calls[0][1].allowedOrigins).toEqual([
+      'https://a.example',
+      'http://b.example:8080',
+    ]);
   });
 
   it('ranks redaction sources: flag > AIR_REDACTION_LEVEL > config file', async () => {

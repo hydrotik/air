@@ -72,6 +72,14 @@ export interface AirConfig {
   budgetLimit?: number;
   /** Port override */
   port?: number;
+  /** Interface to listen on (default 127.0.0.1; 0.0.0.0 for every interface) */
+  host?: string;
+  /**
+   * Browser origins allowed to call the server besides loopback and the server itself, e.g.
+   * `["https://dash.example.internal"]`. The server has no authentication: list only origins
+   * you trust.
+   */
+  allowedOrigins?: string[];
 }
 
 // ─── Config Loading ─────────────────────────────────────────────────────

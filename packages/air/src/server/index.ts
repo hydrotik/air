@@ -9,6 +9,7 @@ import { getDb, TelemetryStore } from '../db';
 import type { TelemetryEvent, DashboardMessage, RedactionConfig } from '../shared/events';
 import { redactEvent, createRedactionConfig } from '../shared/redaction';
 import { DriftDetector } from '../shared/drift';
+import { isAllowedOrigin } from './origin';
 import {
   loadConfig,
   type AirConfig,
@@ -34,7 +35,7 @@ function uid(): string {
 
 export async function createServer(
   port = 5200,
-  options?: { redaction?: RedactionConfig; config?: AirConfig }
+  options?: { redaction?: RedactionConfig; config?: AirConfig; allowedOrigins?: string[] }
 ) {
   const app = Fastify({ logger: false });
   const db = getDb();
@@ -67,6 +68,15 @@ export async function createServer(
   // Track connected dashboard clients for live broadcast
   const dashboardClients = new Set<WebSocket>();
 
+  // ─── Browser origins ──────────────────────────────────────────────────────
+  // No authentication, so pages from other sites are refused outright (REST, ingest and the
+  // WebSocket upgrades alike); CORS headers then go only to the origins that got through.
+  const allowedOrigins = [...(airConfig.allowedOrigins ?? []), ...(options?.allowedOrigins ?? [])];
+  app.addHook('onRequest', async (req, reply) => {
+    if (!isAllowedOrigin(req.headers.origin, req.headers.host, allowedOrigins)) {
+      return reply.code(403).send({ error: 'Origin not allowed' });
+    }
+  });
   await app.register(cors, { origin: true });
   await app.register(websocket);
 

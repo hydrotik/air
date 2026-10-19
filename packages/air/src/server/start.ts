@@ -4,7 +4,7 @@ const PORT = 5200;
 
 async function main() {
   const { app } = await createServer(PORT);
-  await app.listen({ port: PORT, host: '0.0.0.0' });
+  await app.listen({ port: PORT, host: '127.0.0.1' });
   console.log(`\n  ⚡ AIr server running on http://localhost:${PORT}`);
   console.log(`  📡 Collector: ws://localhost:${PORT}/ws/collector`);
   console.log(`  📊 Dashboard: ws://localhost:${PORT}/ws/dashboard`);
