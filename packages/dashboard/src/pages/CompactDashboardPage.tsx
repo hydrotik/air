@@ -279,7 +279,10 @@ export const CompactDashboardPage: React.FC = () => {
     const ctxPct = activeSession.contextUtilizationPct;
     const ctxColor = ctxPct >= 90 ? '#ef4444' : ctxPct >= 80 ? '#f59e0b' : '#ec4899';
 
-    const turnLatency = latencyStats.find((s) => s.operation === 'turn');
+    // Pi reports turn latency; Claude Code (OpenTelemetry) reports each API call.
+    const turnLatency =
+      latencyStats.find((s) => s.operation === 'turn') ??
+      latencyStats.find((s) => s.operation === 'api_call');
     const avgLatency = turnLatency ? `${Math.round(turnLatency.avg_ms)}ms` : '—';
 
     return {
