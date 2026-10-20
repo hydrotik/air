@@ -5,6 +5,7 @@ import type { TelemetryEvent } from '../shared/events';
 import { loadConfig } from '../shared/config';
 import { loadServerModule } from './__testing__/load-server';
 import MemoryDatabase from './__testing__/sqlite-memory';
+import { apiRequest, ccEvent, logsRequest, toolResult } from './__testing__/otlp-fixture';
 
 // Real schema + TelemetryStore, backed by an in-memory database
 jest.mock('better-sqlite3', () => jest.requireActual('./__testing__/sqlite-memory'));
@@ -142,6 +143,7 @@ describe('GET /api/health and /api/config', () => {
       uptime: expect.any(Number),
       dashboardClients: 0,
       redactionLevel: 'preview',
+      otlp: { logRecords: 0, mapped: 0, metricBatches: 0 },
     });
   });
 
@@ -618,5 +620,116 @@ describe('browser origins', () => {
       app.injectWS('/ws/dashboard', { headers: { origin: 'https://evil.example' } })
     ).rejects.toThrow('Unexpected server response: 403');
     expect((await get('/api/health')).body.dashboardClients).toBe(0);
+  });
+});
+
+describe('OTLP receiver (Claude Code OpenTelemetry)', () => {
+  const postOtlp = (
+    signal: 'logs' | 'metrics',
+    payload: unknown,
+    contentType = 'application/json'
+  ) =>
+    app.inject({
+      method: 'POST',
+      url: `/otlp/v1/${signal}`,
+      headers: { 'content-type': contentType },
+      payload:
+        typeof payload === 'string' || Buffer.isBuffer(payload) ? payload : JSON.stringify(payload),
+    });
+
+  const batch = () =>
+    logsRequest([
+      ccEvent(
+        'user_prompt',
+        { prompt_length: 92, prompt: '<REDACTED>' },
+        { sequence: 9, at: '2026-10-20T00:36:00.176Z' }
+      ),
+      apiRequest({}, { sequence: 12, at: '2026-10-20T00:36:04.765Z' }),
+      toolResult({}, { sequence: 13, at: '2026-10-20T00:36:04.770Z' }),
+      apiRequest(
+        { cost_usd: 0.0310146, output_tokens: 357 },
+        { sequence: 21, at: '2026-10-20T00:36:09.543Z' }
+      ),
+    ]);
+
+  it('turns a Claude Code log batch into a session with tokens, cost, turns and timed tools', async () => {
+    await boot();
+    const res = await postOtlp('logs', batch());
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({});
+
+    const session = (await get('/api/sessions/cc-session-1')).body;
+    expect(session).toMatchObject({
+      agent: 'claude-code',
+      model: 'claude-opus-5-5',
+      totalTokensIn: 4,
+      totalTokensOut: 480,
+      toolCallCount: 1,
+      turnCount: 2,
+    });
+    expect(session.totalCost).toBeCloseTo(0.0665244 + 0.0310146, 10);
+
+    const [tool] = (await get('/api/sessions/cc-session-1/tool-calls')).body;
+    expect(tool).toMatchObject({
+      tool_name: 'Read',
+      duration_ms: 11,
+      input_bytes: 146,
+      output_bytes: 534,
+    });
+
+    const health = (await get('/api/health')).body;
+    expect(health.otlp).toEqual({ logRecords: 4, mapped: 4, metricBatches: 0 });
+  });
+
+  it('counts a retried batch once', async () => {
+    await boot();
+    await postOtlp('logs', batch());
+    await postOtlp('logs', batch());
+
+    const session = (await get('/api/sessions/cc-session-1')).body;
+    expect(session).toMatchObject({ totalTokensIn: 4, toolCallCount: 1, turnCount: 2 });
+    expect(session.totalCost).toBeCloseTo(0.0665244 + 0.0310146, 10);
+  });
+
+  it('keeps the folder a hook reported, whichever arrives first', async () => {
+    await boot();
+    await postOtlp('logs', batch());
+    await post('/api/ingest', {
+      ...evt('session_start'),
+      sessionId: 'cc-session-1',
+      cwd: '/work/app',
+      model: 'claude',
+      provider: 'anthropic',
+      agent: 'claude-code',
+    });
+    expect((await get('/api/sessions/cc-session-1')).body).toMatchObject({
+      cwd: '/work/app',
+      model: 'claude-opus-5-5',
+      agent: 'claude-code',
+    });
+  });
+
+  it('stores no identity attributes', async () => {
+    await boot();
+    await postOtlp('logs', batch());
+    const events = (await get('/api/sessions/cc-session-1/events')).body;
+    expect(events.length).toBeGreaterThan(0);
+    expect(JSON.stringify(events)).not.toMatch(/someone@example\.test|acct-uuid-0001|org-0001/);
+  });
+
+  it('accepts metrics without storing them', async () => {
+    await boot();
+    const res = await postOtlp('metrics', { resourceMetrics: [] });
+    expect(res.statusCode).toBe(200);
+    expect((await get('/api/health')).body.otlp.metricBatches).toBe(1);
+  });
+
+  it('answers protobuf with 415 and what to change', async () => {
+    await boot();
+    for (const signal of ['logs', 'metrics'] as const) {
+      const res = await postOtlp(signal, Buffer.from([0x0a, 0x00]), 'application/x-protobuf');
+      expect(res.statusCode).toBe(415);
+      expect(res.json().error).toContain('OTEL_EXPORTER_OTLP_PROTOCOL=http/json');
+    }
   });
 });

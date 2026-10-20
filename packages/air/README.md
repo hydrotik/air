@@ -116,6 +116,36 @@ This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/
 - Every tool call triggers `air-post-tool-use.cjs`, which POSTs the event to AIr via HTTP
 - Session IDs are persisted to a temp file so events from the same session are correlated
 
+**Tokens, cost, latency and compaction (OpenTelemetry).** The hooks see sessions and tool
+calls only. Claude Code's own OpenTelemetry export carries the rest: every API request's model,
+input / output / cache tokens, cost, duration and time to first token, each tool's real duration,
+refused tool calls, API errors and compactions. Point it at AIr in the project's (or your user)
+`.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+    "OTEL_LOGS_EXPORTER": "otlp",
+    "OTEL_METRICS_EXPORTER": "otlp",
+    "OTEL_EXPORTER_OTLP_PROTOCOL": "http/json",
+    "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:5200/otlp",
+    "OTEL_LOGS_EXPORT_INTERVAL": "2000"
+  }
+}
+```
+
+- Keep the SessionStart hook (it reports the project folder) and remove the **PostToolUse** hook:
+  telemetry reports every tool call, and both together count each call twice.
+- JSON only: `http/protobuf` is answered with `415`.
+- Claude Code redacts prompt and response text unless `OTEL_LOG_USER_PROMPTS=1`; AIr stores
+  lengths only either way. The account attributes Claude Code attaches to every event
+  (`user.email`, `user.account_uuid`, `organization.id`, …) are never stored.
+- Context % is the last request's prompt size (input + cache reads + cache writes) against a
+  200k window (1M for `[1m]` models). The per-category context breakdown is not part of the
+  export, so that panel stays empty for Claude Code.
+- `GET /api/health` reports what the receiver has seen (`otlp.logRecords`, `otlp.mapped`).
+
 **Manual install** (if you prefer not to use the installer):
 
 1. Copy `session-start.cjs` and `post-tool-use.cjs` from `src/collectors/claude-code/` into `.claude/hooks/`
