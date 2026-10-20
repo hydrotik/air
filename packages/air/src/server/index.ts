@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyRequest } from 'fastify';
 import websocket from '@fastify/websocket';
 import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
@@ -10,6 +10,7 @@ import type { TelemetryEvent, DashboardMessage, RedactionConfig } from '../share
 import { redactEvent, createRedactionConfig } from '../shared/redaction';
 import { DriftDetector } from '../shared/drift';
 import { isAllowedOrigin } from './origin';
+import { ClaudeCodeOtlpMapper, type OtlpLogsRequest } from './otlp';
 import {
   loadConfig,
   type AirConfig,
@@ -109,8 +110,8 @@ export async function createServer(
     // Step 1: Redact before storage
     const event = redactEvent(rawEvent, redactionConfig);
 
-    // Step 2: Persist
-    store.ingestEvent(event);
+    // Step 2: Persist. A re-delivered event (same id) stops here: no drift check, no broadcast.
+    if (!store.ingestEvent(event)) return;
 
     // Step 3: Check for drift — ingest any drift events too
     const driftAlerts = driftDetector.checkEvent(event);
@@ -499,12 +500,44 @@ export async function createServer(
     }
   });
 
+  // ─── OpenTelemetry (OTLP/HTTP, JSON) ──────────────────────────────────
+  // Claude Code: OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5200/otlp with
+  // OTEL_EXPORTER_OTLP_PROTOCOL=http/json. The exporter appends /v1/logs and /v1/metrics.
+  const otlpMapper = new ClaudeCodeOtlpMapper();
+  // Read protobuf bodies as raw bytes so the routes can answer with what to change.
+  app.addContentTypeParser('application/x-protobuf', { parseAs: 'buffer' }, (_req, body, done) =>
+    done(null, body)
+  );
+  const otlpStats = { logRecords: 0, mapped: 0, metricBatches: 0 };
+  const isJson = (req: FastifyRequest) => (req.headers['content-type'] ?? '').includes('json');
+  const otlpUnsupported = {
+    error: 'Only OTLP/HTTP with JSON is supported: set OTEL_EXPORTER_OTLP_PROTOCOL=http/json',
+  };
+
+  app.post('/otlp/v1/logs', async (req, reply) => {
+    if (!isJson(req)) return reply.code(415).send(otlpUnsupported);
+    const { events, records, mapped } = otlpMapper.mapLogs(req.body as OtlpLogsRequest);
+    for (const event of events) ingestAndBroadcast(event);
+    otlpStats.logRecords += records;
+    otlpStats.mapped += mapped;
+    return {};
+  });
+
+  // Claude Code's metrics repeat what its log events carry: accepted so the exporter does not
+  // retry, counted, not stored.
+  app.post('/otlp/v1/metrics', async (req, reply) => {
+    if (!isJson(req)) return reply.code(415).send(otlpUnsupported);
+    otlpStats.metricBatches++;
+    return {};
+  });
+
   // ─── Server Info ──────────────────────────────────────────────────────
   app.get('/api/health', async () => ({
     status: 'ok',
     uptime: process.uptime(),
     dashboardClients: dashboardClients.size,
     redactionLevel: redactionConfig.level,
+    otlp: otlpStats,
   }));
 
   app.get('/api/config', async () => ({

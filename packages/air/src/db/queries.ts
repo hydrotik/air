@@ -92,13 +92,22 @@ export class TelemetryStore {
       upsertSession: this.db.prepare(`
         INSERT INTO sessions (session_id, start_time, last_event, cwd, model, provider, agent)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(session_id) DO UPDATE SET last_event = excluded.last_event
+        ON CONFLICT(session_id) DO UPDATE SET
+          -- Batches arrive out of order: last activity never moves backwards.
+          last_event = MAX(sessions.last_event, excluded.last_event),
+          -- Collectors report a session in pieces (a hook knows the folder, telemetry the
+          -- model): a later event fills what an earlier one left blank, and never overwrites.
+          cwd = COALESCE(NULLIF(sessions.cwd, ''), NULLIF(excluded.cwd, ''), sessions.cwd),
+          model = COALESCE(NULLIF(sessions.model, ''), NULLIF(excluded.model, ''), sessions.model),
+          provider = COALESCE(NULLIF(sessions.provider, ''), NULLIF(excluded.provider, ''), sessions.provider),
+          agent = CASE WHEN sessions.agent IS NULL OR sessions.agent IN ('', 'unknown')
+                       THEN excluded.agent ELSE sessions.agent END
       `),
       updateSessionModel: this.db.prepare(`
         UPDATE sessions SET model = ?, provider = ? WHERE session_id = ?
       `),
       insertEvent: this.db.prepare(`
-        INSERT OR REPLACE INTO events (id, session_id, timestamp, type, data)
+        INSERT OR IGNORE INTO events (id, session_id, timestamp, type, data)
         VALUES (?, ?, ?, ?, ?)
       `),
       insertToolStart: this.db.prepare(`
@@ -205,7 +214,8 @@ export class TelemetryStore {
     };
   }
 
-  ingestEvent(event: TelemetryEvent): void {
+  /** Stores an event and applies its counters. Returns false for an id already stored. */
+  ingestEvent(event: TelemetryEvent): boolean {
     // Ensure session row exists before inserting event (FK constraint)
     if (event.type === 'session_start') {
       const e = event as SessionStartEvent;
@@ -231,14 +241,16 @@ export class TelemetryStore {
       );
     }
 
-    // Store raw event
-    this.stmts.insertEvent.run(
+    // Store raw event. An id already stored is a re-delivery (a collector or exporter retrying):
+    // its counters were applied the first time, so stop here.
+    const stored = this.stmts.insertEvent.run(
       event.id,
       event.sessionId,
       event.timestamp,
       event.type,
       JSON.stringify(event)
     );
+    if (stored.changes === 0) return false;
 
     switch (event.type) {
       case 'session_start':
@@ -301,7 +313,9 @@ export class TelemetryStore {
       }
       case 'token_usage': {
         const e = event as TokenUsageEvent;
-        this.stmts.addTokens.run(e.input, e.output, e.cost.total, e.sessionId);
+        // Cost is counted from `cost` events only: collectors send one alongside token_usage,
+        // and counting both doubled the session's total.
+        this.stmts.addTokens.run(e.input, e.output, 0, e.sessionId);
         break;
       }
       case 'context_usage': {
@@ -443,6 +457,7 @@ export class TelemetryStore {
       default:
         break;
     }
+    return true;
   }
 
   // ─── Session Queries ─────────────────────────────────────────────────

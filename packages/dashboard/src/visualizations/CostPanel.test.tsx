@@ -39,6 +39,22 @@ describe('CostPanel', () => {
     expect(cells).toEqual(['opus', '12', '$1.50', '$0.046', '$0.0050', '$1.55']);
   });
 
+  it('shows a dash for the split when a source reports only the total', () => {
+    const totalOnly = {
+      ...breakdownRow,
+      total_input_cost: 0,
+      total_output_cost: 0,
+      total_cache_read_cost: 0,
+      total_cache_write_cost: 0,
+      total_cost: 0.1282,
+    };
+    render(<CostPanel breakdown={[totalOnly]} timeseries={[]} />);
+    const cells = within(screen.getAllByRole('row')[1]!)
+      .getAllByRole('cell')
+      .map((c) => c.textContent);
+    expect(cells).toEqual(['opus', '12', '—', '—', '—', '$0.128']);
+  });
+
   it('hides the table in compact mode', () => {
     render(<CostPanel breakdown={[breakdownRow]} timeseries={[]} compact />);
     expect(screen.queryByRole('table')).toBeNull();

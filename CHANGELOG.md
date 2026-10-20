@@ -3,6 +3,28 @@
 All notable changes are listed here. The format follows Keep a Changelog, and versions follow
 semantic versioning.
 
+## Unreleased
+
+### Added
+
+- **OpenTelemetry receiver for Claude Code** (`POST /otlp/v1/logs`, `/otlp/v1/metrics`; OTLP/HTTP
+  with JSON). Each API request becomes tokens, cost, latency (with time to first token), context %
+  and a turn; each tool result a timed tool call; refused tool calls, API errors and compactions
+  are recorded. Identity attributes are dropped; events keyed on `session.id` and
+  `event.sequence`, so exporter retries are stored once. Setup in the README.
+
+### Fixed
+
+- **Session cost was counted twice** for collectors that send `token_usage` with a cost and a
+  `cost` event (the Pi collector): the session total now comes from `cost` events only.
+- **Re-delivered events** (same id) are stored once and no longer add to tokens, cost, turns or
+  tool counts again, and are not re-broadcast.
+- **Session details arriving late** (a SessionStart hook after telemetry, or the reverse) now fill
+  in the folder, model and agent instead of being dropped; last activity no longer moves back on
+  an out-of-order event.
+- Dashboard: Avg latency uses API-call latency when no turn latency is reported; the cost table
+  shows a dash for input / output / cache when a source reports only the total.
+
 ## 0.2.0 - 2026-10-19
 
 ### Security

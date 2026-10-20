@@ -42,6 +42,19 @@ interface Props {
 
 const font = "'JetBrains Mono', monospace";
 
+/** Some sources (Claude Code) report only a request's total: no split to show. */
+function hasSplit(row: CostBreakdown): boolean {
+  return (
+    row.total_input_cost +
+      row.total_output_cost +
+      row.total_cache_read_cost +
+      row.total_cache_write_cost >
+      0 || row.total_cost === 0
+  );
+}
+
+const NO_SPLIT = <span style={{ color: 'rgba(255,255,255,0.35)' }}>—</span>;
+
 function formatCost(n: number): string {
   if (n >= 1) return `$${n.toFixed(2)}`;
   if (n >= 0.01) return `$${n.toFixed(3)}`;
@@ -87,7 +100,12 @@ const columns: ColumnDef<CostBreakdown>[] = [
     accessorKey: 'total_input_cost',
     size: 72,
     align: 'right',
-    cell: ({ value }) => <span style={{ color: '#3b82f6' }}>{formatCost(value as number)}</span>,
+    cell: ({ row, value }) =>
+      hasSplit(row.original) ? (
+        <span style={{ color: '#3b82f6' }}>{formatCost(value as number)}</span>
+      ) : (
+        NO_SPLIT
+      ),
   },
   {
     id: 'output',
@@ -95,7 +113,12 @@ const columns: ColumnDef<CostBreakdown>[] = [
     accessorKey: 'total_output_cost',
     size: 72,
     align: 'right',
-    cell: ({ value }) => <span style={{ color: '#f97316' }}>{formatCost(value as number)}</span>,
+    cell: ({ row, value }) =>
+      hasSplit(row.original) ? (
+        <span style={{ color: '#f97316' }}>{formatCost(value as number)}</span>
+      ) : (
+        NO_SPLIT
+      ),
   },
   {
     id: 'cache',
@@ -103,11 +126,14 @@ const columns: ColumnDef<CostBreakdown>[] = [
     accessorFn: (row) => row.total_cache_read_cost + row.total_cache_write_cost,
     size: 72,
     align: 'right',
-    cell: ({ row }) => (
-      <span style={{ color: '#10b981' }}>
-        {formatCost(row.original.total_cache_read_cost + row.original.total_cache_write_cost)}
-      </span>
-    ),
+    cell: ({ row }) =>
+      hasSplit(row.original) ? (
+        <span style={{ color: '#10b981' }}>
+          {formatCost(row.original.total_cache_read_cost + row.original.total_cache_write_cost)}
+        </span>
+      ) : (
+        NO_SPLIT
+      ),
   },
   {
     id: 'total',

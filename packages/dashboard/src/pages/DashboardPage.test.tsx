@@ -91,6 +91,27 @@ describe('DashboardPage', () => {
     expect(screen.queryByText('No telemetry data yet')).toBeNull();
   });
 
+  it('takes Avg Latency from API calls when no turn latency is reported (Claude Code)', async () => {
+    const apiCallsOnly = {
+      ...fullData,
+      latencyStats: [
+        {
+          operation: 'api_call',
+          sample_count: 3,
+          avg_ms: 3510.2,
+          min_ms: 2779,
+          max_ms: 4407,
+          avg_ttft_ms: 1428,
+          model: 'claude-opus-5-5',
+          provider: 'anthropic',
+        },
+      ],
+    };
+    useTelemetryMock.mockReturnValue(mockTelemetry({ sessions: [makeSession()] }, apiCallsOnly));
+    render(<DashboardPage />);
+    await waitFor(() => expect(kpi('Avg Latency')).toBe('3510ms'));
+  });
+
   it('computes KPIs from the session summary and loaded stats', async () => {
     useTelemetryMock.mockReturnValue(
       mockTelemetry({ sessions: [makeSession({ contextUtilizationPct: 85 })] }, fullData)

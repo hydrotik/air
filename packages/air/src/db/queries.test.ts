@@ -112,11 +112,9 @@ describe('sessions', () => {
     expect(store.getSession('s-1')).toMatchObject({ startTime: 100, lastEventTime: 250 });
   });
 
-  // BUG (queries.ts:53-57): the upsert's ON CONFLICT clause only updates
-  // last_event, so when any event beats session_start to the store (common with
-  // HTTP + WS collectors), the session keeps the placeholder cwd/model/provider
-  // and agent='unknown' forever.
-  it.failing('fills session metadata when session_start arrives after another event', () => {
+  // Any event can beat session_start to the store (HTTP hooks and OTLP batches race):
+  // the later session_start still fills in the folder, model and agent.
+  it('fills session metadata when session_start arrives after another event', () => {
     ingest('turn_start', { timestamp: 90, turnIndex: 0 });
     startSession({ timestamp: 100 });
 
@@ -128,10 +126,7 @@ describe('sessions', () => {
     });
   });
 
-  // BUG (queries.ts:56): last_event = excluded.last_event unconditionally, so an
-  // out-of-order (older) event moves the session's last activity backwards and
-  // reorders getSessions(). It should be MAX(last_event, excluded.last_event).
-  it.failing('does not move last_event backwards on an out-of-order event', () => {
+  it('does not move last_event backwards on an out-of-order event', () => {
     startSession({ timestamp: 100 });
     ingest('turn_start', { timestamp: 500, turnIndex: 0 });
     ingest('turn_start', { timestamp: 300, turnIndex: 1 });
@@ -174,7 +169,8 @@ describe('sessions', () => {
     expect(store.getSession('s-1')).toMatchObject({ turnCount: 2, compactionCount: 1 });
   });
 
-  it('token_usage accumulates tokens and cost across events', () => {
+  // Cost comes from `cost` events only (collectors send one with every token_usage).
+  it('token_usage accumulates tokens, not cost, across events', () => {
     startSession();
     const usage = (input: number, output: number, total: number) =>
       ingest('token_usage', {
@@ -193,14 +189,11 @@ describe('sessions', () => {
     const s = store.getSession('s-1')!;
     expect(s.totalTokensIn).toBe(1500);
     expect(s.totalTokensOut).toBe(250);
-    expect(s.totalCost).toBeCloseTo(0.015, 10);
+    expect(s.totalCost).toBe(0);
   });
 
-  // BUG (queries.ts:62 vs 204-406): events use INSERT OR REPLACE, so a
-  // re-delivered event (same id) is de-duplicated in the events table, but
-  // every counter side-effect (tokens, cost, turns, tool calls, snapshots) is
-  // applied again, inflating session totals on any collector retry.
-  it.failing('re-delivering the same event id does not double-count session totals', () => {
+  // Collectors and OTLP exporters retry: a re-delivered id is stored once and counted once.
+  it('re-delivering the same event id does not double-count session totals', () => {
     startSession();
     const event = {
       id: 'dup',
@@ -216,11 +209,11 @@ describe('sessions', () => {
       model: 'm',
       provider: 'p',
     } as unknown as TelemetryEvent;
-    store.ingestEvent(event);
-    store.ingestEvent(event);
+    expect(store.ingestEvent(event)).toBe(true);
+    expect(store.ingestEvent(event)).toBe(false);
 
     expect(count('events')).toBe(2); // session_start + one token_usage
-    expect(store.getSession('s-1')).toMatchObject({ totalTokensIn: 100, totalCost: 1 });
+    expect(store.getSession('s-1')).toMatchObject({ totalTokensIn: 100, totalTokensOut: 10 });
   });
 });
 
@@ -752,7 +745,7 @@ describe('cost', () => {
       ...fields,
     });
 
-  it('records a snapshot and adds totalCost to the session (on top of token_usage cost)', () => {
+  it('records a snapshot and adds totalCost to the session (token_usage cost is not added)', () => {
     ingest('token_usage', {
       input: 1,
       output: 1,
@@ -765,7 +758,7 @@ describe('cost', () => {
     });
     cost({ budgetLimit: 5, budgetExceeded: true });
 
-    expect(store.getSession('s-1')!.totalCost).toBeCloseTo(1.33, 10);
+    expect(store.getSession('s-1')!.totalCost).toBeCloseTo(0.33, 10);
     expect(db.prepare(`SELECT budget_limit, budget_exceeded FROM cost_snapshots`).get()).toEqual({
       budget_limit: 5,
       budget_exceeded: 1,
