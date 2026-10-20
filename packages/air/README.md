@@ -119,8 +119,11 @@ This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/
 **Tokens, cost, latency and compaction (OpenTelemetry).** The hooks see sessions and tool
 calls only. Claude Code's own OpenTelemetry export carries the rest: every API request's model,
 input / output / cache tokens, cost, duration and time to first token, each tool's real duration,
-refused tool calls, API errors and compactions. Point it at AIr in the project's (or your user)
-`.claude/settings.json`:
+refused tool calls, API errors and compactions. Point it at AIr in your **user** settings,
+`~/.claude/settings.json` (or your shell environment). Claude Code ignores these variables in a
+project's `.claude/settings.json` and `.claude/settings.local.json`, so that a repository cannot
+turn telemetry on or redirect it; set this way, every Claude Code session on the machine reports
+to AIr:
 
 ```json
 {
