@@ -96,28 +96,32 @@ Then `/reload` in pi. The extension auto-discovers and streams tool calls, turns
 
 #### Claude Code
 
-One command installs the hooks:
+One command, in the project folder:
 
 ```bash
-npx air-install-claude-code
+npx @hydrotik/air setup claude-code
 ```
 
-This copies two hook scripts into `.claude/hooks/` and wires them into `.claude/settings.json`:
+It prints every change it makes, and writes to two places:
 
-```
-.claude/hooks/
-├── air-session-start.cjs     ← SessionStart hook
-└── air-post-tool-use.cjs     ← PostToolUse hook
-```
+| Where                             | What                                                                               | Why                                                                                                                                                                                                                                              |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `~/.claude/settings.json`         | `env`: Claude Code's OpenTelemetry export, pointed at `http://localhost:5200/otlp` | Per-request model, tokens, cost, latency, time to first token; tool durations; refused tools; API errors; compaction. Claude Code reads these variables from user settings only, so **every Claude Code session on this machine reports to AIr** |
+| `.claude/settings.json` (project) | SessionStart hook                                                                  | The session's folder; starts the AIr server when it is down                                                                                                                                                                                      |
+| `.claude/settings.json` (project) | Status line bridge                                                                 | Exact context-window size and use. An existing status line keeps showing: the bridge runs it                                                                                                                                                     |
+| `.claude/hooks/`                  | `air-session-start.cjs`, `air-statusline.cjs`, `air-setup.json`                    | The scripts, and what was there before (for `--uninstall`)                                                                                                                                                                                       |
 
-**What happens automatically:**
+Options: `--user` (hooks and status line in user settings, for every project), `--port <n>`,
+`--no-statusline`, `--dry-run` (show the changes, write nothing), `--force` (replace other
+values of the telemetry variables; `--uninstall` restores them), `--uninstall` (in a project:
+the project part; with `--user`: the telemetry too).
 
-- When Claude Code starts a session, `air-session-start.cjs` checks if the AIr server is running and starts it if needed
-- Every tool call triggers `air-post-tool-use.cjs`, which POSTs the event to AIr via HTTP
-- Session IDs are persisted to a temp file so events from the same session are correlated
+The PostToolUse hook installed by older versions (`npx air-install-claude-code`) is removed:
+telemetry reports every tool call, and both together count each call twice. In `claude -p`
+(non-interactive) sessions the status line does not run, so context % is estimated from each
+request against a 200k window (1M for `[1m]` models).
 
-**Tokens, cost, latency and compaction (OpenTelemetry).** The hooks see sessions and tool
-calls only. Claude Code's own OpenTelemetry export carries the rest: every API request's model,
+**Manual setup (what `setup` writes).** The hooks see sessions and tool calls only. Claude Code's own OpenTelemetry export carries the rest: every API request's model,
 input / output / cache tokens, cost, duration and time to first token, each tool's real duration,
 refused tool calls, API errors and compactions. Point it at AIr in your **user** settings,
 `~/.claude/settings.json` (or your shell environment). Claude Code ignores these variables in a

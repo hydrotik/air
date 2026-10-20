@@ -69,6 +69,10 @@ export async function createServer(
   // Track connected dashboard clients for live broadcast
   const dashboardClients = new Set<WebSocket>();
 
+  // Claude Code's OpenTelemetry export (routes below); the status-line bridge tells it when a
+  // session has exact context figures.
+  const otlpMapper = new ClaudeCodeOtlpMapper();
+
   // ─── Browser origins ──────────────────────────────────────────────────────
   // No authentication, so pages from other sites are refused outright (REST, ingest and the
   // WebSocket upgrades alike); CORS headers then go only to the origins that got through.
@@ -112,6 +116,26 @@ export async function createServer(
 
     // Step 2: Persist. A re-delivered event (same id) stops here: no drift check, no broadcast.
     if (!store.ingestEvent(event)) return;
+
+    // A heartbeat with context figures (Claude Code's status-line bridge) is the exact context
+    // reading for its session: record it, and stop estimating context from telemetry.
+    if (
+      event.type === 'heartbeat' &&
+      typeof event.contextTokens === 'number' &&
+      typeof event.contextWindow === 'number' &&
+      event.contextWindow > 0
+    ) {
+      otlpMapper.useExactContext(event.sessionId);
+      ingestAndBroadcast({
+        id: `${event.id}:context`,
+        sessionId: event.sessionId,
+        timestamp: event.timestamp,
+        type: 'context_usage',
+        tokensUsed: event.contextTokens,
+        contextWindow: event.contextWindow,
+        utilizationPct: (event.contextTokens / event.contextWindow) * 100,
+      });
+    }
 
     // Step 3: Check for drift — ingest any drift events too
     const driftAlerts = driftDetector.checkEvent(event);
@@ -503,7 +527,6 @@ export async function createServer(
   // ─── OpenTelemetry (OTLP/HTTP, JSON) ──────────────────────────────────
   // Claude Code: OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:5200/otlp with
   // OTEL_EXPORTER_OTLP_PROTOCOL=http/json. The exporter appends /v1/logs and /v1/metrics.
-  const otlpMapper = new ClaudeCodeOtlpMapper();
   // Read protobuf bodies as raw bytes so the routes can answer with what to change.
   app.addContentTypeParser('application/x-protobuf', { parseAs: 'buffer' }, (_req, body, done) =>
     done(null, body)

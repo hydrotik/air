@@ -11,6 +11,8 @@
  *   npx @hydrotik/air --redaction full                # strip all content
  *   npx @hydrotik/air --redaction none                # development only
  *
+ *   npx @hydrotik/air setup claude-code               # connect Claude Code (see README)
+ *
  * Environment:
  *   AIR_REDACTION_LEVEL=preview|full|none             # default: preview
  */
@@ -19,6 +21,9 @@ import { createServer } from './index.js';
 import type { RedactionConfig, RedactionLevel } from '../shared/events.js';
 import { loadConfig } from '../shared/config.js';
 import { parseOrigins } from './origin.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { collectorDir, runSetup } from '../setup/claude-code.js';
 
 const args = process.argv.slice(2);
 
@@ -28,18 +33,17 @@ function getArg(name: string, fallback: string): string {
   return value || fallback;
 }
 
-const config = loadConfig();
-const port = Number(getArg('port', String(config.port ?? 5200)));
-const host = getArg('host', config.host ?? '127.0.0.1');
-const allowedOrigins = parseOrigins(getArg('allow-origin', ''));
-const redactionLevel = getArg(
-  'redaction',
-  process.env.AIR_REDACTION_LEVEL ?? config.redaction ?? 'preview'
-) as RedactionLevel;
-
-const redaction: RedactionConfig = { level: redactionLevel };
-
 async function main() {
+  const config = loadConfig();
+  const port = Number(getArg('port', String(config.port ?? 5200)));
+  const host = getArg('host', config.host ?? '127.0.0.1');
+  const allowedOrigins = parseOrigins(getArg('allow-origin', ''));
+  const redactionLevel = getArg(
+    'redaction',
+    process.env.AIR_REDACTION_LEVEL ?? config.redaction ?? 'preview'
+  ) as RedactionLevel;
+  const redaction: RedactionConfig = { level: redactionLevel };
+
   const { app } = await createServer(port, { redaction, config, allowedOrigins });
   await app.listen({ port, host });
 
@@ -75,7 +79,22 @@ ${host === '127.0.0.1' || host === 'localhost' || host === '::1' ? '' : `  Liste
   `);
 }
 
-main().catch((err) => {
-  console.error('Failed to start AIr:', err);
-  process.exit(1);
-});
+const SETUP_USAGE =
+  'Usage: air setup claude-code [--user] [--port <n>] [--no-statusline] [--force] [--dry-run] [--uninstall]';
+
+if (args[0] === 'setup') {
+  if (args[1] === 'claude-code') {
+    // The running script (bin links resolved): dist/server/cli.js, or src/server/cli.ts.
+    const script = path.resolve(process.argv[1] ?? '.');
+    const here = path.dirname(fs.existsSync(script) ? fs.realpathSync(script) : script);
+    process.exitCode = runSetup(args.slice(2), { sourceDir: collectorDir(here) });
+  } else {
+    console.error(SETUP_USAGE);
+    process.exitCode = 2;
+  }
+} else {
+  main().catch((err) => {
+    console.error('Failed to start AIr:', err);
+    process.exit(1);
+  });
+}

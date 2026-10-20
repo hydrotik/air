@@ -7,6 +7,14 @@ semantic versioning.
 
 ### Added
 
+- **`air setup claude-code`**: connects Claude Code in one command. Telemetry settings go to
+  `~/.claude/settings.json` (Claude Code ignores them in project settings); the SessionStart hook
+  and a status-line bridge go to the project (or the user with `--user`). The bridge sends the
+  exact context-window figures, and an existing status line keeps showing. Removes the
+  PostToolUse hook of older installs (tool calls were counted twice with telemetry on).
+  `--dry-run`, `--force`, `--no-statusline`, `--port`, `--uninstall` (restores what was there).
+- **Exact context from the status line**: a heartbeat with context figures becomes the session's
+  context reading, and telemetry stops estimating it for that session.
 - **OpenTelemetry receiver for Claude Code** (`POST /otlp/v1/logs`, `/otlp/v1/metrics`; OTLP/HTTP
   with JSON). Each API request becomes tokens, cost, latency (with time to first token), context %
   and a turn; each tool result a timed tool call; refused tool calls, API errors and compactions
@@ -15,6 +23,8 @@ semantic versioning.
 
 ### Fixed
 
+- The Claude Code SessionStart hook starts the server from `node_modules/@hydrotik/air`; the
+  `.bin/air` it tried first is a shell shim under pnpm, which `node` cannot run.
 - **Session cost was counted twice** for collectors that send `token_usage` with a cost and a
   `cost` event (the Pi collector): the session total now comes from `cost` events only.
 - **Re-delivered events** (same id) are stored once and no longer add to tokens, cost, turns or

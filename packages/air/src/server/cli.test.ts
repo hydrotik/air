@@ -7,10 +7,16 @@
 const mockListen = jest.fn();
 const mockCreateServer = jest.fn();
 const mockLoadConfig = jest.fn();
+const mockRunSetup = jest.fn();
 
 jest.mock('./index.js', () => ({ createServer: mockCreateServer }), { virtual: true });
 jest.mock('../shared/config.js', () => ({ loadConfig: mockLoadConfig }), { virtual: true });
 jest.mock('./origin.js', () => jest.requireActual('./origin'), { virtual: true });
+jest.mock(
+  '../setup/claude-code.js',
+  () => ({ runSetup: mockRunSetup, collectorDir: () => '/pkg/collectors' }),
+  { virtual: true }
+);
 
 const originalArgv = process.argv;
 let logSpy: jest.SpyInstance;
@@ -32,6 +38,8 @@ beforeEach(() => {
   mockListen.mockReset().mockResolvedValue(undefined);
   mockCreateServer.mockReset().mockResolvedValue({ app: { listen: mockListen }, port: 0 });
   mockLoadConfig.mockReset().mockReturnValue({});
+  mockRunSetup.mockReset().mockReturnValue(0);
+  process.exitCode = undefined;
   logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
   errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
@@ -40,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   process.argv = originalArgv;
+  process.exitCode = undefined;
   delete process.env.AIR_REDACTION_LEVEL;
   jest.restoreAllMocks();
 });
@@ -136,6 +145,24 @@ describe('air CLI', () => {
     expect(banner()).toMatch(/RAG:\s+kb, docs/);
     expect(banner()).toMatch(/MCP:\s+m1/);
     expect(banner()).toMatch(/Budget:\s+\$10\.00/);
+  });
+
+  it('runs `setup claude-code` without starting the server', async () => {
+    mockRunSetup.mockReturnValue(1);
+    await runCli(['setup', 'claude-code', '--user', '--dry-run']);
+    expect(mockRunSetup).toHaveBeenCalledWith(['--user', '--dry-run'], {
+      sourceDir: '/pkg/collectors',
+    });
+    expect(mockCreateServer).not.toHaveBeenCalled();
+    expect(mockLoadConfig).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(1);
+  });
+
+  it('prints usage for an unknown setup target', async () => {
+    await runCli(['setup', 'vscode']);
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Usage: air setup claude-code'));
+    expect(mockRunSetup).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(2);
   });
 
   it('logs and exits with status 1 when the server cannot start', async () => {

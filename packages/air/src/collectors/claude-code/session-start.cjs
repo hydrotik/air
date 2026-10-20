@@ -71,7 +71,9 @@ async function isServerRunning() {
 }
 
 async function startServer() {
-  const candidates = [path.resolve(process.cwd(), 'node_modules/.bin/air')];
+  // The package's own entry point: node_modules/.bin/air is a shell shim under pnpm, which
+  // `node` cannot run.
+  const candidates = [path.resolve(process.cwd(), 'node_modules/@hydrotik/air/dist/server/cli.js')];
 
   // Try global air binary
   try {

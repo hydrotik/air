@@ -733,3 +733,40 @@ describe('OTLP receiver (Claude Code OpenTelemetry)', () => {
     }
   });
 });
+
+describe('status-line heartbeat (exact context)', () => {
+  const beat = (tokens: number, window = 200_000) => ({
+    id: `statusline:cc-session-1:${tokens}:${window}`,
+    sessionId: 'cc-session-1',
+    timestamp: 2_000 + tokens,
+    type: 'heartbeat',
+    contextTokens: tokens,
+    contextWindow: window,
+  });
+
+  it('records the exact context and stops estimating it from telemetry', async () => {
+    await boot();
+    await post('/api/ingest', beat(30_000, 1_000_000));
+    await post('/api/ingest', beat(30_000, 1_000_000)); // a re-render: same figures, same id
+    await app.inject({
+      method: 'POST',
+      url: '/otlp/v1/logs',
+      headers: { 'content-type': 'application/json' },
+      payload: JSON.stringify(logsRequest([apiRequest({}, { sequence: 40 })])),
+    });
+
+    const snapshots = (await get('/api/sessions/cc-session-1/context')).body;
+    expect(snapshots).toHaveLength(1);
+    expect(snapshots[0]).toMatchObject({
+      tokens_used: 30_000,
+      context_window: 1_000_000,
+      utilization: 3,
+    });
+  });
+
+  it('ignores a heartbeat without context figures', async () => {
+    await boot();
+    await post('/api/ingest', { ...evt('heartbeat'), sessionId: 'cc-session-1' });
+    expect((await get('/api/sessions/cc-session-1/context')).body).toEqual([]);
+  });
+});
