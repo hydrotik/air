@@ -115,6 +115,12 @@ const AGENT = 'claude-code';
  */
 export class ClaudeCodeOtlpMapper {
   private readonly sessions = new Map<string, SessionState>();
+  /** Sessions whose context comes from the status-line bridge: no estimate from requests. */
+  private readonly exactContext = new Set<string>();
+
+  useExactContext(sessionId: string): void {
+    this.exactContext.add(sessionId);
+  }
 
   private session(id: string): SessionState {
     let s = this.sessions.get(id);
@@ -254,18 +260,20 @@ export class ClaudeCodeOtlpMapper {
           }
         );
         // What the request sent is what the context held: the prompt, its cache reads and writes.
-        const contextWindow = contextWindowFor(model);
-        const tokensUsed = input + cacheRead + cacheWrite;
-        out.push(
-          {
+        // An estimate (the window is guessed from the model id) unless the status-line bridge
+        // reports the session's exact figures.
+        if (!this.exactContext.has(sessionId)) {
+          const contextWindow = contextWindowFor(model);
+          const tokensUsed = input + cacheRead + cacheWrite;
+          out.push({
             ...base('context'),
             type: 'context_usage',
             tokensUsed,
             contextWindow,
             utilizationPct: (tokensUsed / contextWindow) * 100,
-          },
-          { ...base('turn-end'), type: 'turn_end', turnIndex: s.turns, toolCallCount: 0 }
-        );
+          });
+        }
+        out.push({ ...base('turn-end'), type: 'turn_end', turnIndex: s.turns, toolCallCount: 0 });
         break;
       }
       case 'tool_result': {

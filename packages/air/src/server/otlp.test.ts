@@ -240,6 +240,18 @@ describe('ClaudeCodeOtlpMapper', () => {
   });
 });
 
+describe('ClaudeCodeOtlpMapper exact context', () => {
+  it('stops estimating context for a session the status-line bridge reports', () => {
+    const m = new ClaudeCodeOtlpMapper();
+    m.useExactContext('cc-session-1');
+    const { events } = m.mapLogs(
+      logsRequest([apiRequest(), apiRequest({}, { sessionId: 'other' })])
+    );
+    expect(byType(events, 'context_usage').map((e) => e.sessionId)).toEqual(['other']);
+    expect(byType(events, 'token_usage')).toHaveLength(2);
+  });
+});
+
 describe('ClaudeCodeOtlpMapper with sparse records', () => {
   // Only session.id and the event name, the way a future or trimmed export might look.
   const sparse = (name: string, extra: { key: string; value: object }[] = []) => ({
