@@ -3,7 +3,12 @@
 All notable changes are listed here. The format follows Keep a Changelog, and versions follow
 semantic versioning.
 
-## Unreleased
+## 0.4.0 - 2026-10-24
+
+The pi collector now ships in the package: `pi install npm:@hydrotik/air` installs it, and it
+starts the server from its own package so the two match. It starts lazily with the session
+(`session_start`), queues events while the server is down, validates `AIR_PORT`, and no longer
+reconnects after shutdown or throws when the `air` command is missing.
 
 ### Added
 
