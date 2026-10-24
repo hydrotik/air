@@ -3,6 +3,33 @@
 All notable changes are listed here. The format follows Keep a Changelog, and versions follow
 semantic versioning.
 
+## Unreleased
+
+### Added
+
+- **The pi collector ships in the package.** `@hydrotik/air` is a pi package (`"pi"` in
+  `package.json`, built to `dist/collectors/pi/index.js`): `pi install npm:@hydrotik/air`, or
+  `pi install -l npm:@hydrotik/air` for one project, replaces copying an extension folder. It
+  breaks the context window down by system prompt section (CLAUDE.md, skills, tools, …) and by the
+  kind of file each `read` returned, and starts the AIr server from its own package first, so the
+  server matches its version.
+
+### Changed
+
+- The pi collector starts nothing when pi loads it: the server check, the connection and the
+  heartbeat start with the session (`session_start`) and stop with it (`session_shutdown`), and no
+  heartbeat goes out before pi names the session.
+- Events sent before the connection opens or while the server is down are queued (the latest 200)
+  instead of dropped; each connection starts with the session's `session_start`.
+
+### Fixed
+
+- A malformed `AIR_PORT` (`''`, `52OO`, `0`, `70000`) no longer becomes `ws://localhost:NaN`: the
+  pi collector warns and uses 5200.
+- The pi collector no longer reconnects after `session_shutdown` closed its socket.
+- Auto-start no longer throws when the `air` command does not exist (a spawn `error` event with no
+  listener).
+
 ## 0.3.0 - 2026-10-19
 
 ### Added

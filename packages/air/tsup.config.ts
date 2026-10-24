@@ -35,6 +35,22 @@ export default defineConfig([
     clean: false,
     external: ['ws'],
   },
+  // The pi collector: a pi extension (package.json "pi" → pi install npm:@hydrotik/air).
+  // `shims` provides `__dirname`, from which it finds this package's server CLI.
+  {
+    entry: {
+      'collectors/pi/index': 'src/collector/index.ts',
+    },
+    format: ['esm'],
+    target: 'node20',
+    platform: 'node',
+    outDir: 'dist',
+    dts: false,
+    sourcemap: true,
+    clean: false,
+    shims: true,
+    external: ['ws', '@mariozechner/pi-coding-agent'],
+  },
   // Shared event types (used by both SDK consumers and server)
   {
     entry: {
