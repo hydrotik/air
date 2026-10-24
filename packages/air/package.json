@@ -49,10 +49,16 @@
     "claude",
     "codex",
     "pi",
+    "pi-package",
     "dashboard",
     "drift-detection",
     "cost-tracking"
   ],
+  "pi": {
+    "extensions": [
+      "./dist/collectors/pi/index.js"
+    ]
+  },
   "homepage": "https://github.com/hydrotik/air#readme",
   "bugs": {
     "url": "https://github.com/hydrotik/air/issues"

@@ -88,11 +88,14 @@ AIr works with multiple AI coding agents. Pick your setup:
 
 #### Pi
 
+`@hydrotik/air` is a pi package. Install it with pi, for every project or (`-l`) for one:
+
 ```bash
-cd .pi/extensions/ai-rum-collector && npm install
+pi install npm:@hydrotik/air        # ~/.pi/agent/settings.json
+pi install -l npm:@hydrotik/air     # .pi/settings.json
 ```
 
-Then `/reload` in pi. The extension auto-discovers and streams tool calls, turns, token usage, context breakdown, and compaction events via WebSocket. See [Pi collector docs](src/collectors/pi/README.md).
+Then start a new pi session (or `/reload`). Each session starts the AIr server if it is down and streams tool calls, turns, token usage, cost, context breakdown, and compaction events via WebSocket. See [Pi collector docs](src/collectors/pi/README.md).
 
 #### Claude Code
 
@@ -751,11 +754,13 @@ Create `.air.json` or `air.config.json` in your project root. AIr searches up to
 
 ### Environment Variables
 
-| Variable              | Default                            | Description                               |
-| --------------------- | ---------------------------------- | ----------------------------------------- |
-| `AIR_URL`             | `ws://localhost:5200/ws/collector` | AIr server WebSocket endpoint             |
-| `AIR_ENABLED`         | `true`                             | Set to `"false"` to disable collection    |
-| `AIR_REDACTION_LEVEL` | `preview`                          | Data redaction: `none`, `preview`, `full` |
+| Variable              | Default                            | Description                                |
+| --------------------- | ---------------------------------- | ------------------------------------------ |
+| `AIR_URL`             | `ws://localhost:5200/ws/collector` | AIr server WebSocket endpoint              |
+| `AIR_ENABLED`         | `true`                             | Set to `"false"` to disable collection     |
+| `AIR_PORT`            | `5200`                             | Server port the collectors use and start   |
+| `AIR_AUTOSTART`       | `true`                             | `"false"`: collectors never start a server |
+| `AIR_REDACTION_LEVEL` | `preview`                          | Data redaction: `none`, `preview`, `full`  |
 
 ### Database
 
@@ -990,7 +995,7 @@ Hooks into pi's event system via `ExtensionAPI`:
 - `ctx.sessionManager.getBranch()` — context breakdown by message category
 - `ctx.getSystemPrompt()` — system prompt size
 
-The collector is **silent and non-blocking** — if the AIr server isn't running, events are dropped without disrupting pi. Reconnects automatically every 5 seconds.
+Nothing starts until a session does: `session_start` starts the server if it is down, connects and begins the heartbeat; `session_shutdown` stops them. The collector is **silent and non-blocking** — while the AIr server isn't reachable, the latest 200 events wait in a queue, and nothing disrupts pi. Reconnects automatically every 5 seconds.
 
 ### Claude Code Collector (HTTP)
 
@@ -1096,7 +1101,10 @@ The collector connects to the server async. Send a message in pi — the first t
 Delete `~/.hydrotik/air/telemetry.db` to clear stale data, restart the server, then `/reload` in pi.
 
 **Pi extension not loading**
-Check that `npm install` was run inside `.pi/extensions/ai-rum-collector/` (the `ws` package must be in `node_modules`). Run `/reload` in pi after fixing.
+Check that `pi list` shows `@hydrotik/air` (install it with `pi install npm:@hydrotik/air`), then start a new session or `/reload`. A copy of the old extension folder in `.pi/extensions/` or `~/.pi/agent/extensions/` sends every event twice: delete it.
+
+**Pi collector warns about `AIR_PORT`**
+`AIR_PORT` must be a whole number from 1 to 65535; anything else is reported once and the collector uses 5200.
 
 **Claude Code hooks not firing**
 Verify `.claude/settings.json` has the hook entries under `hooks.SessionStart` and `hooks.PostToolUse`. Run `npx air-install-claude-code` again to re-install. Check that the hook scripts exist at `.claude/hooks/air-session-start.cjs` and `.claude/hooks/air-post-tool-use.cjs`.
